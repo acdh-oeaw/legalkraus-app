@@ -1,0 +1,28 @@
+/*import font families*/
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
+
+:root{
+    --primary-red: #C85545;
+    --primary-red-dark: #A73D2E;
+
+    --secondary-gray:#DDDBD8;
+    --secondary-gray-dark: #C6C2BC;
+    --secondary-gray-meta: #E0DED5;
+
+    --handapparat-normal: #565149;
+    --handapparat-hover: #7E766B;
+
+    --toggle-person: #F97979;
+    --toggle-institution: #E8EC81;
+    --toggle-place: #96FBE4;
+    --toggle-work: #9CABFF;
+    --toggle-law: #D8D8D8;
+    --toggele-quote: #6CE97F;
+    --toggle-all: #8A8080;
+    --toggle-inactive: #BBBBBB;
+
+    --text-gray: #2c3e50;
+    --text-black: #1e2125;
+    --text-white: whitesmoke;
+}

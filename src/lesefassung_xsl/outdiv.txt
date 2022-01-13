@@ -1,0 +1,353 @@
+<!DOCTYPE HTML>
+<div xmlns:tei="http://www.tei-c.org/ns/1.0" class="main">
+   <h1 id="title">Privatanklage von Karl Kraus gegen Reichspost (verantw. Red. Karl
+      Schiffleitner) wegen Verweigerung einer Berichtigung</h1>
+   <div id="allinone" class="card main-lf">
+      <p>
+         <div class="pb"></div>
+         UI 3/23 </p>
+      <p>An das <span class="institution">Strafbezirksgericht I Wien</span>
+         </p>
+      <p>Privatankläger: <span class="person">Karl Kraus</span>, Schriftsteller in <span class="place">Wien, III. Hintere Zollamtsstraße 3</span>
+         </p>
+      <p>Beschuldigter: <span class="person">Karl Schiffleitner</span>,
+         verantwortlicher Redakteur der „<span class="institution">Reichspost</span>“ in
+         <span class="place">Wien VIII. Strozzigasse 8</span></p>
+      <p><span class="hi-spaced">Privatanklage</span>
+         </p>
+      <p>wegen Verweigerung einer
+         Berichtigung</p>
+      <p>einfach, 3 Beilagen.</p>
+      <p>
+         Der <span class="person">Unterfertigte</span> erstattet
+         hiemit im Sinne des <span class="law">§ 23 P. G.</span> die Anzeige gegenden verantwortlichen <span class="person">Redakteur</span>
+         der „<span class="institution">Reichspost</span>“, die Aufnahme der sub a) angeschlossenen <span class="work">Berichtigung</span> des sub b) beigelegten Artikels „<span class="work">Ein Kreislauf</span>“ grundlos verweigert zu haben. Zur Begründung der Berechtigung des Verlangens
+         nach Aufnahme führt er schon in der Klage das folgende aus:</p>
+      <p>
+         Die Tatsachen, um die es
+         sich in dem berichtigten <span class="work">Artikel</span> handelt, und jene, die ihnen in der <span class="work">Berichtigung</span>
+         entgegengestellt sind,
+         entstammen – mit Ausnahme der letzten – einer rein
+         stilistischen Materie, an deren durch keinerlei Entstellung
+         beschädigten Bestand jedoch zweifellos und vor allem
+         für den <span class="person">Schriftsteller</span> ein ebenso wohl begründetes sachliches
+         Interesse vorhanden ist wie gegenüber der Materie
+         irgendeiner anderen Tatächlichkeit. Der zu erwartende Einwand des
+         Beklagten, daß in den Zitaten der „<span class="work">Reichspost</span>“, die samt und sonders eine
+         Vergröberung der Gedanken
+         und Sätze des sub c) beigeschlossenen <span class="work">Aufsatzes der
+            Fackel</span> vorstellen, das „Wesentliche“, nämlich die „Meinung“, die für den
+         Durchschnittsleser den Inhalt bildet, wiedergegeben sei und dass eine Tageszeitung, die zitieren will, genug
+         getan habe, wenn sie diese Meinung referierend wiedergibt, so
+         daß es auf einzelne hinzugetane oder weggenommene Worte und
+         überhaupt auf stilistische Feinheiten nicht ankommen könne, selbst dann nicht, wenn der verstümmelte Wortlaut
+         unter Anführungszeichen wiedergegeben ist – dieser Einwand einer „Irrelevanz“ der in Frage kommenden Tatsachen
+         wäre durchaus unstichhaltig. Läßt sich schon vorweg sagen, daß
+         keine Tageszeitung genötigt ist, im Rahmen ihrer lokalen Neuigkeiten über einen literarischen Aufsatz
+         zu berichten und daß sie, wenn sie sich dazu entschließt, eben
+         bemüht sein muß, die zitierten Gedanken, was immer
+         sie gegen sie einzuwenden habe, wenigstens 
+         <div class="pb"></div>
+         im vollen textlich
+         übereinstimmenden, genau kontrollierten Wortlaut wiederzugeben,
+         zumal dort, wo sie unter Anführungszeichen zitiert – wobei ja noch immer durch beliebige Herausziehung von Sätzen
+         Spielraum für eine Entstellung des Grundgedankens bleibt –,
+         so muß es ganz gewiß dem Schriftsteller überlassen werden, sein geistiges Recht hier besser wahrzunehmen und
+         also darauf zu bestehen, daß, wenn ihn eine Tageszeitung schon für die eigene Tendenz zurichtet, sie doch nicht
+         seine einzelnen Sätze auf das eigene stilistische Niveau herabsetze. Die Frage der Relevanz, die in Dingen
+         eines rein geistigen Sachverhalts nicht bereitwilliger
+         gestellt werden darf als in irgendeiner anderen
+         Sphäre eines verletzten tatsächlichen Interesses, wäre hier nach
+         Ansicht des Berichtigungswerbers schon durch den Umstand abgetan, daß er eben mindestens so großen
+         Wert darauf legt und legen darf, diesen oder jenen Satz geschrieben
+         oder nicht geschrieben zu haben wie diese oder jene Handlung, die von ihm behauptet würde, getan oder nicht
+         getan zu haben. Es bedarf wohl keines Hinweises darauf, daß
+         durch die Entstellung eines einzigen Wortes, ja Buchstabens oder Interpunktionszeichens ein
+         Gedanke, ein Satz eine vollständig andere Position und Kraft, ja einen
+         wesentlich anderen Sinn erhalten mag, dass je nach Wert und Wirkung des so oder so gedruckten Satzes selbst die
+         Tatsächlichkeit einer Lebenssphäre von der stilistischen Veränderung alteriert werden kann und daß sich durch die
+         Methode absichtlich oder unabsichtlich fehlerhaften Zitierens Sätzen, die man in einer dem oberﬂächlichen
+         Leser genehmen Tendenz darbieten will, geradezu eine
+         Gesinnung imputieren läßt, die sogar ein solcher Leser, wenn er
+         nachher das zitierte Original kennen lernte, in diesem nicht wiederfinden würde. Dies ist in dem berichtigten <span class="work">Artikel</span> Satz für Satz geschehen, 
+         <div class="pb"></div>
+         und daß es der Fall ist,
+         soll im folgenden bewiesen werden: </p>
+      <p>Die Behauptung, in der <span class="work">Fackel</span> sei der Satz gestanden, <span class="person">Karl Kraus</span> sei „<span class="quote">einst</span>“ durch den leidigen Zufall der Geburt in die jüdische
+         Glaubensgenossenschaft geraten, läßt dieses Bekenntnis
+         als einen schlecht stilisierten Unsinn erscheinen. (Siehe
+         <span class="work">Fackel, S. 3.‚ Z. 20
+            ff.</span>) In der
+         Behauptung, er habe eine zeitlang „<span class="hi-spaced">der</span>
+         <span class="hi-spaced">der</span>
+         bequemen Konfessionslosigkeit“ <span class="hi-spaced">gehuldigt</span>, ist, wiewohl das letzte Wort
+         nicht unter Anführungszeichen zitiert erscheint‚ doch – ganz abgesehen von dem Unsinn der äußeren Verstümmlung –
+         der Sinn des Originalsatzes (<span class="work">S. 3, Z. 23
+            ff</span>) nicht wiederzuerkennen. Durch die Verkürzung des
+         Zitats wird ein zynisches Behagen in das Bekenntnis
+         eingeschmuggelt, das man in ihm nicht finden wird, da die weggelassenen
+         Worte „<span class="quote">und nie genug gewürdigten</span>“
+         ihm erst seinen vollen Ernst verschaffen. Noch anschaulicher wird die
+         Absicht, den herausgerissenen Sätzen und Satzteilen den üblen Geschmack zu geben, den der berichtigte
+         <span class="work">Artikel</span> mit den Einleitungsworten, Kraus
+         mache „<span class="quote">etliche, ihn ziemlich ausreichend charakterisierende
+            Angaben</span>“ ihm nachsagt, in dem Zitat: und zwar „<span class="quote">ohne
+            zwingenden Grund</span>“ des Glaubens oder des Geschäftes. Wiewohl die
+         letzten Worte nicht innerhalb der Anführungszeichen
+         untergebracht sind, so ist es doch einleuchtend, daß
+         das den <span class="person">Autor</span>
+         ziemlich ausreichend charakterisierende Geständnis wiedergegeben werden soll, daß er ernsthaft Glauben
+         „<span class="quote">oder
+            Geschäft</span>“ für zwingende Gründe halte, die Religion
+         zu wechseln. Das gerade Gegenteil erweist sich, wenn man den Originalsatz (<span class="work">S. 3, Z. 26 ff</span>) betrachtet, in dem ganz
+         eindringlich die Ansicht des Verfassers zum Ausdruck kommt, daß das Motiv des</p>
+      <p>
+         „<span class="quote">politischen
+            oder socialen Strebens</span>“, das er die „<span class="quote">Konversion eines
+            Geschäftes</span>“ nennt, die er als das „<span class="quote">häufigere Motiv</span>“ und als
+         das schimpﬂiche ablehnt, nicht nur das seine nicht gewesen sei,
+         sondern das seine nicht sein könne. Er selbst <span class="hi-spaced">zitiert</span> solches Motiv als gemeinhin zwingenden
+         Grund im abfälligen Sinne, und der zitierende <span class="work">Artikel der „Reichspost“</span> zitiert ihn dabei so, als
+         ob er es als ein mögliches,
+         ja auch ihn selber sonst zwingendes Motiv
+         betrachten würde, aber eben die Frivolität besessen hätte,
+         nicht einmal ein solches Motiv für seinen Übertritt gehabt zu haben,
+         das er selbst doch gleichsam grundsätzlich als zwingend anerkennt.</p>
+      <p>
+         Ganz ebenso relevant ist die
+         nun folgende Entstellung durch das eingefügte Wort „<span class="quote">also</span>“‚ das den Eindruck erwecken muß‚ als ob der <span class="person">Verfasser</span> im Plauderton erzählen wollte, er sei „also Katholik“
+         geworden, während die weggelassenen Worte „<span class="quote">wie dem immer sei</span>“ (<span class="work">S. 4, Z. 1 ff.</span>) ganz
+         deutlich besagen,
+         daß hier der Schluß einer ernsthaften Selbstbeschuldigung
+         gezogen wird. </p>
+      <p>Die nun folgende Verkürzung
+         macht den polemischen Witz:
+         „<span class="quote">sondern hauptsächlich aus
+            Antisemitismus</span>“ zu einer schnodderigen Pointe und
+         indem sie die voraufgehenden vorausgehenden Worte unterschlägt: „<span class="quote">nicht nur aus Gründen einer
+            Menschlichkeit, die bei den Hirten in so schlechter Obhut ist</span>“ <span class="work">(S. 5, Z. 5 ff.)</span>, nimmt siedem
+         Bekenntnis des Austrittes nicht allein einen gewichtigen Beweggrund, sondern auch alle Ernsthaftigkeit. </p>
+      <p>Mit dem Satz von dem „<span class="quote">Bannstrahl</span>“, in welchem etwas weggelassen ist, was ihm
+         erst das Fundament seines anklägerischen Sinnes
+         verleiht, nämlich sowohl das geringe Opfer, das dieser Bannstrahl
+         gekostet hätte, wie vor allem dessen Berechtigung, wird dem <span class="work">Aufsatz</span> an jener Stelle <span class="work">(S. 4, Z. 19 ff.)</span> eine
+         Zeitungsphrase unterschoben. Es ist 
+         <div class="pb"></div>
+         </p>
+      <p>
+         ganz unmöglich, daß der
+         Satz dort ohne eine weitere <span class="hi-spaced">Charakterisierung</span> „<span class="quote">der Dynasten</span>“ abschließen
+         konnte. Der Relativsatz „<span class="quote">die Kraus für die Urheber des
+            Weltkriegsunglücks hält</span>“ zitiert wohl eine schon bekannte
+         Auffassung der <span class="work">Fackel</span>, gibt aber nicht zu erkennen, daß an jener
+         Stelle eben die Tätigkeit der Dynasten beschrieben
+         war, die den Bannstrahl erfordert hätte, nämlich daß sie „<span class="quote">den Völkern das Ultimatum der
+            Pest und der
+            Syphilis überbracht haben</span>“. Die „<span class="institution">Reichspost</span>“ mag Bedenken tragen, eine solche Charakterisierung der Dynasten auch nur
+         zu zitieren, sie muß es aber wohl oder übel tun, wenn sie den Autor
+         zitieren will, der auf Grund solcher
+         Charakterisierung jenen Bannstrahl vermißt, den die „<span class="institution">Reichspost</span>“ doch als eine ihr offenbar übertrieben scheinende Forderung
+         zitieren will. Sie muß überhaupt vollständig
+         zitieren, und eine etwaige Berufung darauf, daß sie von den Dynasten
+         eine Kränkung abhalten wollte, für die ja der zitierte
+         Autor verantwortlich ist, dürfte ihr weder vor dem
+         Weltgericht noch vor einem solchen der Republik
+         hingehen, ebensowenig wie etwa die über den Weltkrieg hinaus
+         durchgehaltene Scheu, das Wort „Syphilis“ zu drucken. Jenen
+         Dynasten gegenüber als Objekten historischer Kritik
+         dürfte wohl das Moment der Beleidigung im allgemeinen wie der
+         Ehrfurchtverletzung im besondern so wenig in Frage kommen
+         wie etwa gegenüber dem <span class="person">Nero</span>, der ja auch ein verstorbenes
+         Mitglied eines Kaiserhauses ist.</p>
+      <p>Mit Rücksicht auf eine
+         juridische Materie, deren Besonderheit und Schwierigkeit eine Klarlegung durch mündliches
+         Vorbringen kaum ermöglichen würde, war der Berichtigungswerber
+         bemüht, schon in der Klage zu jedem einzelnen Punkt mit
+         aller Eindringlichkeit Stelllung zu nehmen. Wenn es noch einer
+         Bekräftigung der prinzipiellen Wichtigkeit des
+         Falles bedürfte und der im Wesen der 
+         <div class="pb"></div>
+         schriftstellerischen
+         Existenz beruhenden Notwendigkeit, daß die literarische
+         Leistung nicht nur als geistiges und materielles Gut
+         durch das Autorrecht, sondern auch als ein Teil der
+         Tatsachenwelt durch das Berichtigungsrecht geschützt sei, so kann
+         auf ein Wort <span class="person">Schopenhauers</span> verwiesen werden, durch das wohl in exemplarischer Art
+         die Wesentlichkeit dieses Interesses anerkannt erscheint. <span class="person">Schopenhauers</span> Motto zu der „<span class="work">Preisschrift über die Grundlage der
+            Moral, nicht gekrönt von der königlich dänischen Sozietät der
+            Wissenschaften</span>“ war der Satz: „<span class="quote">Moral
+            predigen ist leicht, Moral begründen schwer.</span>“ In dem „<span class="work">Judicium regiae Danicae Scientiarum Societatis</span>“ (das dem Druck der <span class="work">Preisschrift</span> angehängt ist) erschien dieses
+         Motto wie folgt zitiert: „<span class="quote">Moral
+            predigen ist leicht,
+            Moral begründen ist schwer.</span>“ Die „<span class="institution">Reichspost</span>“ hätte wohl, wenn sie
+         derart zitiert hätte, einer Berichtigung mit
+         dem Einwand sich geweigert, daß sie ja doch die Meinung des <span class="person">Autors</span> richtig wiedergegeben habe und daß es auf das Wörtchen
+         „<span class="quote">ist</span>“ als einen unerheblichen Unterschied schon
+         nicht ankommen werde. <span class="person">Schopenhauer</span> aber macht
+         zu jenem <span class="work">Judicium</span> die Anmerkung: „<span class="quote">Dieses zweite
+            ‚ist‘ hat die Akademie aus eigenen Mitteln
+            hinzugefügt, um
+            einen Beleg zu liefern zur Lehre des
+            Longinus, daß man durch Hinzufügung oder Wegnahme
+            einer Silbe die ganze Energie
+            einer Sentenz vernichten kann.</span>“ Angesichts der Energie dieser Sentenz, die durchgreifend
+         dartut, worauf es in der Literatur und worauf es dem
+         Schriftsteller ankommt, wäre es überﬂüssig, auch noch auf <span class="person">Schopenhauers</span> bekanntere Flüche gegen die Verstümmler seines
+         Wortes und des Wortes im allgemeinen 
+         
+         
+         <div class="pb"></div>
+         
+         
+         hinzuweisen, mit denen
+         er sowohl jene Journalisten getroffen hat,
+         die an der Herabsetzung des Sprachniveaus Schuld tragen, wie jene
+         künftigen Herausgeber, die seine Sprache auf jenes Niveau
+         herabsetzen.</p>
+      <p>Ebenso bedenkenlos und
+         ebenso bedenklich wie die „<span class="institution">Reichspost</span>“ mit dem <span class="work">Aufsatz</span>, den sie zitieren wollte,
+         verfahren ist, erscheint
+         demnach in allen Punkten die Verweigerung der Aufnahme der ihr zugesandten <span class="work">Berichtigung</span>.
+         Bliebe nur noch der letzte Passus zu erörtern, dessen Tatsächlichkeit
+         allerdings nicht der stilistischen Materie zugehört, sondern
+         der Materie der Meinung. Vorweg sei festgestellt, daß hier
+         eine Verwechslung der „Meinung“ als der <span class="hi-spaced">Art</span> des Vorbringens, also einer solchen „Meinung“, die nach <span class="law">§ 23</span> sicherlich nicht berichtigt werden kann, mit dem
+         <span class="hi-spaced">Stoff</span> des Vorbringens platzgreifen könnte und aller Voraussicht
+         nach auch der Verteidigung zugrundeliegen wird. Die „<span class="institution">Reichspost</span>“
+         sagt, daß aus dem <span class="work">Aufsatz</span> nicht
+         hervorgehe, ob dessen <span class="person">Verfasser</span> zu einer andern Konfession, zur
+         Konfessionslosigkeit oder wieder zum Judentum übergehen
+         werde, aber „<span class="quote">eifrige Anlehnungen in einem anderen Aufsatz der ‚Fackel‘ an Theodor Herzls
+            Tagebuch machen den Fall 3 zur Wahrscheinlichkeit. Ein Kreislauf ist
+            beendet.</span>“ Der tatsächlichen Berichtigung dieses Satzes, der
+         allerdings keine direkte Behauptung einer Tatsache enthält, aber
+         auf Grund einer deutlich <span class="hi-spaced">unterschobenen</span> Tatsache eine satirische Meinung vorbringt‚ wird
+         entgegengehalten werden, daß man eine solche nicht
+         berichtigen kann. Dies würde aber eine geradezu beispielhafte
+         Verwechslung sein jener Meinung, die hier im Wege der
+         Konklusion vorgebracht wird und die allerdings vom <span class="law">§ 23</span> nicht erreichbar wäre, mit dem Meinungs<span class="hi-spaced">stoff</span> des Vorbringens, der in seiner Tatsächlichkeit, in
+         seinem konkreten Vorhandensein einfach </p>
+      <p>nicht zu übersehen ist.
+         Gewiß, wer würde leugnen, daß die Behauptung „<span class="quote">eifriger
+            Anlehnungen</span>“ <span class="hi-spaced">an und für sich</span> nichts anderes
+         als eine Ansicht, eine mehr oder minder ernsthafte Kritik
+         ist, die man als solche nicht mit dem Berichtigungsparagraphen
+         bestreiten kann. Wer würde des weiteren verkennen, daß die Setzung des „Falles 3“ als einer
+         „Wahrscheinlichkeit“ <span class="hi-spaced">an und für sich</span>
+         eine nicht berichtigbare
+         Vermutung ist, zu der sie ja schon das Wort „Wahrscheinlichkeit“ macht, und eine satirisch gemeinte noch
+         dazu.Nichts wäre jedoch verfehlter‚ als sich
+         durch die der Urteilssphäre entnommenen Worte von der
+         Tatsachensphäre, die ihnen in Wahrheit zugrundeliegt, ablenken zu
+         lassen. Es ist sehr wohl zu beachten, daß die Berichtigung sich weder darauf bezieht, daß in der <span class="work">Fackel</span> eifrige Anlehnungen an <span class="person">Herzls</span>
+         <span class="work">Tagebuch</span>
+         enthalten oder daß ihre
+         Anlehnungen eifrige sind, noch darauf, daß der Fall 3 nicht
+         wahrscheinlich ist. Sondern was berichtigt wird, ist <span class="hi-spaced">ausschließlich</span>
+         der <span class="hi-spaced">tatsächliche Zusammenhang</span>, in den diese beiden
+         Meinungselemente unverkennbar gestellt sind. In dem <span class="work">Artikel</span> wird für jeden Leser, der den zitierten <span class="work">Aufsatz</span> nicht kennt,
+         die Tatsache unter<span class="hi-spaced">schoben</span>, daß der <span class="person">Verfasser</span>‚ der in demselben
+         <span class="work">Heft</span>
+         sich von der katholischen
+         Religion abwendet, ein jüdischnationales <span class="work">Buch</span> aus <span class="hi-spaced">konfessionellen</span>
+         Motiven – für seine soeben
+         ausgesprochene Ansicht – heranzieht. Es wird mit keinem Wort dem Leser gesagt, aus wie ganz anders gearteten
+         Motiven diese Heranziehung erfolgt, nämlich daß sie (<span class="work">S. 77–81</span>) zum Beweise
+         der Korruption jener <span class="work">Neuen Freien Presse</span> erfolgt, die erst durch ein
+         Inserat <span class="person">Theodor Herzls</span> zu einer Beachtung der zionistischen Sache zu bewegen war und sich
+         hinterdrein auf dessen Hochschätzung berufen
+         möchte. Jeder Leser der <span class="work">Reichspost</span> muß
+         glauben,</p>
+      <p>daß die <span class="hi-spaced">Tatsache gesetzt</span> ist, in der <span class="work">Fackel</span> sei <span class="person">Herzls</span>
+         <span class="work">Tagebuch</span> aus einer Sympathie für die jüdische Sache zitiert, aus
+         der sich eben die Wahrscheinlichkeit einer Rückkehr zum Judentum ergebe. Hinter der satirischen Version steckt
+         ganz gewiß für jeden, der den Artikel der „<span class="work">Reichspost</span>“ gelesen hat, die <span class="hi-spaced">Tatsache</span>, daß es sich um Anlehnungen
+         <span class="hi-spaced">mit jüdischer</span>
+         <span class="hi-spaced">Tendenz</span> handle. Es ist klar, <span class="hi-spaced">in welchem</span>
+         <span class="hi-spaced">Falle</span>
+         die Behauptung „<span class="quote">eifriger Anlehnungen</span>“ die <span class="hi-spaced">Ansicht</span>, die sie <span class="hi-spaced">an und für sich</span> scheinbar ist, auch
+         wirklich wäre und keine Tatsachenbehauptung einschlösse: nämlich dann,
+         wenn tatsächlich Zitate <span class="hi-spaced">zionistischer</span> Tendenz in der <span class="work">Fackel</span> erschienen wären. Das wird aber indirekt ganz deutlich behauptet, wenn von eifrigen
+         Anlehnungen in <span class="hi-spaced">diesem</span> Zusammenhang die Rede
+         ist. Dies ist <span class="hi-spaced">als Tatsache</span>
+         <span class="hi-spaced">unterstellt</span>, also indirekt behauptet, und das Gesetz gestattet zweifellos
+         auch die Berichtigung solcher Tatsachen. Ob es sich um eifrige Anlehnungen handelt, die die Rückkehr zum Judentum
+         wahrscheinlich machen, wäre – trotz der Meinungsfarbe der Worte – <span class="hi-spaced">nur</span> dann eine <span class="hi-spaced">Ansichtssache</span>, wenn <span class="hi-spaced">solche</span> Zitate <span class="hi-spaced">tatsächlich</span> vorlägen, wie sie eben <span class="hi-spaced">nicht</span>
+         vorliegen, von denen aber
+         jeder Leser des berichtigten Artikels annehmen muß, <span class="hi-spaced">daß</span> sie vorliegen. Die Tatsache, die unterstellt, der
+         Zusammenhang, der hergestellt wird, wären um nichts
+         handgreiﬂicher, wenn die „<span class="institution">Reichspost</span>“ statt von „<span class="quote">eifrigen
+            Anlehnungen</span>“ von „Zitaten“ oder gar von „zionistischen Zitaten“
+         und statt von „<span class="quote">Wahrscheinlichkeit</span>“
+         von „Gewißheit“ gesprochen hätte, weil es eben gar nicht auf <span class="hi-spaced">diese</span> Behauptungen als solche, die ja auch nicht berichtigt werden,
+         ankommt, sondern lediglich auf die <span class="hi-spaced">als
+            Grundlage</span> der Meinung und Vermutung</p>
+      <p>gesetzte, <span class="hi-spaced">unterstellte</span>
+         <span class="hi-spaced">Tatsache</span>. In dem einem <span class="work">Aufsatz</span> war von dem Verlassen der
+         katholischen Religion die
+         Rede; in dem andern wird die von der <span class="work">Neuen Freien Presse</span> behauptete Intransigenz in Gesinnungsfragen durch den Umstand ad
+         absurdum geführt, daß es <span class="person">Herzl</span> gelungen ist, sie
+         auf dem Geldweg für eine ihr verhaßte Sache zu interessieren: der
+         Kronzeuge ihrer Unentwegtheit wird als Kronzeuge ihrer Zugänglichkeit ausgespielt. Der Autor beider Aufsätze hat
+         ein Recht darauf, daß die absolute Nichtzusammengehörigkeit beider festgestellt werde gegen die Behauptung eines
+         Zusammenhanges durch die Unterstellung, daß der zweite zugunsten der zionistischen Sache geschrieben sei, gleichsam
+         als eine Fortsetzung des ersten Bekenntnisses. Eine
+         „Ansicht“ wäre die Bemerkung der „<span class="institution">Reichspost</span>“ erst für den, der wüßte, daß der Zusammenhang zum Zwecke
+         der sogenannten Satire erfunden ist, jeder andere muß ihn als vorhanden
+         annehmen und meinen, daß es sich um <span class="hi-spaced">Anlehnungen an die Tendenz</span>
+         des <span class="work">Tagebuchs</span> handle, deren Bezeichnung als „<span class="quote">eifrig</span>“ schon auf Religionseifer und Renegatentum hinweist. Eine „Satire“ ist wohl der Zusammenhang
+         einer solchen Anlehnung mit der Vermutung der Rückkehr zum
+         alten Testament, aber die <span class="hi-spaced">Tatsache</span>, daß es sich um eine zionistische Anlehnung handelt, ist
+         die klare <span class="hi-spaced">Grundlage</span> dieser Satire. Kein Leser wird die
+         Möglichkeit auch nur ahnen können, daß von einem Inseratengeschäft der <span class="work">Neuen
+            Freien Presse</span> die
+         Rede ist und daß ausschließlich <span class="hi-spaced">dieser</span>
+         Tatsache zuliebe alle
+         Exzerpte aus <span class="person">Herzls</span>
+         <span class="work">Tagebüchern</span>
+         erfolgt sind. Wie sollte er
+         sich auch vorstellen, daß <span class="hi-spaced">damit</span> „<span class="quote">ein Kreislauf
+            beendet</span>“ sei? Der erscheint aber beendet, wenn dem Leser
+         direkt oder indirekt mitgeteilt wird, daß jener dem Katholizismus Abtrünnige nunmehr die
+         zionistisehe Tendenz propagiere; wenn die </p>
+      <p>Vorstellung solchen
+         Sachverhalts überdies durch den Titel „<span class="work">Ein Kreislauf</span>“, der ja die Wiederkehr
+         ins Judentum förmlich
+         ankündigt, dem Leser geradezu aufgedrängt wird. Die „<span class="institution">Reichspost</span>“ hätte bloß schreiben müssen:
+         „Anlehnungendieser Art“, um die falsche Tatsache, die sie suggerieren will, direkt zu
+         behaupten. Nicht die „<span class="quote">eifrigen
+            Anlehnungen</span>“ als solche, wohl aber <span class="hi-spaced">die der</span>
+         <span class="hi-spaced">vorgestellten Art</span> enthalten die Tatsache, der als einer unwahren die
+         wahre Tatsache entgegengestellt werden kann: daß es sich um
+         einen antikorruptionistischen Aufsatz handelt, der ja ganz ebenso einem anderen Gebiet entnommen sein könnte als
+         einem, wo zufällig der Judenpunkt eine Rolle spielt. Wäre esnicht möglich, eine solche Tatsache im Wege des
+         Gesetzes zu reklamieren, so bliebe, um aus der Sphäre einer
+         konkreteren Stofﬂichkeit ein Beispiel zu holen,
+         etwa der Fall der Berichtigung unzugänglich, daß einer schreibt, X., der
+         erzählt hat, er habe sich von seiner Frau scheiden lassen‚ wolle sich nun wohl mit einer anderen verheiraten: ein
+         eifriges Gespräch – das sich in Wahrheit um ein Theaterstück
+         gedreht hat – mache diesen Fall zur Wahrscheinlichkeit; ein Kreislauf ist beendet. Dagegen wäre es zweifellos
+         eine nicht berichtigbare Satire, wenn einer vorbringen
+         wollte, ein Journalist, der zufällig der katholischen Religion
+         angehört, werde sich wahrscheinlich nie einer
+         andern zuwenden, denn er mache unter jede bezahlte Notiz ein Kreuz –
+         wiewohl er sich dadurch doch
+         gewiß nicht von Journalisten anderer Konfessionen unterscheidet. </p>
+      <p>
+         Jene <span class="work">Notiz</span> aber, die die „<span class="institution">Reichspost</span>“ aus redaktionellem Ermessen
+         gebracht hat, trägt Satz für Satz das Merkmal einer Verleugnung
+         der geistigen und stilistischen Tatsächlichkeit, die die
+         Aufsätze der <span class="work">Fackel</span> enthalten. Durch die Vorlage dieser
+         wird keineswegs der Versuch</p>
+      <p>gemacht, in einen
+         Wahrheits-, respektive Unwahrheitsbeweis einzugehen, den ja das
+         Berichtigungsverfahren ausschließt. Sie ist aber unerläßlieh zu
+         dem Zweck, einerseits den falschen Zitierungen gegenüber die Relevanz der in Frage kommenden Sachverhalte zu
+         erweisen, anderseits, um das Wesen einer unterschobenen, indirekt behaupteten Tatsache zu verdeutlichen. Der
+         Verfasser der in ihrem Wortlaut und Sinn falsch wiedergegebenen
+         Aufsätze glaubt ein Recht zu haben, im Wege des Preßgesetzes eine Richtigstellung der entstellten Sätze und
+         Gedanken zu erreichen, hält die Weigerung des
+         verantwortlichen Redakteurs der „<span class="institution">Reichspost</span>“ für
+         grundlos und beantragt, ihn gemäß <span class="law">§ 24</span> zu verurteilen.</p>
+   </div>
+</div>

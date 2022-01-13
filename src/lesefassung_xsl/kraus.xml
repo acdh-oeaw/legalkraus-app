@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="https://raw.githubusercontent.com/acdh-oeaw/legalkraus-documentation/master/odd/legalkraus_transcr.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?><?xml-model href="https://raw.githubusercontent.com/acdh-oeaw/legalkraus-documentation/master/schematron/legalkraus_transcr.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0" xml:id="D_000003-004-000.xml" prev="https://id.acdh.oeaw.ac.at/legalkraus/D_000003-003-000.xml" next="https://id.acdh.oeaw.ac.at/legalkraus/D_000003-005-000.xml" xml:base="https://id.acdh.oeaw.ac.at/legalkraus">
+   <teiHeader>
+      <fileDesc>
+         <titleStmt>
+            <title>Brief Samek an Verlag Die Fackel</title>
+            <editor ref=""/>
+            <respStmt>
+               <resp ref="http://id.loc.gov/vocabulary/relators/trc">Transkription</resp>
+               <name ref="#IL">Isabel Langkabel</name>
+            </respStmt>
+         </titleStmt>
+         <publicationStmt>
+            <publisher>
+               <name>Austrian Centre for Digital Humanities and Cultural Heritage,
+                  Österreichische Akademie der Wissenschaften</name>
+               <address>
+                  <street>Sonnenfelsgasse 19</street>
+                  <postCode>1010</postCode>
+                  <settlement>Wien</settlement>
+                  <country>Österreich</country>
+               </address>
+               <ref target="https://acdh.oeaw.ac.at">https://acdh.oeaw.ac.at</ref>
+            </publisher>
+            <publisher>
+               <name>Ludwig Boltzmann Institut für Digital History</name>
+               <address>
+                  <street>Hofburg, Batthyanystiege</street>
+                  <postCode>1010</postCode>
+                  <settlement>Wien</settlement>
+                  <country>Österreich</country>
+               </address>
+               <ref target="https://geschichte.lbg.ac.at">https://geschichte.lbg.ac.at</ref>
+            </publisher>
+            <publisher>
+               <name>Wienbibliothek im Rathaus</name>
+               <address>
+                  <street>Friedrich-Schmidt-Platz 1</street>
+                  <postCode>1010</postCode>
+                  <country>Wien</country>
+                  <settlement>Österreich</settlement>
+               </address>
+               <ref target="https://www.wienbibliothek.at">https://www.wienbibliothek.at</ref>
+            </publisher>
+            <pubPlace>Wien, Österreich</pubPlace>
+            <date>2021</date>
+            
+            <availability>
+               <licence target="http://creativecommons.org/licenses/by/4.0">Creative Commons Namensnennung 4.0 International Lizenz</licence>
+            </availability>
+            <idno type="URL" subtype="legalkraus">https://id.acdh.oeaw.ac.at/legalkraus/D_000003-004-000</idno>
+            <idno type="URL" subtype="krausonline">http://www.kraus.wienbibliothek.at/node/1560</idno>
+            <idno type="ID" subtype="transkribus">376247</idno>
+         </publicationStmt>
+         <seriesStmt>
+            <title type="collection" ref="https://id.acdh.oeaw.ac.at/legalkraus/C_000003">Karl Kraus ca. Der Tag</title>
+         </seriesStmt>
+         <sourceDesc>
+            <listWit>
+               <witness xml:id="D_000003-004-000-wit01" facs=""/>
+            </listWit>
+         </sourceDesc>
+      </fileDesc>
+      <profileDesc>
+         <creation> <date type="sortDate" when-iso="1922-12-21"/> 
+            <date source="krausonline">21.12.1922</date>
+         </creation>
+         <langUsage> <language ident="ger">Deutsch</language> </langUsage>
+         <textClass>
+            <keywords>
+               <term>Brief</term>
+            </keywords>
+            <classCode scheme="https://vocabs.acdh.oeaw.ac.at/legalkraus-doctypes/v1.0/">D.K.BRF</classCode>
+         </textClass>
+         <particDesc/>
+         <correspDesc>
+            <correspAction type="sent">
+               <rs type="person" ref="">Oskar Samek</rs>
+            </correspAction>
+            <correspAction type="received">
+               <rs type="person" ref="">Verlag Die Fackel</rs>
+            </correspAction>
+         </correspDesc>
+      </profileDesc>
+      <revisionDesc status="draft">
+         <change when-iso="2020-02-03T14:10:50.469Z" who="#IB">created by API</change>
+         <change when-iso="2020-02-03T14:27:05.5Z" who="#JM">Checked Images Wienbibliothek</change>
+         <change when-iso="2020-02-03T14:27:07.684Z" who="#JM">Checked Images Wienbibliothek</change>
+         <change when-iso="2020-10-01T12:09:09.817Z" who="#IB">Replaced Text with Transcription of Transkribus Document 376247.</change>
+      </revisionDesc>
+   </teiHeader>
+   <facsimile>
+      <surface>
+         <graphic url="http://www.kraus.wienbibliothek.at/sites/biographeme.com/files/images/object/00000175.jpg" source="krausonline"/>
+         <graphic url="ZPH_1545-1/001_010/00000175.jpg" source="scans"/>
+         <graphic url="https://www.digital.wienbibliothek.at/wbrobv02/i3f/v21/2540184/full/full/0/default.jpg" source="wienbibliothek" ana="status:checked"/>
+      </surface>
+      <surface>
+         <graphic url="http://www.kraus.wienbibliothek.at/sites/biographeme.com/files/images/object/00000176.jpg" source="krausonline"/>
+         <graphic url="ZPH_1545-1/001_010/00000176.jpg" source="scans"/>
+         <graphic url="https://www.digital.wienbibliothek.at/wbrobv02/i3f/v21/2540185/full/full/0/default.jpg" source="wienbibliothek" ana="status:checked"/>
+      </surface>
+   </facsimile>
+   <text>
+      <body>
+         <pb n="1"/>
+         
+         <p xml:id="uuid_e4d3d89d-798f-48d4-87a9-e713770460fa">
+            <lb xml:id="uuid_5d8c0be0-8f37-4252-8c0b-e08f378252dc"/>21. Dezember 1922 </p>
+         
+         <p xml:id="uuid_27383f37-3baf-40c9-b535-d7884640b5f3">
+            <lb xml:id="uuid_55594f0c-efb8-4478-994f-0cefb87478ac"/>Betr. K.K. – <rs type="institution" ref="#29650">Tag</rs>
+         </p>
+         
+         <p xml:id="uuid_17182279-5297-4452-8f1f-5fa185c8a42b">
+            <lb xml:id="uuid_ca324a7f-50f8-4775-b24a-7f50f8e77580"/>An den <lb xml:id="uuid_5c9acca0-34e2-4679-9acc-a034e2b67963"/>
+            <rs type="institution" ref="#43724">Verlag der „<hi rend="underlined">
+               <rs type="work" ref="#41244">Fackel</rs>
+            </hi>“</rs>
+            <lb xml:id="uuid_54a7365d-35ee-4dcc-a736-5d35eebdcc8e"/>
+            <rs type="place" ref="#42980">Wien III.
+               <lb xml:id="uuid_c98e6965-b9f4-4a0d-8e69-65b9f4ba0dac"/>Hint.
+               Zollamtsstrasse 3</rs>
+         </p>
+         
+         <p xml:id="uuid_d587cb4f-a452-48f5-b716-0d9ef671ab6e">
+            <lb xml:id="uuid_bbea3a52-8304-4939-aa3a-528304f939d5"/>Von der Redaktion der <rs type="institution" ref="#29650">Zeitung „Der Tag“</rs> erhielt <lb xml:id="uuid_da42c1a6-453f-4a92-82c1-a6453fca92fc"/>ich heute den in der Folge
+            abgeschriebenen Brief vom 19. De-<lb xml:id="uuid_9ee54cf4-d445-4981-a54c-f4d445f98152"/>zember 1922. </p>
+         
+         <p xml:id="uuid_cf1efe3c-694f-46a1-8ae8-87b1fed7771f">
+            <lb xml:id="uuid_6b2c3801-feaf-42e1-ac38-01feaf62e198"/>Die in diesem Schreiben der
+            Berichtigung zum Vor-<lb xml:id="uuid_6c5546a5-d3e1-4c99-9546-a5d3e1cc99bd"/>wurfe
+            gemachten formellen Mängel sind nach meinem Dafürhalten <lb xml:id="uuid_626ca0c5-a60c-49a5-aca0-c5a60c39a535"/>nicht vorhanden. Aus dem
+            Inhalt des Schreibens geht klar hervor, <lb xml:id="uuid_8a5331db-cc8e-4e5d-9331-dbcc8eae5d8f"/>in wessen Auftrage es
+            verfasst wurde. Das Beilegen einer Voll-<lb xml:id="uuid_5a06d291-3412-4445-86d2-91341204459f"/>macht in Briefen ist nicht
+            verkehrsüblich, wenn ein Anwalt inter-<lb xml:id="uuid_f154ce60-9586-41bb-94ce-609586c1bb59"/>veniert. </p>
+         
+         <p xml:id="uuid_99c80aac-aee7-421a-9ac4-2ddc2c584227">
+            <lb xml:id="uuid_9e1c7b9f-f3a3-4f72-9c7b-9ff3a39f7251"/>Ebenso wenig Berichtigung hat die
+            Behauptung, dass <lb xml:id="uuid_326a3838-80d4-46b1-aa38-3880d406b165"/>nur <rs type="person" ref="#4431">Herr Forest</rs> den zweiten Teil der Berichtigung begehren kön-
+            <lb xml:id="uuid_bb830e54-ba48-4d4b-830e-54ba48cd4b3c"/>nte. Die Berichtigung zu
+            verlangen, hat nach dem Pressegesetz jeder <lb xml:id="uuid_70b12f7c-f6c6-471e-b12f-7cf6c6d71e0e"/>Beteiligte das Recht. Wenn
+            also mit <rs type="person" ref="#4431">Herrn Forest</rs> ein Vertrag <lb xml:id="uuid_4f424bfe-3b10-4abc-824b-fe3b10aabc4e"/>überhaupt nicht
+            abgeschlossen worden ist, gewiss jeder, der als <lb xml:id="uuid_f905c425-7759-4193-85c4-257759b19394"/>Vertragspartei genannt wird.
+            Ob dies auf eine unrichtige Dar-<lb xml:id="uuid_b5ed6228-23f6-44e3-ad62-2823f6c4e3bb"/>stellung des <rs type="person" ref="#4431">Herrn Forest</rs> oder einer anderen Person zurückzu-<lb xml:id="uuid_76ee7871-db90-489c-ae78-71db90389c75"/>führen ist, kann für den
+            Berichtgungszwang keine Bedeutung haben <lb xml:id="uuid_2b88d9ff-df7d-4148-88d9-ffdf7d814818"/>Nur wenn ein Vertrag
+            abgeschlossen worden wäre, <rs type="person" ref="#4431">Herr Forest</rs> sich <lb xml:id="uuid_cf133123-04ab-43f2-9331-2304ab53f2f1"/>aber auf denselben nicht
+            berufen hätte, z.B. weil er damit ein <lb xml:id="uuid_fb04e1a7-8095-4eb5-84e1-a780950eb52c"/>Geheimnis verletzt hätte,
+            wäre ausschliesslich <rs type="person" ref="#4431">Herr Forest</rs> zum <pb n="2"/>
+            <lb xml:id="uuid_5696732b-6afe-465e-9673-2b6afe365e09"/>Verlangen einer Berichtigung
+            berechtigt. </p>
+         
+         <p xml:id="uuid_ca798b35-e8b8-4f78-872a-37525c2cdad1">
+            <lb xml:id="uuid_a34688cf-e5d0-4048-8688-cfe5d0704820"/>Ich zeichne <lb xml:id="uuid_92d0d547-ca8b-45d2-90d5-47ca8bb5d2c1"/>hochachtungsvoll </p>
+         
+         <p xml:id="uuid_ba0adec8-7562-4f1d-8eb7-8f765a0b9e7d">
+            <lb xml:id="uuid_7d5fa1a4-c795-4df2-9fa1-a4c795fdf200"/>Abschrift: </p>
+         
+         <p xml:id="uuid_e4b8196d-fdc1-4a9d-8731-62d34f2fccbc">
+            <lb xml:id="uuid_5d7afd9d-2c53-425d-bafd-9d2c53325d7c"/>
+            <rs type="institution" ref="#29650">Der
+               Tag</rs>. <lb xml:id="uuid_b8158330-85c9-4494-9583-3085c924943b"/>
+            <rs type="place" ref="#50">Wien</rs>,19. Dezember 1922 </p>
+         
+         <p xml:id="uuid_4c23adb1-6a92-4c11-9655-3d1dcde1a6ae">
+            <lb xml:id="uuid_4757fd75-64db-4ad8-97fd-7564db0ad8b1"/>Herrn <lb xml:id="uuid_5b768166-61c7-4cc2-b681-6661c77cc2c0"/>
+            <rs type="person" ref="#38909">Rechtsanwalt Dr. Oskar Samek</rs>
+            <lb xml:id="uuid_19c3c5bf-337a-48a6-83c5-bf337ae8a6dd"/>
+            <rs type="place" ref="#42975">– Wien I. –
+               <lb xml:id="uuid_e27c0332-2b71-4f03-bc03-322b715f03ad"/>Schottenring 14</rs>
+         </p>
+         
+         <p xml:id="uuid_473c4fd4-f49c-4e09-9682-21d811099d6c">
+            <lb xml:id="uuid_b675477c-9afb-4799-b547-7c9afb379986"/>Sehr verehrter <rs type="person" ref="#38909">Herr Doktor</rs>! </p>
+         
+         <p xml:id="uuid_c809c8bb-dd90-499c-ac72-21bb22766a20">
+            <lb xml:id="uuid_8fda8bd4-cef1-4204-9a8b-d4cef1320456"/>Wenn wir Ihre Zuschrift in Sachen
+            <rs type="person" ref="#11988">Kraus</rs> veröffent-<lb xml:id="uuid_e38528e5-f3ee-4bf1-8528-e5f3eedbf19c"/>lichen, so
+            geschieht es lediglich aus Bereitwilligkeit, nicht <lb xml:id="uuid_ed5ba09e-b7d0-4c2c-9ba0-9eb7d0dc2c8d"/>aber unter dem Zwange des
+            <rs type="law" ref="#42978">§ 22</rs>. Ihre Berichtigung ist nämlich, <lb xml:id="uuid_40aae53c-755f-4567-aae5-3c755ff56776"/>wie wir Ihnen zur
+            Darnachrichtung mitteilen, alles andere nur <lb xml:id="uuid_dddfe6dd-d29b-4e31-9fe6-ddd29b0e317e"/>keine Berichtigung. Sie
+            schreiben nicht einmal, wer Ihr Mandant <lb xml:id="uuid_51f962f9-12d7-46a2-b962-f912d7c6a20a"/>ist. Sie unterlassen es,
+            eine Vollmacht beizulegen und ausserdem <lb xml:id="uuid_4e8ea3d9-a065-4356-8ea3-d9a065e35627"/>ist der ganze zweite Teil
+            eine Berichtigung, zu der nur <rs type="person" ref="#4431">Herr <lb xml:id="uuid_bea991af-a4f8-4c4c-a991-afa4f82c4cb9"/>Forest</rs> ermächtigt
+            wäre, nicht aber Herr <rs type="person" ref="#11988">Karl Kraus</rs> <lb xml:id="uuid_46b5cf4f-e02d-4170-b5cf-4fe02d917071"/>Nur auf unsere
+            ausserordentliche Wertschätzung <lb xml:id="uuid_62c71606-27a8-4868-8716-0627a8c868b6"/>für Herrn <rs type="person" ref="#11988">Karl Kraus</rs>
+            voranlasst uns, die Zuschrift unverändert <lb xml:id="uuid_4b085595-491f-416a-8855-95491f016a4a"/>zum Abdruck zu bringen. </p>
+         
+         <p xml:id="uuid_92c9a5f7-fa10-4514-ae0a-2192b5b1007e">
+            <lb xml:id="uuid_bd0df7c0-54a0-4718-8df7-c054a057184d"/>Hochachtungsvoll <lb xml:id="uuid_f09a8b8f-d38a-49f7-9a8b-8fd38af9f7d7"/>
+            <rs type="institution" ref="#29650">Der
+               Tag</rs>
+            <lb xml:id="uuid_db977f14-deb1-4a5f-977f-14deb1fa5f95"/>Redaktion <lb xml:id="uuid_b8f6e10d-b86d-4d81-b6e1-0db86d8d8118"/>
+            <rs type="person" ref="#6294">Bettauer</rs> m.p. </p>
+         
+         <p xml:id="uuid_9f2ed469-d5dc-409d-8c58-30d4f66cdf6a">
+            <lb xml:id="uuid_dc4e186d-e763-4b50-8e18-6de763eb5036"/>
+            <handNote medium="" scribeRef="">
+               <rs type="person" ref="#11988">K-Kraus</rs>: <rs type="institution" ref="#29650">„Tag“</rs>
+               <lb xml:id="uuid_5e78fa4d-6dfb-4d5a-b8fa-4d6dfb3d5acc"/>exped 22./XII. 1922. <lb xml:id="uuid_3266fba9-4cf6-4180-a6fb-a94cf621803e"/>
+               <rs type="person" ref="#38909">S.</rs>
+            </handNote>
+         </p>
+      </body>
+   </text>
+</TEI>
