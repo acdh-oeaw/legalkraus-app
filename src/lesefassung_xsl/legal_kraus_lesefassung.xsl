@@ -98,7 +98,7 @@
                     <xsl:attribute name="v-bind:class">
                         <xsl:text>{ highlighter: highlighter.institution }</xsl:text>
                     </xsl:attribute>
-                    <xsl:value-of select="."/>
+                    <xsl:apply-templates/>
                 </span>
             </xsl:when>
 
@@ -107,7 +107,7 @@
                     <xsl:attribute name="v-bind:class">
                         <xsl:text>{ highlighter: highlighter.place }</xsl:text>
                     </xsl:attribute>
-                    <xsl:value-of select="."/>
+                    <xsl:apply-templates/>
                 </span>
             </xsl:when>
 
@@ -116,7 +116,7 @@
                     <xsl:attribute name="v-bind:class">
                         <xsl:text>{ highlighter: highlighter.law }</xsl:text>
                     </xsl:attribute>
-                    <xsl:value-of select="."/>
+                    <xsl:apply-templates/>
                 </span>
             </xsl:when>
 
@@ -125,7 +125,7 @@
                     <xsl:attribute name="v-bind:class">
                         <xsl:text>{ highlighter: highlighter.work }</xsl:text>
                     </xsl:attribute>
-                    <xsl:value-of select="."/>
+                    <xsl:apply-templates/>
                 </span>
             </xsl:when>
 
@@ -141,7 +141,7 @@
             <xsl:attribute name="v-bind:class">
                 <xsl:text>{ highlighter: highlighter.quote }</xsl:text>
             </xsl:attribute>
-            <xsl:value-of select="."/>
+            <xsl:apply-templates/>
         </span>
     </xsl:template>
 
@@ -150,7 +150,7 @@
             <xsl:attribute name="v-bind:class">
                 <xsl:text>{ highlighter: highlighter.quote }</xsl:text>
             </xsl:attribute>
-            <xsl:value-of select="."/>
+            <xsl:apply-templates/>
         </span>
     </xsl:template>
 
@@ -159,55 +159,55 @@
             <xsl:attribute name="v-bind:class">
                 <xsl:text>{ highlighter: highlighter.quote }</xsl:text>
             </xsl:attribute>
-            <xsl:value-of select="."/>
+            <xsl:apply-templates/>
         </span>
     </xsl:template>
 
     <xsl:template match="tei:note[@hand = '*']">
         <span class="note-hand">
-            <xsl:value-of select="."/>
+            <xsl:apply-templates/>
         </span>
     </xsl:template>
 
     <xsl:template match="tei:hi[@rend = 'underlined']">
         <span class="hi-underlined">
-            <xsl:value-of select="."/>
+            <xsl:apply-templates/>
         </span>
     </xsl:template>
 
     <xsl:template match="tei:hi[@rend = 'underlined' and @hand = '*']">
         <span class="hi-hand-underlined">
-            <xsl:value-of select="."/>
+            <xsl:apply-templates/>
         </span>
     </xsl:template>
 
     <xsl:template match="tei:hi[@rend = 'spaced']">
         <span class="hi-spaced">
-            <xsl:value-of select="."/>
+            <xsl:apply-templates/>
         </span>
     </xsl:template>
 
     <xsl:template match="tei:add">
         <span class="add">
-            <xsl:value-of select="."/>
+            <xsl:apply-templates/>
         </span>
     </xsl:template>
 
     <xsl:template match="tei:add[@hand = '*']">
         <span class="add-hand">
-            <xsl:value-of select="."/>
+            <xsl:apply-templates/>
         </span>
     </xsl:template>
 
     <xsl:template match="tei:del">
         <span class="del">
-            <xsl:value-of select="."/>
+            <xsl:apply-templates/>
         </span>
     </xsl:template>
 
     <xsl:template match="tei:del[@hand = '*']">
         <span class="del-hand">
-            <xsl:value-of select="."/>
+            <xsl:apply-templates/>
         </span>
     </xsl:template>
 
@@ -219,19 +219,19 @@
 
     <xsl:template match="tei:note[@type = 'marginal' and @hand = '*' and @rend = '*']">
         <span class="marginalie-text">
-            <xsl:value-of select="."/>
+            <xsl:apply-templates/>
         </span>
     </xsl:template>
 
     <xsl:template match="tei:metamark[@function = 'marginal' and @hand = '*' and @rend = '*']">
         <span class="metamark">
-            <xsl:value-of select="."/>
+            <xsl:apply-templates/>
         </span>
     </xsl:template>
 
     <xsl:template match="tei:note[@type = 'paratext' and @resp = 'lawfirm']">
         <span class="paratext">
-            <xsl:value-of select="."/>
+            <xsl:apply-templates/>
         </span>
     </xsl:template>
 
