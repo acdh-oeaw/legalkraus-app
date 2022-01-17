@@ -1,8 +1,9 @@
-# install requirements
+#Projekt
+This is the Legalkraus project, implemented as VueJS Application.
 
-cat requirements.txt | xargs npm install
+# install dependencies
+npm install
 
-# start app without docker
-
+# start app
 npm run serve
 
