@@ -160,9 +160,15 @@ module.exports.getAllObjects = async (callback) => {
 }
 
 
-module.exports.getTransformedHTML = async(resourceId) => {
-    const resp = await fetch(`tmp/${resourceId}.html`)
-    const data = await resp.text();
-    return data;
+module.exports.getTransformedHTML = async(objectId, callback) => {
+    try {
+        const url = `https://service4tei.acdh-dev.oeaw.ac.at/tei2html.xql?tei=https://arche-dev.acdh-dev.oeaw.ac.at/api/${objectId}&xsl=https://raw.githubusercontent.com/acdh-oeaw/legalkraus-app/master/src/lesefassung_xsl/legal_kraus_lesefassung.xsl`;
+        const resp = await fetch(url);
+        const data = await resp.text();
+        return callback(data);
+    }catch (error){
+        console.log(error);
+    }
+
 }
 

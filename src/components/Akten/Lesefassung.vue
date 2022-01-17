@@ -437,16 +437,15 @@ export default {
   mounted() {
     getObjectWithId(this.objectId, (rs) => {
       this.filename = ARCHErdfQuery(null, 'https://vocabs.acdh.oeaw.ac.at/schema#hasFilename', null, rs)[0].object;
-      console.log(this.filename);
       let url = ARCHErdfQuery(null, 'https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier', null, rs);
       let downloadLink = url[0].object;
-      console.log(downloadLink)
       this.downloadXMLFromUrl(downloadLink);
+
+      getTransformedHTML(this.objectId, (data) => {
+        this.pages = data;
+      });
     });
-    getTransformedHTML(this.objectId).then((data) => {
-      // const re = /\s*(?:<br data-brtype="pb">|$)\s*/;
-      this.pages = data;
-    });
+
   }
 }
 </script>
