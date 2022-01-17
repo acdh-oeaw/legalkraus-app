@@ -76,8 +76,10 @@
         <xsl:value-of select="."/>
     </xsl:template>
 
-    <xsl:template match="tei:p">
-        <xsl:apply-templates/>
+    <xsl:template match="tei:p|p">
+        <p>
+            <xsl:apply-templates/>
+        </p>
     </xsl:template>
 
     <xsl:template match="tei:rs">
