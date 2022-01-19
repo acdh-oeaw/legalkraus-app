@@ -338,7 +338,10 @@ export default {
         },
         methods: {
           navigateTo(id) {
-            console.log(id)
+            console.log(id);
+            //this.$router.push({name: "pReg", hash: id});
+            let routeData = this.$router.resolve({name: "pReg", hash: id});
+            window.open(routeData.href, '_blank');
           },
         }
       }

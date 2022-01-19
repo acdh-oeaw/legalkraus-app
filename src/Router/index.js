@@ -14,6 +14,7 @@ import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 // Import Bootstrap an BootstrapVue CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import PersonenRegister from "../components/Register/PersonenRegisterDummy";
 
 
 Vue.use(Router)
@@ -56,6 +57,8 @@ export default new Router({
 
         {path: '/handschriftliches', component: OverviewObjects}, //todo: create page that loads objects with tag handschriftlich
         {path: '/alle-akten', component: OverviewAllCollections},
-        {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung}
+        {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung},
+
+        {path: '/register/personen', name: 'pReg', component: PersonenRegister}
     ]
 })
