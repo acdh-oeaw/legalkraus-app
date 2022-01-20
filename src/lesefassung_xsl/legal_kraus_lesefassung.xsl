@@ -5,6 +5,7 @@
     exclude-result-prefixes="xs tei v-on local" version="2.0">
     <xsl:output encoding="UTF-8" media-type="text/html" method="html" version="5.0" indent="yes"/>
     <!-- fragmenting function based on https://wiki.tei-c.org/index.php/Milestone-chunk.xquery -->
+    
     <xsl:function name="local:split">
         <xsl:param name="ms1" as="element()"/>
         <xsl:param name="ms2" as="element()"/>
@@ -42,12 +43,19 @@
         </xsl:choose>
     </xsl:function>
     <xsl:template match="/">
+        <xsl:variable name="addedlinenumbers">
+           
+                
+                    <xsl:apply-templates select="." mode="addl"/>
+                
+            
+        </xsl:variable>
         <xsl:variable name="result">
-            <xsl:for-each select="/tei:TEI//tei:pb">
+            <xsl:for-each select="$addedlinenumbers/tei:TEI//tei:pb">
                 <xsl:variable name="nextPb" select="current()/following::tei:pb[1]"/>
                 <div>
                     <xsl:attribute name="v-bind:class">
-                        <xsl:value-of select="'{ ''d-block'': selectedPage ==='||position()||', ''d-none'':selectedPage!=='||position()||'}'"/>
+                        <xsl:value-of select="'{ ''visible font-inherit'': selectedPage ==='||position()||', ''invisible font-zero'':selectedPage!=='||position()||'}'"/>
                     </xsl:attribute>
                     <xsl:copy-of select="current()"/>
                     <xsl:copy-of select="$nextPb"/>
@@ -70,8 +78,16 @@
             <xsl:apply-templates select="$result" mode="clean"/>
         </div>
     </xsl:template>
-
-
+<xsl:template match="tei:lb" mode="addl">
+    <xsl:copy>
+        <xsl:attribute name="n" select="count(preceding::tei:lb) + 1"/>
+    </xsl:copy>
+</xsl:template>
+    <xsl:template match="@*|node()" mode="addl">
+    <xsl:copy>
+        <xsl:apply-templates select="@*|node()" mode="addl"/>
+    </xsl:copy>
+</xsl:template>
     <xsl:template match="tei:title">
         <xsl:value-of select="."/>
     </xsl:template>
@@ -217,8 +233,8 @@
         </span>
     </xsl:template>
 
-    <xsl:template match="tei:note[@type = 'marginal' and @hand = '*' and @rend = '*']">
-        <span class="marginalie-text">
+    <xsl:template match="tei:note[@type = 'marginal'][@hand][@rend]">
+        <span class="marginalie-text {@rend}">
             <xsl:apply-templates/>
         </span>
     </xsl:template>
@@ -236,8 +252,7 @@
     </xsl:template>
 
     <xsl:template match="tei:lb">
-        <xsl:variable name="curbr" select="."/>
-        <br ref="linebreak{generate-id()}"/>
+        <br/><span class="lb{if (@n mod 5 = 0) then ' visibleline' else ()}"/>
     </xsl:template>
     <xsl:template match="tei:pb">
         <br/>

@@ -154,13 +154,8 @@
           </div>
 
 
-          <div class="body overflow-auto d-flex flex-row">
-            <div v-if="this.$store.getters.linebreaks" class="w-5 text-right position-relative">
-              <!--<div v-bind:key="lb.refkey" :id="lb.key" v-bind:style="{'position':'absolute','top':`${lb.top}px`}" v-for="lb in this.$store.getters.linebreaks">
-              {{lb.lnr}}
-              </div>-->
-            </div>
-            <component class="w-95" v-if="pages" :is="dynComponent"/>
+          <div class="body overflow-auto d-flex flex-row position-relative">
+            <component class="w-100 pl-10" v-if="pages" :is="dynComponent"/>
           </div>
         </div>
       </div>
@@ -247,7 +242,7 @@
 
           </div>
           <div class="body">
-            <component class="w-95" v-if="pages" :is="dynComponent"/>
+            <component class="w-100" v-if="pages" :is="dynComponent"/>
           </div>
         </div>
       </div>
@@ -272,17 +267,17 @@
 
 <script>
 import {getObjectWithId, getTransformedHTML} from "@/services/ARCHEService";
-import {ARCHErdfQuery} from "arche-api/src";
+//import {ARCHErdfQuery} from "arche-api/src";
 import EntitySpan from "./EntitySpan";
 import {jsPDF} from "jspdf";
 import {mapGetters} from 'vuex';
 
 
 export default {
-  components: {
-    EntitySpan: EntitySpan
+  name: "Lesefassung", 
+ components: {
+    EntitySpan
   },
-  name: "Lesefassung",
   data: function () {
     return {
       objectId: -1,
@@ -295,7 +290,7 @@ export default {
       dom: Object,
       teiHeader: Object,
       filename: String,
-      facsURLs: [],
+      facsURLs: [1,2,3,4,5,6],
       i: 0,
       transformedHTML: null,
       pages: null,
@@ -308,7 +303,6 @@ export default {
       highlighter: 'highlighter'
     }),
     dynComponent() {
-
       const template = this.pages;
       return {
         data() {
@@ -330,6 +324,7 @@ export default {
           })
           this.$store.dispatch('setLinebreaks', lbsrefs)
         },
+
         computed: {
           ...mapGetters({
             selectedPage: 'selectedPage',
@@ -340,7 +335,7 @@ export default {
           navigateTo(id) {
             console.log(id)
           },
-        }
+        },
       }
     }
   },
@@ -436,12 +431,13 @@ export default {
   },
   mounted() {
     getObjectWithId(this.objectId, (rs) => {
-      this.filename = ARCHErdfQuery(null, 'https://vocabs.acdh.oeaw.ac.at/schema#hasFilename', null, rs)[0].object;
+      console.log(rs)
+     /* this.filename = ARCHErdfQuery(null, 'https://vocabs.acdh.oeaw.ac.at/schema#hasFilename', null, rs)[0].object;
       let url = ARCHErdfQuery(null, 'https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier', null, rs);
       let downloadLink = url[0].object;
-      this.downloadXMLFromUrl(downloadLink);
+      this.downloadXMLFromUrl(downloadLink);*/
 
-      getTransformedHTML(this.objectId, (data) => {
+      getTransformedHTML(this.objectId, 'dev', (data) => {
         this.pages = data;
       });
     });
@@ -507,6 +503,10 @@ export default {
   grid-column-end: 5;
 }
 
+.vard-right-medium {
+  overflow-x:scroll;
+}
+
 .view-full-width-right {
   grid-column-start: 2;
   grid-column-end: 5;
@@ -537,6 +537,9 @@ export default {
   text-align: left;
   margin: 0;
   padding: 1rem;
+  counter-reset: lineCounter;
+  position:relative;
+  overflow-x:scroll;
 }
 
 /*.bi-arrow-right {
@@ -555,13 +558,46 @@ export default {
   max-height: 100%;
 }
 
-.lb::before {
-  content: "\A";
-  display: block;
+.font-zero {
+  font-size:0;
 }
 
-.lb {
-  padding-right: 1rem;
+.font-zero * {
+  padding:0;
+  margin:0
+}
+
+.font-inherit {
+  font-size:inherit;
+}
+
+.visibleline {
+  counter-increment:lineCounter 5;
+}
+
+.visibleline::before {
+  content: counter(lineCounter);
+  position: absolute;
+  left: 5.7rem;
+  font-size:75%;
+  padding-top: 3px;
+  transform: translateX(-100%)
+}
+
+.marginalie-text.marginLeft {
+  position:absolute;
+  padding-top: 3px;
+  padding-right:5px;
+  left:0.5rem;
+  font-size:75%;
+  max-width:3rem;
+  border-right:1.5px solid #333;
+}
+
+
+
+p > br:first-child {
+  display:none
 }
 
 .w-5 {
@@ -570,6 +606,10 @@ export default {
 
 .w-95 {
   width: 95%;
+}
+
+.pl-10 {
+  margin-left:6rem;
 }
 
 .highlighter.person {
