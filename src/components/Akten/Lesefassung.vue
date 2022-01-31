@@ -61,7 +61,6 @@
           <div class="header">
           </div>
           <div class="body">
-            Coming soon.
           </div>
         </div>
       </div>
@@ -160,12 +159,13 @@
               {{lb.lnr}}
               </div>-->
             </div>
-            <component class="w-95" v-if="pages" :is="dynComponent"/>
+            <component class="w-95" v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"/>
           </div>
         </div>
       </div>
 
-      <div id="card-right-large" class="view-full-width-right" v-if="!this.showFacs && this.showLF">
+      <div id="card-right-large" class="view-full-width-right" v-if="!this.showFacs && this.showLF"
+           v-on="childToParent">
         <div class="formats-full-width">
           <button class="format btn btn-light">Lesefassung</button>
           <a class="format btn btn-light" role="button" :href="xmlFile"
@@ -247,7 +247,7 @@
 
           </div>
           <div class="body">
-            <component class="w-95" v-if="pages" :is="dynComponent"/>
+            <component class="w-95" v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"/>
           </div>
         </div>
       </div>
@@ -271,7 +271,8 @@
 </template>
 
 <script>
-import {getObjectWithId, getTransformedHTML} from "@/services/ARCHEService";
+import {getObjectWithId, getTransformedHTML} from "../../services/ARCHEService";
+import {getObjectWithId as getPMBObjectWithId} from "../../services/PMBService";
 import {ARCHErdfQuery} from "arche-api/src";
 import EntitySpan from "./EntitySpan";
 import {jsPDF} from "jspdf";
@@ -299,7 +300,7 @@ export default {
       i: 0,
       transformedHTML: null,
       pages: null,
-      showAllAnnotations: false
+      showAllAnnotations: false,
     }
   },
   computed: {
@@ -313,7 +314,7 @@ export default {
       return {
         data() {
           return {
-            content: '',
+            content: ''
           };
         },
         template,
@@ -337,15 +338,50 @@ export default {
           })
         },
         methods: {
-          navigateTo(id) {
-            let routeData = this.$router.resolve({name: "pReg", hash: id});
-            window.open(routeData.href, '_blank');
+          navigateTo(pmbId, event) {
+            console.log(event)
+            this.$emit('childToParent', {pmbId: pmbId, htmlId: event.target.id});
           },
         }
       }
     }
   },
   methods: {
+    childToParent(event) {
+      this.toggleFacs(); //hide facsimile, switch to text-only view
+
+      getPMBObjectWithId(event.pmbId, (rs) => {
+        let elem = document.getElementById(event.htmlId);
+        let parent = elem.parentNode;
+        let commentDiv = this.createCommentDiv(event, rs, parent, elem);
+        parent.appendChild(commentDiv);
+      });
+    },
+    createCommentDiv(event, rs, parent, elem){
+      var rect = parent.getBoundingClientRect();
+      var div = document.createElement('div')
+      div.style.border = "solid black 1px";
+      div.style.color = "black";
+      div.style.fontSize = "0.8rem";
+      div.style.padding = "0.1rem";
+      div.innerHTML = rs.name + ", " + rs.first_name + " (" + rs.start_date + " bis " + rs.end_date + ") " + ", " + rs.profession[0].name + "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-box-arrow-in-up-right\" viewBox=\"0 0 16 16\">\n" +
+          "  <path fill-rule=\"evenodd\" d=\"M6.364 13.5a.5.5 0 0 0 .5.5H13.5a1.5 1.5 0 0 0 1.5-1.5v-10A1.5 1.5 0 0 0 13.5 1h-10A1.5 1.5 0 0 0 2 2.5v6.636a.5.5 0 1 0 1 0V2.5a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5H6.864a.5.5 0 0 0-.5.5z\"/>\n" +
+          "  <path fill-rule=\"evenodd\" d=\"M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z\" style=\"padding-bottom: 0.1rem;margin-left: 0.3rem;\"/>\n" +
+          "</svg>";
+
+      div.style.position = "absolute";
+      div.style.cursor = "pointer";
+      div.style.top = elem.offsetTop + "px"; //todo: check if div overlaps with another comment
+      div.style.left = rect.right * 0.5 + "px"; //todo: substitute magic number?
+
+      let self = this; //"this" cannot be used in JS functions
+      div.onclick = function () {
+        let routeData = self.$router.resolve({name: "pReg", hash: event.pmbId});
+        window.open(routeData.href, '_blank');
+      };
+
+      return div;
+    },
     downloadXMLFromUrl(url) {
       return fetch(url)
           .then(response => response.text())
@@ -573,6 +609,10 @@ export default {
   width: 95%;
 }
 
+.person {
+  cursor: pointer;
+}
+
 .highlighter.person {
   background: var(--toggle-person);
 }
@@ -598,7 +638,7 @@ export default {
 }
 
 .toggles {
-  margin:auto;
+  margin: auto;
   display: grid;
   width: 100%;
   grid-template-columns: auto auto auto;
@@ -728,37 +768,38 @@ export default {
   border-color: var(--toggle-work) !important;
 }
 
-.note-hand{
+.note-hand {
   font-weight: 600;
   font-style: italic;
 }
 
-.hi-underlined{
+.hi-underlined {
   text-decoration: underline;
-}
-.hi-hand-underlined{
-  text-decoration: underline;
-  text-decoration-thickness: 0.2rem ;
 }
 
-.hi-spaced{
+.hi-hand-underlined {
+  text-decoration: underline;
+  text-decoration-thickness: 0.2rem;
+}
+
+.hi-spaced {
   letter-spacing: 0.2rem;
 }
 
-.add-hand{
+.add-hand {
   font-weight: 600;
 }
 
-.del{
+.del {
   text-decoration: line-through;
 }
 
-.del-hand{
+.del-hand {
   text-decoration: line-through;
-  text-decoration-thickness: 0.2rem ;
+  text-decoration-thickness: 0.2rem;
 }
 
-.paratext{
+.paratext {
   color: #33ccff;
 }
 

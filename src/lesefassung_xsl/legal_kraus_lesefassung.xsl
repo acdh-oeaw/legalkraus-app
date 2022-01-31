@@ -85,7 +85,7 @@
     <xsl:template match="tei:rs">
         <xsl:choose>
             <xsl:when test="@type = 'person'">
-                <entity-span class="person" v-on:click="navigateTo('{@ref}')">
+                <entity-span id="{generate-id()}" class="person" v-on:click="navigateTo('{@ref}', $event)">
                     <xsl:attribute name="v-bind:class">
                         <xsl:text>{ highlighter: highlighter.person }</xsl:text>
                     </xsl:attribute>
