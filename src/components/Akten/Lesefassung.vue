@@ -177,7 +177,7 @@
             Download PDF
           </a>
         </div>
-        <div class="card card-full">
+        <div class="card card-full bg-light">
           <div class="header">
             <div class="all-annotations">
               <b-form-checkbox
@@ -338,9 +338,10 @@ export default {
           })
         },
         methods: {
-          navigateTo(pmbId, event) {
-            console.log(event)
-            this.$emit('childToParent', {pmbId: pmbId, htmlId: event.target.id});
+          navigateTo(pmbId, type, event) {
+            console.log(event);
+            console.log(type);
+            this.$emit('childToParent', {pmbId: pmbId, type: type, htmlId: event.target.id});
           },
         }
       }
@@ -350,24 +351,49 @@ export default {
     childToParent(event) {
       this.toggleFacs(); //hide facsimile, switch to text-only view
 
+      let elem = document.getElementById(event.htmlId);
+      let parent = elem.parentNode;
+
+      //work does not refer to a pmb entry
+      if(event.type === 'work'){
+        let commentDiv = this.createCommentDiv(event, null, elem, event.type);
+        parent.appendChild(commentDiv);
+        return;
+      }
+
       getPMBObjectWithId(event.pmbId, (rs) => {
-        let elem = document.getElementById(event.htmlId);
-        let parent = elem.parentNode;
-        let commentDiv = this.createCommentDiv(event, rs, parent, elem);
+        console.log(rs);
+        let commentDiv = this.createCommentDiv(event, rs, elem, event.type);
         parent.appendChild(commentDiv);
       });
     },
-    createCommentDiv(event, rs, parent, elem){
-      var rect = parent.getBoundingClientRect();
+    createCommentDiv(event, rs, elem, type){
+      var dblock = document.getElementsByClassName("d-block").item(0);
+      var rect = dblock.getBoundingClientRect();
+      console.log(dblock);
       var div = document.createElement('div')
       div.style.border = "solid black 1px";
       div.style.color = "black";
       div.style.fontSize = "0.8rem";
       div.style.padding = "0.1rem";
-      div.innerHTML = rs.name + ", " + rs.first_name + " (" + rs.start_date + " bis " + rs.end_date + ") " + ", " + rs.profession[0].name + "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-box-arrow-in-up-right\" viewBox=\"0 0 16 16\">\n" +
-          "  <path fill-rule=\"evenodd\" d=\"M6.364 13.5a.5.5 0 0 0 .5.5H13.5a1.5 1.5 0 0 0 1.5-1.5v-10A1.5 1.5 0 0 0 13.5 1h-10A1.5 1.5 0 0 0 2 2.5v6.636a.5.5 0 1 0 1 0V2.5a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5H6.864a.5.5 0 0 0-.5.5z\"/>\n" +
-          "  <path fill-rule=\"evenodd\" d=\"M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z\" style=\"padding-bottom: 0.1rem;margin-left: 0.3rem;\"/>\n" +
-          "</svg>";
+      if(type === 'person'){
+        div.innerHTML = rs.name + ", " + rs.first_name + " (" + rs.start_date + " bis " + rs.end_date + ") " + ", " + rs.profession[0].name + "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-box-arrow-in-up-right\" viewBox=\"0 0 16 16\">\n" +
+            "  <path fill-rule=\"evenodd\" d=\"M6.364 13.5a.5.5 0 0 0 .5.5H13.5a1.5 1.5 0 0 0 1.5-1.5v-10A1.5 1.5 0 0 0 13.5 1h-10A1.5 1.5 0 0 0 2 2.5v6.636a.5.5 0 1 0 1 0V2.5a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5H6.864a.5.5 0 0 0-.5.5z\"/>\n" +
+            "  <path fill-rule=\"evenodd\" d=\"M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z\" style=\"padding-bottom: 0.1rem;margin-left: 0.3rem;\"/>\n" +
+            "</svg>";
+      } else if (type === 'place'){
+        div.innerHTML = rs.name + ", " + rs.kind.name + "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-box-arrow-in-up-right\" viewBox=\"0 0 16 16\">\n" +
+            "  <path fill-rule=\"evenodd\" d=\"M6.364 13.5a.5.5 0 0 0 .5.5H13.5a1.5 1.5 0 0 0 1.5-1.5v-10A1.5 1.5 0 0 0 13.5 1h-10A1.5 1.5 0 0 0 2 2.5v6.636a.5.5 0 1 0 1 0V2.5a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5H6.864a.5.5 0 0 0-.5.5z\"/>\n" +
+            "  <path fill-rule=\"evenodd\" d=\"M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z\" style=\"padding-bottom: 0.1rem;margin-left: 0.3rem;\"/>\n" +
+            "</svg>";
+      } else if (type === 'institution'){
+        div.innerHTML = rs.name + ', ' + rs.kind.name + " (" + rs.start_date + " bis " + rs.end_date + ") " + "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-box-arrow-in-up-right\" viewBox=\"0 0 16 16\">\n" +
+            "  <path fill-rule=\"evenodd\" d=\"M6.364 13.5a.5.5 0 0 0 .5.5H13.5a1.5 1.5 0 0 0 1.5-1.5v-10A1.5 1.5 0 0 0 13.5 1h-10A1.5 1.5 0 0 0 2 2.5v6.636a.5.5 0 1 0 1 0V2.5a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5H6.864a.5.5 0 0 0-.5.5z\"/>\n" +
+            "  <path fill-rule=\"evenodd\" d=\"M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z\" style=\"padding-bottom: 0.1rem;margin-left: 0.3rem;\"/>\n" +
+            "</svg>";
+      } else if (type === 'work'){
+        div.innerHTML = event.pmbId;
+      }
 
       div.style.position = "absolute";
       div.style.cursor = "pointer";
@@ -609,7 +635,7 @@ export default {
   width: 95%;
 }
 
-.person {
+.person, .work, .institution, .place {
   cursor: pointer;
 }
 
