@@ -1,9 +1,21 @@
 <template>
   <div class="main">
     <div class="meta-data">
-      <p>Here comes the metadata of object with id {{ this.objectId }}</p>
+      <p class="meta1">Metadaten Fall:</p>
+      <p class="meta2">
+        <router-link class="back" to="/">Titel: {{ this.colTitle }}</router-link>
+      </p>
+      <div class="vl meta3"></div>
+      <p class="meta4">Datum: (coming soon)</p>
+      <p class="meta5">Anzahl Dokumente: {{ this.colSize }}</p>
+      <p class="meta6">Beteiligte: (coming soon)</p>
+      <div class="vl meta7"></div>
+      <div class="meta8">
+        <input class="vt-suche" type="text" placeholder="Volltextsuche:"/>
+        <button class="format btn btn-light">Suche</button>
+      </div>
     </div>
-    <div class="w-100 mb-5">
+<!--    <div class="w-100 mb-5">
       <svg v-on:click="prev()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
            class="bi bi-arrow-left text-bottom" viewBox="0 0 16 16">
         <path fill-rule="evenodd"
@@ -15,7 +27,7 @@
         <path fill-rule="evenodd"
               d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
       </svg>
-    </div>
+    </div>-->
     <div class="grid-container">
       <div id="card-left-small" class="card-left-small" v-if="this.showLF && !this.showFacs"
            v-on:click="this.toggleShowBoth">
@@ -271,7 +283,7 @@
 </template>
 
 <script>
-import {getObjectWithId, getTransformedHTML} from "../../services/ARCHEService";
+import {getObjectWithId, getTransformedHTML, getCollectionOfObject} from "../../services/ARCHEService";
 import {getObjectWithId as getPMBObjectWithId} from "../../services/PMBService";
 import {ARCHErdfQuery} from "arche-api/src";
 import EntitySpan from "./EntitySpan";
@@ -287,6 +299,9 @@ export default {
   data: function () {
     return {
       objectId: -1,
+      colTitle: String,
+      colSize: Number,
+      colUrl: String,
       showLF: true,
       showFacs: true,
       downloadLink: String,
@@ -339,8 +354,6 @@ export default {
         },
         methods: {
           navigateTo(pmbId, type, event) {
-            console.log(event);
-            console.log(type);
             this.$emit('childToParent', {pmbId: pmbId, type: type, htmlId: event.target.id});
           },
         }
@@ -355,19 +368,19 @@ export default {
       let parent = elem.parentNode;
 
       //work does not refer to a pmb entry
-      if(event.type === 'work'){
+      if (event.type === 'work') {
         let commentDiv = this.createCommentDiv(event, null, elem, event.type);
         parent.appendChild(commentDiv);
         return;
       }
 
-      getPMBObjectWithId(event.pmbId, (rs) => {
+      getPMBObjectWithId(event.pmbId, event.type, (rs) => {
         console.log(rs);
         let commentDiv = this.createCommentDiv(event, rs, elem, event.type);
         parent.appendChild(commentDiv);
       });
     },
-    createCommentDiv(event, rs, elem, type){
+    createCommentDiv(event, rs, elem, type) {
       var dblock = document.getElementsByClassName("d-block").item(0);
       var rect = dblock.getBoundingClientRect();
       console.log(dblock);
@@ -376,22 +389,22 @@ export default {
       div.style.color = "black";
       div.style.fontSize = "0.8rem";
       div.style.padding = "0.1rem";
-      if(type === 'person'){
+      if (type === 'person') {
         div.innerHTML = rs.name + ", " + rs.first_name + " (" + rs.start_date + " bis " + rs.end_date + ") " + ", " + rs.profession[0].name + "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-box-arrow-in-up-right\" viewBox=\"0 0 16 16\">\n" +
             "  <path fill-rule=\"evenodd\" d=\"M6.364 13.5a.5.5 0 0 0 .5.5H13.5a1.5 1.5 0 0 0 1.5-1.5v-10A1.5 1.5 0 0 0 13.5 1h-10A1.5 1.5 0 0 0 2 2.5v6.636a.5.5 0 1 0 1 0V2.5a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5H6.864a.5.5 0 0 0-.5.5z\"/>\n" +
             "  <path fill-rule=\"evenodd\" d=\"M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z\" style=\"padding-bottom: 0.1rem;margin-left: 0.3rem;\"/>\n" +
             "</svg>";
-      } else if (type === 'place'){
+      } else if (type === 'place') {
         div.innerHTML = rs.name + ", " + rs.kind.name + "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-box-arrow-in-up-right\" viewBox=\"0 0 16 16\">\n" +
             "  <path fill-rule=\"evenodd\" d=\"M6.364 13.5a.5.5 0 0 0 .5.5H13.5a1.5 1.5 0 0 0 1.5-1.5v-10A1.5 1.5 0 0 0 13.5 1h-10A1.5 1.5 0 0 0 2 2.5v6.636a.5.5 0 1 0 1 0V2.5a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5H6.864a.5.5 0 0 0-.5.5z\"/>\n" +
             "  <path fill-rule=\"evenodd\" d=\"M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z\" style=\"padding-bottom: 0.1rem;margin-left: 0.3rem;\"/>\n" +
             "</svg>";
-      } else if (type === 'institution'){
+      } else if (type === 'institution') {
         div.innerHTML = rs.name + ', ' + rs.kind.name + " (" + rs.start_date + " bis " + rs.end_date + ") " + "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-box-arrow-in-up-right\" viewBox=\"0 0 16 16\">\n" +
             "  <path fill-rule=\"evenodd\" d=\"M6.364 13.5a.5.5 0 0 0 .5.5H13.5a1.5 1.5 0 0 0 1.5-1.5v-10A1.5 1.5 0 0 0 13.5 1h-10A1.5 1.5 0 0 0 2 2.5v6.636a.5.5 0 1 0 1 0V2.5a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5H6.864a.5.5 0 0 0-.5.5z\"/>\n" +
             "  <path fill-rule=\"evenodd\" d=\"M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z\" style=\"padding-bottom: 0.1rem;margin-left: 0.3rem;\"/>\n" +
             "</svg>";
-      } else if (type === 'work'){
+      } else if (type === 'work') {
         div.innerHTML = event.pmbId;
       }
 
@@ -498,6 +511,11 @@ export default {
     this.objectId = this.$route.params.id;
   },
   mounted() {
+    getCollectionOfObject(this.objectId, (rs) => {
+      this.colTitle = rs[0].title;
+      this.colSize = rs[0].size;
+      this.colUrl = rs[0].url;
+    });
     getObjectWithId(this.objectId, (rs) => {
       this.filename = ARCHErdfQuery(null, 'https://vocabs.acdh.oeaw.ac.at/schema#hasFilename', null, rs)[0].object;
       let url = ARCHErdfQuery(null, 'https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier', null, rs);
@@ -520,6 +538,92 @@ export default {
   grid-template-columns: 10rem auto auto 10rem;
   grid-template-rows: auto;
 }
+
+.meta-data {
+  display: grid;
+  grid-template-columns: auto 6px auto 6px auto;
+  grid-template-rows: auto auto auto;
+  background-color: var(--secondary-gray-dark);
+  padding: 4rem;
+  text-align: left;
+  font-size: 0.9rem;
+  margin-bottom: 4rem;
+}
+
+.vl {
+  border-left: 3px solid var(--primary-red);
+  height: 100%;
+}
+
+.meta1 {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row: 1/2;
+}
+
+.meta2 {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row: 2/3;
+  text-decoration: underline var(--primary-red) 5px;
+}
+
+.back{
+  padding: 0;
+  color: var(--text-black) !important;
+}
+.back:hover {
+  text-decoration: none;
+}
+
+.meta3 {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row: 1/4;
+}
+
+.meta4 {
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row: 1/2;
+  margin-left: 3rem;
+}
+
+.meta5 {
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row: 2/3;
+  margin-left: 3rem;
+}
+
+.meta6 {
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row: 3/4;
+  margin-left: 3rem;
+}
+
+.meta7 {
+  grid-column-start: 4;
+  grid-column-end: 5;
+  grid-row: 1/4;
+}
+
+.meta8 {
+  grid-column-start: 5;
+  grid-column-end: 6;
+  grid-row: 2/3;
+  margin-left: 3rem;
+  display: inline-flex;
+}
+
+.vt-suche {
+  padding: 0.375rem 0.375rem;
+  margin-right: 2rem;
+  border-radius: 0.25rem;
+  border: transparent;
+}
+
 
 .header {
   display: flex;
