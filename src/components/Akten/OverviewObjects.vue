@@ -70,7 +70,7 @@ export default {
     },
     navToLesefassung: function (url) {
       let id = this.getIdFromUrl(url)
-      this.$router.push({name: "lesefassung", params: {id: id}});
+      this.$router.push({name: "lesefassung", params: {id: id, cat: this.category, subcat: this.subCategory, case: this.caseTitle}});
     },
     getIdFromUrl(url) {
       let idx = url.lastIndexOf('/');

@@ -57,6 +57,10 @@ export default new Router({
 
         {path: '/handschriftliches', component: OverviewObjects}, //todo: create page that loads objects with tag handschriftlich
         {path: '/alle-akten', component: OverviewAllCollections},
+        {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung, props: {
+                header: true,
+                content: true
+            }},
         {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung},
 
         {path: '/register/personen', name: 'pReg', component: PersonenRegister}

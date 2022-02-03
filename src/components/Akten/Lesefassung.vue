@@ -1,5 +1,21 @@
 <template>
   <div class="main">
+    <p v-if="propsSet" class="navigation">Akten-Edition
+      <span class="arrow">></span>
+      <router-link router-link class="nav-link" :to="'/' + this.$route.params.cat.toLowerCase()">
+        {{ this.$route.params.cat }}
+      </router-link>
+      <span class="arrow">></span>
+      <router-link router-link class="nav-link" :to="'/' + this.$route.params.cat.toLowerCase() + '/'+ this.$route.params.subcat.toLowerCase() +'/collections'">
+        {{ this.$route.params.subcat }}
+      </router-link>
+      <span class="arrow">></span>
+      {{ this.colTitle }}
+    </p>
+    <p v-if="!propsSet" class="navigation">Akten-Edition
+      <span class="arrow">></span>
+      {{ this.colTitle }}
+    </p>
     <div class="meta-data">
       <p class="meta1">Metadaten Fall:</p>
       <p class="meta2">
@@ -316,6 +332,7 @@ export default {
       transformedHTML: null,
       pages: null,
       showAllAnnotations: false,
+      propsSet: false
     }
   },
   computed: {
@@ -509,6 +526,11 @@ export default {
   },
   created() {
     this.objectId = this.$route.params.id;
+    console.log(this.$route.params);
+    if(this.$route.params.cat){
+      this.propsSet = true;
+      console.log(this.propsSet)
+    }
   },
   mounted() {
     getCollectionOfObject(this.objectId, (rs) => {
@@ -533,6 +555,22 @@ export default {
 
 <style>
 
+.navigation {
+  display: flex;
+  margin-left: 1rem;
+  text-align: left;
+  padding-left: 2rem;
+}
+
+.arrow {
+  color: #C85545;
+}
+
+.nav-link {
+  color: black;
+  padding: 0 !important;
+  margin: 0;
+}
 .grid-container {
   display: grid;
   grid-template-columns: 10rem auto auto 10rem;
