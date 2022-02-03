@@ -172,3 +172,26 @@ module.exports.getTransformedHTML = async(objectId, callback) => {
 
 }
 
+module.exports.performFullTextSearch = async (searchTerm, callback) => {
+    const url = `${ARCHE_BASE_URL}/search?`;
+
+
+        fetch(url + new URLSearchParams({
+            "property[0]": "BINARY",
+            "operator[0]":"@@",
+            "value[0]":searchTerm,
+            "property[1]": "https://vocabs.acdh.oeaw.ac.at/schema#isPartOf",
+            "operator[1]":"=",
+            "value[1]":"https://arche-dev.acdh-dev.oeaw.ac.at/api/37571",
+            "ftsQuery":searchTerm
+
+    }), {
+           headers: { 'Accept': 'application/json' }
+        }).then(response => response.json()).then(data => {
+            return callback(data);
+        })
+
+
+}
+
+

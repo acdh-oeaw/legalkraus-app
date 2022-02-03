@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <Header></Header>
+    <Search class="py-2"></Search>
     <router-view/>
     <Footer></Footer>
   </div>
@@ -10,13 +11,15 @@
 <script>
 
 import Header from "@/components/Header";
+import Search from "@/components/Search";
 import Footer from "@/components/Footer";
 
 export default {
   name: "App",
   components: {
     Header,
-    Footer
+    Footer,
+    Search
   }
 };
 
