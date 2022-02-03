@@ -2,7 +2,8 @@
   <main>
     <div class="title">
       <router-link class="logo-link" to="/">
-        RECHTSAKTEN <br> Karl Kraus
+        <p class="logo">RECHTSAKTEN</p>
+        <p class="logo">Karl Kraus</p>
       </router-link>
     </div>
 
@@ -136,6 +137,11 @@ main {
   text-decoration: none;
 }
 
+.logo{
+  margin-top: 0;
+  margin-bottom: 0;
+  text-align: left;
+}
 .nav-el {
   font-size: 1.5rem;
   margin-top: auto;
