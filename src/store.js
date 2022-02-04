@@ -15,6 +15,8 @@ export default new Vuex.Store({
             work: false,
             quote: false,
         },
+        noOfCollections: null,
+        collectionPageSize: 10,
         
     },
 
@@ -27,7 +29,13 @@ export default new Vuex.Store({
         },
         highlighter: state => {
             return state.highlighter
-        }
+        },
+        noOfCollections: state => {
+            return state.noOfCollections
+        },
+        collectionPageSize: state => {
+            return state.collectionPageSize
+        },
     },
 
     mutations: {
@@ -54,7 +62,13 @@ export default new Vuex.Store({
             state.highlighter.law = b.highlightbool;
             state.highlighter.work = b.highlightbool;
             state.highlighter.quote = b.highlightbool;
-        }
+        },
+        MUTATE_NOOFCOLLECTIONS: (state, noofcollections) => {
+            Vue.set(state, 'noOfCollections', noofcollections);
+        },
+        MUTATE_COLLECTION_PAGE_SIZE: (state, collectionpagesize) => {
+            Vue.set(state, 'collectionPageSize', collectionpagesize);
+        },
     },
 
     actions: {
@@ -76,6 +90,9 @@ export default new Vuex.Store({
         },
         updateAllHighlighters: (context, b) => {
             context.commit('MUTATE_All_HIGHLIGHTERS', b)
+        },
+        setNoOfCollections: (context, noofcollections) => {
+            context.commit('MUTATE_NOOFCOLLECTIONS', noofcollections)
         }
     }
 });

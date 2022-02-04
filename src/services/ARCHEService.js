@@ -1,5 +1,7 @@
 const { default: fetch } = require('node-fetch');
-const {ARCHErdfQuery} = require("arche-api");
+const {ARCHErdfQuery, ARCHEdownloadResourceIdM, ARCHEdownloadResourceIdM2} = require("arche-api");
+const {collections2view} = require("../utils")
+const store = require("../store");
 
 /*
 * What the service needs :
@@ -72,19 +74,62 @@ module.exports.getMetaData = async(callback) => {
     }
 }
 
-module.exports.getCollections = async(callback) => {
+module.exports.getCollections = async(startPage, callback) => {
     const resourceId = 37565;
-    let url = ARCHE_BASE_URL + '/' + resourceId + '/' + `metadata?_format=${FORMAT}&readMode=${READMODE_RELATIVES}`;
+    
+    const collections = [];
     const options = {
-        method: 'GET'
+        "host": ARCHE_BASE_URL,
+        "format": "application/n-triples",
+        "resourceId": resourceId,
+        "readMode": "neighbors",
     };
-    console.log(url);
     try {
-        const response = await fetch(url, options);
-        const body = await response.text();
-        //get child resources of top collection (= Collections)
-        let child_resources = ARCHErdfQuery(null, 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf', 'https://arche-dev.acdh-dev.oeaw.ac.at/api/' + resourceId, body);
-        let result = [];
+        ARCHEdownloadResourceIdM(options, (rs) => {
+          
+            // query:
+            const options = {
+                "subject": null,
+                "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#isPartOf",
+                "object": `${ARCHE_BASE_URL}/37565`,
+                "expiry": 14,
+                "paginate": [startPage, Math.min(startPage + store.default.getters.collectionPageSize,store.default.getters.noOfCollections)]
+                
+            };
+            console.log(Math.min(startPage + store.default.getters.collectionPageSize,store.default.getters.noOfCollections))
+            let resources = ARCHErdfQuery(options, rs);
+            console.log(store.default.getters)
+            store.default.dispatch('setNoOfCollections', resources.fullLength)
+            // how to use the object
+            const promises = [];
+            resources.value.forEach(function (rs) {
+
+                    var rsID = rs.isPartOf.subject.replace(`${ARCHE_BASE_URL}/`,"");
+                    let options = {
+                        "host": ARCHE_BASE_URL,
+                        "format": "application/n-triples",
+                        "resourceId": rsID,
+                        "readMode": "resource"
+                    };   
+                    promises.push(ARCHEdownloadResourceIdM2(options));  
+            });
+            Promise.all(promises).then((results) => {
+                results.forEach(collection=> {
+                    let options = {
+                        "subject": null,
+                        "predicate": null,
+                        "object": null,
+                        "expiry": 14,
+                        "paginate": false
+                    };
+                    const coldata = ARCHErdfQuery(options, collection);
+                    collections.push(coldata);
+                })
+                const transformed = collections2view(collections);
+                callback(transformed)
+              });
+        });
+        /*let result = [];
         for (let i = 0; i < child_resources.length; i++) {
             let title = ARCHErdfQuery(child_resources[i].subject,'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', null,body);
             let documents = ARCHErdfQuery(child_resources[i].subject,'https://vocabs.acdh.oeaw.ac.at/schema#hasNumberOfItems', null,body)
@@ -98,7 +143,7 @@ module.exports.getCollections = async(callback) => {
                 title: t,
                 size: docs});
         }
-        return callback(result);
+        return callback(result);*/
     } catch (error) {
         console.log(error);
     }

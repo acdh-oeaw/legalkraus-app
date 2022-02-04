@@ -1,25 +1,61 @@
 <template>
-  <main><p class="navigation">Akten-Edition <span class="arrow">></span> Alle Akten</p>
+  <main>
+  
+  <p class="navigation">Akten-Edition <span class="arrow">></span> Alle Akten</p>
+  <div>{{this.$store.getters.noOfCollections}} Sammlungen</div>
     <div class="card">
-      <h4 class="card-title">All collections </h4>
-      <table>
-        <tr>
-          <th>Title</th>
-          <th>URL</th>
-          <th>Size</th>
+  <b-pagination
+      page-class="custompaging"
+      prev-class="custompagingarrows"
+      next-class="custompagingarrows"
+      first-class="custompagingarrows"
+      last-class="custompagingarrows"
+      class="custom-pagination"
+      v-model="currentPage"
+      :total-rows="this.$store.getters.noOfCollections"
+      :per-page="perPage"
+      aria-controls="col-table"
+    ></b-pagination>
+      <b-table id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'" :current-page="currentPage" :per-page="perPage"
+      :busy.sync="isBusy" :fields="[
+            {
+              key: 'title',
+              label: 'Titel'
+            },
+            {
+              key: 'size',
+              label: 'Anzahl Dokumente'
+            },
+            {
+              key: 'url',
+              label: ''
+            },
+          ]" :items="getArcheCollections">
+          <template #table-busy>
+        <div class="text-center my-2">
+          <b-spinner type="grow" class="align-middle"></b-spinner>
+          <strong>Loading...</strong>
+        </div>
+      </template>
+      <template #cell(url)="data">
+        <a target="_blank" rel="noopener noreferrer" :href="`${data.value}`">Daten in Arche</a>
+      </template>
+       <!-- <tr>
+          <th>Titel</th>
+          <th>Metadaten in Arche</th>
+          <th>Anzahl Dokumente</th>
 
         </tr>
-        <!--      <tr v-for="item in archeCollections" :key="item" :item="item">-->
-        <tr v-for="val in collections" v-bind:key="val.title" v-on:click="navToObjects(val.url.subject)">
+        <tr v-for="val in collections" v-bind:key="val.url" v-on:click="navToObjects(val.url)">
           <td>
             {{ val.title }}
           </td>
           <td>
-            {{ val.url.subject }}
+            {{ val.url }}
           </td>
           <td> {{ val.size }}</td>
-        </tr>
-      </table>
+        </tr>-->
+      </b-table>
     </div>
   </main>
 </template>
@@ -31,31 +67,43 @@ export default {
   name: "OverviewAllCollections",
   data: function () {
     return {
-      collections: []
+      collections: [],
+      isBusy: false,
+      perPage: 10,
+      currentPage: 1,
+      
     }
   },
   methods: {
+    getArcheCollections(ctx, callback)  {
+    
+    const offset = ctx.currentPage === 1 ? 0 : (ctx.currentPage - 1) * ctx.perPage
+    console.log(offset)
+    getCollections(offset,(result) => {
+      callback(result)
+    });
+    
+    },
     navToObjects: function (url) {
       let id = this.getIdFromUrl(url)
       //this.$router.push({path: 'recht/objects/1'});
       this.$router.push({name: "recht-objects", params: {id: id}});
     },
     getIdFromUrl(url) {
-      console.log(url);
       let idx = url.lastIndexOf('/');
       return url.substring(idx + 1);
     }
   },
   mounted() {
-    getCollections((result) => {
+    /*getCollections((result) => {
       this.collections = result;
-    });
+    });*/
   }
 
 }
 </script>
 
-<style scoped>
+<style>
 .card {
   width: auto;
   padding: 2rem;
@@ -74,4 +122,42 @@ export default {
   color: #C85545;
 }
 
+#col-table thead {
+  background: var(--secondary-gray-meta)
+}
+
+#col-table {
+  border-spacing:3px;
+  font-size:0.9rem;
+}
+
+#col-table thead {
+  text-transform: uppercase;
+}
+
+#col-table td {
+  background: var(--secondary-gray-light)
+}
+
+.custom-pagination .page-link {
+  border:none;
+}
+
+.custompaging.page-item .page-link {
+  color:var(--text-black);
+}
+
+.custompaging.page-item.active .page-link {
+  background-color:var(--secondary-gray-meta);
+  border-color:var(--secondary-gray-meta);
+  color:var(--text-black);
+}
+
+.custompagingarrows .page-link{
+  color:var(--primary-red-dark);
+} 
+
+.custompaging .page-link:focus {
+  box-shadow: none;
+}
 </style>
