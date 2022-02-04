@@ -1,7 +1,7 @@
 <template>
   <main>
     <div class="title">
-      <router-link class="logo-link" to="/">
+      <router-link class="nav-link" to="/">
         <p class="logo">RECHTSAKTEN</p>
         <p class="logo">Karl Kraus</p>
       </router-link>
@@ -64,7 +64,8 @@
           <b-dropdown-item>Juristische Texte</b-dropdown-item>
         </b-dropdown>
       </p>
-      <button type="button" class="btn nav-el handapparat">Handapparat</button>
+      <button type="button" class="btn nav-el handapparat">
+        <router-link router-link class="nav-link-ha" :to="'/handapparat'">Handapparat</router-link></button>
       <button type="button" class="btn nav-el handapparat">How to use</button>
     </div>
   </main>
@@ -85,6 +86,7 @@ main {
   justify-content: space-between;
   grid-template-columns: auto auto auto auto auto;
   margin-left: 2rem;
+  border-bottom: solid 0.3rem var(--primary-red);
 }
 
 .navigation {
@@ -114,26 +116,30 @@ main {
   margin-top: 1rem;
   margin-bottom: 2rem;
   margin-left: 0;
-  border-top: 5px solid var(--primary-red);
+  border-top: 0.5rem solid var(--primary-red);
 }
 
-.logo-link {
+.nav-link {
   color: var(--text-gray);
 }
 
-.logo-link:link {
+.nav-link-ha {
+  color: var(--text-white);
+}
+
+.nav-link:link,.nav-link-ha:link {
   text-decoration: none;
 }
 
-.logo-link:visited {
+.nav-link:visited, .nav-link-ha:visited {
   text-decoration: none;
 }
 
-.logo-link:hover {
+.nav-link:hover, .nav-link-ha:hover {
   text-decoration: none;
 }
 
-.logo-link:active {
+.nav-link:active, .nav-link-ha:active {
   text-decoration: none;
 }
 

@@ -146,6 +146,7 @@ export default {
       console.log(result);
       this.collections = result;
     });
+
   }
 }
 
@@ -172,7 +173,7 @@ main {
 }
 
 .arrow {
-  color: #C85545;
+  color: var(--primary-red);
 }
 
 .nav-link {
