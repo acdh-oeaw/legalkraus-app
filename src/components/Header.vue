@@ -85,6 +85,7 @@ main {
   display: grid;
   justify-content: space-between;
   grid-template-columns: auto auto auto auto auto;
+  grid-template-rows: 6rem;
   margin-left: 2rem;
   border-bottom: solid 0.3rem var(--primary-red);
 }
