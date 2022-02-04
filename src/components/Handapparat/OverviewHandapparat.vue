@@ -28,7 +28,7 @@ export default {
   display: grid;
   grid-gap: 2rem;
   grid-template-columns: auto auto auto;
-  margin-top: 3rem;
+  margin-top: 0;
 }
 
 .item {
