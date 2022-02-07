@@ -14,6 +14,8 @@ import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 // Import Bootstrap an BootstrapVue CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import OverviewHandapparat from "../components/Handapparat/OverviewHandapparat";
+import BoehmEdition from "../components/Handapparat/BoehmEdition";
 
 
 Vue.use(Router)
@@ -56,6 +58,9 @@ export default new Router({
 
         {path: '/handschriftliches', component: OverviewObjects}, //todo: create page that loads objects with tag handschriftlich
         {path: '/alle-akten', component: OverviewAllCollections},
-        {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung}
+        {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung},
+
+        {path: '/handapparat', component: OverviewHandapparat},
+        {path: '/handapparat/boehm', component: BoehmEdition}
     ]
 })
