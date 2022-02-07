@@ -378,21 +378,20 @@ export default {
     }
   },
   methods: {
-    childToParent(event) {
+    async childToParent(event) {
       this.toggleFacs(); //hide facsimile, switch to text-only view
-
       let elem = document.getElementById(event.htmlId);
       let parent = elem.parentNode;
 
       //work does not refer to a pmb entry
       if (event.type === 'work') {
+        await new Promise(resolve => setTimeout(resolve, 500)); //vue needs time to change to card-full view
         let commentDiv = this.createCommentDiv(event, null, elem, event.type);
         parent.appendChild(commentDiv);
         return;
       }
 
       getPMBObjectWithId(event.pmbId, event.type, (rs) => {
-        console.log(rs);
         let commentDiv = this.createCommentDiv(event, rs, elem, event.type);
         parent.appendChild(commentDiv);
       });
@@ -400,8 +399,10 @@ export default {
     createCommentDiv(event, rs, elem, type) {
       var dblock = document.getElementsByClassName("d-block").item(0);
       var rect = dblock.getBoundingClientRect();
-      console.log(dblock);
-      var div = document.createElement('div')
+      console.log(rect)
+
+      var div = document.createElement('div');
+      div.className = "comment";
       div.style.border = "solid black 1px";
       div.style.color = "black";
       div.style.backgroundColor = "white";
@@ -427,7 +428,10 @@ export default {
             "  <path fill-rule=\"evenodd\" d=\"M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z\" style=\"padding-bottom: 0.1rem;margin-left: 0.3rem;\"/>\n" +
             "</svg>";
       } else if (type === 'work') {
-        div.innerHTML = event.pmbId;
+        div.innerHTML = "<p class='c'>"+event.pmbId + "</p><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"currentColor\" class=\"bi bi-box-arrow-in-up-right\" viewBox=\"0 0 16 16\">\n" +
+            "  <path fill-rule=\"evenodd\" d=\"M6.364 13.5a.5.5 0 0 0 .5.5H13.5a1.5 1.5 0 0 0 1.5-1.5v-10A1.5 1.5 0 0 0 13.5 1h-10A1.5 1.5 0 0 0 2 2.5v6.636a.5.5 0 1 0 1 0V2.5a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5H6.864a.5.5 0 0 0-.5.5z\"/>\n" +
+            "  <path fill-rule=\"evenodd\" d=\"M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z\" style=\"padding-bottom: 0.1rem;margin-left: 0.3rem;\"/>\n" +
+            "</svg>";
       }
 
       div.style.position = "absolute";
@@ -442,6 +446,9 @@ export default {
       };
 
       return div;
+    },
+    removeAllComments(){
+      document.querySelectorAll('.comment').forEach(e => e.remove());
     },
     downloadXMLFromUrl(url) {
       return fetch(url)
@@ -473,6 +480,7 @@ export default {
       this.showLF = true;
     },
     toggleShowBoth() {
+      this.removeAllComments();
       this.showLF = true;
       this.showFacs = true;
     },
@@ -670,8 +678,9 @@ export default {
 
 .header {
   display: flex;
-  margin: 1rem;
+  margin: 1rem !important;
   justify-content: space-between;
+  color: var(--text-gray)!important;
 }
 
 .all-annotations {

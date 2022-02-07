@@ -62,7 +62,7 @@ export default new Router({
         {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung},
 
         {path: '/handapparat', component: OverviewHandapparat},
-        {path: '/handapparat/boehm', component: BoehmEdition}
+        {path: '/handapparat/boehm', component: BoehmEdition},
         {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung, props: {
                 header: true,
                 content: true

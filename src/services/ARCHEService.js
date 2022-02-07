@@ -241,7 +241,7 @@ module.exports.getAllObjects = async (callback) => {
     }
 }
 
-
+/*
 module.exports.getTransformedHTML = async(objectId, callback) => {
     try {
         const url = `https://service4tei.acdh-dev.oeaw.ac.at/tei2html.xql?tei=https://arche-dev.acdh-dev.oeaw.ac.at/api/${objectId}&xsl=https://raw.githubusercontent.com/acdh-oeaw/legalkraus-app/master/src/lesefassung_xsl/legal_kraus_lesefassung.xsl`;
@@ -252,13 +252,13 @@ module.exports.getTransformedHTML = async(objectId, callback) => {
         console.log(error);
     }
 
-}
+}*/
 
-/*module.exports.getTransformedHTML = async (resourceId, callback) => {
+module.exports.getTransformedHTML = async (resourceId, callback) => {
     const resp = await fetch(`tmp/${resourceId}.html`)
     const data = await resp.text();
     return callback(data);
-}*/
+}
 
 module.exports.performFullTextSearch = async (searchTerm, callback) => {
     const url = `${ARCHE_BASE_URL}/search?`;
