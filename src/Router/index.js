@@ -14,6 +14,7 @@ import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 // Import Bootstrap an BootstrapVue CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import PersonenRegister from "../components/Register/PersonenRegisterDummy";
 import OverviewHandapparat from "../components/Handapparat/OverviewHandapparat";
 import BoehmEdition from "../components/Handapparat/BoehmEdition";
 
@@ -62,5 +63,12 @@ export default new Router({
 
         {path: '/handapparat', component: OverviewHandapparat},
         {path: '/handapparat/boehm', component: BoehmEdition}
+        {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung, props: {
+                header: true,
+                content: true
+            }},
+        {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung},
+
+        {path: '/register/personen', name: 'pReg', component: PersonenRegister}
     ]
 })
