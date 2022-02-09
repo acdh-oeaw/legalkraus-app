@@ -86,8 +86,9 @@ main {
   justify-content: space-between;
   grid-template-columns: auto auto auto auto auto;
   grid-template-rows: 6rem;
-  margin-left: 2rem;
+  margin-left: 0;
   border-bottom: solid 0.3rem var(--primary-red);
+  margin-bottom: 2rem;
 }
 
 .navigation {
@@ -115,8 +116,8 @@ main {
   font-family: 'Open Sans', sans-serif;
   font-weight: 800;
   margin-top: 1rem;
+  margin-left: 2rem;
   margin-bottom: 2rem;
-  margin-left: 0;
   border-top: 0.5rem solid var(--primary-red);
 }
 

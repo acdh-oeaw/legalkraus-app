@@ -570,9 +570,10 @@ export default {
 
 .navigation {
   display: flex;
-  margin-left: 1rem;
+  margin-left: 2rem !important;
+  margin-right: 2rem !important;
   text-align: left;
-  padding-left: 2rem;
+  padding-left: 0 !important;
 }
 
 .arrow {
@@ -693,6 +694,10 @@ export default {
   border-width: 1rem;
 }
 
+.card{
+  margin: auto!important;
+}
+
 .card-fixed {
   width: 40rem;
   height: 40rem;
@@ -750,6 +755,7 @@ export default {
 .facs-full-width, .formats-full-width {
   display: flex !important;
   justify-content: space-between;
+  margin-bottom: 0.5rem !important;
 }
 
 .body {
