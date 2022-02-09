@@ -56,17 +56,18 @@ module.exports.getObjectWithId = async (resourceId, callback) => {
 
 module.exports.getMetaData = async(callback) => {
     const resourceId = 37562;
-    let url = ARCHE_BASE_URL + '/' + resourceId + '/' + `metadata?_format=${FORMAT}&readMode=${READMODE_RESOURCE}`;
     const options = {
-        method: 'GET'
+        "host": ARCHE_BASE_URL,
+        "format": "application/n-triples",
+        "resourceId": resourceId,
+        "readMode": READMODE_RESOURCE,
     };
-    console.log(url);
+
     try {
-        const response = await fetch(url, options);
-        console.log("statusCode:", response.statusCode);
-        console.log("headers:", response.headers);
-        const body = await response.text();
-        return callback(body);
+        await ARCHEdownloadResourceIdM(options, (rs) => {
+            console.log(rs);
+            return callback(rs);
+        });
     } catch (error) {
         console.log(error);
     }

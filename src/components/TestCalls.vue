@@ -98,8 +98,8 @@
 
     <div class="card">
       <h4 class="card-title">Example: Metadata</h4>
-      <p class="meta_data" v-for="item in archeMetaData" :key="item" :item="item">
-        {{ item.object }}
+      <p class="meta_data">
+        {{ archeMetaData }}
       </p>
     </div>
 
@@ -238,8 +238,14 @@ export default {
       this.archeCollections = result;
     });
     getMetaData((result) => {
-      let queryJson = ARCHErdfQuery(null, null, null, result);
-      this.archeMetaData = queryJson;//extractPredicateAndObjectAsJSONfromRDF(queryJson);
+      const options = {
+        "subject": null,
+        "predicate": null,
+        "object": null,
+        "expiry": 14
+      };
+      let queryJson = ARCHErdfQuery(options, result);
+      this.archeMetaData = queryJson.value;
     });
 
     getObjectWithId(37598, (result) => {
@@ -269,7 +275,6 @@ export default {
       let dateCreation = ARCHErdfQuery(optionsDateCreation, result);
       let subjects = ARCHErdfQuery(optionsSubjects, result);
 
-      console.log(title.value[0].hasTitle.object)
       //console.log(extractPredicateAndObjectAsJSONfromRDF(queryJson));
       this.objectData.push({
         rdf: result,
@@ -277,7 +282,6 @@ export default {
         dateOfCreation: dateCreation.value[0].hasCreatedStartDate.object.substring(0, 10),
         subjects: subjects.value
       });
-      console.log(this.objectData)
     });
 
     getObjectsOfCollection(37573, (result) => {
