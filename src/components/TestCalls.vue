@@ -18,8 +18,8 @@
             {{ val.dateOfCreation }}
           </td>
           <td>
-            <div v-for="subject in val.subjects" v-bind:key="subject.object">
-              {{ subject.object }}
+            <div v-for="subject in val.subjects" v-bind:key="subject.hasSubject.object">
+              {{ subject.hasSubject.object }}
             </div>
           </td>
 
@@ -233,11 +233,6 @@ export default {
     },
   },
   mounted() {
-    //this.getMetaData().call(this);
-    //this.getCollections().call(this);
-    //this.getMetaData();
-    //this.getCollections();
-    //this.getObject(37598)
     getCollections((result) => {
       //let queryJson = ARCHErdfQuery(null, null, null, result);
       this.archeCollections = result;
@@ -248,17 +243,41 @@ export default {
     });
 
     getObjectWithId(37598, (result) => {
-      let title = ARCHErdfQuery(null, "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle", null, result);
-      let dateCreation = ARCHErdfQuery(null, "https://vocabs.acdh.oeaw.ac.at/schema#hasCreatedStartDate", null, result);
-      let subjects = ARCHErdfQuery(null, "https://vocabs.acdh.oeaw.ac.at/schema#hasSubject", null, result);
 
+      // query:
+      const optionsTitle = {
+        "subject": null,
+        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle",
+        "object": null,
+        "expiry": 14
+      };
+
+      const optionsDateCreation = {
+        "subject": null,
+        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasCreatedStartDate",
+        "object": null,
+        "expiry": 14
+      };
+
+      const optionsSubjects = {
+        "subject": null,
+        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasSubject",
+        "object": null,
+        "expiry": 14
+      };
+      let title = ARCHErdfQuery(optionsTitle, result);
+      let dateCreation = ARCHErdfQuery(optionsDateCreation, result);
+      let subjects = ARCHErdfQuery(optionsSubjects, result);
+
+      console.log(title.value[0].hasTitle.object)
       //console.log(extractPredicateAndObjectAsJSONfromRDF(queryJson));
       this.objectData.push({
         rdf: result,
-        title: title[0].object.substring(0, title[0].object.length - 3),
-        dateOfCreation: dateCreation[0].object.substring(0, 10),
-        subjects: subjects
+        title: title.value[0].hasTitle.object,
+        dateOfCreation: dateCreation.value[0].hasCreatedStartDate.object.substring(0, 10),
+        subjects: subjects.value
       });
+      console.log(this.objectData)
     });
 
     getObjectsOfCollection(37573, (result) => {

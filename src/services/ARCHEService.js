@@ -3,27 +3,6 @@ const {ARCHErdfQuery, ARCHEdownloadResourceIdM, ARCHEdownloadResourceIdM2} = req
 const {collections2view} = require("../utils")
 const store = require("../store");
 
-/*
-* What the service needs :
-* getAllCases()
-* getAllDocs(Case case)
-* getFilteredDocs(Filter filter)
-* getFilteredCases(Filter filter)
-* getAllX -> for registry
-* fetFilteredX -> for registry
-* getPublications() -> maybe not necessary
-* getBöhm() -> maybe not necessary (can be static if not too big
-* getProjectInfo() -> maybe not necessary
-*
-*
-* getAllCases(filter[] : default = void)
-* getCasePreview() -> metadata
-* getAllDocsOfCase(caseid, filter[]: default = void)
-* getDocPreview() -> doc metadata
-* getDocFull()
-*
-* getRegistry(type, filter[]: default = void) -> type: ort | person | instituition | Werke | Texte*/
-
 const ARCHE_BASE_URL = "https://arche-dev.acdh-dev.oeaw.ac.at/api";
 const FORMAT = "application/n-triples";
 const READMODE_RESOURCE = "resource";
@@ -39,7 +18,7 @@ function extractTitle(title) {
 }
 
 
-module.exports.getObjectWithId = async (resourceId, callback) => {
+/*module.exports.getObjectWithId = async (resourceId, callback) => {
     let url = ARCHE_BASE_URL + '/' + resourceId + '/' + `metadata?_format=${FORMAT}&readMode=${READMODE_RESOURCE}`;
     const options = {
         method: 'GET'
@@ -54,6 +33,25 @@ module.exports.getObjectWithId = async (resourceId, callback) => {
     } catch (error) {
         console.log(error);
     }    
+}*/
+
+module.exports.getObjectWithId = async (resourceId, callback) => {
+    const options = {
+        "host": ARCHE_BASE_URL,
+        "format": "application/n-triples",
+        "resourceId": resourceId,
+        "readMode": READMODE_RESOURCE,
+    };
+
+    try {
+        await ARCHEdownloadResourceIdM(options, (rs) => {
+            console.log(rs);
+            return callback(rs);
+        });
+    } catch (error) {
+        console.log(error);
+    }
+
 }
 
 module.exports.getMetaData = async(callback) => {
