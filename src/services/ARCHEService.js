@@ -1,4 +1,4 @@
-const { default: fetch } = require('node-fetch');
+const {default: fetch} = require('node-fetch');
 const {ARCHErdfQuery, ARCHEdownloadResourceIdM, ARCHEdownloadResourceIdM2} = require("arche-api");
 const {collections2view} = require("../utils")
 const store = require("../store");
@@ -45,7 +45,6 @@ module.exports.getObjectWithId = async (resourceId, callback) => {
 
     try {
         await ARCHEdownloadResourceIdM(options, (rs) => {
-            console.log(rs);
             return callback(rs);
         });
     } catch (error) {
@@ -54,7 +53,7 @@ module.exports.getObjectWithId = async (resourceId, callback) => {
 
 }
 
-module.exports.getMetaData = async(callback) => {
+module.exports.getMetaData = async (callback) => {
     const resourceId = 37562;
     const options = {
         "host": ARCHE_BASE_URL,
@@ -65,7 +64,6 @@ module.exports.getMetaData = async(callback) => {
 
     try {
         await ARCHEdownloadResourceIdM(options, (rs) => {
-            console.log(rs);
             return callback(rs);
         });
     } catch (error) {
@@ -73,7 +71,7 @@ module.exports.getMetaData = async(callback) => {
     }
 }
 
-module.exports.getCollections = async(startPage, callback) => {
+module.exports.getCollections = async (startPage, callback) => {
     const resourceId = 37565;
 
     const collections = [];
@@ -92,10 +90,10 @@ module.exports.getCollections = async(startPage, callback) => {
                 "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#isPartOf",
                 "object": `${ARCHE_BASE_URL}/37565`,
                 "expiry": 14,
-                "paginate": [startPage, Math.min(startPage + store.default.getters.collectionPageSize,store.default.getters.noOfCollections)]
+                "paginate": [startPage, Math.min(startPage + store.default.getters.collectionPageSize, store.default.getters.noOfCollections)]
 
             };
-            console.log(Math.min(startPage + store.default.getters.collectionPageSize,store.default.getters.noOfCollections))
+            console.log(Math.min(startPage + store.default.getters.collectionPageSize, store.default.getters.noOfCollections))
             let resources = ARCHErdfQuery(options, rs);
             console.log(store.default.getters)
             store.default.dispatch('setNoOfCollections', resources.fullLength)
@@ -103,17 +101,17 @@ module.exports.getCollections = async(startPage, callback) => {
             const promises = [];
             resources.value.forEach(function (rs) {
 
-                    var rsID = rs.isPartOf.subject.replace(`${ARCHE_BASE_URL}/`,"");
-                    let options = {
-                        "host": ARCHE_BASE_URL,
-                        "format": "application/n-triples",
-                        "resourceId": rsID,
-                        "readMode": "resource"
-                    };
-                    promises.push(ARCHEdownloadResourceIdM2(options));
+                var rsID = rs.isPartOf.subject.replace(`${ARCHE_BASE_URL}/`, "");
+                let options = {
+                    "host": ARCHE_BASE_URL,
+                    "format": "application/n-triples",
+                    "resourceId": rsID,
+                    "readMode": "resource"
+                };
+                promises.push(ARCHEdownloadResourceIdM2(options));
             });
             Promise.all(promises).then((results) => {
-                results.forEach(collection=> {
+                results.forEach(collection => {
                     let options = {
                         "subject": null,
                         "predicate": null,
@@ -126,7 +124,7 @@ module.exports.getCollections = async(startPage, callback) => {
                 })
                 const transformed = collections2view(collections);
                 callback(transformed)
-              });
+            });
         });
         /*let result = [];
         for (let i = 0; i < child_resources.length; i++) {
@@ -148,32 +146,80 @@ module.exports.getCollections = async(startPage, callback) => {
     }
 }
 
-module.exports.getObjectsOfCollection = async (id, callback) => {
-    const resourceId = id;
-    let url = ARCHE_BASE_URL + '/' + resourceId + '/' + `metadata?_format=${FORMAT}&readMode=${READMODE_RELATIVES}`;
+module.exports.getObjectsOfCollection = async (resourceId, callback) => {
     const options = {
-        method: 'GET'
+        "host": ARCHE_BASE_URL,
+        "format": "application/n-triples",
+        "resourceId": resourceId,
+        "readMode": READMODE_RELATIVES,
     };
-    console.log(url);
     try {
-        const response = await fetch(url, options);
-        const body = await response.text();
-        let child_resources = ARCHErdfQuery(null, 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf', 'https://arche-dev.acdh-dev.oeaw.ac.at/api/' + resourceId, body);
-        let result = [];
-        for (let i = 0; i < child_resources.length; i++) {
-            let title = ARCHErdfQuery(child_resources[i].subject, 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', null, body);
-            let identifier = ARCHErdfQuery(child_resources[i].subject, 'https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier', null, body);
-            let t = extractTitle(title);
-            result.push({
-                url: child_resources[i],
-                title: t,
-                identifier: identifier[1].object
-            });
-        }
-        return callback(result);
+        ARCHEdownloadResourceIdM(options, (rs) => {
+            // query:
+            const optionsChildRes = {
+                "subject": null,
+                "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#isPartOf",
+                "object": 'https://arche-dev.acdh-dev.oeaw.ac.at/api/' + resourceId,
+                "expiry": 14
+            };
+
+            let childResources = ARCHErdfQuery(optionsChildRes, rs);
+            let result = [];
+
+            for (let i = 0; i < childResources.value.length; i++) {
+                // query:
+                const optionsTitle = {
+                    "subject": childResources.value[i].isPartOf.subject,
+                    "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle",
+                    "object": null,
+                    "expiry": 14
+                };
+
+                const optionsIdentifier = {
+                    "subject": childResources.value[i].isPartOf.subject,
+                    "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier",
+                    "object": null,
+                    "expiry": 14
+                };
+                let title = ARCHErdfQuery(optionsTitle, rs);
+                let identifier = ARCHErdfQuery(optionsIdentifier, rs);
+
+                result.push({
+                    url: childResources.value[i].isPartOf.subject,
+                    title: title.value[0].hasTitle.object,
+                    identifier: identifier.value[1].hasIdentifier.object
+                });
+            }
+
+            return callback(result);
+
+
+        });
+
     } catch (error) {
         console.log(error);
     }
+    /* try {
+         let collection = ARCHErdfQuery(options, rs);
+
+         const response = await fetch(url, options);
+         const body = await response.text();
+         let child_resources = ARCHErdfQuery(null, 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf', 'https://arche-dev.acdh-dev.oeaw.ac.at/api/' + resourceId, body);
+         let result = [];
+         for (let i = 0; i < child_resources.length; i++) {
+             let title = ARCHErdfQuery(child_resources[i].subject, 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', null, body);
+             let identifier = ARCHErdfQuery(child_resources[i].subject, 'https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier', null, body);
+             let t = extractTitle(title);
+             result.push({
+                 url: child_resources[i],
+                 title: t,
+                 identifier: identifier[1].object
+             });
+         }
+         return callback(result);
+     } catch (error) {
+         console.log(error);
+     }*/
 }
 
 module.exports.getCollectionOfObject = async (id, callback) => {
@@ -263,20 +309,20 @@ module.exports.performFullTextSearch = async (searchTerm, callback) => {
     const url = `${ARCHE_BASE_URL}/search?`;
 
 
-        fetch(url + new URLSearchParams({
-            "property[0]": "BINARY",
-            "operator[0]":"@@",
-            "value[0]":searchTerm,
-            "property[1]": "https://vocabs.acdh.oeaw.ac.at/schema#isPartOf",
-            "operator[1]":"=",
-            "value[1]":"https://arche-dev.acdh-dev.oeaw.ac.at/api/37571",
-            "ftsQuery":searchTerm
+    fetch(url + new URLSearchParams({
+        "property[0]": "BINARY",
+        "operator[0]": "@@",
+        "value[0]": searchTerm,
+        "property[1]": "https://vocabs.acdh.oeaw.ac.at/schema#isPartOf",
+        "operator[1]": "=",
+        "value[1]": "https://arche-dev.acdh-dev.oeaw.ac.at/api/37571",
+        "ftsQuery": searchTerm
 
     }), {
-           headers: { 'Accept': 'application/json' }
-        }).then(response => response.json()).then(data => {
-            return callback(data);
-        })
+        headers: {'Accept': 'application/json'}
+    }).then(response => response.json()).then(data => {
+        return callback(data);
+    })
 
 
 }

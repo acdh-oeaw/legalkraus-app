@@ -67,7 +67,7 @@
             {{ val.title }}
           </td>
           <td>
-            {{ val.url.subject }}
+            {{ val.url }}
           </td>
           <td> {{val.identifier}}</td>
         </tr>
