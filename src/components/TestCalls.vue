@@ -108,7 +108,7 @@
 
 <script>
 import {ARCHEdownloadResourceIdM, ARCHErdfQuery} from "arche-api/src";
-import {getObjectWithId, getMetaData, getCollections, getObjectsOfCollection, getAllObjects} from "../services/ARCHEService";
+import {getObjectWithId, getMetaData, getCollections, getObjectsOfCollection, getCollectionOfObject, getAllObjects} from "../services/ARCHEService";
 
 
 function extractPredicateAndObjectAsJSONfromRDF(queryJson) {
@@ -288,6 +288,10 @@ export default {
       //37571
       this.objectsOfCollection = result;
     });
+
+    getCollectionOfObject(37600, (rs) => {
+      console.log(rs);
+    })
 
     getAllObjects((result) => {
       //let queryJson = ARCHErdfQuery(null, null, null, result);
