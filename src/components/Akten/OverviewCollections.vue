@@ -8,22 +8,6 @@
       <span class="arrow">></span>
       {{ this.currSubCat }}
     </p>
-<!--    <table class="table-bordered">
-      <tr>
-        <th>Title</th>
-        <th>Number of Documents</th>
-      </tr>
-
-      <tr v-for="collection in collections" v-bind:key="collection.val1"
-          v-on:click="navToObjects(collection.url.subject)">
-
-        <td>{{ collection.title }}</td>
-        <td>{{ collection.size }}</td>
-
-      </tr>
-
-
-    </table>-->
     <div>{{this.$store.getters.noOfCollections}} Sammlungen</div>
     <div class="card">
       <b-pagination
@@ -134,7 +118,6 @@ export default {
       console.log(url);
       console.log(this.currSubCat);
       let id = this.getIdFromUrl(url);
-      //this.$router.push({path: 'recht/objects/1'});
       if (this.currSubCat === this.pR) {
         this.$router.push({name: "privatrecht-objects", params: {id: id}});
       } else if (this.currSubCat === this.sR) {
@@ -223,11 +206,6 @@ main {
   margin-left: 1rem;
   margin-right: 1rem;
   padding-left: 2rem;
-}
-
-.table-bordered {
-  align-self: center;
-  width: 100%;
 }
 
 .navigation {
