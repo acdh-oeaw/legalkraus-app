@@ -552,10 +552,23 @@ export default {
       this.colUrl = rs[0].url;
     });
     getObjectWithId(this.objectId, (rs) => {
-      this.filename = ARCHErdfQuery(null, 'https://vocabs.acdh.oeaw.ac.at/schema#hasFilename', null, rs)[0].object;
-      let url = ARCHErdfQuery(null, 'https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier', null, rs);
-      let downloadLink = url[0].object;
-      this.downloadXMLFromUrl(downloadLink);
+      const optionsFilename = {
+        "subject": null,
+        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasFilename",
+        "object": null,
+        "expiry": 14
+      };
+
+      const optionsUrl = {
+        "subject": null,
+        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier",
+        "object": null,
+        "expiry": 14
+      };
+      this.filename = ARCHErdfQuery(optionsFilename, rs).value[0].hasFilename.object;
+      let url = ARCHErdfQuery(optionsUrl, rs).value[0].hasIdentifier.object;
+
+      this.downloadXMLFromUrl(url);
 
       getTransformedHTML(this.objectId, (data) => {
         this.pages = data;
