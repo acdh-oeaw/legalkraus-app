@@ -17,6 +17,10 @@ export default new Vuex.Store({
         },
         noOfCollections: null,
         collectionPageSize: 10,
+        noOfResource: null,
+        resourcePageSize: 10,
+        MDAllResources: null,
+        MDAllCollections: null
         
     },
 
@@ -36,6 +40,18 @@ export default new Vuex.Store({
         collectionPageSize: state => {
             return state.collectionPageSize
         },
+        noOfResources: state => {
+            return state.noOfResources
+        },
+        resourcePageSize: state => {
+            return state.resourcePageSize
+        },
+        MDAllResources: state => {
+            return state.MDAllResources;
+        },
+        MDAllCollections: state => {
+            return state.MDAllCollections;
+        }
     },
 
     mutations: {
@@ -66,8 +82,20 @@ export default new Vuex.Store({
         MUTATE_NOOFCOLLECTIONS: (state, noofcollections) => {
             Vue.set(state, 'noOfCollections', noofcollections);
         },
+        MUTATE_NOOFRESOURCES: (state, noofresources) => {
+            Vue.set(state, 'noOfResources', noofresources);
+        },
         MUTATE_COLLECTION_PAGE_SIZE: (state, collectionpagesize) => {
             Vue.set(state, 'collectionPageSize', collectionpagesize);
+        },
+        MUTATE_RESOURCE_PAGE_SIZE: (state, resourcepagesize) => {
+            Vue.set(state, 'resourcePageSize', resourcepagesize);
+        },
+        MUTATE_MD_ALL_RESOURCES: (state, mdallresources) => {
+            Vue.set(state, 'MDAllResources', mdallresources);
+        },
+        MUTATE_MD_ALL_COLLECTIONS: (state, mdallcollections) => {
+            Vue.set(state, 'MDAllCollections', mdallcollections);
         },
     },
 
@@ -93,6 +121,15 @@ export default new Vuex.Store({
         },
         setNoOfCollections: (context, noofcollections) => {
             context.commit('MUTATE_NOOFCOLLECTIONS', noofcollections)
+        },
+        setNoOfResources: (context, noofresources) => {
+            context.commit('MUTATE_NOOFRESOURCES', noofresources)
+        },
+        setMDAllResources: (context, mdallresources) => {
+            context.commit('MUTATE_MD_ALL_RESOURCES', mdallresources)
+        },
+        setMDAllCollections: (context, mdallcollections) => {
+            context.commit('MUTATE_MD_ALL_COLLECTIONS', mdallcollections)
         }
     }
 });

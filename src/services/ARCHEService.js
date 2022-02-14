@@ -1,6 +1,7 @@
-const {default: fetch} = require('node-fetch');
-const {ARCHErdfQuery, ARCHEdownloadResourceIdM, ARCHEdownloadResourceIdM2} = require("arche-api");
-const {collections2view} = require("../utils")
+const { default: fetch } = require('node-fetch');
+const { ARCHErdfQuery, ARCHEdownloadResourceIdM, 
+     } = require("arche-api");
+const {  queryAndProcessMD } = require("../utils")
 const store = require("../store");
 
 const ARCHE_BASE_URL = "https://arche-dev.acdh-dev.oeaw.ac.at/api";
@@ -64,33 +65,31 @@ module.exports.getMetaData = async (callback) => {
 module.exports.getCollections = async (startPage, callback) => {
     const resourceId = 37565;
 
-    const collections = [];
+  //  const collections = [];
     const options = {
         "host": ARCHE_BASE_URL,
         "format": "application/n-triples",
         "resourceId": resourceId,
         "readMode": "neighbors",
     };
+    if (store.default.getters.MDAllCollections === null) {
     try {
         ARCHEdownloadResourceIdM(options, (rs) => {
 
-            // query:
-            const options = {
+          /*  const options = {
                 "subject": null,
                 "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#isPartOf",
                 "object": `${ARCHE_BASE_URL}/37565`,
                 "expiry": 14,
-                "paginate": [startPage, Math.min(startPage + store.default.getters.collectionPageSize, store.default.getters.noOfCollections)]
+                "paginate": [startPage, Math.min(startPage + store.default.getters.collectionPageSize, store.default.getters.noOfCollections || store.default.getters.collectionPageSize)]
 
-            };
-            console.log(Math.min(startPage + store.default.getters.collectionPageSize, store.default.getters.noOfCollections))
-            let resources = ARCHErdfQuery(options, rs);
-            console.log(store.default.getters)
+            };*/
+            store.default.dispatch('setMDAllCollections', rs);
+            queryAndProcessMD('collection', ARCHE_BASE_URL, startPage, callback);
+           /* let resources = ARCHErdfQuery(options, rs);
             store.default.dispatch('setNoOfCollections', resources.fullLength)
-            // how to use the object
             const promises = [];
             resources.value.forEach(function (rs) {
-
                 var rsID = rs.isPartOf.subject.replace(`${ARCHE_BASE_URL}/`, "");
                 let options = {
                     "host": ARCHE_BASE_URL,
@@ -113,8 +112,9 @@ module.exports.getCollections = async (startPage, callback) => {
                     collections.push(coldata);
                 })
                 const transformed = collections2view(collections);
+                console.log(transformed)
                 callback(transformed)
-            });
+            });*/
         });
         /*let result = [];
         for (let i = 0; i < child_resources.length; i++) {
@@ -134,6 +134,10 @@ module.exports.getCollections = async (startPage, callback) => {
     } catch (error) {
         console.log(error);
     }
+}
+else {
+    queryAndProcessMD('collection', ARCHE_BASE_URL, startPage, callback);
+}
 }
 
 module.exports.getObjectsOfCollection = async (resourceId, callback) => {
@@ -276,8 +280,8 @@ module.exports.getCollectionOfObject = async (resourceId, callback) => {
     }
 }
 
-module.exports.getAllObjects = async (callback) => {
-    console.log('getAllObjects')
+module.exports.getAllResources = async (startPage, callback) => {
+   // const resources = [];
     const resourceId = 37565;
     const options = {
         "host": ARCHE_BASE_URL,
@@ -285,54 +289,17 @@ module.exports.getAllObjects = async (callback) => {
         "resourceId": resourceId,
         "readMode": READMODE_RELATIVES
     };
-
-    try {
-        ARCHEdownloadResourceIdM(options, (rs) => {
-            const options = {
-                "subject": null,
-                "predicate": 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
-                "object": 'https://vocabs.acdh.oeaw.ac.at/schema#Resource',
-                "expiry": 14,
-                "paginate": [0,10]
-            };
-            let all_resources = ARCHErdfQuery(options, rs);
-            console.log('objects:')
-            console.log(all_resources);
-            let result = [];
-
-            for (let i = 0; i < all_resources.value.length; i++) {
-                let identifier = all_resources.value[i].type.subject
-                console.log(identifier);
-                const optionsTitle = {
-                    "subject": identifier,
-                    "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle",
-                    "object": null,
-                    "expiry": 14
-                };
-
-                let title = ARCHErdfQuery(optionsTitle, rs).value[0].hasTitle.object;
-                console.log(title);
-                result.push({
-                    title: title,
-                    identifier: identifier
-                });
-            }
-            return callback(result);
-
-            /*for (let i = 0; i < all_resources.value.length; i++) {
-                let title = ARCHErdfQuery(all_resources[i].subject, 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', null, body);
-                let identifier = ARCHErdfQuery(all_resources[i].subject, 'https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier', null, body);
-                let t = extractTitle(title);
-                result.push({
-                    url: all_resources[i],
-                    title: t,
-                    identifier: identifier[1].object
-                });
-            }*/
-
-        });
-    } catch (error) {
-        console.log(error);
+    if (store.default.getters.MDAllResources === null) {
+        try {
+            ARCHEdownloadResourceIdM(options, (rs) => {
+                store.default.dispatch('setMDAllResources', rs);
+                queryAndProcessMD('resource', ARCHE_BASE_URL, startPage, callback);
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    } else {
+        queryAndProcessMD('resource', ARCHE_BASE_URL, startPage, callback);
     }
 }
 
@@ -369,7 +336,7 @@ module.exports.performFullTextSearch = async (searchTerm, callback) => {
         "ftsQuery": searchTerm
 
     }), {
-        headers: {'Accept': 'application/json'}
+        headers: { 'Accept': 'application/json' }
     }).then(response => response.json()).then(data => {
         return callback(data);
     })
