@@ -79,7 +79,6 @@
       <table>
         <tr>
           <th>Title</th>
-          <th>URL</th>
           <th>Identifier</th>
 
         </tr>
@@ -87,9 +86,6 @@
         <tr v-for="val in allObjects" v-bind:key="val.title">
           <td>
             {{ val.title }}
-          </td>
-          <td>
-            {{ val.url.subject }}
           </td>
           <td> {{val.identifier}}</td>
         </tr>
@@ -108,7 +104,7 @@
 
 <script>
 import {ARCHEdownloadResourceIdM, ARCHErdfQuery} from "arche-api/src";
-import {getObjectWithId, getMetaData, getCollections, getObjectsOfCollection, getCollectionOfObject, getAllObjects} from "../services/ARCHEService";
+import {getObjectWithId, getMetaData, getObjectsOfCollection, getCollectionOfObject, getAllObjects} from "../services/ARCHEService";
 
 
 function extractPredicateAndObjectAsJSONfromRDF(queryJson) {
@@ -233,10 +229,10 @@ export default {
     },
   },
   mounted() {
-    getCollections((result) => {
+    /*getCollections((result) => {
       //let queryJson = ARCHErdfQuery(null, null, null, result);
       this.archeCollections = result;
-    });
+    });*/
     getMetaData((result) => {
       const options = {
         "subject": null,

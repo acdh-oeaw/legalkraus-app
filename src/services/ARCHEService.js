@@ -8,16 +8,6 @@ const FORMAT_NTRIPLES = "application/n-triples";
 const READMODE_RESOURCE = "resource";
 const READMODE_RELATIVES = "relatives";
 
-/**
- * extract object of rdf tripel and get rid of @de
- * @param title rdf triple
- * @returns {string} title string without @de
- */
-function extractTitle(title) {
-    return title[0].object.substring(0, title[0].object.length - 3);
-}
-
-
 /*module.exports.getObjectWithId = async (resourceId, callback) => {
     let url = ARCHE_BASE_URL + '/' + resourceId + '/' + `metadata?_format=${FORMAT_NTRIPLES}&readMode=${READMODE_RESOURCE}`;
     const options = {
@@ -190,10 +180,7 @@ module.exports.getObjectsOfCollection = async (resourceId, callback) => {
                     identifier: identifier.value[1].hasIdentifier.object
                 });
             }
-
             return callback(result);
-
-
         });
 
     } catch (error) {
@@ -290,28 +277,60 @@ module.exports.getCollectionOfObject = async (resourceId, callback) => {
 }
 
 module.exports.getAllObjects = async (callback) => {
+    console.log('getAllObjects')
     const resourceId = 37565;
-    let url = ARCHE_BASE_URL + '/' + resourceId + '/' + `metadata?_format=${FORMAT_NTRIPLES}&readMode=${READMODE_RELATIVES}`;
     const options = {
-        method: 'GET'
+        "host": ARCHE_BASE_URL,
+        "format": FORMAT_NTRIPLES,
+        "resourceId": resourceId,
+        "readMode": READMODE_RELATIVES
     };
-    try {
-        const response = await fetch(url, options);
-        const body = await response.text();
-        let all_resources = ARCHErdfQuery(null, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://vocabs.acdh.oeaw.ac.at/schema#Resource', body);
 
-        let result = [];
-        for (let i = 0; i < all_resources.length; i++) {
-            let title = ARCHErdfQuery(all_resources[i].subject, 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', null, body);
-            let identifier = ARCHErdfQuery(all_resources[i].subject, 'https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier', null, body);
-            let t = extractTitle(title);
-            result.push({
-                url: all_resources[i],
-                title: t,
-                identifier: identifier[1].object
-            });
-        }
-        return callback(result);
+    try {
+        ARCHEdownloadResourceIdM(options, (rs) => {
+            const options = {
+                "subject": null,
+                "predicate": 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+                "object": 'https://vocabs.acdh.oeaw.ac.at/schema#Resource',
+                "expiry": 14,
+                "paginate": [0,10]
+            };
+            let all_resources = ARCHErdfQuery(options, rs);
+            console.log('objects:')
+            console.log(all_resources);
+            let result = [];
+
+            for (let i = 0; i < all_resources.value.length; i++) {
+                let identifier = all_resources.value[i].type.subject
+                console.log(identifier);
+                const optionsTitle = {
+                    "subject": identifier,
+                    "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle",
+                    "object": null,
+                    "expiry": 14
+                };
+
+                let title = ARCHErdfQuery(optionsTitle, rs).value[0].hasTitle.object;
+                console.log(title);
+                result.push({
+                    title: title,
+                    identifier: identifier
+                });
+            }
+            return callback(result);
+
+            /*for (let i = 0; i < all_resources.value.length; i++) {
+                let title = ARCHErdfQuery(all_resources[i].subject, 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', null, body);
+                let identifier = ARCHErdfQuery(all_resources[i].subject, 'https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier', null, body);
+                let t = extractTitle(title);
+                result.push({
+                    url: all_resources[i],
+                    title: t,
+                    identifier: identifier[1].object
+                });
+            }*/
+
+        });
     } catch (error) {
         console.log(error);
     }
