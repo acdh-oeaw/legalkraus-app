@@ -36,7 +36,7 @@
               key: 'url',
               label: ''
             },
-          ]" :items="getArcheCollections">
+          ]" :items="getArcheCollections" @row-clicked="navToObjects">
         <template #table-busy>
           <div class="text-center my-2">
             <b-spinner type="grow" class="align-middle"></b-spinner>
@@ -114,8 +114,8 @@ export default {
       });
 
     },
-    navToObjects: function (url) {
-      console.log(url);
+    navToObjects: function (record) {
+      let url = record.url;
       console.log(this.currSubCat);
       let id = this.getIdFromUrl(url);
       if (this.currSubCat === this.pR) {
