@@ -17,10 +17,10 @@
     <p v-else> This case has {{ this.numberDocuments }} documents. </p>
     <div class="wrapper">
       <div class="card-deck">
-        <div class="card" v-for="val in objects" v-bind:key="val.title" v-on:click="navToLesefassung(val.url.subject)">
+        <div class="card" v-for="val in objects" v-bind:key="val.title" v-on:click="navToLesefassung(val.url)">
           <h4 class="card-title"> {{ val.title }}</h4>
           <p> {{ val.identifier }}</p>
-          <p> {{ val.url.subject }}</p>
+          <p> {{ val.url }}</p>
         </div>
       </div>
     </div>
