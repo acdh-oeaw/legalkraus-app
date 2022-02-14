@@ -17,10 +17,10 @@
     <p v-else> This case has {{ this.numberDocuments }} documents. </p>
     <div class="wrapper">
       <div class="card-deck">
-        <div class="card" v-for="val in objects" v-bind:key="val.title" v-on:click="navToLesefassung(val.url.subject)">
+        <div class="card" v-for="val in objects" v-bind:key="val.title" v-on:click="navToLesefassung(val.url)">
           <h4 class="card-title"> {{ val.title }}</h4>
           <p> {{ val.identifier }}</p>
-          <p> {{ val.url.subject }}</p>
+          <p> {{ val.url }}</p>
         </div>
       </div>
     </div>
@@ -65,9 +65,6 @@ export default {
     }
   },
   methods: {
-    extractTitle: function (title) {
-      return title[0].object.substring(0, title[0].object.length - 3);
-    },
     navToLesefassung: function (url) {
       let id = this.getIdFromUrl(url)
       this.$router.push({name: "lesefassung", params: {id: id, cat: this.category, subcat: this.subCategory, case: this.caseTitle}});
@@ -134,17 +131,30 @@ export default {
       //todo: go to "home" when id-parameter is empty
     }
     getObjectWithId(this.caseId, (result) => {
-      let title = ARCHErdfQuery(null, "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle", null, result);
-      this.caseTitle = this.extractTitle(title);
-      let documents = ARCHErdfQuery(null, 'https://vocabs.acdh.oeaw.ac.at/schema#hasNumberOfItems', null, result)
-      let idx = documents[0].object.lastIndexOf('^');
-      this.numberDocuments = documents[0].object.substring(0, idx - 1);
+      // query:
+      const optionsTitle = {
+        "subject": null,
+        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle",
+        "object": null,
+        "expiry": 14
+      };
+
+      const optionsSize = {
+        "subject": null,
+        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasNumberOfItems",
+        "object": null,
+        "expiry": 14
+      };
+
+      this.caseTitle = ARCHErdfQuery(optionsTitle, result).value[0].hasTitle.object;
+      let documents = ARCHErdfQuery(optionsSize, result).value[0].hasNumberOfItems.object;
+      let idx = documents.lastIndexOf('^');
+      this.numberDocuments = documents.substring(0, idx - 1);
     });
 
     getObjectsOfCollection(this.caseId, (result) => {
       this.objects = result;
       this.isEmpty = (this.objects.length === 0);
-      console.log(this.objects);
     });
   }
 
@@ -157,6 +167,7 @@ export default {
   height: 25rem;
   padding: 2rem;
   margin: auto;
+  grid-column: auto;
 }
 
 .card-deck {
