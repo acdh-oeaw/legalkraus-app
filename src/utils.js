@@ -93,7 +93,14 @@ const collections2view = (collections) => {
             const resdata = ARCHErdfQuery(options, resource);
             resources.push(resdata);
         })
-        const transformed = resources2view(resources);
+        
+        let transformed;
+        if (archetype==='resource') {
+            transformed = resources2view(resources);
+        }
+        else {
+            transformed = collections2view(resources);
+        }
         callback(transformed)
     });
   }
