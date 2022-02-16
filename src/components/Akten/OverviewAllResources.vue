@@ -25,7 +25,7 @@
               key: 'url',
               label: ''
             },
-          ]" :items="getArcheResources">
+          ]" :items="getArcheResources" @row-clicked="navToObjects">
           <template #table-busy>
         <div class="text-center my-2">
           <b-spinner type="grow" class="align-middle"></b-spinner>
@@ -77,10 +77,12 @@ export default {
     });
     
     },
-    navToObjects: function (url) {
+    navToObjects: function (record) {
+      let url = record.url;
+      console.log(url);
       let id = this.getIdFromUrl(url)
       //this.$router.push({path: 'recht/objects/1'});
-      this.$router.push({name: "recht-objects", params: {id: id}});
+      this.$router.push({name: "lesefassung", params: {id: id}});
     },
     getIdFromUrl(url) {
       let idx = url.lastIndexOf('/');
