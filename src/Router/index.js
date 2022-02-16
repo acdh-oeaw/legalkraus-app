@@ -19,6 +19,12 @@ import PersonenRegister from "../components/Register/PersonenRegisterDummy";
 import OverviewHandapparat from "../components/Handapparat/OverviewHandapparat";
 import BoehmEdition from "../components/Handapparat/BoehmEdition";
 import Projektinformationen from "../components/Projekt/Projektinformationen";
+import Editionsrichtlinien from "../components/Projekt/Editionsrichtlinien";
+import Projektteam from "../components/Projekt/Projektteam";
+import Publikationen from "../components/Projekt/Publikationen";
+import Benutzungshinweise from "../components/Projekt/Benutzungshinweise";
+import Lizenzen from "../components/Projekt/Lizenzen";
+import Dokumentation from "../components/Projekt/Dokumentation";
 
 
 Vue.use(Router)
@@ -73,6 +79,14 @@ export default new Router({
         {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung},
 
         {path: '/register/personen', name: 'pReg', component: PersonenRegister},
-        {path: '/projektinformationen', name: 'pReg', component: Projektinformationen}
+        {path: '/projektinformationen', component: Projektinformationen},
+        {path: '/editionsrichtlinien', component: Editionsrichtlinien},
+        {path: '/projektteam', component: Projektteam},
+        {path: '/publikationen', component: Publikationen},
+        {path: '/benutzungshinweise', component: Benutzungshinweise},
+        {path: '/lizenzen', component: Lizenzen},
+        {path: '/dokumentation', component: Dokumentation}
+
+
     ]
 })

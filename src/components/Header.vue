@@ -14,13 +14,35 @@
             <router-link class="dd-item" to="/projektinformationen">
               Projektinformation
             </router-link>
-            </b-dropdown-item>
-          <b-dropdown-item>Editionsrichtlinien</b-dropdown-item>
-          <b-dropdown-item>Projektteam</b-dropdown-item>
-          <b-dropdown-item>Publikationen</b-dropdown-item>
-          <b-dropdown-item>Benutzungshinweise</b-dropdown-item>
-          <b-dropdown-item>Lizenzen</b-dropdown-item>
-          <b-dropdown-item>Technische Dokumentation</b-dropdown-item>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/editionsrichtlinien">
+              Editionsrichtlinien
+            </router-link>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/projektteam">
+              Projektteam
+            </router-link>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/publikationen">
+              Publikationen
+            </router-link>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/benutzungshinweise">
+              Benutzungshinweise
+            </router-link>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/lizenzen">
+              Lizenzen
+            </router-link></b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/dokumentation">
+              Technische Dokumentation
+            </router-link></b-dropdown-item>
         </b-dropdown>
       </p>
       <p class="nav-el">
@@ -75,7 +97,8 @@
         </b-dropdown>
       </p>
       <button type="button" class="btn nav-el handapparat">
-        <router-link router-link class="nav-link-ha" :to="'/handapparat'">Handapparat</router-link></button>
+        <router-link router-link class="nav-link-ha" :to="'/handapparat'">Handapparat</router-link>
+      </button>
       <button type="button" class="btn nav-el handapparat">How to use</button>
     </div>
   </main>
@@ -139,7 +162,7 @@ main {
   color: var(--text-white);
 }
 
-.nav-link:link,.nav-link-ha:link {
+.nav-link:link, .nav-link-ha:link {
   text-decoration: none;
 }
 
@@ -155,11 +178,12 @@ main {
   text-decoration: none;
 }
 
-.logo{
+.logo {
   margin-top: 0;
   margin-bottom: 0;
   text-align: left;
 }
+
 .nav-el {
   font-size: 1.5rem;
   margin-top: auto;
