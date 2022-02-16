@@ -1,6 +1,7 @@
 <template>
   <main>
-    <span class="contact">
+    <div class="text">
+<!--    <span class="contact">
       <svg id="contact-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
            class="bi bi-globe2"
            viewBox="0 0 16 16">
@@ -9,26 +10,33 @@
   </svg>
       <p class="contact-text">Kontakt</p>
     </span>
-    <hr class="horizontal">
-    <img class="logo" src=".././assets/acdh-ch-logo96.png" width="50px" height="50px" alt="acdh-logo">
-    <div class="left">
-
-      <p>Rechtsakten Karl Kraus</p>
-      <p>Katharina Prager</p>
-      <p>Ludwig Boltzmann-Institut für Digital History </p>
-      <p>Hofburg <br>
-        1010 Wien </p>
-      <p>TelNr: 1234/1234567890 <br>
-        Email: kraus@stan.com</p>
+      <hr class="horizontal">-->
+      <div class="left">
+        <p>Rechtsakten Karl Kraus</p>
+        <p>Online Edition</p>
+      </div>
+      <div class="middle">
+        <p>Katharina Prager</p>
+        <p>Ludwig Boltzmann-Institut für Digital History </p>
+        <p>Hofburg <br>
+          1010 Wien </p>
+        <p>TelNr: 1234/1234567890 <br>
+          Email: kraus@stan.com</p>
+      </div>
+      <div class="right">
+        <p>HELPDESK</p>
+        <p>ACDH runs a helpdesk offering
+          advice for questions related to
+          various digital humanities topics.</p>
+        <button type="button">ASK US!</button>
+      </div>
     </div>
-    <div class="right">
-      <p>HELPDESK</p>
-      <p>ACDH runs a helpdesk offering
-        advice for questions related to
-        various digital humanities topics.</p>
-      <button type="button">ASK US!</button>
+    <div class="logos">
+      <img class="logo" src=".././assets/acdh-ch-logo96.png" width="auto" height="70px" alt="acdh-logo">
+      <img class="logo" src=".././assets/wien_biblio.png" width="auto" height="70px" alt="acdh-logo">
+      <img class="logo" src=".././assets/fwf.png" width="auto" height="70px" alt="acdh-logo">
+      <img class="logo" src=".././assets/LBIDH-Logo.jpg" width="auto" height="70px" alt="acdh-logo">
     </div>
-    <div class="impressum">IMPRESSUM</div>
   </main>
 </template>
 
@@ -42,7 +50,7 @@ export default {
 
 main {
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-template-rows: auto auto;
   width: 100%;
   justify-content: space-between;
   grid-column-gap: 1rem;
@@ -50,9 +58,27 @@ main {
   margin-bottom: 0;
   padding-bottom: 0;
   margin-top: 5rem;
-
-
   bottom: 0;
+}
+
+.text {
+  grid-row: 1/2;
+  display: grid;
+  grid-template-columns: repeat(3,auto);
+  background-color: var(--secondary-gray-dark);
+  padding: 2rem;
+  align-items: baseline;
+}
+
+.logos {
+  grid-row: 2/3;
+  grid-column: 1/4;
+  background-color: var(--secondary-gray);
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  padding-left: 6rem;
+  padding-right: 4rem;
 }
 
 .contact {
@@ -64,6 +90,7 @@ main {
   margin-left: 1rem;
   margin-right: 1rem;
   grid-column: 1 / 3;
+  grid-row: 1/2;
 }
 
 .contact-text {
@@ -87,27 +114,24 @@ main {
   margin-top: 1rem;
 }
 
+.middle{
+  text-align: left;
+  grid-column: 2/3;
+}
+
 .left {
   margin-top: 1rem;
   text-align: left;
-  grid-column-start: 2;
-  grid-column-end: 3;
-  padding-right: 24rem;
+  grid-column: 1/2;
+  margin-left: 4rem;
 }
 
 .right {
   margin-top: 1rem;
   width: 95%;
-  text-align: left;
-  grid-column: 3;
-  padding-left: 26rem;
+  text-align: right;
+  grid-column: 3/4;
+  margin-right: 4rem;
 }
 
-.impressum {
-  grid-column-start: 1;
-  grid-column-end: 4;
-  background-color: #6c757d;
-  color: white;
-  padding: 0.5rem;
-}
 </style>
