@@ -18,6 +18,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import PersonenRegister from "../components/Register/PersonenRegisterDummy";
 import OverviewHandapparat from "../components/Handapparat/OverviewHandapparat";
 import BoehmEdition from "../components/Handapparat/BoehmEdition";
+import Projektinformationen from "../components/Projekt/Projektinformationen";
 
 
 Vue.use(Router)
@@ -71,6 +72,7 @@ export default new Router({
             }},
         {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung},
 
-        {path: '/register/personen', name: 'pReg', component: PersonenRegister}
+        {path: '/register/personen', name: 'pReg', component: PersonenRegister},
+        {path: '/projektinformationen', name: 'pReg', component: Projektinformationen}
     ]
 })

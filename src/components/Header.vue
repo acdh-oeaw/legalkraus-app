@@ -10,7 +10,11 @@
     <div class="navigation">
       <p class="nav-el">
         <b-dropdown id="dropdown-1" text="Projekt" class="m-md-2">
-          <b-dropdown-item>Projektinformation</b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/projektinformationen">
+              Projektinformation
+            </router-link>
+            </b-dropdown-item>
           <b-dropdown-item>Editionsrichtlinien</b-dropdown-item>
           <b-dropdown-item>Projektteam</b-dropdown-item>
           <b-dropdown-item>Publikationen</b-dropdown-item>
@@ -46,6 +50,11 @@
               Alle Akten
             </router-link>
           </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/alle-resourcen">
+              Alle Dokumente
+            </router-link>
+          </b-dropdown-item>
         </b-dropdown>
       </p>
       <p class="nav-el">
@@ -62,6 +71,7 @@
           <b-dropdown-item>Institutionen</b-dropdown-item>
           <b-dropdown-item>Werke</b-dropdown-item>
           <b-dropdown-item>Juristische Texte</b-dropdown-item>
+          <b-dropdown-item>Fackel Texte</b-dropdown-item>
         </b-dropdown>
       </p>
       <button type="button" class="btn nav-el handapparat">
