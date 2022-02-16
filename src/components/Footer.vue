@@ -49,10 +49,7 @@ export default {
 <style scoped>
 
 main {
-  display: grid;
-  grid-template-rows: auto auto;
   width: 100%;
-  justify-content: space-between;
   grid-column-gap: 1rem;
   height: min-content;
   margin-bottom: 0;
@@ -67,7 +64,9 @@ main {
   grid-template-columns: repeat(3,auto);
   background-color: var(--secondary-gray-dark);
   padding: 2rem;
+  margin: 0 !important;
   align-items: baseline;
+  font-size: 0.9rem;
 }
 
 .logos {
