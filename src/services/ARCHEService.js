@@ -9,23 +9,6 @@ const FORMAT_NTRIPLES = "application/n-triples";
 const READMODE_RESOURCE = "resource";
 const READMODE_RELATIVES = "relatives";
 
-/*module.exports.getObjectWithId = async (resourceId, callback) => {
-    let url = ARCHE_BASE_URL + '/' + resourceId + '/' + `metadata?_format=${FORMAT_NTRIPLES}&readMode=${READMODE_RESOURCE}`;
-    const options = {
-        method: 'GET'
-    };
-    console.log(url);
-    try {
-        const response = await fetch(url, options);
-        console.log("statusCode:", response.statusCode);
-        console.log("headers:", response.headers);
-        const body = await response.text();
-        return callback(body);
-    } catch (error) {
-        console.log(error);
-    }    
-}*/
-
 module.exports.getObjectWithId = async (resourceId, callback) => {
     const options = {
         "host": ARCHE_BASE_URL,
@@ -65,7 +48,6 @@ module.exports.getMetaData = async (callback) => {
 module.exports.getCollections = async (startPage, callback) => {
     const resourceId = 37565;
 
-  //  const collections = [];
     const options = {
         "host": ARCHE_BASE_URL,
         "format": "application/n-triples",
@@ -75,62 +57,9 @@ module.exports.getCollections = async (startPage, callback) => {
     if (store.default.getters.MDAllCollections === null) {
     try {
         ARCHEdownloadResourceIdM(options, (rs) => {
-
-          /*  const options = {
-                "subject": null,
-                "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#isPartOf",
-                "object": `${ARCHE_BASE_URL}/37565`,
-                "expiry": 14,
-                "paginate": [startPage, Math.min(startPage + store.default.getters.collectionPageSize, store.default.getters.noOfCollections || store.default.getters.collectionPageSize)]
-
-            };*/
             store.default.dispatch('setMDAllCollections', rs);
             queryAndProcessMD('collection', ARCHE_BASE_URL, startPage, callback);
-           /* let resources = ARCHErdfQuery(options, rs);
-            store.default.dispatch('setNoOfCollections', resources.fullLength)
-            const promises = [];
-            resources.value.forEach(function (rs) {
-                var rsID = rs.isPartOf.subject.replace(`${ARCHE_BASE_URL}/`, "");
-                let options = {
-                    "host": ARCHE_BASE_URL,
-                    "format": "application/n-triples",
-                    "resourceId": rsID,
-                    "readMode": "resource"
-                };
-                promises.push(ARCHEdownloadResourceIdM2(options));
-            });
-            Promise.all(promises).then((results) => {
-                results.forEach(collection => {
-                    let options = {
-                        "subject": null,
-                        "predicate": null,
-                        "object": null,
-                        "expiry": 14,
-                        "paginate": false
-                    };
-                    const coldata = ARCHErdfQuery(options, collection);
-                    collections.push(coldata);
-                })
-                const transformed = collections2view(collections);
-                console.log(transformed)
-                callback(transformed)
-            });*/
         });
-        /*let result = [];
-        for (let i = 0; i < child_resources.length; i++) {
-            let title = ARCHErdfQuery(child_resources[i].subject,'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', null,body);
-            let documents = ARCHErdfQuery(child_resources[i].subject,'https://vocabs.acdh.oeaw.ac.at/schema#hasNumberOfItems', null,body)
-
-            let idx = documents[0].object.lastIndexOf('^');
-            let docs = documents[0].object.substring(0, idx-1);
-
-            let t = extractTitle(title);
-            result.push({
-                url: child_resources[i],
-                title: t,
-                size: docs});
-        }
-        return callback(result);*/
     } catch (error) {
         console.log(error);
     }
@@ -190,27 +119,6 @@ module.exports.getObjectsOfCollection = async (resourceId, callback) => {
     } catch (error) {
         console.log(error);
     }
-    /* try {
-         let collection = ARCHErdfQuery(options, rs);
-
-         const response = await fetch(url, options);
-         const body = await response.text();
-         let child_resources = ARCHErdfQuery(null, 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf', 'https://arche-dev.acdh-dev.oeaw.ac.at/api/' + resourceId, body);
-         let result = [];
-         for (let i = 0; i < child_resources.length; i++) {
-             let title = ARCHErdfQuery(child_resources[i].subject, 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', null, body);
-             let identifier = ARCHErdfQuery(child_resources[i].subject, 'https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier', null, body);
-             let t = extractTitle(title);
-             result.push({
-                 url: child_resources[i],
-                 title: t,
-                 identifier: identifier[1].object
-             });
-         }
-         return callback(result);
-     } catch (error) {
-         console.log(error);
-     }*/
 }
 
 module.exports.getCollectionOfObject = async (resourceId, callback) => {
@@ -270,7 +178,8 @@ module.exports.getCollectionOfObject = async (resourceId, callback) => {
                 result.push({
                     url: colFetchUrl,
                     title: t,
-                    size: docs
+                    size: docs,
+                    id: colId
                 });
                 return callback(result);
             });
@@ -281,7 +190,6 @@ module.exports.getCollectionOfObject = async (resourceId, callback) => {
 }
 
 module.exports.getAllResources = async (startPage, callback) => {
-   // const resources = [];
     const resourceId = 37565;
     const options = {
         "host": ARCHE_BASE_URL,
@@ -322,24 +230,65 @@ module.exports.getTransformedHTML = async (resourceId, callback) => {
     return callback(data);
 }
 
-module.exports.performFullTextSearch = async (searchTerm, callback) => {
+module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback) => {
     const url = `${ARCHE_BASE_URL}/search?`;
 
+    if(colId && rsId){
+        //searches in the resource that has rsId and is part of the collection with colId
+        console.log('colId + rsId');
+        fetch(url + new URLSearchParams({
+            "property[0]": "BINARY",
+            "operator[0]": "@@",
+            "value[0]": searchTerm,
+            "property[1]": "https://vocabs.acdh.oeaw.ac.at/schema#isPartOf",
+            "operator[1]": "=",
+            "value[1]": "https://arche-dev.acdh-dev.oeaw.ac.at/api/" + colId,
+            "value[2]": "https://arche-dev.acdh-dev.oeaw.ac.at/api/" + rsId,
+            "ftsQuery": searchTerm
 
-    fetch(url + new URLSearchParams({
-        "property[0]": "BINARY",
-        "operator[0]": "@@",
-        "value[0]": searchTerm,
-        "property[1]": "https://vocabs.acdh.oeaw.ac.at/schema#isPartOf",
-        "operator[1]": "=",
-        "value[1]": "https://arche-dev.acdh-dev.oeaw.ac.at/api/37571",
-        "ftsQuery": searchTerm
+        }), {
+            headers: { 'Accept': 'application/json' }
+        }).then(response => response.json()).then(data => {
+            return callback(data);
+        })
 
-    }), {
-        headers: { 'Accept': 'application/json' }
-    }).then(response => response.json()).then(data => {
-        return callback(data);
-    })
+    }else if (colId){
+        //searches in all resources that are part of the collection with colId
+        console.log('colId')
+        fetch(url + new URLSearchParams({
+            "property[0]": "BINARY",
+            "operator[0]": "@@",
+            "value[0]": searchTerm,
+            "property[1]": "https://vocabs.acdh.oeaw.ac.at/schema#isPartOf",
+            "operator[1]": "=",
+            "value[1]": "https://arche-dev.acdh-dev.oeaw.ac.at/api/" + colId,
+            "ftsQuery": searchTerm
+
+        }), {
+            headers: { 'Accept': 'application/json' }
+        }).then(response => response.json()).then(data => {
+            return callback(data);
+        })
+    }else{
+        console.log('all')
+        //searches in all collections
+        callback({})
+        /*const baseColId = 37562;
+        fetch(url + new URLSearchParams({
+            "property[0]": "BINARY",
+            "operator[0]": "@@",
+            "value[0]": searchTerm,
+            "property[1]": "https://vocabs.acdh.oeaw.ac.at/schema#isPartOf",
+            "operator[1]": "=",
+            "value[1]": "https://arche-dev.acdh-dev.oeaw.ac.at/api/" + baseColId,
+            "ftsQuery": searchTerm
+        }), {
+            headers: { 'Accept': 'application/json' }
+        }).then(response => response.json()).then(data => {
+            return callback(data);
+        })*/
+    }
+
 
 
 }

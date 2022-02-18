@@ -1,5 +1,6 @@
 <template>
   <div class="main">
+    <Search class="py-2" v-bind:col-id="colId" v-bind:rs-id="objectId"></Search>
     <p v-if="propsSet" class="navigation">Akten-Edition
       <span class="arrow">></span>
       <router-link router-link class="nav-link" :to="'/' + this.$route.params.cat.toLowerCase()">
@@ -303,13 +304,15 @@ import {getObjectWithId, getTransformedHTML, getCollectionOfObject} from "../../
 import {getObjectWithId as getPMBObjectWithId} from "../../services/PMBService";
 import {ARCHErdfQuery} from "arche-api/src";
 import EntitySpan from "./EntitySpan";
+import Search from "../Search";
 import {jsPDF} from "jspdf";
 import {mapGetters} from 'vuex';
 
 
 export default {
   components: {
-    EntitySpan: EntitySpan
+    EntitySpan: EntitySpan,
+    Search: Search
   },
   name: "Lesefassung",
   data: function () {
@@ -318,6 +321,7 @@ export default {
       colTitle: String,
       colSize: Number,
       colUrl: String,
+      colId: String,
       showLF: true,
       showFacs: true,
       downloadLink: String,
@@ -547,6 +551,7 @@ export default {
   },
   mounted() {
     getCollectionOfObject(this.objectId, (rs) => {
+      this.colId = rs[0].id;
       this.colTitle = rs[0].title;
       this.colSize = rs[0].size;
       this.colUrl = rs[0].url;

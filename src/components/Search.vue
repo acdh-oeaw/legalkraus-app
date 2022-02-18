@@ -1,75 +1,82 @@
 <template>
-    <b-container>
+  <b-container>
+    <b-row>
+      <b-col>
+        <div class="metainfo">
+          <b-form @submit="performFullTextSearch()">
+            <b-form-input size="sm" placeholder="Volltextsuche" :type="'search'" v-model="searchTerm"></b-form-input>
+          </b-form>
+        </div>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col>
+        <b-spinner v-if="this.loading === true" type="grow" label="Spinning"></b-spinner>
         <b-row>
-            <b-col>
-                <div class="metainfo">
-                    <b-form @submit="performFullTextSearch()">
-                        <b-form-input size="sm" placeholder="Volltextsuche" :type="'search'" v-model="searchTerm"></b-form-input>
-                    </b-form>
-                </div>
-            </b-col>
+          <b-col>
+            <div v-if="searchResultsCount === 0">Keine Ergebnisse</div>
+            <div v-else-if="searchResultsCount === 1">{{ searchResults.length }} Ergebnis</div>
+            <div v-else-if="searchResultsCount >= 1">{{ searchResultsCount }} Ergebnisse</div>
+          </b-col>
         </b-row>
-        <b-row>
-            <b-col>
-                <b-spinner v-if="this.loading === true" type="grow" label="Spinning"></b-spinner>
-                <b-row>
-                    <b-col>
-                    <div v-if="searchResultsCount === 0">Keine Ergebnisse</div>
-                    <div v-else-if="searchResultsCount === 1">{{searchResults.length}} Ergebnis</div>
-                    <div v-else-if="searchResultsCount >= 1">{{searchResultsCount}} Ergebnisse</div>
-                    </b-col>
-                </b-row> 
-                <b-row v-for="(searchResult, idx) in searchResults" :key="`sr${idx}`">
-                    <b-col>
-                    <b-row><router-link :to="{ name: 'lesefassung', params: { id: searchResult.id }}">{{searchResult.title}}</router-link></b-row>
-                        <b-row v-for="(kwic, i) in searchResult.kwic" :key="`kw${i}`">
-                            <b-col>
-                                <div v-html="kwic" class="text-left"/>
-                            </b-col>
-                        </b-row>
-                    </b-col>
-                </b-row>
-            </b-col>
+        <b-row v-for="(searchResult, idx) in searchResults" :key="`sr${idx}`">
+          <b-col>
+            <b-row>
+              <router-link :to="{ name: 'lesefassung', params: { id: searchResult.id }}">{{ searchResult.title }}
+              </router-link>
+            </b-row>
+            <b-row v-for="(kwic, i) in searchResult.kwic" :key="`kw${i}`">
+              <b-col>
+                <div v-html="kwic" class="text-left"/>
+              </b-col>
+            </b-row>
+          </b-col>
         </b-row>
-    </b-container>
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 <script>
-import { performFullTextSearch } from "@/services/ARCHEService";
+import {performFullTextSearch} from "@/services/ARCHEService";
 
 export default {
   name: "Header",
   data() {
     return {
-      searchTerm:'',
-      searchResults:[],
+      searchTerm: '',
+      searchResults: [],
       searchResultsCount: null,
       loading: false,
     }
   },
-  methods: 
-  {
+  props: ['colId', 'rsId'],
+  methods:
+      {
         processSearchResults(data) {
-            this.searchResults = [];
-            for (const [key, value] of Object.entries(data)) {
-                if (Object.prototype.hasOwnProperty.call(value,"https://vocabs.acdh.oeaw.ac.at/schema#hasTitle")) {
-                    this.searchResults.push({
-                        "id":key.replace("https://arche-dev.acdh-dev.oeaw.ac.at/api/",""),
-                        "title": value["https://vocabs.acdh.oeaw.ac.at/schema#hasTitle"][0].value,
-                        "kwic": value["search://fts"].map(kwic => kwic.value)
-                    })
-                   
-                }
+          this.searchResults = [];
+          for (const [key, value] of Object.entries(data)) {
+            if (Object.prototype.hasOwnProperty.call(value, "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle")) {
+              this.searchResults.push({
+                "id": key.replace("https://arche-dev.acdh-dev.oeaw.ac.at/api/", ""),
+                "title": value["https://vocabs.acdh.oeaw.ac.at/schema#hasTitle"][0].value,
+                "collection": value["https://vocabs.acdh.oeaw.ac.at/schema#isPartOf"][0].value,
+                "kwic": value["search://fts"].map(kwic => kwic.value)
+              })
+
             }
-            this.searchResultsCount = this.searchResults.length;       
+          }
+          console.log(this.searchResults);
+          this.searchResultsCount = this.searchResults.length;
         },
-          performFullTextSearch() {
-            this.loading = true;
-            performFullTextSearch(this.searchTerm, data => {
-                this.processSearchResults(data)
-            });
-            this.loading = false;
-          },
+        performFullTextSearch() {
+          this.loading = true;
+          performFullTextSearch(this.searchTerm, this.colId, this.rsId, data => {
+            console.log(data);
+            this.processSearchResults(data)
+          });
+          this.loading = false;
         },
+      },
 }
 </script>
 

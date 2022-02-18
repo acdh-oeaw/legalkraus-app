@@ -1,5 +1,6 @@
 <template>
   <main>
+    <Search class="py-2" v-bind:col-id="colId"></Search>
     <p class="navigation">Akten-Edition
       <span class="arrow">></span>
       <router-link router-link class="nav-link" :to="'/' + catLower">
@@ -32,12 +33,16 @@
 
 import {getObjectsOfCollection, getObjectWithId} from "@/services/ARCHEService";
 import {ARCHErdfQuery} from "arche-api/src";
+import Search from "../Search";
 
 export default {
   name: "OverviewObjects",
+  components: {
+    Search: Search
+  },
   data: function () {
     return {
-      caseId: -1,
+      colId: -1,
       objects: [],
       caseTitle: String,
       numberDocuments: Number,
@@ -120,17 +125,17 @@ export default {
     }
   },
   created() {
-    this.caseId = this.$route.params.id;
+    this.colId = this.$route.params.id;
     this.path = this.$route.path;
     this.setCurrPageAndCategory();
 
   },
   mounted() {
-    if (isNaN(parseInt(this.caseId)) || this.caseId === -1) {
+    if (isNaN(parseInt(this.colId)) || this.colId === -1) {
       this.$router.push({name: "home"});
       //todo: go to "home" when id-parameter is empty
     }
-    getObjectWithId(this.caseId, (result) => {
+    getObjectWithId(this.colId, (result) => {
       // query:
       const optionsTitle = {
         "subject": null,
@@ -152,7 +157,7 @@ export default {
       this.numberDocuments = documents.substring(0, idx - 1);
     });
 
-    getObjectsOfCollection(this.caseId, (result) => {
+    getObjectsOfCollection(this.colId, (result) => {
       this.objects = result;
       this.isEmpty = (this.objects.length === 0);
     });

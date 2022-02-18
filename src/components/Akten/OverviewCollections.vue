@@ -1,5 +1,6 @@
 <template>
   <main>
+    <Search class="py-2"></Search>
     <p class="navigation">Akten-Edition
       <span class="arrow">></span>
       <router-link router-link class="nav-link" :to="'/' + catLower">
@@ -68,15 +69,14 @@
 
 <script>
 
-import FilterComponent from "./FilterComponent";
 import {getCollections} from "@/services/ARCHEService";
+import Search from "../Search";
 
 export default {
   name: "OverviewCollections",
-  comments: {
-    'filter-component': FilterComponent
+  components: {
+    Search: Search
   },
-
   data: function () {
     return {
       collections: [],
