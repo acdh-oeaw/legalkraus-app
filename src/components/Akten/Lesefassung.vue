@@ -799,7 +799,7 @@ export default {
   content: attr(data-lbnr);
   padding-top:0.2rem;
   left:-0.8rem;
-  width:1rem;
+  width:1.5rem;
   text-align:center;
   font-size:80%;
   position:absolute;
