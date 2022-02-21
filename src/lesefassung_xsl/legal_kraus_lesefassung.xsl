@@ -217,8 +217,8 @@
         </span>
     </xsl:template>
 
-    <xsl:template match="tei:note[@type = 'marginal' and @hand = '*' and @rend = '*']">
-        <span class="marginalie-text">
+    <xsl:template match="tei:note[@type = 'marginal']">
+        <span class="marginalie-text {@rend}">
             <xsl:apply-templates/>
         </span>
     </xsl:template>

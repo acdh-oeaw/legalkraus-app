@@ -182,7 +182,7 @@
           </div>
 
 
-          <div class="body overflow-auto d-flex flex-row">
+          <div class="body overflow-auto d-flex flex-row pl-custom">
            <!-- <div v-if="this.$store.getters.linebreaks" class="w-5 text-right position-relative">
             </div>-->
             <component class="position-relative" v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"/>
@@ -799,8 +799,8 @@ export default {
   content: attr(data-lbnr);
   padding-top:0.2rem;
   left:-0.8rem;
-  width:1.5rem;
-  text-align:center;
+  width:auto;
+  text-align:right;
   font-size:80%;
   position:absolute;
   display: block;
@@ -1014,6 +1014,24 @@ export default {
 
 .c{
   margin:0;
+}
+
+.marginalie-text.marginLeft {
+  padding-top:0.2rem;
+  position:absolute;
+  font-size:80%;
+  left: -5rem;
+}
+
+.marginalie-text.marginRight {
+  padding-top:0.2rem;
+  position:absolute;
+  font-size:80%;
+  right: -5rem;
+}
+
+.pl-custom {
+  padding-left:5rem;
 }
 
 </style>
