@@ -183,12 +183,9 @@
 
 
           <div class="body overflow-auto d-flex flex-row">
-            <div v-if="this.$store.getters.linebreaks" class="w-5 text-right position-relative">
-              <!--<div v-bind:key="lb.refkey" :id="lb.key" v-bind:style="{'position':'absolute','top':`${lb.top}px`}" v-for="lb in this.$store.getters.linebreaks">
-              {{lb.lnr}}
-              </div>-->
-            </div>
-            <component class="w-95" v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"/>
+           <!-- <div v-if="this.$store.getters.linebreaks" class="w-5 text-right position-relative">
+            </div>-->
+            <component class="position-relative" v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"/>
           </div>
         </div>
       </div>
@@ -355,17 +352,12 @@ export default {
         },
         template,
         mounted() {
-          const lbsrefs = [];
-          Object.keys(this.$refs).forEach((refkey, idx) => {
-            if (refkey.includes('linebreak')) {
-              lbsrefs.push({
-                key: refkey,
-                lnr: idx + 1,
-                top: this.$refs[refkey].getBoundingClientRect().y - this.$refs[refkey].parentElement.parentElement.getBoundingClientRect().y + this.$refs[refkey].getBoundingClientRect().height
-              })
+          this.$refs['readview'].querySelectorAll(".lb").forEach((lb,idx)=>{
+            const ln = idx + 1;
+            if (ln % 5 === 0) {
+            lb.setAttribute('data-lbnr',idx + 1);
             }
           })
-          this.$store.dispatch('setLinebreaks', lbsrefs)
         },
         computed: {
           ...mapGetters({
@@ -798,8 +790,19 @@ export default {
   max-height: 100%;
 }
 
-.lb::before {
+.lb::after {
   content: "\A";
+  display: block;
+}
+
+.lb::before {
+  content: attr(data-lbnr);
+  padding-top:0.2rem;
+  left:-0.8rem;
+  width:1rem;
+  text-align:center;
+  font-size:80%;
+  position:absolute;
   display: block;
 }
 

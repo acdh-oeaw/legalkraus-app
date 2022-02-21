@@ -66,7 +66,7 @@
             </xsl:for-each>
 
         </xsl:variable>
-        <div>
+        <div ref="readview">
             <xsl:apply-templates select="$result" mode="clean"/>
         </div>
     </xsl:template>
@@ -237,7 +237,7 @@
 
     <xsl:template match="tei:lb">
         <xsl:variable name="curbr" select="."/>
-        <br ref="linebreak{generate-id()}"/>
+        <span class="lb" ref="linebreak{generate-id()}"/>
     </xsl:template>
     <xsl:template match="tei:pb">
         <br/>
