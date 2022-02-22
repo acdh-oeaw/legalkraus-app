@@ -28,23 +28,22 @@
       <p class="meta6">Beteiligte: (coming soon)</p>
       <div class="vl meta7"></div>
       <div class="meta8">
-        <input class="vt-suche" type="text" placeholder="Volltextsuche:"/>
-        <button class="format btn btn-light">Suche</button>
+        <input class="vt-suche" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
       </div>
     </div>
-<!--    <div class="w-100 mb-5">
-      <svg v-on:click="prev()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-           class="bi bi-arrow-left text-bottom" viewBox="0 0 16 16">
-        <path fill-rule="evenodd"
-              d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-      </svg>
-      <span class="px-1">Seite {{ selectedPage }} von {{ facsURLs.length }}</span>
-      <svg v-on:click="next()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-           class="bi bi-arrow-right text-bottom" viewBox="0 0 16 16">
-        <path fill-rule="evenodd"
-              d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-      </svg>
-    </div>-->
+    <!--    <div class="w-100 mb-5">
+          <svg v-on:click="prev()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+               class="bi bi-arrow-left text-bottom" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+          </svg>
+          <span class="px-1">Seite {{ selectedPage }} von {{ facsURLs.length }}</span>
+          <svg v-on:click="next()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+               class="bi bi-arrow-right text-bottom" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+          </svg>
+        </div>-->
     <div class="grid-container">
       <div id="card-left-small" class="card-left-small" v-if="this.showLF && !this.showFacs"
            v-on:click="this.toggleShowBoth">
@@ -182,10 +181,11 @@
           </div>
 
 
-          <div class="body overflow-auto d-flex flex-row pl-custom">
-           <!-- <div v-if="this.$store.getters.linebreaks" class="w-5 text-right position-relative">
-            </div>-->
-            <component class="position-relative" v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"/>
+          <div class="body overflow-auto d-flex flex-row">
+            <!-- <div v-if="this.$store.getters.linebreaks" class="w-5 text-right position-relative">
+             </div>-->
+            <component class="position-relative" v-if="pages" :is="dynComponent"
+                       v-on:childToParent="childToParent($event)"/>
           </div>
         </div>
       </div>
@@ -304,6 +304,7 @@ import EntitySpan from "./EntitySpan";
 import Search from "../Search";
 import {jsPDF} from "jspdf";
 import {mapGetters} from 'vuex';
+import * as Mark from "mark.js/dist/mark.min.js"
 
 
 export default {
@@ -333,7 +334,8 @@ export default {
       transformedHTML: null,
       pages: null,
       showAllAnnotations: false,
-      propsSet: false
+      propsSet: false,
+      keyword: null
     }
   },
   computed: {
@@ -374,6 +376,14 @@ export default {
     }
   },
   methods: {
+    highlight(keyword) {
+      var instance = new Mark(document.querySelector("div.d-block"));
+      instance.unmark({
+        done: function(){
+          instance.mark(keyword);
+        }
+      });
+    },
     async childToParent(event) {
       this.toggleFacs(); //hide facsimile, switch to text-only view
       let elem = document.getElementById(event.htmlId);
@@ -1032,6 +1042,11 @@ export default {
 
 .pl-custom {
   padding-left:5rem;
+}
+
+mark {
+  background: orange !important;
+  padding: 0 !important;
 }
 
 </style>
