@@ -7,7 +7,8 @@
         {{ this.$route.params.cat }}
       </router-link>
       <span class="arrow">></span>
-      <router-link router-link class="nav-link" :to="'/' + this.$route.params.cat.toLowerCase() + '/'+ this.$route.params.subcat.toLowerCase() +'/collections'">
+      <router-link router-link class="nav-link"
+                   :to="'/' + this.$route.params.cat.toLowerCase() + '/'+ this.$route.params.subcat.toLowerCase() +'/collections'">
         {{ this.$route.params.subcat }}
       </router-link>
       <span class="arrow">></span>
@@ -28,23 +29,23 @@
       <p class="meta6">Beteiligte: (coming soon)</p>
       <div class="vl meta7"></div>
       <div class="meta8">
-        <input class="vt-suche" type="text" placeholder="Volltextsuche:"/>
-        <button class="format btn btn-light">Suche</button>
+        <input class="vt-suche" type="text" placeholder="Volltextsuche:" v-model="keyword"/>
+        <button class="format btn btn-light" v-on:click="highlight(keyword)">Suche</button>
       </div>
     </div>
-<!--    <div class="w-100 mb-5">
-      <svg v-on:click="prev()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-           class="bi bi-arrow-left text-bottom" viewBox="0 0 16 16">
-        <path fill-rule="evenodd"
-              d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-      </svg>
-      <span class="px-1">Seite {{ selectedPage }} von {{ facsURLs.length }}</span>
-      <svg v-on:click="next()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-           class="bi bi-arrow-right text-bottom" viewBox="0 0 16 16">
-        <path fill-rule="evenodd"
-              d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-      </svg>
-    </div>-->
+    <!--    <div class="w-100 mb-5">
+          <svg v-on:click="prev()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+               class="bi bi-arrow-left text-bottom" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+          </svg>
+          <span class="px-1">Seite {{ selectedPage }} von {{ facsURLs.length }}</span>
+          <svg v-on:click="next()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+               class="bi bi-arrow-right text-bottom" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+          </svg>
+        </div>-->
     <div class="grid-container">
       <div id="card-left-small" class="card-left-small" v-if="this.showLF && !this.showFacs"
            v-on:click="this.toggleShowBoth">
@@ -183,9 +184,10 @@
 
 
           <div class="body overflow-auto d-flex flex-row">
-           <!-- <div v-if="this.$store.getters.linebreaks" class="w-5 text-right position-relative">
-            </div>-->
-            <component class="position-relative" v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"/>
+            <!-- <div v-if="this.$store.getters.linebreaks" class="w-5 text-right position-relative">
+             </div>-->
+            <component class="position-relative" v-if="pages" :is="dynComponent"
+                       v-on:childToParent="childToParent($event)"/>
           </div>
         </div>
       </div>
@@ -304,6 +306,7 @@ import EntitySpan from "./EntitySpan";
 import Search from "../Search";
 import {jsPDF} from "jspdf";
 import {mapGetters} from 'vuex';
+import * as Mark from "mark.js/dist/mark.min.js"
 
 
 export default {
@@ -333,7 +336,8 @@ export default {
       transformedHTML: null,
       pages: null,
       showAllAnnotations: false,
-      propsSet: false
+      propsSet: false,
+      keyword: null
     }
   },
   computed: {
@@ -342,7 +346,6 @@ export default {
       highlighter: 'highlighter'
     }),
     dynComponent() {
-
       const template = this.pages;
       return {
         data() {
@@ -352,10 +355,10 @@ export default {
         },
         template,
         mounted() {
-          this.$refs['readview'].querySelectorAll(".lb").forEach((lb,idx)=>{
+          this.$refs['readview'].querySelectorAll(".lb").forEach((lb, idx) => {
             const ln = idx + 1;
             if (ln % 5 === 0) {
-            lb.setAttribute('data-lbnr',idx + 1);
+              lb.setAttribute('data-lbnr', idx + 1);
             }
           })
         },
@@ -374,6 +377,14 @@ export default {
     }
   },
   methods: {
+    highlight(keyword) {
+      var instance = new Mark(document.querySelector("div.d-block"));
+      instance.unmark({
+        done: function(){
+          instance.mark(keyword);
+        }
+      });
+    },
     async childToParent(event) {
       this.toggleFacs(); //hide facsimile, switch to text-only view
       let elem = document.getElementById(event.htmlId);
@@ -424,7 +435,7 @@ export default {
             "  <path fill-rule=\"evenodd\" d=\"M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z\" style=\"padding-bottom: 0.1rem;margin-left: 0.3rem;\"/>\n" +
             "</svg>";
       } else if (type === 'work') {
-        div.innerHTML = "<p class='c'>"+event.pmbId + "</p><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"currentColor\" class=\"bi bi-box-arrow-in-up-right\" viewBox=\"0 0 16 16\">\n" +
+        div.innerHTML = "<p class='c'>" + event.pmbId + "</p><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"currentColor\" class=\"bi bi-box-arrow-in-up-right\" viewBox=\"0 0 16 16\">\n" +
             "  <path fill-rule=\"evenodd\" d=\"M6.364 13.5a.5.5 0 0 0 .5.5H13.5a1.5 1.5 0 0 0 1.5-1.5v-10A1.5 1.5 0 0 0 13.5 1h-10A1.5 1.5 0 0 0 2 2.5v6.636a.5.5 0 1 0 1 0V2.5a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5H6.864a.5.5 0 0 0-.5.5z\"/>\n" +
             "  <path fill-rule=\"evenodd\" d=\"M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z\" style=\"padding-bottom: 0.1rem;margin-left: 0.3rem;\"/>\n" +
             "</svg>";
@@ -443,7 +454,7 @@ export default {
 
       return div;
     },
-    removeAllComments(){
+    removeAllComments() {
       document.querySelectorAll('.comment').forEach(e => e.remove());
     },
     downloadXMLFromUrl(url) {
@@ -536,7 +547,7 @@ export default {
   created() {
     this.objectId = this.$route.params.id;
     console.log(this.$route.params);
-    if(this.$route.params.cat){
+    if (this.$route.params.cat) {
       this.propsSet = true;
       console.log(this.propsSet)
     }
@@ -595,6 +606,7 @@ export default {
   padding: 0 !important;
   margin: 0;
 }
+
 .grid-container {
   display: grid;
   grid-template-columns: 10rem auto auto 10rem;
@@ -630,10 +642,11 @@ export default {
   text-decoration: underline var(--primary-red) 5px;
 }
 
-.back{
+.back {
   padding: 0;
   color: var(--text-black) !important;
 }
+
 .back:hover {
   text-decoration: none;
 }
@@ -691,7 +704,7 @@ export default {
   display: flex;
   margin: 1rem !important;
   justify-content: space-between;
-  color: var(--text-gray)!important;
+  color: var(--text-gray) !important;
 }
 
 .all-annotations {
@@ -704,8 +717,8 @@ export default {
   border-width: 1rem;
 }
 
-.card{
-  margin: auto!important;
+.card {
+  margin: auto !important;
 }
 
 .card-fixed {
@@ -797,12 +810,12 @@ export default {
 
 .lb::before {
   content: attr(data-lbnr);
-  padding-top:0.2rem;
-  left:-0.8rem;
-  width:1.5rem;
-  text-align:center;
-  font-size:80%;
-  position:absolute;
+  padding-top: 0.2rem;
+  left: -0.8rem;
+  width: 1.5rem;
+  text-align: center;
+  font-size: 80%;
+  position: absolute;
   display: block;
 }
 
@@ -1012,8 +1025,13 @@ export default {
   color: #33ccff;
 }
 
-.c{
-  margin:0;
+.c {
+  margin: 0;
+}
+
+mark {
+  background: orange !important;
+  padding: 0 !important;
 }
 
 </style>
