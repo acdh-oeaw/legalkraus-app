@@ -29,8 +29,7 @@
       <p class="meta6">Beteiligte: (coming soon)</p>
       <div class="vl meta7"></div>
       <div class="meta8">
-        <input class="vt-suche" type="text" placeholder="Volltextsuche:" v-model="keyword"/>
-        <button class="format btn btn-light" v-on:click="highlight(keyword)">Suche</button>
+        <input class="vt-suche" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
       </div>
     </div>
     <!--    <div class="w-100 mb-5">
