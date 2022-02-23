@@ -1,6 +1,6 @@
 <template>
   <main>
-    <Search class="py-2" v-bind:col-id="colId"></Search>
+
     <p class="navigation">Akten-Edition
       <span class="arrow">></span>
       <router-link router-link class="nav-link" :to="'/' + catLower">
@@ -13,15 +13,41 @@
       <span class="arrow">></span>
       {{ this.caseTitle }}
     </p>
-    <h3> Documents of case "{{ this.caseTitle }}"</h3>
-    <p v-if="isEmpty"> This case does not have any documents. </p>
-    <p v-else> This case has {{ this.numberDocuments }} documents. </p>
-    <div class="wrapper">
-      <div class="card-deck">
+    <div class="search-wrapper">
+      <Search class="py-2" v-bind:col-id="colId" v-on:searchPerformed="searchPerformed($event)"></Search>
+    </div>
+    <div class="case-info">
+      <h3> Dokumente des Falles "{{ this.caseTitle }}"</h3>
+      <p v-if="isEmpty"> Dieser Fall hat keine Dokumente. </p>
+      <p v-else> Dieser Fall hat {{ this.numberDocuments }} Dokumente. </p>
+
+    <div v-if="searchView">
+      <b-col>
+        <h5> Suchergebnisse zu "{{this.keyword}}":</h5>
+        <div v-if="searchResultsCount === 0">Keine Ergebnisse</div>
+        <div v-else-if="searchResultsCount === 1">{{ searchResults.length }} Ergebnis</div>
+        <div v-else-if="searchResultsCount >= 1">{{ searchResultsCount }} Ergebnisse</div>
+        <button type="button" class="btn btn-secondary btn-sm" v-on:click="toggleView">Zurück zur Fallansicht</button>
+      </b-col>
+    </div>
+    </div>
+    <div class="cards-wrapper">
+      <div v-if="!searchView" class="card-deck">
         <div class="card" v-for="val in objects" v-bind:key="val.title" v-on:click="navToLesefassung(val.url)">
           <h4 class="card-title"> {{ val.title }}</h4>
           <p> {{ val.identifier }}</p>
           <p> {{ val.url }}</p>
+        </div>
+      </div>
+      <div v-if="searchView" class="card-deck">
+        <div class="card" v-for="val in searchResults" v-bind:key="val.title" v-on:click="navToLesefassung(val.url)">
+          <h4 class="card-title"> {{ val.title }}</h4>
+          <p> {{ val.id }}</p>
+
+          <h5>Treffer Volltextsuche:</h5>
+          <b-row v-for="(kwic, i) in val.kwic" :key="`kw${i}`">
+            <p v-html="kwic" class="text-left">[...]</p>
+          </b-row>
         </div>
       </div>
     </div>
@@ -44,10 +70,14 @@ export default {
     return {
       colId: -1,
       objects: [],
+      searchResults: [],
+      searchResultsCount: 0,
+      keyword: String,
       caseTitle: String,
       numberDocuments: Number,
       isEmpty: Boolean,
       path: String,
+      searchView: false,
       subCategory: String,
       category: String,
       catLower: String,
@@ -72,7 +102,10 @@ export default {
   methods: {
     navToLesefassung: function (url) {
       let id = this.getIdFromUrl(url)
-      this.$router.push({name: "lesefassung", params: {id: id, cat: this.category, subcat: this.subCategory, case: this.caseTitle}});
+      this.$router.push({
+        name: "lesefassung",
+        params: {id: id, cat: this.category, subcat: this.subCategory, case: this.caseTitle}
+      });
     },
     getIdFromUrl(url) {
       let idx = url.lastIndexOf('/');
@@ -122,6 +155,19 @@ export default {
         this.subCatLower = this.subCategory.toString().toLowerCase();
       }
 
+    },
+    async searchPerformed(event) {
+      if(event.keyword === ""){
+        this.searchView = false;
+        return;
+      }
+      this.searchView = true;
+      this.searchResults = event.searchResults;
+      this.searchResultsCount = event.searchResults.length;
+      this.keyword = event.keyword;
+    },
+    toggleView(){
+      this.searchView = false;
     }
   },
   created() {
@@ -173,6 +219,7 @@ export default {
   padding: 2rem;
   margin: auto;
   grid-column: auto;
+  cursor: pointer;
 }
 
 .card-deck {
@@ -185,11 +232,18 @@ export default {
   grid-column-gap: 6rem;
 }
 
-.wrapper {
+.case-info{
+  margin: 2rem;
+}
+
+.cards-wrapper {
   display: flex;
   align-content: center;
 }
 
+.search-wrapper{
+  display: flex;
+}
 .navigation {
   margin-left: 1rem;
   text-align: left;

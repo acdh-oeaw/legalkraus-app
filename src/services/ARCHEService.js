@@ -235,7 +235,6 @@ module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback)
 
     if(colId && rsId){
         //searches in the resource that has rsId and is part of the collection with colId
-        console.log('colId + rsId');
         fetch(url + new URLSearchParams({
             "property[0]": "BINARY",
             "operator[0]": "@@",
@@ -254,7 +253,6 @@ module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback)
 
     }else if (colId){
         //searches in all resources that are part of the collection with colId
-        console.log('colId')
         fetch(url + new URLSearchParams({
             "property[0]": "BINARY",
             "operator[0]": "@@",
@@ -272,7 +270,16 @@ module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback)
     }else{
         console.log('all')
         //searches in all collections
-        callback({})
+
+        //id 37565
+        const url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/search?sql=SELECT id  FROM      full_text_search      JOIN (          SELECT (get_relatives(id, ?, 9999, 0)).id          FROM identifiers          WHERE ids = ?      ) t USING (id)  WHERE websearch_to_tsquery('simple', ?) @@ segments&sqlParam[]=https://vocabs.acdh.oeaw.ac.at/schema%23isPartOf&sqlParam[]=https://arche-dev.acdh-dev.oeaw.ac.at/api/37565&format=application/json&sqlParam[]=Beilegen&readMode=ids&limit=25&ftsQuery=Beilegen";
+        //id 37562
+        //const url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/search?sql=SELECT id  FROM      full_text_search      JOIN (          SELECT (get_relatives(id, ?, 9999, 0)).id          FROM identifiers          WHERE ids = ?      ) t USING (id)  WHERE websearch_to_tsquery('simple', ?) @@ segments&sqlParam[]=https://vocabs.acdh.oeaw.ac.at/schema%23isPartOf&sqlParam[]=https://arche-dev.acdh-dev.oeaw.ac.at/api/37562&format=application/json&sqlParam[]=Beilegen&readMode=ids&limit=25&ftsQuery=Beilegen";
+        fetch(url).then(rs => rs.json()).then(data => {
+            console.log(data);
+            return callback(data);
+        });
+
         /*const baseColId = 37562;
         fetch(url + new URLSearchParams({
             "property[0]": "BINARY",

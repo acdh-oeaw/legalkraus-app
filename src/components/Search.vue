@@ -9,7 +9,7 @@
         </div>
       </b-col>
     </b-row>
-    <b-row>
+<!--    <b-row>
       <b-col>
         <b-spinner v-if="this.loading === true" type="grow" label="Spinning"></b-spinner>
         <b-row>
@@ -33,7 +33,7 @@
           </b-col>
         </b-row>
       </b-col>
-    </b-row>
+    </b-row>-->
   </b-container>
 </template>
 <script>
@@ -56,22 +56,22 @@ export default {
           this.searchResults = [];
           for (const [key, value] of Object.entries(data)) {
             if (Object.prototype.hasOwnProperty.call(value, "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle")) {
+              const id = key.replace("https://arche-dev.acdh-dev.oeaw.ac.at/api/", "");
               this.searchResults.push({
-                "id": key.replace("https://arche-dev.acdh-dev.oeaw.ac.at/api/", ""),
+                "id": id,
+                "url": key,
                 "title": value["https://vocabs.acdh.oeaw.ac.at/schema#hasTitle"][0].value,
                 "collection": value["https://vocabs.acdh.oeaw.ac.at/schema#isPartOf"][0].value,
-                "kwic": value["search://fts"].map(kwic => kwic.value)
+                "kwic": value["search://fts"].map(kwic => kwic.value.replace('\n', '')),
               })
-
             }
           }
-          console.log(this.searchResults);
           this.searchResultsCount = this.searchResults.length;
+          this.$emit('searchPerformed', {searchResults: this.searchResults, keyword: this.searchTerm});
         },
         performFullTextSearch() {
           this.loading = true;
           performFullTextSearch(this.searchTerm, this.colId, this.rsId, data => {
-            console.log(data);
             this.processSearchResults(data)
           });
           this.loading = false;
