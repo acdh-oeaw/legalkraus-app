@@ -10,7 +10,7 @@
       {{ this.currSubCat }}
     </p>
     <div>{{this.$store.getters.noOfCollections}} Sammlungen</div>
-    <div class="card">
+    <div v-if="!searchView" class="card">
       <b-pagination
           page-class="custompaging"
           prev-class="custompagingarrows"
@@ -64,6 +64,7 @@
          </tr>-->
       </b-table>
     </div>
+    <div v-if="searchView"> {{keyword}}</div>
   </main>
 </template>
 
@@ -83,6 +84,9 @@ export default {
       isBusy: false,
       perPage: 10,
       currentPage: 1,
+      searchView: false,
+      searchResults: [],
+      keyword: String,
       path: String,
       currSubCat: String,
       category: String,
@@ -106,13 +110,11 @@ export default {
   },
   methods: {
     getArcheCollections(ctx, callback)  {
-
       const offset = ctx.currentPage === 1 ? 0 : (ctx.currentPage - 1) * ctx.perPage
       console.log(offset)
       getCollections(offset,(result) => {
         callback(result)
       });
-
     },
     navToObjects: function (record) {
       let url = record.url;
@@ -183,7 +185,18 @@ export default {
       } else if (this.path.toString().includes('nationalsozialismus')) {
         this.currSubCat = this.nP;
       }
-    }
+    },
+    async searchPerformed(event) {
+      if(event.keyword === ""){
+        this.searchView = false;
+        return;
+      }
+      this.searchView = true;
+      this.searchResults = event.searchResults;
+      this.searchResultsCount = event.searchResults.length;
+      this.keyword = event.keyword;
+      console.log(event);
+    },
   },
   created() {
     this.path = this.$route.path;

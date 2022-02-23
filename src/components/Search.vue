@@ -9,35 +9,36 @@
         </div>
       </b-col>
     </b-row>
-<!--    <b-row>
-      <b-col>
-        <b-spinner v-if="this.loading === true" type="grow" label="Spinning"></b-spinner>
-        <b-row>
+    <!--    <b-row>
           <b-col>
-            <div v-if="searchResultsCount === 0">Keine Ergebnisse</div>
-            <div v-else-if="searchResultsCount === 1">{{ searchResults.length }} Ergebnis</div>
-            <div v-else-if="searchResultsCount >= 1">{{ searchResultsCount }} Ergebnisse</div>
-          </b-col>
-        </b-row>
-        <b-row v-for="(searchResult, idx) in searchResults" :key="`sr${idx}`">
-          <b-col>
+            <b-spinner v-if="this.loading === true" type="grow" label="Spinning"></b-spinner>
             <b-row>
-              <router-link :to="{ name: 'lesefassung', params: { id: searchResult.id }}">{{ searchResult.title }}
-              </router-link>
-            </b-row>
-            <b-row v-for="(kwic, i) in searchResult.kwic" :key="`kw${i}`">
               <b-col>
-                <div v-html="kwic" class="text-left"/>
+                <div v-if="searchResultsCount === 0">Keine Ergebnisse</div>
+                <div v-else-if="searchResultsCount === 1">{{ searchResults.length }} Ergebnis</div>
+                <div v-else-if="searchResultsCount >= 1">{{ searchResultsCount }} Ergebnisse</div>
+              </b-col>
+            </b-row>
+            <b-row v-for="(searchResult, idx) in searchResults" :key="`sr${idx}`">
+              <b-col>
+                <b-row>
+                  <router-link :to="{ name: 'lesefassung', params: { id: searchResult.id }}">{{ searchResult.title }}
+                  </router-link>
+                </b-row>
+                <b-row v-for="(kwic, i) in searchResult.kwic" :key="`kw${i}`">
+                  <b-col>
+                    <div v-html="kwic" class="text-left"/>
+                  </b-col>
+                </b-row>
               </b-col>
             </b-row>
           </b-col>
-        </b-row>
-      </b-col>
-    </b-row>-->
+        </b-row>-->
   </b-container>
 </template>
 <script>
 import {performFullTextSearch} from "@/services/ARCHEService";
+import {getCollectionOfObject} from "../services/ARCHEService";
 
 export default {
   name: "Header",
@@ -50,33 +51,60 @@ export default {
     }
   },
   props: ['colId', 'rsId'],
-  methods:
-      {
-        processSearchResults(data) {
-          this.searchResults = [];
-          for (const [key, value] of Object.entries(data)) {
-            if (Object.prototype.hasOwnProperty.call(value, "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle")) {
-              const id = key.replace("https://arche-dev.acdh-dev.oeaw.ac.at/api/", "");
+  methods: {
+    async processSearchResults(data) {
+      this.searchResults = [];
+      if (this.colId) {
+        //search in a specific collection
+        for (const [key, value] of Object.entries(data)) {
+          if (Object.prototype.hasOwnProperty.call(value, "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle")) {
+            const id = key.replace("https://arche-dev.acdh-dev.oeaw.ac.at/api/", "");
+            console.log(id);
+            this.searchResults.push({
+              "id": id,
+              "url": key,
+              "title": value["https://vocabs.acdh.oeaw.ac.at/schema#hasTitle"][0].value,
+              "collection": value["https://vocabs.acdh.oeaw.ac.at/schema#isPartOf"][0].value,
+              "kwic": value["search://fts"].map(kwic => kwic.value.replace('\n', '')),
+            })
+          }
+        }
+        this.searchResultsCount = this.searchResults.length;
+        this.$emit('searchPerformed', {searchResults: this.searchResults, keyword: this.searchTerm});
+      } else {
+        //search in all collections
+
+        for (const [key, value] of Object.entries(data)) {
+          const id = key.replace("https://arche-dev.acdh-dev.oeaw.ac.at/api/", "");
+
+          if (id && id !== "") {
+            await getCollectionOfObject(id, rs => {
+              console.log(rs);
               this.searchResults.push({
                 "id": id,
                 "url": key,
+                "collection": rs.title,
+                "collectionId": rs.id,
                 "title": value["https://vocabs.acdh.oeaw.ac.at/schema#hasTitle"][0].value,
-                "collection": value["https://vocabs.acdh.oeaw.ac.at/schema#isPartOf"][0].value,
                 "kwic": value["search://fts"].map(kwic => kwic.value.replace('\n', '')),
               })
-            }
+            });
           }
-          this.searchResultsCount = this.searchResults.length;
-          this.$emit('searchPerformed', {searchResults: this.searchResults, keyword: this.searchTerm});
-        },
-        performFullTextSearch() {
-          this.loading = true;
-          performFullTextSearch(this.searchTerm, this.colId, this.rsId, data => {
-            this.processSearchResults(data)
-          });
-          this.loading = false;
-        },
-      },
+
+        }
+        this.searchResultsCount = this.searchResults.length;
+        console.log(this.searchResults);
+        this.$emit('searchPerformed', {searchResults: this.searchResults, keyword: this.searchTerm});
+      }
+    },
+    performFullTextSearch() {
+      this.loading = true;
+      performFullTextSearch(this.searchTerm, this.colId, this.rsId, data => {
+        this.processSearchResults(data)
+      });
+      this.loading = false;
+    },
+  },
 }
 </script>
 
