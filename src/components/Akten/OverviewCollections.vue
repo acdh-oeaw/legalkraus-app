@@ -48,26 +48,22 @@
         <template #cell(url)="data">
           <a target="_blank" rel="noopener noreferrer" :href="`${data.value}`">Daten in Arche</a>
         </template>
-        <!-- <tr>
-           <th>Titel</th>
-           <th>Metadaten in Arche</th>
-           <th>Anzahl Dokumente</th>
-
-         </tr>
-         <tr v-for="val in collections" v-bind:key="val.url" v-on:click="navToObjects(val.url)">
-           <td>
-             {{ val.title }}
-           </td>
-           <td>
-             {{ val.url }}
-           </td>
-           <td> {{ val.size }}</td>
-         </tr>-->
       </b-table>
     </div>
     <div v-if="searchView">
       <p>{{ searchResultsCount }} Ergebnisse für "{{ keyword }}"</p>
-
+      <b-pagination
+          page-class="custompaging"
+          prev-class="custompagingarrows"
+          next-class="custompagingarrows"
+          first-class="custompagingarrows"
+          last-class="custompagingarrows"
+          class="custom-pagination"
+          v-model="currentPage"
+          :total-rows="searchResultsCount"
+          :per-page="perPage"
+          aria-controls="col-table"
+      ></b-pagination>
       <b-table id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
                :current-page="currentPage" :per-page="perPage"
                :busy.sync="isBusy" :fields="[
@@ -93,21 +89,6 @@
         <template #cell(url)="data">
           <a target="_blank" rel="noopener noreferrer" :href="`${data.value}`">Daten in Arche</a>
         </template>
-        <!-- <tr>
-           <th>Titel</th>
-           <th>Metadaten in Arche</th>
-           <th>Anzahl Dokumente</th>
-
-         </tr>
-         <tr v-for="val in collections" v-bind:key="val.url" v-on:click="navToObjects(val.url)">
-           <td>
-             {{ val.title }}
-           </td>
-           <td>
-             {{ val.url }}
-           </td>
-           <td> {{ val.size }}</td>
-         </tr>-->
       </b-table>
 
     </div>
@@ -158,7 +139,6 @@ export default {
   methods: {
     getArcheCollections(ctx, callback) {
       const offset = ctx.currentPage === 1 ? 0 : (ctx.currentPage - 1) * ctx.perPage
-      console.log(offset)
       getCollections(offset, (result) => {
         callback(result)
       });
@@ -234,6 +214,7 @@ export default {
       }
     },
     async searchPerformed(event) {
+      console.log(event);
       if (event.keyword === "") {
         this.searchView = false;
         return;
@@ -242,7 +223,6 @@ export default {
       this.searchResults = event.searchResults;
       this.searchResultsCount = event.searchResults.length;
       this.keyword = event.keyword;
-      console.log(event);
     },
   },
   created() {
