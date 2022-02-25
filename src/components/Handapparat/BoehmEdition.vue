@@ -89,6 +89,10 @@ export default {
   margin: 0.1rem;
 }
 
+.card{
+  width: 100%;
+}
+
 .header-el:hover {
   text-decoration: underline;
 }
