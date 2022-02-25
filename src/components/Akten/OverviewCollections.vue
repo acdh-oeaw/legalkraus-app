@@ -1,6 +1,6 @@
 <template>
   <main>
-    <Search class="py-2"></Search>
+    <Search class="py-2" v-on:searchPerformed="searchPerformed($event)"></Search>
     <p class="navigation">Akten-Edition
       <span class="arrow">></span>
       <router-link router-link class="nav-link" :to="'/' + catLower">
@@ -9,7 +9,7 @@
       <span class="arrow">></span>
       {{ this.currSubCat }}
     </p>
-    <div>{{this.$store.getters.noOfCollections}} Sammlungen</div>
+    <div>{{ this.$store.getters.noOfCollections }} Sammlungen</div>
     <div v-if="!searchView" class="card">
       <b-pagination
           page-class="custompaging"
@@ -23,7 +23,8 @@
           :per-page="perPage"
           aria-controls="col-table"
       ></b-pagination>
-      <b-table id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'" :current-page="currentPage" :per-page="perPage"
+      <b-table id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
+               :current-page="currentPage" :per-page="perPage"
                :busy.sync="isBusy" :fields="[
             {
               key: 'title',
@@ -64,7 +65,52 @@
          </tr>-->
       </b-table>
     </div>
-    <div v-if="searchView"> {{keyword}}</div>
+    <div v-if="searchView">
+      <p>{{ searchResultsCount }} Ergebnisse für "{{ keyword }}"</p>
+
+      <b-table id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
+               :current-page="currentPage" :per-page="perPage"
+               :busy.sync="isBusy" :fields="[
+            {
+              key: 'collection',
+              label: 'Collection'
+            },
+            {
+              key: 'title',
+              label: 'Titel'
+            },
+            {
+              key: 'kwic',
+              label: 'Textstellen'
+            }
+          ]" :items="searchResults" @row-clicked="navToObjects">
+        <template #table-busy>
+          <div class="text-center my-2">
+            <b-spinner type="grow" class="align-middle"></b-spinner>
+            <strong>Loading...</strong>
+          </div>
+        </template>
+        <template #cell(url)="data">
+          <a target="_blank" rel="noopener noreferrer" :href="`${data.value}`">Daten in Arche</a>
+        </template>
+        <!-- <tr>
+           <th>Titel</th>
+           <th>Metadaten in Arche</th>
+           <th>Anzahl Dokumente</th>
+
+         </tr>
+         <tr v-for="val in collections" v-bind:key="val.url" v-on:click="navToObjects(val.url)">
+           <td>
+             {{ val.title }}
+           </td>
+           <td>
+             {{ val.url }}
+           </td>
+           <td> {{ val.size }}</td>
+         </tr>-->
+      </b-table>
+
+    </div>
   </main>
 </template>
 
@@ -86,6 +132,7 @@ export default {
       currentPage: 1,
       searchView: false,
       searchResults: [],
+      searchResultsCount: Number,
       keyword: String,
       path: String,
       currSubCat: String,
@@ -109,10 +156,10 @@ export default {
     }
   },
   methods: {
-    getArcheCollections(ctx, callback)  {
+    getArcheCollections(ctx, callback) {
       const offset = ctx.currentPage === 1 ? 0 : (ctx.currentPage - 1) * ctx.perPage
       console.log(offset)
-      getCollections(offset,(result) => {
+      getCollections(offset, (result) => {
         callback(result)
       });
     },
@@ -187,7 +234,7 @@ export default {
       }
     },
     async searchPerformed(event) {
-      if(event.keyword === ""){
+      if (event.keyword === "") {
         this.searchView = false;
         return;
       }

@@ -79,12 +79,11 @@ export default {
 
           if (id && id !== "") {
             await getCollectionOfObject(id, rs => {
-              console.log(rs);
               this.searchResults.push({
                 "id": id,
                 "url": key,
-                "collection": rs.title,
-                "collectionId": rs.id,
+                "collection": rs[0].title,
+                "collectionId": rs[0].id,
                 "title": value["https://vocabs.acdh.oeaw.ac.at/schema#hasTitle"][0].value,
                 "kwic": value["search://fts"].map(kwic => kwic.value.replace('\n', '')),
               })
@@ -93,7 +92,6 @@ export default {
 
         }
         this.searchResultsCount = this.searchResults.length;
-        console.log(this.searchResults);
         this.$emit('searchPerformed', {searchResults: this.searchResults, keyword: this.searchTerm});
       }
     },
