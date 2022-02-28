@@ -25,7 +25,11 @@
       <div class="vl meta3"></div>
       <p class="meta4">Datum: (coming soon)</p>
       <p class="meta5">Anzahl Dokumente: {{ this.colSize }}</p>
-      <p class="meta6">Beteiligte: (coming soon)</p>
+      <div class="meta6">
+        <p>Beteiligte:</p>
+        <p v-for="actor in actors" v-bind:key="actor.identifier">{{actor.title}}</p>
+
+      </div>
       <div class="vl meta7"></div>
       <div class="meta8">
         <input class="vt-suche" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
@@ -297,7 +301,7 @@
 </template>
 
 <script>
-import {getObjectWithId, getTransformedHTML, getCollectionOfObject} from "../../services/ARCHEService";
+import {getObjectWithId, getTransformedHTML, getCollectionOfObject, getEntity} from "../../services/ARCHEService";
 import {getObjectWithId as getPMBObjectWithId} from "../../services/PMBService";
 import {ARCHErdfQuery} from "arche-api/src";
 import EntitySpan from "./EntitySpan";
@@ -335,7 +339,8 @@ export default {
       pages: null,
       showAllAnnotations: false,
       propsSet: false,
-      keyword: null
+      keyword: null,
+      actors: []
     }
   },
   computed: {
@@ -405,7 +410,6 @@ export default {
     createCommentDiv(event, rs, elem, type) {
       var dblock = document.getElementsByClassName("d-block").item(0);
       var rect = dblock.getBoundingClientRect();
-      console.log(rect)
 
       var div = document.createElement('div');
       div.className = "comment";
@@ -469,7 +473,6 @@ export default {
             let facs = this.dom.getElementsByTagName("graphic");
             for (let item of facs) {
               if (item.getAttribute("source") === "wienbibliothek") {
-                console.log(item.getAttribute("url"));
                 this.facsURLs.push(item.getAttribute("url"));
               }
             }
@@ -545,10 +548,8 @@ export default {
   },
   created() {
     this.objectId = this.$route.params.id;
-    console.log(this.$route.params);
     if(this.$route.params.cat){
       this.propsSet = true;
-      console.log(this.propsSet)
     }
   },
   mounted() {
@@ -572,9 +573,24 @@ export default {
         "object": null,
         "expiry": 14
       };
+
+      const optionsHasActor = {
+        "subject": null,
+        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasActor",
+        "object": null,
+        "expiry": 14
+      };
       this.filename = ARCHErdfQuery(optionsFilename, rs).value[0].hasFilename.object;
       let url = ARCHErdfQuery(optionsUrl, rs).value[0].hasIdentifier.object;
-
+      var actors = ARCHErdfQuery(optionsHasActor,rs).value;
+      actors.forEach(x => {
+        let idLong = x.hasActor.object;
+        let idx = idLong.lastIndexOf('/');
+        let id = idLong.substring(idx +1);
+        getEntity(id, rs => {
+          this.actors.push(rs);
+        });
+      })
       this.downloadXMLFromUrl(url);
 
       getTransformedHTML(this.objectId, (data) => {

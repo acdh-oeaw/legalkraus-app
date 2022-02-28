@@ -1,7 +1,8 @@
-const { default: fetch } = require('node-fetch');
-const { ARCHErdfQuery, ARCHEdownloadResourceIdM, 
-     } = require("arche-api");
-const {  queryAndProcessMD } = require("../utils")
+const {default: fetch} = require('node-fetch');
+const {
+    ARCHErdfQuery, ARCHEdownloadResourceIdM,
+} = require("arche-api");
+const {queryAndProcessMD} = require("../utils")
 const store = require("../store");
 
 const ARCHE_BASE_URL = "https://arche-dev.acdh-dev.oeaw.ac.at/api";
@@ -24,7 +25,43 @@ module.exports.getObjectWithId = async (resourceId, callback) => {
     } catch (error) {
         console.log(error);
     }
+}
 
+module.exports.getEntity = async (resourceId, callback) => {
+    const options = {
+        "host": ARCHE_BASE_URL,
+        "format": "application/n-triples",
+        "resourceId": resourceId,
+        "readMode": READMODE_RESOURCE,
+    };
+
+    try {
+        await ARCHEdownloadResourceIdM(options, (rs) => {
+            const optionsHasTitel = {
+                "subject": null,
+                "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle",
+                "object": null,
+                "expiry": 14
+            };
+
+            const optionsHasIdentifier = {
+                "subject": null,
+                "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier",
+                "object": null,
+                "expiry": 14
+            };
+            let titel = ARCHErdfQuery(optionsHasTitel, rs).value[0].hasTitle.object;
+            let id = ARCHErdfQuery(optionsHasIdentifier, rs).value[0].hasIdentifier.object;
+            let result =
+                {
+                    "title": titel,
+                    "identifier": id
+                };
+            return callback(result);
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 module.exports.getMetaData = async (callback) => {
@@ -55,18 +92,17 @@ module.exports.getCollections = async (startPage, callback) => {
         "readMode": "neighbors",
     };
     if (store.default.getters.MDAllCollections === null) {
-    try {
-        ARCHEdownloadResourceIdM(options, (rs) => {
-            store.default.dispatch('setMDAllCollections', rs);
-            queryAndProcessMD('collection', ARCHE_BASE_URL, startPage, callback);
-        });
-    } catch (error) {
-        console.log(error);
+        try {
+            ARCHEdownloadResourceIdM(options, (rs) => {
+                store.default.dispatch('setMDAllCollections', rs);
+                queryAndProcessMD('collection', ARCHE_BASE_URL, startPage, callback);
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    } else {
+        queryAndProcessMD('collection', ARCHE_BASE_URL, startPage, callback);
     }
-}
-else {
-    queryAndProcessMD('collection', ARCHE_BASE_URL, startPage, callback);
-}
 }
 
 module.exports.getObjectsOfCollection = async (resourceId, callback) => {
@@ -233,7 +269,7 @@ module.exports.getTransformedHTML = async (resourceId, callback) => {
 module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback) => {
     const url = `${ARCHE_BASE_URL}/search?`;
 
-    if(colId && rsId){
+    if (colId && rsId) {
         //searches in the resource that has rsId and is part of the collection with colId
         fetch(url + new URLSearchParams({
             "property[0]": "BINARY",
@@ -246,12 +282,12 @@ module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback)
             "ftsQuery": searchTerm
 
         }), {
-            headers: { 'Accept': 'application/json' }
+            headers: {'Accept': 'application/json'}
         }).then(response => response.json()).then(data => {
             return callback(data);
         })
 
-    }else if (colId){
+    } else if (colId) {
         //searches in all resources that are part of the collection with colId
         fetch(url + new URLSearchParams({
             "property[0]": "BINARY",
@@ -263,16 +299,16 @@ module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback)
             "ftsQuery": searchTerm
 
         }), {
-            headers: { 'Accept': 'application/json' }
+            headers: {'Accept': 'application/json'}
         }).then(response => response.json()).then(data => {
             return callback(data);
         })
-    }else{
+    } else {
         console.log('all')
         //searches in all collections
 
         //id 37565
-        const url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/search?sql=SELECT id  FROM      full_text_search      JOIN (          SELECT (get_relatives(id, ?, 9999, 0)).id          FROM identifiers          WHERE ids = ?      ) t USING (id)  WHERE websearch_to_tsquery('simple', ?) @@ segments&sqlParam[]=https://vocabs.acdh.oeaw.ac.at/schema%23isPartOf&sqlParam[]=https://arche-dev.acdh-dev.oeaw.ac.at/api/37565&format=application/json&sqlParam[]="+ searchTerm +"&readMode=ids&limit=25&ftsQuery="+searchTerm;
+        const url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/search?sql=SELECT id  FROM      full_text_search      JOIN (          SELECT (get_relatives(id, ?, 9999, 0)).id          FROM identifiers          WHERE ids = ?      ) t USING (id)  WHERE websearch_to_tsquery('simple', ?) @@ segments&sqlParam[]=https://vocabs.acdh.oeaw.ac.at/schema%23isPartOf&sqlParam[]=https://arche-dev.acdh-dev.oeaw.ac.at/api/37565&format=application/json&sqlParam[]=" + searchTerm + "&readMode=ids&limit=25&ftsQuery=" + searchTerm;
         //const url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/search?sql=SELECT id  FROM      full_text_search      JOIN (          SELECT (get_relatives(id, ?, 9999, 0)).id          FROM identifiers          WHERE ids = ?      ) t USING (id)  WHERE websearch_to_tsquery('simple', ?) @@ segments&sqlParam[]=https://vocabs.acdh.oeaw.ac.at/schema%23isPartOf&sqlParam[]=https://arche-dev.acdh-dev.oeaw.ac.at/api/37565&format=application/json&sqlParam[]=Beilegen&readMode=ids&limit=25&ftsQuery="+searchTerm+"&readMode=resource";
         fetch(url).then(rs => rs.json()).then(data => {
             return callback(data);
@@ -293,7 +329,6 @@ module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback)
             return callback(data);
         })*/
     }
-
 
 
 }
