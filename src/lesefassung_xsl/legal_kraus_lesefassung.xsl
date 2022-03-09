@@ -49,6 +49,9 @@
                     <xsl:attribute name="v-bind:class">
                         <xsl:value-of select="'{ ''d-block'': selectedPage ==='||position()||', ''d-none'':selectedPage!=='||position()||'}'"/>
                     </xsl:attribute>
+                    <xsl:attribute name="data-pgnr">
+                        <xsl:value-of select="position()"/>
+                    </xsl:attribute>
                     <xsl:copy-of select="current()"/>
                     <xsl:copy-of select="$nextPb"/>
                     <xsl:choose>

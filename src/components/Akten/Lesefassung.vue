@@ -366,7 +366,8 @@ export default {
           //   }
           // });
           console.log("mounting...")
-          this.$emit('child-mounted');
+          this.$parent.childMounted();
+          //this.$emit('child-mounted');
 
         },
         computed: {
@@ -385,10 +386,17 @@ export default {
   },
   methods: {
     highlight(keyword) {
-      var instance = new Mark(document.querySelector("div.d-block"));
+      var self = this;
+      var instance = new Mark(document.querySelector(".body"));
       instance.unmark({
         done: function(){
-          instance.mark(keyword);
+          const options = {};
+          /* set page, need to find a solution for multiple marks */
+          options.each = (elm) => {
+            self.$store.dispatch('setSelectedPage',parseInt(elm.closest('[data-pgnr]').dataset.pgnr))
+          }
+          instance.mark(keyword,options);
+          
         }
       });
     },

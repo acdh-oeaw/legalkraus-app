@@ -59,7 +59,8 @@ export default new Vuex.Store({
             Vue.set(state, 'linebreaks', linebreaks);
         },
         MUTATE_SELECTED_PAGE: (state, selectedPage) => {
-            Vue.set(state, 'selectedPage', selectedPage);
+            //Vue.set(state, 'selectedPage', selectedPage);
+            state.selectedPage = selectedPage;
         },
         MUTATE_SELECTED_PAGE_INCREMENT: (state) => {
             state.selectedPage++
