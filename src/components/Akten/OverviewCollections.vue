@@ -52,7 +52,11 @@
     </div>
     <div v-if="searchView">
       <p>{{ searchResultsCount }} Ergebnisse für "{{ keyword }}"</p>
-      <b-pagination
+      <div v-for="item in searchResults" v-bind:key="item.key">
+      <SearchResultItem v-bind:item="item" v-on:nav-to-objects="navToObjects($event)"></SearchResultItem>
+      </div>
+
+<!--      <b-pagination
           page-class="custompaging"
           prev-class="custompagingarrows"
           next-class="custompagingarrows"
@@ -89,7 +93,7 @@
         <template #cell(url)="data">
           <a target="_blank" rel="noopener noreferrer" :href="`${data.value}`">Daten in Arche</a>
         </template>
-      </b-table>
+      </b-table>-->
 
     </div>
   </main>
@@ -99,11 +103,13 @@
 
 import {getCollections} from "@/services/ARCHEService";
 import Search from "../Search";
+import SearchResultItem from "./SearchResultItem";
 
 export default {
   name: "OverviewCollections",
   components: {
-    Search: Search
+    Search: Search,
+    SearchResultItem: SearchResultItem
   },
   data: function () {
     return {
@@ -145,7 +151,6 @@ export default {
     },
     navToObjects: function (record) {
       let url = record.url;
-      console.log(this.currSubCat);
       let id = this.getIdFromUrl(url);
       if (this.currSubCat === this.pR) {
         this.$router.push({name: "privatrecht-objects", params: {id: id}});
@@ -173,7 +178,6 @@ export default {
 
     },
     getIdFromUrl(url) {
-      console.log(url);
       let idx = url.lastIndexOf('/');
       return url.substring(idx + 1);
     },
@@ -214,7 +218,6 @@ export default {
       }
     },
     async searchPerformed(event) {
-      console.log(event);
       if (event.keyword === "") {
         this.searchView = false;
         return;
@@ -232,7 +235,6 @@ export default {
   },
   mounted() {
     getCollections((result) => {
-      console.log(result);
       this.collections = result;
     });
 

@@ -1,5 +1,6 @@
 <template>
   <b-container>
+
     <b-row>
       <b-col>
         <div class="metainfo">
@@ -9,6 +10,7 @@
         </div>
       </b-col>
     </b-row>
+    <div v-if="loading" class="loader"></div>
     <!--    <b-row>
           <b-col>
             <b-spinner v-if="this.loading === true" type="grow" label="Spinning"></b-spinner>
@@ -59,13 +61,14 @@ export default {
         for (const [key, value] of Object.entries(data)) {
           if (Object.prototype.hasOwnProperty.call(value, "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle")) {
             const id = key.replace("https://arche-dev.acdh-dev.oeaw.ac.at/api/", "");
-            console.log(id);
+
             this.searchResults.push({
               "id": id,
               "url": key,
               "title": value["https://vocabs.acdh.oeaw.ac.at/schema#hasTitle"][0].value,
               "collection": value["https://vocabs.acdh.oeaw.ac.at/schema#isPartOf"][0].value,
               "kwic": value["search://fts"].map(kwic => kwic.value.replace('\n', '')),
+              "searchTerm": this.searchTerm
             })
           }
         }
@@ -86,12 +89,14 @@ export default {
                 "collectionId": rs[0].id,
                 "title": value["https://vocabs.acdh.oeaw.ac.at/schema#hasTitle"][0].value,
                 "kwic": value["search://fts"].map(kwic => kwic.value.replace('\n', '')),
+                "searchTerm": this.searchTerm
               })
             });
           }
 
         }
         this.searchResultsCount = this.searchResults.length;
+        this.loading = false;
         this.$emit('searchPerformed', {searchResults: this.searchResults, keyword: this.searchTerm});
       }
     },
@@ -100,7 +105,6 @@ export default {
       performFullTextSearch(this.searchTerm, this.colId, this.rsId, data => {
         this.processSearchResults(data)
       });
-      this.loading = false;
     },
   },
 }
@@ -115,6 +119,25 @@ export default {
   justify-content: space-between;
   grid-template-columns: auto auto auto auto auto;
   margin-left: 2rem;
+}
+
+.loader {
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid var(--primary-red);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 2s linear infinite;
+  margin-left: 2rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 </style>

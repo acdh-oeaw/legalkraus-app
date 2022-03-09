@@ -65,6 +65,8 @@ export default new Router({
         {path: '/kultur/polemiken/collections', component: OverviewCollections},
         {path: '/kultur/polemiken/objects/:id', name: 'polemiken-objects', component: OverviewObjects},
 
+        {path: '/akten/:id', name:'overview-objects', component: OverviewObjects},
+
         {path: '/handschriftliches', component: OverviewObjects}, //todo: create page that loads objects with tag handschriftlich
         {path: '/alle-akten', component: OverviewAllCollections},
         {path: '/alle-resourcen', component: OverviewAllResources},
@@ -76,7 +78,7 @@ export default new Router({
                 header: true,
                 content: true
             }},
-        {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung},
+        // {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung},
 
         {path: '/register/personen', name: 'pReg', component: PersonenRegister},
         {path: '/projektinformationen', component: Projektinformationen},
