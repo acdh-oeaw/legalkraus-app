@@ -277,7 +277,7 @@
 
           </div>
           <div class="body">
-            <component class="w-95" v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"/>
+            <component class="w-95" v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)" v-on:child-mounted="childMounted"/>
           </div>
         </div>
       </div>
@@ -359,12 +359,15 @@ export default {
         },
         template,
         mounted() {
-          this.$refs['readview'].querySelectorAll(".lb").forEach((lb,idx)=>{
-            const ln = idx + 1;
-            if (ln % 5 === 0) {
-            lb.setAttribute('data-lbnr',idx + 1);
-            }
-          })
+          // this.$refs['readview'].querySelectorAll(".lb").forEach((lb,idx)=>{
+          //   const ln = idx + 1;
+          //   if (ln % 5 === 0) {
+          //   lb.setAttribute('data-lbnr',idx + 1);
+          //   }
+          // });
+          console.log("mounting...")
+          this.$emit('child-mounted');
+
         },
         computed: {
           ...mapGetters({
@@ -388,6 +391,12 @@ export default {
           instance.mark(keyword);
         }
       });
+    },
+    childMounted(){
+      console.log("child mounted")
+      if(this.keyword){
+        this.highlight(this.keyword);
+      }
     },
     async childToParent(event) {
       this.toggleFacs(); //hide facsimile, switch to text-only view
@@ -551,6 +560,9 @@ export default {
     if(this.$route.params.cat){
       this.propsSet = true;
     }
+    if(this.$route.params.searchTerm){
+      this.keyword = this.$route.params.searchTerm;
+    }
   },
   mounted() {
     getCollectionOfObject(this.objectId, (rs) => {
@@ -595,6 +607,7 @@ export default {
 
       getTransformedHTML(this.objectId, (data) => {
         this.pages = data;
+
       });
     });
 
@@ -625,6 +638,9 @@ export default {
   display: grid;
   grid-template-columns: 10rem auto auto 10rem;
   grid-template-rows: auto;
+  column-gap: 4rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
 }
 
 .meta-data {

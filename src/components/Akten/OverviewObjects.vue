@@ -46,7 +46,7 @@
 
           <h5>Treffer Volltextsuche:</h5>
           <b-row v-for="(kwic, i) in val.kwic" :key="`kw${i}`">
-            <p v-html="kwic" class="text-left">[...]</p>
+            <p v-html="kwic" class="text-left"></p>
           </b-row>
         </div>
       </div>
@@ -104,7 +104,7 @@ export default {
       let id = this.getIdFromUrl(url)
       this.$router.push({
         name: "lesefassung",
-        params: {id: id, cat: this.category, subcat: this.subCategory, case: this.caseTitle}
+        params: {id: id, cat: this.category, subcat: this.subCategory, case: this.caseTitle, searchTerm: this.keyword}
       });
     },
     getIdFromUrl(url) {
