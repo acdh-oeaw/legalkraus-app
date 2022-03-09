@@ -96,9 +96,9 @@ export default {
 
         }
         this.searchResultsCount = this.searchResults.length;
-        this.loading = false;
         this.$emit('searchPerformed', {searchResults: this.searchResults, keyword: this.searchTerm});
       }
+      this.loading = false;
     },
     performFullTextSearch() {
       this.loading = true;
