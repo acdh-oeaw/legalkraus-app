@@ -34,6 +34,20 @@
       <div class="vl meta7"></div>
       <div class="meta8">
         <input class="vt-suche" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
+        <button type="button" class="btn vt-button" data-search="next" v-on:click="highlightNext()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-down-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
+          </svg>
+        </button>
+        <button type="button" class="btn vt-button" data-search="prev" v-on:click="highlightPrev()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-up-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"/>
+          </svg>
+        </button>
       </div>
     </div>
     <!--    <div class="w-100 mb-5">
@@ -99,6 +113,7 @@
       </div>
 
       <div id="card-right-medium" class="card-right" v-if="this.showFacs && this.showLF">
+
         <div class="formats mb-2">
           <button class="format btn btn-light">Lesefassung</button>
           <a class="format btn btn-light" role="button" :href="xmlFile"
@@ -185,7 +200,24 @@
 
           </div>
 
-
+          <div>
+            <input class="vt-suche" type="text" placeholder="Volltextsuche:" v-model="keyword"
+                   @keyup="highlight(keyword)"/>
+            <button type="button" class="btn vt-button" data-search="next" v-on:click="highlightNext()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                   class="bi bi-arrow-down-short" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                      d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
+              </svg>
+            </button>
+            <button type="button" class="btn vt-button" data-search="prev" v-on:click="highlightPrev()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                   class="bi bi-arrow-up-short" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                      d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"/>
+              </svg>
+            </button>
+          </div>
           <div class="body overflow-auto d-flex flex-row">
             <!-- <div v-if="this.$store.getters.linebreaks" class="w-5 text-right position-relative">
              </div>-->
@@ -294,7 +326,6 @@
       </svg>
       <span class="px-1">Seite
         <span>
-<!--      <input class="page-jump" type="text" :value="selectedPage" v-on:change="jumpToPage"/>-->
           <select class="page-jump" :value="selectedPage" @change="changePage($event)">
               <option v-for="(item,idx) in facsURLs" :key="`p${idx}`" :value="idx + 1">{{ idx + 1 }}</option>
           </select>
@@ -350,7 +381,9 @@ export default {
       showAllAnnotations: false,
       propsSet: false,
       keyword: null,
-      actors: []
+      actors: [],
+      marks: [],
+      idxCurrMark: 0
     }
   },
   computed: {
@@ -394,27 +427,90 @@ export default {
   },
   methods: {
     highlight(keyword) {
-      var self = this;
+      //var self = this;
       var instance = new Mark(document.querySelector(".body"));
       instance.unmark({
         done: function () {
           const options = {};
           /* set page, need to find a solution for multiple marks */
-          options.each = (elm) => {
+          /*options.each = (elm) => {
             self.$store.dispatch('setSelectedPage', parseInt(elm.closest('[data-pgnr]').dataset.pgnr));
-          }
+          }*/
           instance.mark(keyword, options);
 
         }
       });
+      this.marks = document.getElementsByClassName("d-block").item(0).querySelectorAll("mark");
+      this.marks[this.idxCurrMark].classList.add("current-mark");
+      //this.marks[this.idxCurrMark].scrollIntoView();
+
+    },
+    highlightNext() {
+      this.marks[this.idxCurrMark].classList.remove("current-mark");
+      if ((this.idxCurrMark + 1) < this.marks.length) {
+        //there are unvisited marks on the selectedPage
+        console.log("same page")
+        this.idxCurrMark++;
+
+      } else {
+        //no more marks on the current page -> find the next page with marks
+        console.log("next page")
+        let foundNext = false;
+        while (this.facsURLs.length > this.selectedPage) {
+          //there is at least one more page
+          this.next();
+          this.marks = document.getElementsByClassName("d-block").item(0).querySelectorAll("mark");
+          if (this.marks.length > 0) {
+            //found next mark; reset idxCurrMark
+            this.idxCurrMark = 0;
+            foundNext = true;
+            break;
+          }
+        }
+        if (!foundNext) {
+          //jump to firstPage and restart highlighting
+          console.log('back to page 0')
+          this.$store.dispatch('setSelectedPage', parseInt(1));
+          this.highlight(this.keyword);
+
+        }
+      }
+      this.marks[this.idxCurrMark].classList.add("current-mark");
+      //this.marks[this.idxCurrMark].scrollIntoView();
+    },
+    highlightPrev() {
+      this.marks[this.idxCurrMark].classList.remove("current-mark");
+      if (this.idxCurrMark > 0) {
+        this.idxCurrMark--;
+      } else {
+        //no more marks on the current page -> find the most recent previous page with marks
+        console.log("prev page")
+        let foundNext = false;
+        while (this.selectedPage > 1) {
+          //there is at least one more page
+          this.prev();
+          this.marks = document.getElementsByClassName("d-block").item(0).querySelectorAll("mark");
+          if (this.marks.length > 0) {
+            //found next mark; reset idxCurrMark
+            this.idxCurrMark = 0;
+            foundNext = true;
+            break;
+          }
+        }
+        if (!foundNext) {
+          //jump to last page
+          console.log('back to last page')
+          this.$store.dispatch('setSelectedPage', parseInt(this.facsURLs.length));
+          this.highlight(this.keyword);
+        }
+      }
+      this.marks[this.idxCurrMark].classList.add("current-mark");
+      //this.marks[this.idxCurrMark].scrollIntoView();
     },
     changePage(event) {
-      console.log('change page')
-      console.log(event)
-      this.$store.dispatch('setSelectedPage',parseInt(event.target.value))
+      this.$store.dispatch('setSelectedPage', parseInt(event.target.value))
     },
     childMounted() {
-      console.log("child mounted")
       if (this.keyword) {
         this.highlight(this.keyword);
       }
@@ -751,6 +847,10 @@ export default {
   border: transparent;
 }
 
+.vt-button {
+  background-color: white !important;
+  margin-right: 0.5rem;
+}
 
 .header {
   display: flex;
@@ -1102,6 +1202,10 @@ export default {
 mark {
   background: orange !important;
   padding: 0 !important;
+}
+
+.current-mark {
+  background: red !important;
 }
 
 .page-jump {
