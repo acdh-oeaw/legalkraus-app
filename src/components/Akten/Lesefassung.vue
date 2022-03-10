@@ -7,7 +7,8 @@
         {{ this.$route.params.cat }}
       </router-link>
       <span class="arrow">></span>
-      <router-link router-link class="nav-link" :to="'/' + this.$route.params.cat.toLowerCase() + '/'+ this.$route.params.subcat.toLowerCase() +'/collections'">
+      <router-link router-link class="nav-link"
+                   :to="'/' + this.$route.params.cat.toLowerCase() + '/'+ this.$route.params.subcat.toLowerCase() +'/collections'">
         {{ this.$route.params.subcat }}
       </router-link>
       <span class="arrow">></span>
@@ -27,7 +28,7 @@
       <p class="meta5">Anzahl Dokumente: {{ this.colSize }}</p>
       <div class="meta6">
         <p>Beteiligte:</p>
-        <p v-for="actor in actors" v-bind:key="actor.identifier">{{actor.title}}</p>
+        <p v-for="actor in actors" v-bind:key="actor.identifier">{{ actor.title }}</p>
 
       </div>
       <div class="vl meta7"></div>
@@ -277,7 +278,8 @@
 
           </div>
           <div class="body">
-            <component class="w-95" v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)" v-on:child-mounted="childMounted"/>
+            <component class="w-95" v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"
+                       v-on:child-mounted="childMounted"/>
           </div>
         </div>
       </div>
@@ -290,13 +292,21 @@
         <path fill-rule="evenodd"
               d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
       </svg>
-      <span class="px-1">Seite {{ selectedPage }} von {{ facsURLs.length }}</span>
+      <span class="px-1">Seite
+        <span>
+<!--      <input class="page-jump" type="text" :value="selectedPage" v-on:change="jumpToPage"/>-->
+          <select class="page-jump" :value="selectedPage">
+              <option v-for="(item,idx) in facsURLs" :key="`p${idx}`" :value="idx + 1" @change="changePage($event)">{{ idx + 1 }}</option>
+          </select>
+    </span>
+         von {{ facsURLs.length }}</span>
       <svg v-on:click="next()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
            class="bi bi-arrow-right text-bottom" viewBox="0 0 16 16">
         <path fill-rule="evenodd"
               d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
       </svg>
     </div>
+
   </div>
 </template>
 
@@ -359,15 +369,13 @@ export default {
         },
         template,
         mounted() {
-          // this.$refs['readview'].querySelectorAll(".lb").forEach((lb,idx)=>{
-          //   const ln = idx + 1;
-          //   if (ln % 5 === 0) {
-          //   lb.setAttribute('data-lbnr',idx + 1);
-          //   }
-          // });
-          console.log("mounting...")
+          this.$refs['readview'].querySelectorAll(".lb").forEach((lb, idx) => {
+            const ln = idx + 1;
+            if (ln % 5 === 0) {
+              lb.setAttribute('data-lbnr', idx + 1);
+            }
+          });
           this.$parent.childMounted();
-          //this.$emit('child-mounted');
 
         },
         computed: {
@@ -389,20 +397,25 @@ export default {
       var self = this;
       var instance = new Mark(document.querySelector(".body"));
       instance.unmark({
-        done: function(){
+        done: function () {
           const options = {};
           /* set page, need to find a solution for multiple marks */
           options.each = (elm) => {
-            self.$store.dispatch('setSelectedPage',parseInt(elm.closest('[data-pgnr]').dataset.pgnr))
+            self.$store.dispatch('setSelectedPage', parseInt(elm.closest('[data-pgnr]').dataset.pgnr));
           }
-          instance.mark(keyword,options);
-          
+          instance.mark(keyword, options);
+
         }
       });
     },
-    childMounted(){
+    changePage(event) {
+      console.log('change page')
+      console.log(event)
+      this.$store.dispatch('setSelectedPage',parseInt(event.target.value))
+    },
+    childMounted() {
       console.log("child mounted")
-      if(this.keyword){
+      if (this.keyword) {
         this.highlight(this.keyword);
       }
     },
@@ -455,7 +468,7 @@ export default {
             "  <path fill-rule=\"evenodd\" d=\"M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z\" style=\"padding-bottom: 0.1rem;margin-left: 0.3rem;\"/>\n" +
             "</svg>";
       } else if (type === 'work') {
-        div.innerHTML = "<p class='c'>"+event.pmbId + "</p><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"currentColor\" class=\"bi bi-box-arrow-in-up-right\" viewBox=\"0 0 16 16\">\n" +
+        div.innerHTML = "<p class='c'>" + event.pmbId + "</p><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"currentColor\" class=\"bi bi-box-arrow-in-up-right\" viewBox=\"0 0 16 16\">\n" +
             "  <path fill-rule=\"evenodd\" d=\"M6.364 13.5a.5.5 0 0 0 .5.5H13.5a1.5 1.5 0 0 0 1.5-1.5v-10A1.5 1.5 0 0 0 13.5 1h-10A1.5 1.5 0 0 0 2 2.5v6.636a.5.5 0 1 0 1 0V2.5a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5H6.864a.5.5 0 0 0-.5.5z\"/>\n" +
             "  <path fill-rule=\"evenodd\" d=\"M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z\" style=\"padding-bottom: 0.1rem;margin-left: 0.3rem;\"/>\n" +
             "</svg>";
@@ -474,7 +487,7 @@ export default {
 
       return div;
     },
-    removeAllComments(){
+    removeAllComments() {
       document.querySelectorAll('.comment').forEach(e => e.remove());
     },
     downloadXMLFromUrl(url) {
@@ -540,7 +553,7 @@ export default {
       return window.URL.createObjectURL(blob)
     },
     getCurrentFacs() {
-      return this.facsURLs[this.i];
+      return this.facsURLs[this.selectedPage - 1];
     },
     next() {
       if (this.facsURLs.length > this.selectedPage) {
@@ -565,10 +578,10 @@ export default {
   },
   created() {
     this.objectId = this.$route.params.id;
-    if(this.$route.params.cat){
+    if (this.$route.params.cat) {
       this.propsSet = true;
     }
-    if(this.$route.params.searchTerm){
+    if (this.$route.params.searchTerm) {
       this.keyword = this.$route.params.searchTerm;
     }
   },
@@ -602,11 +615,11 @@ export default {
       };
       this.filename = ARCHErdfQuery(optionsFilename, rs).value[0].hasFilename.object;
       let url = ARCHErdfQuery(optionsUrl, rs).value[0].hasIdentifier.object;
-      var actors = ARCHErdfQuery(optionsHasActor,rs).value;
+      var actors = ARCHErdfQuery(optionsHasActor, rs).value;
       actors.forEach(x => {
         let idLong = x.hasActor.object;
         let idx = idLong.lastIndexOf('/');
-        let id = idLong.substring(idx +1);
+        let id = idLong.substring(idx + 1);
         getEntity(id, rs => {
           this.actors.push(rs);
         });
@@ -642,6 +655,7 @@ export default {
   padding: 0 !important;
   margin: 0;
 }
+
 .grid-container {
   display: grid;
   grid-template-columns: 10rem auto auto 10rem;
@@ -680,10 +694,11 @@ export default {
   text-decoration: underline var(--primary-red) 5px;
 }
 
-.back{
+.back {
   padding: 0;
   color: var(--text-black) !important;
 }
+
 .back:hover {
   text-decoration: none;
 }
@@ -741,7 +756,7 @@ export default {
   display: flex;
   margin: 1rem !important;
   justify-content: space-between;
-  color: var(--text-gray)!important;
+  color: var(--text-gray) !important;
 }
 
 .all-annotations {
@@ -754,8 +769,8 @@ export default {
   border-width: 1rem;
 }
 
-.card{
-  margin: auto!important;
+.card {
+  margin: auto !important;
 }
 
 .card-fixed {
@@ -847,12 +862,12 @@ export default {
 
 .lb::before {
   content: attr(data-lbnr);
-  padding-top:0.2rem;
-  left:-0.8rem;
-  width:auto;
-  text-align:right;
-  font-size:80%;
-  position:absolute;
+  padding-top: 0.2rem;
+  left: -0.8rem;
+  width: auto;
+  text-align: right;
+  font-size: 80%;
+  position: absolute;
   display: block;
 }
 
@@ -1062,31 +1077,39 @@ export default {
   color: #33ccff;
 }
 
-.c{
-  margin:0;
+.c {
+  margin: 0;
 }
 
 .marginalie-text.marginLeft {
-  padding-top:0.2rem;
-  position:absolute;
-  font-size:80%;
+  padding-top: 0.2rem;
+  position: absolute;
+  font-size: 80%;
   left: -5rem;
 }
 
 .marginalie-text.marginRight {
-  padding-top:0.2rem;
-  position:absolute;
-  font-size:80%;
+  padding-top: 0.2rem;
+  position: absolute;
+  font-size: 80%;
   right: -5rem;
 }
 
 .pl-custom {
-  padding-left:5rem;
+  padding-left: 5rem;
 }
 
 mark {
   background: orange !important;
   padding: 0 !important;
+}
+
+.page-jump {
+  padding: 0.375rem 0.375rem;
+  border-radius: 0.25rem;
+  border: solid var(--secondary-gray-light);
+  width: 3rem;
+  height: 2rem;
 }
 
 </style>
