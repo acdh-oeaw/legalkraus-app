@@ -295,8 +295,8 @@
       <span class="px-1">Seite
         <span>
 <!--      <input class="page-jump" type="text" :value="selectedPage" v-on:change="jumpToPage"/>-->
-          <select class="page-jump" :value="selectedPage">
-              <option v-for="(item,idx) in facsURLs" :key="`p${idx}`" :value="idx + 1" @change="changePage($event)">{{ idx + 1 }}</option>
+          <select class="page-jump" :value="selectedPage" @change="changePage($event)">
+              <option v-for="(item,idx) in facsURLs" :key="`p${idx}`" :value="idx + 1">{{ idx + 1 }}</option>
           </select>
     </span>
          von {{ facsURLs.length }}</span>
