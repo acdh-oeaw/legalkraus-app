@@ -200,7 +200,7 @@
 
           </div>
 
-          <div>
+          <div class="vt-container">
             <input class="vt-suche" type="text" placeholder="Volltextsuche:" v-model="keyword"
                    @keyup="highlight(keyword)"/>
             <button type="button" class="btn vt-button" data-search="next" v-on:click="highlightNext()">
@@ -442,8 +442,8 @@ export default {
       });
       this.marks = document.getElementsByClassName("d-block").item(0).querySelectorAll("mark");
       this.marks[this.idxCurrMark].classList.add("current-mark");
-      //this.marks[this.idxCurrMark].scrollIntoView();
-
+      var topPos = this.marks[this.idxCurrMark].offsetTop;
+      document.getElementsByClassName('body').item(0).scrollTop = topPos;
     },
     async highlightNext() {
       this.marks[this.idxCurrMark].classList.remove("current-mark");
@@ -478,7 +478,9 @@ export default {
         }
       }
       this.marks[this.idxCurrMark].classList.add("current-mark");
-      //this.marks[this.idxCurrMark].scrollIntoView();
+      var topPos = this.marks[this.idxCurrMark].offsetTop;
+      document.getElementsByClassName('body').item(0).scrollTop = topPos;
+
     },
     async highlightPrev() {
       this.marks[this.idxCurrMark].classList.remove("current-mark");
@@ -509,7 +511,9 @@ export default {
         }
       }
       this.marks[this.idxCurrMark].classList.add("current-mark");
-      //this.marks[this.idxCurrMark].scrollIntoView();
+      var topPos = this.marks[this.idxCurrMark].offsetTop;
+      document.getElementsByClassName('body').item(0).scrollTop = topPos;
+
     },
     changePage(event) {
       this.$store.dispatch('setSelectedPage', parseInt(event.target.value))
