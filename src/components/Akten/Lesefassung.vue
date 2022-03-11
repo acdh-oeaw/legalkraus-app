@@ -426,12 +426,33 @@ export default {
     }
   },
   methods: {
+    highlightOnMounted(keyword) {
+      var self = this;
+
+      const options = {"separateWordSearch":false,
+        "noMatch": function(){
+          alert("Kein Treffer für \" " + keyword + "\"");
+        }};
+      /* set page, need to find a solution for multiple marks */
+      options.each = (elm) => {
+        self.$store.dispatch('setSelectedPage', parseInt(elm.closest('[data-pgnr]').dataset.pgnr));
+      }
+      var instance = new Mark(document.querySelector(".body"));
+      instance.mark(keyword, options);
+      this.marks = document.getElementsByClassName("d-block").item(0).querySelectorAll("mark");
+      this.marks[this.idxCurrMark].classList.add("current-mark");
+      var topPos = this.marks[this.idxCurrMark].offsetTop;
+      document.getElementsByClassName('body').item(0).scrollTop = topPos;
+    },
     highlight(keyword) {
       //var self = this;
       var instance = new Mark(document.querySelector(".body"));
       instance.unmark({
         done: function () {
-          const options = {};
+          const options = {"separateWordSearch":false,
+            "noMatch": function(){
+              alert("Kein Treffer für \" " + keyword + "\"");
+            }};
           /* set page, need to find a solution for multiple marks */
           /*options.each = (elm) => {
             self.$store.dispatch('setSelectedPage', parseInt(elm.closest('[data-pgnr]').dataset.pgnr));
@@ -441,20 +462,26 @@ export default {
         }
       });
       this.marks = document.getElementsByClassName("d-block").item(0).querySelectorAll("mark");
-      this.marks[this.idxCurrMark].classList.add("current-mark");
-      var topPos = this.marks[this.idxCurrMark].offsetTop;
-      document.getElementsByClassName('body').item(0).scrollTop = topPos;
+      if(this.marks.length === 0){
+        //no match on current page
+        this.highlightNext();
+      }else{
+        this.marks[this.idxCurrMark].classList.add("current-mark");
+        var topPos = this.marks[this.idxCurrMark].offsetTop;
+        document.getElementsByClassName('body').item(0).scrollTop = topPos;
+      }
+
     },
     async highlightNext() {
-      this.marks[this.idxCurrMark].classList.remove("current-mark");
+      if(this.idxCurrMark < this.marks.length){
+        this.marks[this.idxCurrMark].classList.remove("current-mark");
+      }
       if ((this.idxCurrMark + 1) < this.marks.length) {
         //there are unvisited marks on the selectedPage
-        console.log("same page")
         this.idxCurrMark++;
 
       } else {
         //no more marks on the current page -> find the next page with marks
-        console.log("next page")
         let foundNext = false;
         while (this.facsURLs.length > this.selectedPage) {
           //there is at least one more page
@@ -470,7 +497,6 @@ export default {
         }
         if (!foundNext) {
           //jump to firstPage and restart highlighting
-          console.log('back to page 0')
           this.$store.dispatch('setSelectedPage', parseInt(1));
           await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
           this.marks = document.getElementsByClassName("d-block").item(0).querySelectorAll("mark");
@@ -488,7 +514,6 @@ export default {
         this.idxCurrMark--;
       } else {
         //no more marks on the current page -> find the most recent previous page with marks
-        console.log("prev page")
         let foundNext = false;
         while (this.selectedPage > 1) {
           //there is at least one more page
@@ -504,7 +529,6 @@ export default {
         }
         if (!foundNext) {
           //jump to last page
-          console.log('back to last page')
           this.$store.dispatch('setSelectedPage', parseInt(this.facsURLs.length));
           await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
           this.marks = document.getElementsByClassName("d-block").item(0).querySelectorAll("mark");
@@ -520,7 +544,7 @@ export default {
     },
     childMounted() {
       if (this.keyword) {
-        this.highlight(this.keyword);
+        this.highlightOnMounted(this.keyword);
       }
     },
     async childToParent(event) {
@@ -661,7 +685,6 @@ export default {
     },
     next() {
       if (this.facsURLs.length > this.selectedPage) {
-        console.log(this.selectedPage)
         this.i++;
         this.$store.dispatch('pageNext')
       }
