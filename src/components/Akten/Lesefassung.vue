@@ -445,7 +445,7 @@ export default {
       //this.marks[this.idxCurrMark].scrollIntoView();
 
     },
-    highlightNext() {
+    async highlightNext() {
       this.marks[this.idxCurrMark].classList.remove("current-mark");
       if ((this.idxCurrMark + 1) < this.marks.length) {
         //there are unvisited marks on the selectedPage
@@ -459,6 +459,7 @@ export default {
         while (this.facsURLs.length > this.selectedPage) {
           //there is at least one more page
           this.next();
+          await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
           this.marks = document.getElementsByClassName("d-block").item(0).querySelectorAll("mark");
           if (this.marks.length > 0) {
             //found next mark; reset idxCurrMark
@@ -471,14 +472,15 @@ export default {
           //jump to firstPage and restart highlighting
           console.log('back to page 0')
           this.$store.dispatch('setSelectedPage', parseInt(1));
-          this.highlight(this.keyword);
+          await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
+          this.marks = document.getElementsByClassName("d-block").item(0).querySelectorAll("mark");
 
         }
       }
       this.marks[this.idxCurrMark].classList.add("current-mark");
       //this.marks[this.idxCurrMark].scrollIntoView();
     },
-    highlightPrev() {
+    async highlightPrev() {
       this.marks[this.idxCurrMark].classList.remove("current-mark");
       if (this.idxCurrMark > 0) {
         this.idxCurrMark--;
@@ -489,10 +491,11 @@ export default {
         while (this.selectedPage > 1) {
           //there is at least one more page
           this.prev();
+          await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
           this.marks = document.getElementsByClassName("d-block").item(0).querySelectorAll("mark");
           if (this.marks.length > 0) {
             //found next mark; reset idxCurrMark
-            this.idxCurrMark = 0;
+            this.idxCurrMark = this.marks.length - 1;
             foundNext = true;
             break;
           }
@@ -501,7 +504,8 @@ export default {
           //jump to last page
           console.log('back to last page')
           this.$store.dispatch('setSelectedPage', parseInt(this.facsURLs.length));
-          this.highlight(this.keyword);
+          await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
+          this.marks = document.getElementsByClassName("d-block").item(0).querySelectorAll("mark");
         }
       }
       this.marks[this.idxCurrMark].classList.add("current-mark");
