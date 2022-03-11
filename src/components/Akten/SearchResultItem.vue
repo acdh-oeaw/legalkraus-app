@@ -55,12 +55,6 @@ export default {
       showKwic: false
     }
   },
-  mounted() {
-    let text = new DOMParser()
-        .parseFromString(this.item.kwic[0], "text/html")
-        .documentElement.textContent;
-    console.log(text)
-  },
   methods: {
     toggleTitle() {
       this.showTitle = !this.showTitle;
