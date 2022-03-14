@@ -426,10 +426,14 @@ export default {
     }
   },
   methods: {
-    highlightOnMounted(keyword) {
+    async highlightOnMounted(keyword) {
       var self = this;
+      keyword = keyword.replace("\"", "?"); //markJS cannot detect quotes from our data
 
-      const options = {"separateWordSearch":false,
+      const options = {
+        "separateWordSearch":false,
+        "wildcards": "enabled",
+        "acrossElements": true,
         "noMatch": function(){
           alert("Kein Treffer für \" " + keyword + "\"");
         }};
@@ -437,6 +441,7 @@ export default {
       options.each = (elm) => {
         self.$store.dispatch('setSelectedPage', parseInt(elm.closest('[data-pgnr]').dataset.pgnr));
       }
+      await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
       var instance = new Mark(document.querySelector(".body"));
       instance.mark(keyword, options);
       this.marks = document.getElementsByClassName("d-block").item(0).querySelectorAll("mark");
@@ -445,18 +450,17 @@ export default {
       document.getElementsByClassName('body').item(0).scrollTop = topPos;
     },
     highlight(keyword) {
-      //var self = this;
+      keyword = keyword.replace("\"", "?"); //markJS cannot detect quotes from our data
       var instance = new Mark(document.querySelector(".body"));
       instance.unmark({
         done: function () {
-          const options = {"separateWordSearch":false,
+          const options = {
+            "separateWordSearch":false,
+            "wildcards": "enabled",
+            "acrossElements": true,
             "noMatch": function(){
               alert("Kein Treffer für \" " + keyword + "\"");
             }};
-          /* set page, need to find a solution for multiple marks */
-          /*options.each = (elm) => {
-            self.$store.dispatch('setSelectedPage', parseInt(elm.closest('[data-pgnr]').dataset.pgnr));
-          }*/
           instance.mark(keyword, options);
 
         }
