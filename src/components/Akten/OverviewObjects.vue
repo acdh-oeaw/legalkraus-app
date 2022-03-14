@@ -33,14 +33,14 @@
     </div>
     <div class="cards-wrapper">
       <div v-if="!searchView" class="card-deck">
-        <div class="card" v-for="val in objects" v-bind:key="val.title" v-on:click="navToLesefassung(val.url)">
+        <div class="card" v-for="val in objects" v-bind:key="val.title" v-on:click="navToLesefassung(val)">
           <h4 class="card-title"> {{ val.title }}</h4>
           <p> {{ val.identifier }}</p>
           <p> {{ val.url }}</p>
         </div>
       </div>
       <div v-if="searchView" class="card-deck">
-        <div class="card" v-for="val in searchResults" v-bind:key="val.title" v-on:click="navToLesefassung(val.url)">
+        <div class="card" v-for="val in searchResults" v-bind:key="val.title" v-on:click="navToLesefassung(val)">
           <h4 class="card-title"> {{ val.title }}</h4>
           <p> {{ val.id }}</p>
 
@@ -100,12 +100,25 @@ export default {
     }
   },
   methods: {
-    navToLesefassung: function (url) {
-      let id = this.getIdFromUrl(url)
-      this.$router.push({
-        name: "lesefassung",
-        params: {id: id, cat: this.category, subcat: this.subCategory, case: this.caseTitle, searchTerm: this.keyword}
-      });
+    navToLesefassung: function (val) {
+      let id = this.getIdFromUrl(val.url)
+      if(this.searchView){
+        let text = new DOMParser()
+            .parseFromString(val.kwic[0], "text/html")
+            .documentElement.textContent;
+        //remove multiple whitespaces
+        let contextNoMultSpace = text.replace(/\s\s+/g, ' ').substring(0, 20);
+        this.$router.push({
+          name: "lesefassung",
+          params: {id: id, cat: this.category, subcat: this.subCategory, case: this.caseTitle, searchTermContext: contextNoMultSpace}
+        });
+      }else{
+        this.$router.push({
+          name: "lesefassung",
+          params: {id: id, cat: this.category, subcat: this.subCategory, case: this.caseTitle}
+        });
+      }
+
     },
     getIdFromUrl(url) {
       let idx = url.lastIndexOf('/');
