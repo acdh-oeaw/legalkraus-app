@@ -1,7 +1,7 @@
 <template>
   <main>
 
-    <p class="navigation">Akten-Edition
+    <p v-if="categorySet" class="navigation">Akten-Edition
       <span class="arrow">></span>
       <router-link router-link class="nav-link" :to="'/' + catLower">
         {{ this.category }}
@@ -11,7 +11,11 @@
         {{ this.subCategory }}
       </router-link>
       <span class="arrow">></span>
-      {{ this.caseTitle }}
+      <span style="font-weight: bold">{{ this.caseTitle }}</span>
+    </p>
+    <p v-if="!categorySet" class="navigation">Akten-Edition
+      <span class="arrow">></span>
+      <span style="font-weight: bold">{{ this.caseTitle }}</span>
     </p>
     <div class="search-wrapper">
       <Search class="py-2" v-bind:col-id="colId" v-on:searchPerformed="searchPerformed($event)"></Search>
@@ -21,15 +25,15 @@
       <p v-if="isEmpty"> Dieser Fall hat keine Dokumente. </p>
       <p v-else> Dieser Fall hat {{ this.numberDocuments }} Dokumente. </p>
 
-    <div v-if="searchView">
-      <b-col>
-        <h5> Suchergebnisse zu "{{this.keyword}}":</h5>
-        <div v-if="searchResultsCount === 0">Keine Ergebnisse</div>
-        <div v-else-if="searchResultsCount === 1">{{ searchResults.length }} Ergebnis</div>
-        <div v-else-if="searchResultsCount >= 1">{{ searchResultsCount }} Ergebnisse</div>
-        <button type="button" class="btn btn-secondary btn-sm" v-on:click="toggleView">Zurück zur Fallansicht</button>
-      </b-col>
-    </div>
+      <div v-if="searchView">
+        <b-col>
+          <h5> Suchergebnisse zu "{{ this.keyword }}":</h5>
+          <div v-if="searchResultsCount === 0">Keine Ergebnisse</div>
+          <div v-else-if="searchResultsCount === 1">{{ searchResults.length }} Ergebnis</div>
+          <div v-else-if="searchResultsCount >= 1">{{ searchResultsCount }} Ergebnisse</div>
+          <button type="button" class="btn btn-secondary btn-sm" v-on:click="toggleView">Zurück zur Fallansicht</button>
+        </b-col>
+      </div>
     </div>
     <div class="cards-wrapper">
       <div v-if="!searchView" class="card-deck">
@@ -82,6 +86,7 @@ export default {
       category: String,
       catLower: String,
       subCatLower: String,
+      categorySet: true,
 
       r: 'Recht',
       k: 'Kultur',
@@ -102,22 +107,36 @@ export default {
   methods: {
     navToLesefassung: function (val) {
       let id = this.getIdFromUrl(val.url)
-      if(this.searchView){
-        let text = new DOMParser()
-            .parseFromString(val.kwic[0], "text/html")
-            .documentElement.textContent;
-        //remove multiple whitespaces
-        let contextNoMultSpace = text.replace(/\s\s+/g, ' ').substring(0, 20);
+      if (this.categorySet) {
+        if (this.searchView) {
+          let text = new DOMParser()
+              .parseFromString(val.kwic[0], "text/html")
+              .documentElement.textContent;
+          //remove multiple whitespaces
+          let contextNoMultSpace = text.replace(/\s\s+/g, ' ').substring(0, 20);
+          this.$router.push({
+            name: "lesefassung",
+            params: {
+              id: id,
+              cat: this.category,
+              subcat: this.subCategory,
+              case: this.caseTitle,
+              searchTermContext: contextNoMultSpace
+            }
+          });
+        } else {
+          this.$router.push({
+            name: "lesefassung",
+            params: {id: id, cat: this.category, subcat: this.subCategory, case: this.caseTitle}
+          });
+        }
+      } else {
         this.$router.push({
           name: "lesefassung",
-          params: {id: id, cat: this.category, subcat: this.subCategory, case: this.caseTitle, searchTermContext: contextNoMultSpace}
-        });
-      }else{
-        this.$router.push({
-          name: "lesefassung",
-          params: {id: id, cat: this.category, subcat: this.subCategory, case: this.caseTitle}
+          params: {id: id, case: this.caseTitle}
         });
       }
+
 
     },
     getIdFromUrl(url) {
@@ -132,6 +151,9 @@ export default {
         this.category = this.k;
       } else if (this.path.toString().includes('politik')) {
         this.category = this.p;
+      } else {
+        //directly accessed overview objects
+        this.categorySet = false;
       }
 
       this.catLower = this.category.toString().toLowerCase();
@@ -170,7 +192,7 @@ export default {
 
     },
     async searchPerformed(event) {
-      if(event.keyword === ""){
+      if (event.keyword === "") {
         this.searchView = false;
         return;
       }
@@ -179,7 +201,7 @@ export default {
       this.searchResultsCount = event.searchResults.length;
       this.keyword = event.keyword;
     },
-    toggleView(){
+    toggleView() {
       this.searchView = false;
     }
   },
@@ -245,7 +267,7 @@ export default {
   grid-column-gap: 6rem;
 }
 
-.case-info{
+.case-info {
   margin: 2rem;
 }
 
@@ -254,9 +276,10 @@ export default {
   align-content: center;
 }
 
-.search-wrapper{
+.search-wrapper {
   display: flex;
 }
+
 .navigation {
   margin-left: 1rem;
   text-align: left;

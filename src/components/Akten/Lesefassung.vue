@@ -12,11 +12,21 @@
         {{ this.$route.params.subcat }}
       </router-link>
       <span class="arrow">></span>
-      {{ this.colTitle }}
+      <router-link router-link class="nav-link"
+                   :to="'/' + this.$route.params.cat.toLowerCase() + '/'+ this.$route.params.subcat.toLowerCase() +'/objects/'+ this.colId">
+        {{ this.colTitle }}
+      </router-link>
+      <span class="arrow">></span>
+      <span style="font-weight: bold">{{this.objectTitle}}</span>
     </p>
     <p v-if="!propsSet" class="navigation">Akten-Edition
       <span class="arrow">></span>
-      {{ this.colTitle }}
+      <router-link router-link class="nav-link"
+                   :to="'/objects/'+ this.colId">
+        {{ this.colTitle }}
+      </router-link>
+      <span class="arrow">></span>
+      <span style="font-weight: bold">{{this.objectTitle}}</span>
     </p>
     <div class="meta-data">
       <p class="meta1">Metadaten Fall:</p>
@@ -50,19 +60,6 @@
         </button>
       </div>
     </div>
-    <!--    <div class="w-100 mb-5">
-          <svg v-on:click="prev()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-               class="bi bi-arrow-left text-bottom" viewBox="0 0 16 16">
-            <path fill-rule="evenodd"
-                  d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-          </svg>
-          <span class="px-1">Seite {{ selectedPage }} von {{ facsURLs.length }}</span>
-          <svg v-on:click="next()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-               class="bi bi-arrow-right text-bottom" viewBox="0 0 16 16">
-            <path fill-rule="evenodd"
-                  d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-          </svg>
-        </div>-->
     <div class="grid-container">
       <div id="card-left-small" class="card-left-small" v-if="this.showLF && !this.showFacs"
            v-on:click="this.toggleShowBoth">
@@ -342,7 +339,7 @@
 </template>
 
 <script>
-import {getObjectWithId, getTransformedHTML, getCollectionOfObject, getEntity} from "../../services/ARCHEService";
+import {getCollectionOfObject, getEntity, getObjectWithId, getTransformedHTML} from "../../services/ARCHEService";
 import {getObjectWithId as getPMBObjectWithId} from "../../services/PMBService";
 import {ARCHErdfQuery} from "arche-api/src";
 import EntitySpan from "./EntitySpan";
@@ -365,6 +362,7 @@ export default {
       colSize: Number,
       colUrl: String,
       colId: String,
+      objectTitle: String,
       showLF: true,
       showFacs: true,
       downloadLink: String,
@@ -447,8 +445,7 @@ export default {
       instance.mark(keyword, options);
       this.marks = document.getElementsByClassName("d-block").item(0).querySelectorAll("mark");
       this.marks[this.idxCurrMark].classList.add("current-mark");
-      var topPos = this.marks[this.idxCurrMark].offsetTop;
-      document.getElementsByClassName('body').item(0).scrollTop = topPos;
+      document.getElementsByClassName('body').item(0).scrollTop = this.marks[this.idxCurrMark].offsetTop;
     },
     highlight(keyword) {
       keyword = keyword.replace("\"", "?"); //markJS cannot detect quotes from our data
@@ -473,8 +470,7 @@ export default {
         this.highlightNext();
       } else {
         this.marks[this.idxCurrMark].classList.add("current-mark");
-        var topPos = this.marks[this.idxCurrMark].offsetTop;
-        document.getElementsByClassName('body').item(0).scrollTop = topPos;
+        document.getElementsByClassName('body').item(0).scrollTop = this.marks[this.idxCurrMark].offsetTop;
       }
 
     },
@@ -510,8 +506,7 @@ export default {
         }
       }
       this.marks[this.idxCurrMark].classList.add("current-mark");
-      var topPos = this.marks[this.idxCurrMark].offsetTop;
-      document.getElementsByClassName('body').item(0).scrollTop = topPos;
+      document.getElementsByClassName('body').item(0).scrollTop = this.marks[this.idxCurrMark].offsetTop;
 
     },
     async highlightPrev() {
@@ -541,8 +536,7 @@ export default {
         }
       }
       this.marks[this.idxCurrMark].classList.add("current-mark");
-      var topPos = this.marks[this.idxCurrMark].offsetTop;
-      document.getElementsByClassName('body').item(0).scrollTop = topPos;
+      document.getElementsByClassName('body').item(0).scrollTop = this.marks[this.idxCurrMark].offsetTop;
 
     },
     changePage(event) {
@@ -717,6 +711,9 @@ export default {
     if (this.$route.params.searchTermContext) {
       this.keyword = this.$route.params.searchTermContext;
     }
+    if(this.$route.params.subcat === "Die Fackel"){
+      this.$route.params.subcat = "Fackel"
+    }
   },
   mounted() {
     getCollectionOfObject(this.objectId, (rs) => {
@@ -729,6 +726,13 @@ export default {
       const optionsFilename = {
         "subject": null,
         "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasFilename",
+        "object": null,
+        "expiry": 14
+      };
+
+      const optionsTitle = {
+        "subject": null,
+        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle",
         "object": null,
         "expiry": 14
       };
@@ -746,6 +750,7 @@ export default {
         "object": null,
         "expiry": 14
       };
+      this.objectTitle = ARCHErdfQuery(optionsTitle, rs).value[0].hasTitle.object;
       this.filename = ARCHErdfQuery(optionsFilename, rs).value[0].hasFilename.object;
       let url = ARCHErdfQuery(optionsUrl, rs).value[0].hasIdentifier.object;
       var actors = ARCHErdfQuery(optionsHasActor, rs).value;
@@ -787,6 +792,10 @@ export default {
   color: black;
   padding: 0 !important;
   margin: 0;
+}
+
+.nav-link:hover {
+  color: #C85545;
 }
 
 .grid-container {
@@ -1049,7 +1058,6 @@ export default {
 }
 
 .toggles {
-  margin: auto;
   display: grid;
   width: 100%;
   grid-template-columns: auto auto auto;

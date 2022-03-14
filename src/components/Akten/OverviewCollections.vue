@@ -7,7 +7,7 @@
         {{ this.category }}
       </router-link>
       <span class="arrow">></span>
-      {{ this.currSubCat }}
+      <span style="font-weight: bold">{{ this.currSubCat }}</span>
     </p>
     <div>{{ this.$store.getters.noOfCollections }} Sammlungen</div>
     <div v-if="!searchView" class="card">

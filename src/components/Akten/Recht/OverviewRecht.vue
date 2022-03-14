@@ -1,6 +1,6 @@
 <template>
   <main>
-    <p class="navigation">Akten-Edition <span class="arrow">></span> Recht</p>
+    <p class="navigation">Akten-Edition <span class="arrow">></span> <span style="font-weight: bold">Recht</span></p>
     <div class="grid-container">
       <button type="button" class="item">
         <router-link class="nav-link" to="/recht/privatrecht/collections">Privatrecht</router-link>
