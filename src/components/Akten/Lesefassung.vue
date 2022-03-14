@@ -431,12 +431,13 @@ export default {
       keyword = keyword.replace("\"", "?"); //markJS cannot detect quotes from our data
 
       const options = {
-        "separateWordSearch":false,
+        "separateWordSearch": false,
         "wildcards": "enabled",
         "acrossElements": true,
-        "noMatch": function(){
+        "noMatch": function () {
           alert("Kein Treffer für \" " + keyword + "\"");
-        }};
+        }
+      };
       /* set page, need to find a solution for multiple marks */
       options.each = (elm) => {
         self.$store.dispatch('setSelectedPage', parseInt(elm.closest('[data-pgnr]').dataset.pgnr));
@@ -455,21 +456,22 @@ export default {
       instance.unmark({
         done: function () {
           const options = {
-            "separateWordSearch":false,
+            "separateWordSearch": false,
             "wildcards": "enabled",
             "acrossElements": true,
-            "noMatch": function(){
+            "noMatch": function () {
               alert("Kein Treffer für \" " + keyword + "\"");
-            }};
+            }
+          };
           instance.mark(keyword, options);
 
         }
       });
       this.marks = document.getElementsByClassName("d-block").item(0).querySelectorAll("mark");
-      if(this.marks.length === 0){
+      if (this.marks.length === 0) {
         //no match on current page
         this.highlightNext();
-      }else{
+      } else {
         this.marks[this.idxCurrMark].classList.add("current-mark");
         var topPos = this.marks[this.idxCurrMark].offsetTop;
         document.getElementsByClassName('body').item(0).scrollTop = topPos;
@@ -477,7 +479,7 @@ export default {
 
     },
     async highlightNext() {
-      if(this.idxCurrMark < this.marks.length){
+      if (this.idxCurrMark < this.marks.length) {
         this.marks[this.idxCurrMark].classList.remove("current-mark");
       }
       if ((this.idxCurrMark + 1) < this.marks.length) {
@@ -712,8 +714,8 @@ export default {
     if (this.$route.params.cat) {
       this.propsSet = true;
     }
-    if (this.$route.params.searchTerm) {
-      this.keyword = this.$route.params.searchTerm;
+    if (this.$route.params.searchTermContext) {
+      this.keyword = this.$route.params.searchTermContext;
     }
   },
   mounted() {

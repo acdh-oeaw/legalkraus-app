@@ -73,9 +73,14 @@ export default {
       });
     },
     navToLFWithKeyword() {
+      let text = new DOMParser()
+          .parseFromString(this.item.kwic[0], "text/html")
+          .documentElement.textContent;
+      //remove multiple whitespaces
+      let contextNoMultSpace = text.replace(/\s\s+/g, ' ').substring(0, 20);
       this.$router.push({
         name: "lesefassung",
-        params: {id: this.item.id, searchTerm: this.item.searchTerm}
+        params: {id: this.item.id, searchTermContext: contextNoMultSpace}
 
       });
     }
