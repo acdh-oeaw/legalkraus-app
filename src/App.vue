@@ -11,12 +11,18 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import {downloadCaseInfo} from "./services/ARCHEService";
 
 export default {
   name: "App",
   components: {
     Header,
     Footer
+  },
+  created() {
+    let data = downloadCaseInfo();
+    this.$store.dispatch('setCaseInfo', data);
+    console.log(data);
   }
 };
 
@@ -29,7 +35,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 0px;
+  margin-top: 0;
   padding-top: 0;
 }
 </style>

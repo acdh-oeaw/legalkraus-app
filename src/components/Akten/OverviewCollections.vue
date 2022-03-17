@@ -53,47 +53,47 @@
     <div v-if="searchView">
       <p>{{ searchResultsCount }} Ergebnisse für "{{ keyword }}"</p>
       <div v-for="item in searchResults" v-bind:key="item.key">
-      <SearchResultItem v-bind:item="item" v-on:nav-to-objects="navToObjects($event)"></SearchResultItem>
+        <SearchResultItem v-bind:item="item" v-on:nav-to-objects="navToObjects($event)"></SearchResultItem>
       </div>
 
-<!--      <b-pagination
-          page-class="custompaging"
-          prev-class="custompagingarrows"
-          next-class="custompagingarrows"
-          first-class="custompagingarrows"
-          last-class="custompagingarrows"
-          class="custom-pagination"
-          v-model="currentPage"
-          :total-rows="searchResultsCount"
-          :per-page="perPage"
-          aria-controls="col-table"
-      ></b-pagination>
-      <b-table id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
-               :current-page="currentPage" :per-page="perPage"
-               :busy.sync="isBusy" :fields="[
-            {
-              key: 'collection',
-              label: 'Collection'
-            },
-            {
-              key: 'title',
-              label: 'Titel'
-            },
-            {
-              key: 'kwic',
-              label: 'Textstellen'
-            }
-          ]" :items="searchResults" @row-clicked="navToObjects">
-        <template #table-busy>
-          <div class="text-center my-2">
-            <b-spinner type="grow" class="align-middle"></b-spinner>
-            <strong>Loading...</strong>
-          </div>
-        </template>
-        <template #cell(url)="data">
-          <a target="_blank" rel="noopener noreferrer" :href="`${data.value}`">Daten in Arche</a>
-        </template>
-      </b-table>-->
+      <!--      <b-pagination
+                page-class="custompaging"
+                prev-class="custompagingarrows"
+                next-class="custompagingarrows"
+                first-class="custompagingarrows"
+                last-class="custompagingarrows"
+                class="custom-pagination"
+                v-model="currentPage"
+                :total-rows="searchResultsCount"
+                :per-page="perPage"
+                aria-controls="col-table"
+            ></b-pagination>
+            <b-table id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
+                     :current-page="currentPage" :per-page="perPage"
+                     :busy.sync="isBusy" :fields="[
+                  {
+                    key: 'collection',
+                    label: 'Collection'
+                  },
+                  {
+                    key: 'title',
+                    label: 'Titel'
+                  },
+                  {
+                    key: 'kwic',
+                    label: 'Textstellen'
+                  }
+                ]" :items="searchResults" @row-clicked="navToObjects">
+              <template #table-busy>
+                <div class="text-center my-2">
+                  <b-spinner type="grow" class="align-middle"></b-spinner>
+                  <strong>Loading...</strong>
+                </div>
+              </template>
+              <template #cell(url)="data">
+                <a target="_blank" rel="noopener noreferrer" :href="`${data.value}`">Daten in Arche</a>
+              </template>
+            </b-table>-->
 
     </div>
   </main>
@@ -104,6 +104,7 @@
 import {getCollections} from "@/services/ARCHEService";
 import Search from "../Search";
 import SearchResultItem from "./SearchResultItem";
+import {getCollectionsByArrayOfIDs} from "../../services/ARCHEService";
 
 export default {
   name: "OverviewCollections",
@@ -125,6 +126,7 @@ export default {
       currSubCat: String,
       category: String,
       catLower: String,
+      caseIDs: [],
       r: 'Recht',
       k: 'Kultur',
       p: 'Politik',
@@ -144,9 +146,12 @@ export default {
   },
   methods: {
     getArcheCollections(ctx, callback) {
-      const offset = ctx.currentPage === 1 ? 0 : (ctx.currentPage - 1) * ctx.perPage
-      getCollections(offset, (result) => {
+      const offset = ctx.currentPage === 1 ? 0 : (ctx.currentPage - 1) * ctx.perPage;
+      /*getCollections(offset, (result) => {
         callback(result)
+      });*/
+      getCollectionsByArrayOfIDs(this.caseIDs, offset, result => {
+        callback(result);
       });
     },
     navToObjects: function (record) {
@@ -234,10 +239,24 @@ export default {
 
   },
   mounted() {
-    getCollections((result) => {
-      this.collections = result;
-    });
-
+    if (this.category) {
+      const caseInfo = this.$store.getters.caseInfo;
+      caseInfo.then(data => {
+        const cases = data.cases;
+        cases.forEach(c => {
+          if (c.keywords.includes(this.currSubCat)) {
+            this.caseIDs.push(c.id);
+          }
+        });
+      });
+      getCollectionsByArrayOfIDs(this.caseIDs, 0, result => {
+        this.collections = result;
+      });
+    } else {
+      getCollections(0,(result) => {
+        this.collections = result;
+      });
+    }
   }
 }
 
