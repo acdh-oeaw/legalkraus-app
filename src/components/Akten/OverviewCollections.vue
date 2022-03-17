@@ -38,7 +38,7 @@
               key: 'url',
               label: ''
             },
-          ]" :items="getArcheCollections" @row-clicked="navToObjects">
+          ]" :items="cases" @row-clicked="navToObjects">
         <template #table-busy>
           <div class="text-center my-2">
             <b-spinner type="grow" class="align-middle"></b-spinner>
@@ -104,7 +104,8 @@
 import {getCollections} from "@/services/ARCHEService";
 import Search from "../Search";
 import SearchResultItem from "./SearchResultItem";
-import {getCollectionsByArrayOfIDs} from "../../services/ARCHEService";
+import {getArcheIdFromXmlId} from "../../services/ARCHEService";
+//import {getCollectionsByArrayOfIDs} from "../../services/ARCHEService";
 
 export default {
   name: "OverviewCollections",
@@ -126,7 +127,7 @@ export default {
       currSubCat: String,
       category: String,
       catLower: String,
-      caseIDs: [],
+      cases: [],
       r: 'Recht',
       k: 'Kultur',
       p: 'Politik',
@@ -150,41 +151,34 @@ export default {
       /*getCollections(offset, (result) => {
         callback(result)
       });*/
-      getCollectionsByArrayOfIDs(this.caseIDs, offset, result => {
-        callback(result);
+      callback(this.cases.slice(offset, offset+ctx.perPage))
+    },
+    navToObjects: async function (record) {
+      getArcheIdFromXmlId(record.id, id => {
+        if (this.currSubCat === this.pR) {
+          this.$router.push({name: "privatrecht-objects", params: {id: id}});
+        } else if (this.currSubCat === this.sR) {
+          this.$router.push({name: "strafrecht-objects", params: {id: id}});
+        } else if (this.currSubCat === this.vR) {
+          this.$router.push({name: "verwaltungsrecht-objects", params: {id: id}});
+        } else if (this.currSubCat === this.zR) {
+          this.$router.push({name: "zivilrecht-objects", params: {id: id}});
+        } else if (this.currSubCat === this.fK) {
+          this.$router.push({name: "fackel-objects", params: {id: id}});
+        } else if (this.currSubCat === this.tK) {
+          this.$router.push({name: "theater-objects", params: {id: id}});
+        } else if (this.currSubCat === this.vK) {
+          this.$router.push({name: "verlagswesen-objects", params: {id: id}});
+        } else if (this.currSubCat === this.pK) {
+          this.$router.push({name: "polemiken-objects", params: {id: id}});
+        } else if (this.currSubCat === this.sP) {
+          this.$router.push({name: "sozialdemokratie-objects", params: {id: id}});
+        } else if (this.currSubCat === this.cP) {
+          this.$router.push({name: "christlich-national-objects", params: {id: id}});
+        } else if (this.currSubCat === this.nP) {
+          this.$router.push({name: "nationalsozialismus-objects", params: {id: id}});
+        }
       });
-    },
-    navToObjects: function (record) {
-      let url = record.url;
-      let id = this.getIdFromUrl(url);
-      if (this.currSubCat === this.pR) {
-        this.$router.push({name: "privatrecht-objects", params: {id: id}});
-      } else if (this.currSubCat === this.sR) {
-        this.$router.push({name: "strafrecht-objects", params: {id: id}});
-      } else if (this.currSubCat === this.vR) {
-        this.$router.push({name: "verwaltungsrecht-objects", params: {id: id}});
-      } else if (this.currSubCat === this.zR) {
-        this.$router.push({name: "zivilrecht-objects", params: {id: id}});
-      } else if (this.currSubCat === this.fK) {
-        this.$router.push({name: "fackel-objects", params: {id: id}});
-      } else if (this.currSubCat === this.tK) {
-        this.$router.push({name: "theater-objects", params: {id: id}});
-      } else if (this.currSubCat === this.vK) {
-        this.$router.push({name: "verlagswesen-objects", params: {id: id}});
-      } else if (this.currSubCat === this.pK) {
-        this.$router.push({name: "polemiken-objects", params: {id: id}});
-      } else if (this.currSubCat === this.sP) {
-        this.$router.push({name: "sozialdemokratie-objects", params: {id: id}});
-      } else if (this.currSubCat === this.cP) {
-        this.$router.push({name: "christlich-national-objects", params: {id: id}});
-      } else if (this.currSubCat === this.nP) {
-        this.$router.push({name: "nationalsozialismus-objects", params: {id: id}});
-      }
-
-    },
-    getIdFromUrl(url) {
-      let idx = url.lastIndexOf('/');
-      return url.substring(idx + 1);
     },
     setCurrPageAndCategory() {
       //category
@@ -245,13 +239,16 @@ export default {
         const cases = data.cases;
         cases.forEach(c => {
           if (c.keywords.includes(this.currSubCat)) {
-            this.caseIDs.push(c.id);
+           c.size = c.docs.length;
+            this.cases.push(c);
           }
         });
+        this.$store.dispatch("setNoOfCollections", this.cases.length)
+
       });
-      getCollectionsByArrayOfIDs(this.caseIDs, 0, result => {
+     /* getCollectionsByArrayOfIDs(this.cases, 0, result => {
         this.collections = result;
-      });
+      });*/
     } else {
       getCollections(0,(result) => {
         this.collections = result;

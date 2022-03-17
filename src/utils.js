@@ -129,7 +129,6 @@ const queryMDAndGetCategories = (baseurl, startPage, caseIDs, callback) => {
     });
 
     store.default.dispatch('setNoOfCollections', all_resources.fullLength)
-    console.log(all_resources)
     const promises = [];
     all_resources.forEach(function (rs) {
         //var rsID = rs.isPartOf.subject.replace(`${baseurl}/`, "");
