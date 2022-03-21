@@ -148,10 +148,7 @@ export default {
   methods: {
     getArcheCollections(ctx, callback) {
       const offset = ctx.currentPage === 1 ? 0 : (ctx.currentPage - 1) * ctx.perPage;
-      /*getCollections(offset, (result) => {
-        callback(result)
-      });*/
-      callback(this.cases.slice(offset, offset+ctx.perPage))
+      callback(this.cases.slice(offset, offset + ctx.perPage))
     },
     navToObjects: async function (record) {
       getArcheIdFromXmlId(record.id, id => {
@@ -233,24 +230,33 @@ export default {
 
   },
   mounted() {
-    if (this.category) {
+    if (this.category && this.currSubCat === "Die großen Polemiken") {
+      const caseInfo = this.$store.getters.caseInfo;
+      caseInfo.then(data => {
+        const cases = data.cases;
+        cases.forEach(c => {
+          if (c.keywords.includes("Schober, 15. Juli 1927" || "Die Stunde, Békessy" || "Berliner Tageblatt, Kerr, Wolff")) {
+            c.size = c.docs.length;
+            this.cases.push(c);
+          }
+        });
+        this.$store.dispatch("setNoOfCollections", this.cases.length)
+      });
+    } else if (this.category) {
       const caseInfo = this.$store.getters.caseInfo;
       caseInfo.then(data => {
         const cases = data.cases;
         cases.forEach(c => {
           if (c.keywords.includes(this.currSubCat)) {
-           c.size = c.docs.length;
+            c.size = c.docs.length;
             this.cases.push(c);
           }
         });
         this.$store.dispatch("setNoOfCollections", this.cases.length)
 
       });
-     /* getCollectionsByArrayOfIDs(this.cases, 0, result => {
-        this.collections = result;
-      });*/
     } else {
-      getCollections(0,(result) => {
+      getCollections(0, (result) => {
         this.collections = result;
       });
     }

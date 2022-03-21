@@ -2,7 +2,7 @@ const {default: fetch} = require('node-fetch');
 const {
     ARCHErdfQuery, ARCHEdownloadResourceIdM,
 } = require("arche-api");
-const {queryAndProcessMD, queryMDAndGetCategories} = require("../utils")
+const {queryAndProcessMD} = require("../utils")
 const store = require("../store");
 
 const ARCHE_BASE_URL = "https://arche-dev.acdh-dev.oeaw.ac.at/api";
@@ -103,31 +103,6 @@ module.exports.getCollections = async (startPage, callback) => {
         }
     } else {
         queryAndProcessMD('collection', ARCHE_BASE_URL, startPage, callback);
-    }
-}
-
-module.exports.getCollectionsByArrayOfIDs = async (caseIDs, startPage, callback) => {
-    console.log('getCollectionsByArrayOfIDs');
-
-    const resourceId = 37565;
-
-    const options = {
-        "host": ARCHE_BASE_URL,
-        "format": "application/n-triples",
-        "resourceId": resourceId,
-        "readMode": READMODE_RELATIVES,
-    };
-    if (store.default.getters.MDAllCollections === null) {
-        try {
-            ARCHEdownloadResourceIdM(options, (rs) => {
-                store.default.dispatch('setMDAllCollections', rs);
-                queryMDAndGetCategories(ARCHE_BASE_URL, startPage, caseIDs, callback);
-            });
-        } catch (error) {
-            console.log(error);
-        }
-    } else {
-        queryMDAndGetCategories(ARCHE_BASE_URL, startPage, callback);
     }
 }
 

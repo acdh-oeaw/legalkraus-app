@@ -6,7 +6,7 @@
         <router-link class="nav-link" to="/kultur/fackel/collections">Die Fackel</router-link>
       </button>
       <button type="button" class="item">
-        <router-link class="nav-link" to="/kultur/fackel/collections">Theater</router-link>
+        <router-link class="nav-link" to="/kultur/theater/collections">Theater</router-link>
       </button>
       <button type="button" class="item">
         <router-link class="nav-link" to="/kultur/verlagswesen/collections">Verlagswesen</router-link>
