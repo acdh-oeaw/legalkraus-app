@@ -5,6 +5,7 @@
     exclude-result-prefixes="xs tei v-on local" version="2.0">
     <xsl:output encoding="UTF-8" media-type="text/html" method="html" version="5.0" indent="yes"/>
     <!-- fragmenting function based on https://wiki.tei-c.org/index.php/Milestone-chunk.xquery -->
+    <xsl:variable name="teiHeader" select="//tei:teiHeader"/>
     <xsl:function name="local:split">
         <xsl:param name="ms1" as="element()"/>
         <xsl:param name="ms2" as="element()"/>
@@ -15,7 +16,7 @@
                     <xsl:when test="$node is $ms1">
                         <xsl:copy-of select="$node"/>
                     </xsl:when>
-
+                     <xsl:when test="$node/name() = 'back'"></xsl:when>
                     <xsl:when test="
                             some $n in $node/descendant::*
                                 satisfies ($n is $ms1 or $n is $ms2)">
@@ -41,11 +42,19 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:function>
-    <xsl:template match="/">
+    <xsl:template match="tei:TEI[not(//tei:pb)]">
+        <div  ref="readview" class="no-desc">
+        <xsl:value-of select="//tei:body//tei:div[@type='no-transcription']"/>
+    </div>
+    </xsl:template>
+   <xsl:template match="tei:TEI[//tei:pb]">
         <xsl:variable name="result">
-            <xsl:for-each select="/tei:TEI//tei:pb">
+            <xsl:for-each select="//tei:pb">
                 <xsl:variable name="nextPb" select="current()/following::tei:pb[1]"/>
                 <div>
+                    <xsl:if test="count(current()/following::*[@rend=('leftMargin','marginLeft')][. &lt;&lt; $nextPb]) > 0">
+                        <xsl:attribute name="class" select="'addPadding'"/>
+                    </xsl:if>
                     <xsl:attribute name="v-bind:class">
                         <xsl:value-of select="'{ ''d-block'': selectedPage ==='||position()||', ''d-none'':selectedPage!=='||position()||'}'"/>
                     </xsl:attribute>
@@ -231,7 +240,20 @@
             <xsl:apply-templates/>
         </span>
     </xsl:template>
-
+    <xsl:template match="tei:metamark[@function='transposition']">
+        <xsl:variable name="target" select="@target"/>
+        <xsl:variable name="ptrpos" select="$teiHeader//tei:transpose[@hand=./@hand]//tei:ptr[@target=$target]/(count(preceding-sibling::tei:ptr)+1)"/>
+        <xsl:variable name="seg">
+            <xsl:copy-of select="./root()//tei:seg[@type='transposition'][position()=$ptrpos]"/>
+        </xsl:variable>
+        <xsl:apply-templates select="$seg"/>
+    </xsl:template>
+    <xsl:template match="tei:seg[@type='transposition']">
+        <xsl:if test="not(ancestor::*[1])">
+        <xsl:apply-templates/>
+        </xsl:if>
+    </xsl:template>
+       
     <xsl:template match="tei:note[@type = 'paratext' and @resp = 'lawfirm']">
         <span class="paratext">
             <xsl:apply-templates/>
@@ -251,5 +273,9 @@
             <xsl:apply-templates select="*[not(self::tei:pb | self::tei:lb)] | text()" mode="clean"/>
         </xsl:copy>
     </xsl:template>
-
+    <xsl:template match="tei:rdg">
+        <span class="rdg {if (tei:note[@rend='leftMargin']) then 'marginLeft' else ()}">
+            <xsl:apply-templates/>
+        </span>
+    </xsl:template>
 </xsl:stylesheet>
