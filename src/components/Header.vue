@@ -38,11 +38,13 @@
           <b-dropdown-item>
             <router-link class="dd-item" to="/lizenzen">
               Lizenzen
-            </router-link></b-dropdown-item>
+            </router-link>
+          </b-dropdown-item>
           <b-dropdown-item>
             <router-link class="dd-item" to="/dokumentation">
               Technische Dokumentation
-            </router-link></b-dropdown-item>
+            </router-link>
+          </b-dropdown-item>
         </b-dropdown>
       </p>
       <p class="nav-el">
@@ -88,12 +90,36 @@
       </p>
       <p class="nav-el">
         <b-dropdown id="dropdown-4" text="Register" class="m-md-2">
-          <b-dropdown-item>Personen</b-dropdown-item>
-          <b-dropdown-item>Orte</b-dropdown-item>
-          <b-dropdown-item>Institutionen</b-dropdown-item>
-          <b-dropdown-item>Werke</b-dropdown-item>
-          <b-dropdown-item>Juristische Texte</b-dropdown-item>
-          <b-dropdown-item>Fackel Texte</b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/register/personen">
+              Personen
+            </router-link>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/register/orte">
+              Orte
+            </router-link>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/register/institutionen">
+              Institutionen
+            </router-link>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/register/werke">
+              Werke
+            </router-link>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/register/juristische-texte">
+              Juristische Texte
+            </router-link>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/register/fackel">
+              Fackel Texte
+            </router-link>
+          </b-dropdown-item>
         </b-dropdown>
       </p>
       <button type="button" class="btn nav-el handapparat">
