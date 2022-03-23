@@ -17,7 +17,7 @@
         {{ this.colTitle }}
       </router-link>
       <span class="arrow">></span>
-      <span style="font-weight: bold">{{this.objectTitle}}</span>
+      <span style="font-weight: bold">{{ this.objectTitle }}</span>
     </p>
     <p v-if="!propsSet" class="navigation">Akten-Edition
       <span class="arrow">></span>
@@ -26,20 +26,37 @@
         {{ this.colTitle }}
       </router-link>
       <span class="arrow">></span>
-      <span style="font-weight: bold">{{this.objectTitle}}</span>
+      <span style="font-weight: bold">{{ this.objectTitle }}</span>
     </p>
     <div class="meta-data">
       <p class="meta1">Metadaten Fall:</p>
-      <p class="meta2">
+      <div class="meta2">
         <router-link class="back" to="/">Titel: {{ this.colTitle }}</router-link>
-      </p>
+        <p>Anzahl Dokumente: {{ this.colSize }}</p>
+      </div>
       <div class="vl meta3"></div>
       <p class="meta4">Datum: (coming soon)</p>
-      <p class="meta5">Anzahl Dokumente: {{ this.colSize }}</p>
-      <div class="meta6">
-        <p>Beteiligte:</p>
-        <p v-for="actor in actors" v-bind:key="actor.identifier">{{ actor.title }}</p>
+      <div class="meta5">
+        <span v-if="actorsClosed" class="hasActor">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right"
+             viewBox="0 0 16 16" v-on:click="toggleActors">
+          <path
+              d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
+        </svg>
+        Beteiligte: {{ actors.length }}
+          </span>
+        <div v-if="!actorsClosed">
+        <span class="hasActor">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down"
+             viewBox="0 0 16 16" v-on:click="toggleActors">
+  <path
+      d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+</svg>
+        Beteiligte:
 
+          </span>
+          <p v-for="actor in actors" v-bind:key="actor.identifier">{{ actor.title }}</p>
+        </div>
       </div>
       <div class="vl meta7"></div>
       <div class="meta8">
@@ -381,7 +398,8 @@ export default {
       keyword: null,
       actors: [],
       marks: [],
-      idxCurrMark: 0
+      idxCurrMark: 0,
+      actorsClosed: true
     }
   },
   computed: {
@@ -646,6 +664,9 @@ export default {
       this.showFacs = false;
       this.showLF = true;
     },
+    toggleActors() {
+      this.actorsClosed = !this.actorsClosed;
+    },
     toggleShowBoth() {
       this.removeAllComments();
       this.showLF = true;
@@ -711,7 +732,7 @@ export default {
     if (this.$route.params.searchTermContext) {
       this.keyword = this.$route.params.searchTermContext;
     }
-    if(this.$route.params.subcat === "Die Fackel"){
+    if (this.$route.params.subcat === "Die Fackel") {
       this.$route.params.subcat = "Fackel"
     }
   },
@@ -833,12 +854,13 @@ export default {
   grid-column-start: 1;
   grid-column-end: 2;
   grid-row: 2/3;
-  text-decoration: underline var(--primary-red) 5px;
 }
 
 .back {
   padding: 0;
   color: var(--text-black) !important;
+  text-decoration: underline var(--primary-red) 3px;
+  margin-bottom: 0.1rem;
 }
 
 .back:hover {
@@ -865,12 +887,6 @@ export default {
   margin-left: 3rem;
 }
 
-.meta6 {
-  grid-column-start: 3;
-  grid-column-end: 4;
-  grid-row: 3/4;
-  margin-left: 3rem;
-}
 
 .meta7 {
   grid-column-start: 4;
@@ -881,7 +897,7 @@ export default {
 .meta8 {
   grid-column-start: 5;
   grid-column-end: 6;
-  grid-row: 2/3;
+  grid-row: 1/2;
   margin-left: 3rem;
   display: inline-flex;
 }
@@ -1017,7 +1033,7 @@ export default {
   display: block;
 }
 
-.d-block p{
+.d-block p {
   padding-left: 1rem;
 }
 
@@ -1261,6 +1277,9 @@ mark {
   height: 2rem;
 }
 
+.hasActor {
+  display: flex;
+}
 </style>
 
 
