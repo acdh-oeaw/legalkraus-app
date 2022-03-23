@@ -20,7 +20,8 @@ export default new Vuex.Store({
         noOfResource: null,
         resourcePageSize: 10,
         MDAllResources: null,
-        MDAllCollections: null
+        MDAllCollections: null,
+        caseInfo: null
         
     },
 
@@ -51,6 +52,9 @@ export default new Vuex.Store({
         },
         MDAllCollections: state => {
             return state.MDAllCollections;
+        },
+        caseInfo: state => {
+            return state.caseInfo;
         }
     },
 
@@ -98,6 +102,9 @@ export default new Vuex.Store({
         MUTATE_MD_ALL_COLLECTIONS: (state, mdallcollections) => {
             Vue.set(state, 'MDAllCollections', mdallcollections);
         },
+        MUTATE_CASEINFO: (state, caseInfo) => {
+            Vue.set(state, 'caseInfo', caseInfo)
+        }
     },
 
     actions: {
@@ -111,7 +118,6 @@ export default new Vuex.Store({
             context.commit('MUTATE_SELECTED_PAGE_DECREMENT');
         },
         pageNext: (context) => {
-            console.log('here')
             context.commit('MUTATE_SELECTED_PAGE_INCREMENT');
         },
         updateHighlighter: (context, highlight) => {
@@ -131,6 +137,9 @@ export default new Vuex.Store({
         },
         setMDAllCollections: (context, mdallcollections) => {
             context.commit('MUTATE_MD_ALL_COLLECTIONS', mdallcollections)
+        },
+        setCaseInfo: (context, caseInfo) => {
+            context.commit('MUTATE_CASEINFO', caseInfo);
         }
     }
 });

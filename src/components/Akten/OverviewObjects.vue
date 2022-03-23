@@ -22,7 +22,11 @@
     </div>
     <div class="case-info">
       <h3> Dokumente des Falles "{{ this.caseTitle }}"</h3>
-      <p v-if="isEmpty"> Dieser Fall hat keine Dokumente. </p>
+      <div v-if="loading">
+        <p> Dokumente werden geladen. </p>
+        <div class="loader"></div>
+      </div>
+
       <p v-else> Dieser Fall hat {{ this.numberDocuments }} Dokumente. </p>
 
       <div v-if="searchView">
@@ -79,7 +83,7 @@ export default {
       keyword: String,
       caseTitle: String,
       numberDocuments: Number,
-      isEmpty: Boolean,
+      loading: true,
       path: String,
       searchView: false,
       subCategory: String,
@@ -240,7 +244,7 @@ export default {
 
     getObjectsOfCollection(this.colId, (result) => {
       this.objects = result;
-      this.isEmpty = (this.objects.length === 0);
+      this.loading = false;
     });
   }
 
@@ -299,6 +303,25 @@ export default {
 
 .nav-link:hover {
   color: #C85545;
+}
+
+.loader {
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid var(--primary-red);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 2s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 </style>

@@ -11,7 +11,8 @@ const READMODE_RESOURCE = "resource";
 const READMODE_RELATIVES = "relatives";
 
 module.exports.getObjectWithId = async (resourceId, callback) => {
-    const options = {
+
+    let options = {
         "host": ARCHE_BASE_URL,
         "format": "application/n-triples",
         "resourceId": resourceId,
@@ -102,6 +103,46 @@ module.exports.getCollections = async (startPage, callback) => {
         }
     } else {
         queryAndProcessMD('collection', ARCHE_BASE_URL, startPage, callback);
+    }
+}
+
+module.exports.getArcheIdFromXmlId = async (xmlId, callback) => {
+    const resourceId = 37565;
+    let id = xmlId.substring(0, xmlId.length-4);
+    const options = {
+        "host": ARCHE_BASE_URL,
+        "format": "application/n-triples",
+        "resourceId": resourceId,
+        "readMode": "neighbors",
+    };
+    if (store.default.getters.MDAllCollections === null) {
+        try {
+            ARCHEdownloadResourceIdM(options, (rs) => {
+                store.default.dispatch('setMDAllCollections', rs);
+                const options = {
+                    "subject": null,
+                    "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier",
+                    "object": "https://id.acdh.oeaw.ac.at/legalkraus/"+id,
+                    "expiry": 14
+                };
+               let res = ARCHErdfQuery(options, rs).value[0].hasIdentifier.subject.replace(`${ARCHE_BASE_URL}/`, "");
+               callback(res)
+
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    } else {
+        let metadata = store.default.getters.MDAllCollections;
+        const options = {
+            "subject": null,
+            "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier",
+            "object": "https://id.acdh.oeaw.ac.at/legalkraus/"+id,
+            "expiry": 14
+        };
+        let res = ARCHErdfQuery(options, metadata).value[0].hasIdentifier.subject.replace(`${ARCHE_BASE_URL}/`, "");
+        callback(res)
+
     }
 }
 
@@ -247,16 +288,15 @@ module.exports.getAllResources = async (startPage, callback) => {
     }
 }
 
-module.exports.getTransformedHTML = async(objectId, callback) => {
+module.exports.getTransformedHTML = async (objectId, callback) => {
     try {
         const url = `https://service4tei.acdh-dev.oeaw.ac.at/tei2html.xql?tei=https://arche-dev.acdh-dev.oeaw.ac.at/api/${objectId}&xsl=https://raw.githubusercontent.com/acdh-oeaw/legalkraus-app/lf_xsl-additions/src/lesefassung_xsl/legal_kraus_lesefassung.xsl`;
         const resp = await fetch(url);
         const data = await resp.text();
         return callback(data);
-    }catch (error){
+    } catch (error) {
         console.log(error);
     }
-
 }
 
 /*module.exports.getTransformedHTML = async (resourceId, callback) => {
@@ -331,6 +371,16 @@ module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback)
     }
 
 
+}
+
+module.exports.downloadCaseInfo = async () => {
+    try {
+        const url = "https://id.acdh.oeaw.ac.at/legalkraus/cases-index.json";
+        const resp = await fetch(url);
+        return await resp.json();
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 
