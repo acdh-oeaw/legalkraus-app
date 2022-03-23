@@ -121,7 +121,8 @@ main {
   grid-template-rows: 6rem;
   margin-left: 0;
   border-bottom: solid 0.3rem var(--primary-red);
-  margin-bottom: 2rem;
+  margin-bottom: 0;
+  padding-bottom: 0.1rem;
 }
 
 .navigation {

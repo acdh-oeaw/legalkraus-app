@@ -1017,8 +1017,8 @@ export default {
   display: block;
 }
 
-.lb {
-  padding-right: 1rem;
+.d-block p{
+  padding-left: 1rem;
 }
 
 .w-5 {
