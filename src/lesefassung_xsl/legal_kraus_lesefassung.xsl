@@ -242,6 +242,11 @@
         <xsl:variable name="curbr" select="."/>
         <span class="lb" ref="linebreak{generate-id()}"/>
     </xsl:template>
+
+    <xsl:template match="tei:lb[@break='no']">
+        <xsl:variable name="curbr" select="."/>
+        <span class="lb" ref="linebreak{generate-id()}">-</span>
+    </xsl:template>
     <xsl:template match="tei:pb">
         <br/>
     </xsl:template>
