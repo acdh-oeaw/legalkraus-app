@@ -26,4 +26,8 @@
     --text-gray: #2c3e50;
     --text-black: #1e2125;
     --text-white: whitesmoke;
+
+    --open-sans-regular: 'Open Sans', sans-serif;
+
+    font-family: var(--open-sans-regular);
 }
