@@ -567,12 +567,12 @@ export default {
     },
     async childToParent(event) {
       this.toggleFacs(); //hide facsimile, switch to text-only view
+      await new Promise(resolve => setTimeout(resolve, 500)); //vue needs time to change to card-full view
       let elem = document.getElementById(event.htmlId);
-      let parent = elem.parentNode;
+      let parent = elem.parentNode.parentNode;
 
       //work does not refer to a pmb entry
       if (event.type === 'work') {
-        await new Promise(resolve => setTimeout(resolve, 500)); //vue needs time to change to card-full view
         let commentDiv = this.createCommentDiv(event, null, elem, event.type);
         parent.appendChild(commentDiv);
         return;
@@ -584,15 +584,15 @@ export default {
       });
     },
     createCommentDiv(event, rs, elem, type) {
-      var dblock = document.getElementsByClassName("d-block").item(0);
-      var rect = dblock.getBoundingClientRect();
+      var rect = elem.parentNode.getBoundingClientRect();
+
 
       var div = document.createElement('div');
       div.className = "comment";
       div.style.border = "solid black 1px";
       div.style.color = "black";
       div.style.backgroundColor = "white";
-      div.style.width = "29rem";
+      div.style.width = "max-content";
       div.style.fontSize = "0.8rem";
       div.style.padding = "0.1rem";
       div.style.display = "flex";
@@ -622,8 +622,9 @@ export default {
 
       div.style.position = "absolute";
       div.style.cursor = "pointer";
-      div.style.top = elem.offsetTop + "px"; //todo: check if div overlaps with another comment
-      div.style.left = rect.right * 0.5 + "px"; //todo: substitute magic number?
+      div.style.top = elem.offsetTop + "px";
+      div.style.left = rect.right * 0.4 + "px"; //todo: substitute magic number?
+
 
       let self = this; //"this" cannot be used in JS functions
       div.onclick = function () {
@@ -941,6 +942,7 @@ export default {
   padding: 0;
   margin: auto;
   border-width: 1rem;
+  padding-left: 1rem;
 }
 
 .card-fixed-small {
