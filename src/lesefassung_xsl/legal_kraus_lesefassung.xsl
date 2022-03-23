@@ -20,7 +20,7 @@
                     <xsl:when test="
                             some $n in $node/descendant::*
                                 satisfies ($n is $ms1 or $n is $ms2)">
-                        <xsl:element name="{$node/local-name()}">
+                        <xsl:element namespace="http://www.tei-c.org/ns/1.0" name="{$node/local-name()}">
                             <xsl:copy-of select="
                                     for $i in ($node/node() | $node/@*)
                                     return

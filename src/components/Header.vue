@@ -96,7 +96,7 @@
           <b-dropdown-item>Fackel Texte</b-dropdown-item>
         </b-dropdown>
       </p>
-      <button type="button" class="btn nav-el handapparat rounded-0">
+      <button type="button" class="btn nav-el rounded-0">
         <router-link router-link class="nav-link-ha" :to="'/handapparat'">Handapparat</router-link>
       </button>
       <button type="button" class="btn nav-el handapparat  rounded-0"  variant='none'>How to use</button>
@@ -171,7 +171,7 @@ main {
 }
 
 .nav-link-ha {
-  color: var(--text-white);
+  color: var(--text-gray);
 }
 
 .nav-link:link, .nav-link-ha:link {
@@ -197,7 +197,6 @@ main {
 }
 
 .nav-el {
-  font-size: 1.5rem;
   margin-top: auto;
   margin-bottom: auto;
   margin-right: 1rem;
