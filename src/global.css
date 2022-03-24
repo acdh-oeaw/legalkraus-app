@@ -28,6 +28,8 @@
     --text-black: #1e2125;
     --text-white: whitesmoke;
 
+    --comment-brown: #dfd3c3;
+
     --open-sans-regular: 'Open Sans', sans-serif;
 
     font-family: var(--open-sans-regular);

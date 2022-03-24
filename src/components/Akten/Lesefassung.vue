@@ -90,7 +90,7 @@
 
       <div id="card-left-medium" class="card-left" v-if="this.showLF && this.showFacs">
         <div class="facs">
-          <button class="format btn btn-light mb-2">Facsimile</button>
+          <button class="format btn btn-light mb-2 btn-red">Facsimile</button>
         </div>
         <div class="card card-fixed border-0 bg-light">
           <div class="header">
@@ -106,7 +106,7 @@
 
       <div id="card-left-large" class="view-full-width-left" v-if="!this.showLF && this.showFacs">
         <div class="facs-full-width">
-          <button class="format btn btn-light">Facsimile</button>
+          <button class="format btn btn-light btn-red">Facsimile</button>
         </div>
         <div class="card card-full">
           <img class="embedded-img" :src="getCurrentFacs()" alt="facsimile">
@@ -129,7 +129,7 @@
       <div id="card-right-medium" class="card-right" v-if="this.showFacs && this.showLF">
 
         <div class="formats mb-2">
-          <button class="format btn btn-light">Lesefassung</button>
+          <button class="format btn btn-light btn-red">Lesefassung</button>
           <a class="format btn btn-light" role="button" :href="xmlFile"
              :download="filename">
             Download XML
@@ -244,7 +244,7 @@
       <div id="card-right-large" class="view-full-width-right" v-if="!this.showFacs && this.showLF"
            v-on="childToParent">
         <div class="formats-full-width">
-          <button class="format btn btn-light">Lesefassung</button>
+          <button class="format btn btn-light btn-red">Lesefassung</button>
           <a class="format btn btn-light" role="button" :href="xmlFile"
              :download="filename">
             Download XML
@@ -323,7 +323,7 @@
             </b-form-checkbox>
 
           </div>
-          <div class="body row m-0">
+          <div class="body row m-0 overflow-auto">
             <component class="col-9"  v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"
                        v-on:child-mounted="childMounted"/>
                        <div class="col-3 position-relative" id="comments"></div>
@@ -590,11 +590,10 @@ export default {
 
       var div = document.createElement('div');
       div.className = "comment";
-      div.style.border = "solid black 1px";
-      div.style.color = "black";
-      div.style.backgroundColor = "white";
+      div.style.color = "var(--text-black)";
+      div.style.backgroundColor = "var(--comment-brown)";
       div.style.fontSize = "0.8rem";
-      div.style.padding = "0.1rem";
+      div.style.padding = "0 0.2rem 0 0.2rem";
       div.style.display = "flex";
       div.style.justifyContent = "space-between";
 
@@ -706,12 +705,14 @@ export default {
     },
     next() {
       if (this.facsURLs.length > this.selectedPage) {
+        this.removeAllComments();
         this.i++;
         this.$store.dispatch('pageNext')
       }
     },
     prev() {
       if (this.$store.getters.selectedPage > 1) {
+        this.removeAllComments();
         this.i--;
         this.$store.dispatch('pagePrev')
       }
@@ -797,6 +798,10 @@ export default {
 
 <style>
 
+.btn-red{
+  background-color: var(--primary-red) !important;
+  color: var(--text-white) !important;
+}
 .navigation {
   display: flex;
   margin-left: 2rem !important;
@@ -984,7 +989,7 @@ export default {
 }
 
 .formats, .facs {
-  width: 40rem;
+  width: auto;
   margin: auto;
   display: flex;
   justify-content: space-between;
