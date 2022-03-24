@@ -324,9 +324,9 @@
 
           </div>
           <div class="body row m-0 overflow-auto">
-            <component class="col-9"  v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"
+            <component class="col-9" v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"
                        v-on:child-mounted="childMounted"/>
-                       <div class="col-3 position-relative" id="comments"></div>
+            <div class="col-3 position-relative" id="comments"></div>
           </div>
         </div>
       </div>
@@ -570,22 +570,58 @@ export default {
       this.toggleFacs(); //hide facsimile, switch to text-only view
       await new Promise(resolve => setTimeout(resolve, 500)); //vue needs time to change to card-full view
       let elem = document.getElementById(event.htmlId);
-     // let parent = elem.parentNode;
+      const comments = document.querySelectorAll('.comment');
+
       const comment = document.getElementById("comments");
+
       //work does not refer to a pmb entry
       if (event.type === 'work') {
         let commentDiv = this.createCommentDiv(event, null, elem, event.type);
+        //in case of an inline collision (due to nested elements, the comment is placed directly beneath the other comment)
+        comments.forEach(e => {
+          const eBCR = e.getBoundingClientRect();
+          if(eBCR.top === commentDiv.style.top){
+
+            console.log("inline collision")
+            commentDiv.style.top = commentDiv.style.top + eBCR.height;
+
+          }
+        })
         comment.appendChild(commentDiv);
+
+        //in case of a normal collision, the old comment is removed
+        comments.forEach(e => {
+          if(this.hasCollision(e, commentDiv)){
+            e.remove();
+          }
+        })
         return;
       }
 
       getPMBObjectWithId(event.pmbId, event.type, (rs) => {
         let commentDiv = this.createCommentDiv(event, rs, elem, event.type);
+        //in case of an inline collision (due to nested elements, the comment is placed directly beneath the other comment)
+        comments.forEach(e => {
+          const eBCR = e.getBoundingClientRect();
+          if(e.style.top === commentDiv.style.top){
+            console.log("inline collision")
+            commentDiv.style.top = commentDiv.style.top + eBCR.height;
+          }
+        })
+
         comment.appendChild(commentDiv);
+
+        //in case of a normal collision, the old comment is removed
+        comments.forEach(e => {
+          if(this.hasCollision(e, commentDiv)){
+            e.remove();
+          }
+        })
       });
     },
     createCommentDiv(event, rs, elem, type) {
-     // var dblock = document.getElementsByClassName("d-block").item(0);
+      console.log("creating comment: " + type)
+      // var dblock = document.getElementsByClassName("d-block").item(0);
       //var rect = dblock.getBoundingClientRect();
 
       var div = document.createElement('div');
@@ -598,25 +634,25 @@ export default {
       div.style.justifyContent = "space-between";
 
       if (type === 'person') {
-        div.innerHTML = "<p class='c'>" + rs.name + ", " + rs.first_name + " (" + rs.start_date + " bis " + rs.end_date + ") " + ", " + rs.profession[0].name + "</p><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"currentColor\" class=\"bi bi-box-arrow-in-up-right\" viewBox=\"0 0 16 16\">\n" +
+        div.innerHTML = "<svg style=\"margin-right: 0.2rem\" xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"currentColor\" class=\"bi bi-box-arrow-in-up-right\" viewBox=\"0 0 16 16\">\n" +
             "  <path fill-rule=\"evenodd\" d=\"M6.364 13.5a.5.5 0 0 0 .5.5H13.5a1.5 1.5 0 0 0 1.5-1.5v-10A1.5 1.5 0 0 0 13.5 1h-10A1.5 1.5 0 0 0 2 2.5v6.636a.5.5 0 1 0 1 0V2.5a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5H6.864a.5.5 0 0 0-.5.5z\"/>\n" +
-            "  <path fill-rule=\"evenodd\" d=\"M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z\" style=\"padding-bottom: 0.1rem;margin-left: 0.3rem;\"/>\n" +
-            "</svg>";
+            "  <path fill-rule=\"evenodd\" d=\"M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z\"/>\n" +
+            "</svg>"+"<p class='c'>" + rs.name + ", " + rs.first_name + " (" + rs.start_date + " bis " + rs.end_date + ") " + ", " + rs.profession[0].name;
       } else if (type === 'place') {
-        div.innerHTML = "<p class='c'>" + rs.name + ", " + rs.kind.name + "</p><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"currentColor\" class=\"bi bi-box-arrow-in-up-right\" viewBox=\"0 0 16 16\">\n" +
+        div.innerHTML = "<svg style=\"margin-right: 0.2rem\" xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"currentColor\" class=\"bi bi-box-arrow-in-up-right\" viewBox=\"0 0 16 16\">\n" +
             "  <path fill-rule=\"evenodd\" d=\"M6.364 13.5a.5.5 0 0 0 .5.5H13.5a1.5 1.5 0 0 0 1.5-1.5v-10A1.5 1.5 0 0 0 13.5 1h-10A1.5 1.5 0 0 0 2 2.5v6.636a.5.5 0 1 0 1 0V2.5a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5H6.864a.5.5 0 0 0-.5.5z\"/>\n" +
-            "  <path fill-rule=\"evenodd\" d=\"M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z\" style=\"padding-bottom: 0.1rem;margin-left: 0.3rem;\"/>\n" +
-            "</svg>";
+            "  <path fill-rule=\"evenodd\" d=\"M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z\"/>\n" +
+            "</svg>"+"<p class='c'>" + rs.name + ", " + rs.kind.name;
       } else if (type === 'institution') {
-        div.innerHTML = "<p class='c'>" + rs.name + ', ' + rs.kind.name + " (" + rs.start_date + " bis " + rs.end_date + ") " + "</p><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"currentColor\" class=\"bi bi-box-arrow-in-up-right\" viewBox=\"0 0 16 16\">\n" +
+        div.innerHTML = "<svg style=\"margin-right: 0.2rem\" xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"currentColor\" class=\"bi bi-box-arrow-in-up-right\" viewBox=\"0 0 16 16\">\n" +
             "  <path fill-rule=\"evenodd\" d=\"M6.364 13.5a.5.5 0 0 0 .5.5H13.5a1.5 1.5 0 0 0 1.5-1.5v-10A1.5 1.5 0 0 0 13.5 1h-10A1.5 1.5 0 0 0 2 2.5v6.636a.5.5 0 1 0 1 0V2.5a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5H6.864a.5.5 0 0 0-.5.5z\"/>\n" +
-            "  <path fill-rule=\"evenodd\" d=\"M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z\" style=\"padding-bottom: 0.1rem;margin-left: 0.3rem;\"/>\n" +
-            "</svg>";
+            "  <path fill-rule=\"evenodd\" d=\"M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z\"/>\n" +
+            "</svg>"+"<p class='c'>" + rs.name + ', ' + rs.kind.name + " (" + rs.start_date + " bis " + rs.end_date + ") ";
       } else if (type === 'work') {
-        div.innerHTML = "<p class='c'>" + event.pmbId + "</p><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"currentColor\" class=\"bi bi-box-arrow-in-up-right\" viewBox=\"0 0 16 16\">\n" +
+        div.innerHTML = "<svg style=\"margin-right: 0.2rem\" xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" fill=\"currentColor\" class=\"bi bi-box-arrow-in-up-right\" viewBox=\"0 0 16 16\">\n" +
             "  <path fill-rule=\"evenodd\" d=\"M6.364 13.5a.5.5 0 0 0 .5.5H13.5a1.5 1.5 0 0 0 1.5-1.5v-10A1.5 1.5 0 0 0 13.5 1h-10A1.5 1.5 0 0 0 2 2.5v6.636a.5.5 0 1 0 1 0V2.5a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5H6.864a.5.5 0 0 0-.5.5z\"/>\n" +
-            "  <path fill-rule=\"evenodd\" d=\"M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z\" style=\"padding-bottom: 0.1rem;margin-left: 0.3rem;\"/>\n" +
-            "</svg>";
+            "  <path fill-rule=\"evenodd\" d=\"M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0v-5z\"/>\n" +
+            "</svg>"+"<p class='c'>" + event.pmbId;
       }
 
       div.style.position = "absolute";
@@ -631,6 +667,16 @@ export default {
       };
 
       return div;
+    },
+    hasCollision(a, b) {
+      var aRect = a.getBoundingClientRect();
+      var bRect = b.getBoundingClientRect();
+      return !(
+          ((aRect.top + aRect.height) < (bRect.top)) ||
+          (aRect.top > (bRect.top + bRect.height)) ||
+          ((aRect.left + aRect.width) < bRect.left) ||
+          (aRect.left > (bRect.left + bRect.width))
+      );
     },
     removeAllComments() {
       document.querySelectorAll('.comment').forEach(e => e.remove());
@@ -798,10 +844,11 @@ export default {
 
 <style>
 
-.btn-red{
+.btn-red {
   background-color: var(--primary-red) !important;
   color: var(--text-white) !important;
 }
+
 .navigation {
   display: flex;
   margin-left: 2rem !important;
@@ -1299,8 +1346,8 @@ mark {
 }
 
 .comment {
-  max-width:100%;
-  width:100%;
+  max-width: 100%;
+  width: 100%;
   word-break: break-all;
 }
 </style>
