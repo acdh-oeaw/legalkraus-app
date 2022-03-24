@@ -601,11 +601,12 @@ export default {
       getPMBObjectWithId(event.pmbId, event.type, (rs) => {
         let commentDiv = this.createCommentDiv(event, rs, elem, event.type);
         //in case of an inline collision (due to nested elements, the comment is placed directly beneath the other comment)
-        comments.forEach(e => {
+         const curcomments = document.querySelectorAll('.comment');
+        curcomments.forEach(e => {
           const eBCR = e.getBoundingClientRect();
           if(e.style.top === commentDiv.style.top){
             console.log("inline collision")
-            commentDiv.style.top = commentDiv.style.top + eBCR.height;
+            commentDiv.style.top = `${parseInt(commentDiv.style.top.replace('px',''),10) + eBCR.height}px`
           }
         })
 
