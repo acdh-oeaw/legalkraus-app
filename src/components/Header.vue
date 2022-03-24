@@ -9,7 +9,7 @@
 
     <div class="navigation">
       <p class="nav-el">
-        <b-dropdown id="dropdown-1" text="Projekt" class="m-md-2">
+        <b-dropdown id="dropdown-1" text="Projekt" variant='none' class="m-md-2">
           <b-dropdown-item>
             <router-link class="dd-item" to="/projektinformationen">
               Projektinformation
@@ -46,7 +46,7 @@
         </b-dropdown>
       </p>
       <p class="nav-el">
-        <b-dropdown id="dropdown-2" text="Akten-Edition" class="m-md-2">
+        <b-dropdown id="dropdown-2" text="Akten-Edition"  variant='none' class="m-md-2">
           <b-dropdown-item>
             <router-link class="dd-item" to="/kultur">
               Kultur
@@ -80,14 +80,14 @@
         </b-dropdown>
       </p>
       <p class="nav-el">
-        <b-dropdown id="dropdown-3" text="Statistik" class="m-md-2">
+        <b-dropdown id="dropdown-3" text="Statistik"  variant='none' class="m-md-2">
           <b-dropdown-item>Zeitstrahl</b-dropdown-item>
           <b-dropdown-item>Fallstatistik</b-dropdown-item>
           <b-dropdown-item>Sonstiges</b-dropdown-item>
         </b-dropdown>
       </p>
       <p class="nav-el">
-        <b-dropdown id="dropdown-4" text="Register" class="m-md-2">
+        <b-dropdown id="dropdown-4" text="Register"  variant='none' class="m-md-2">
           <b-dropdown-item>Personen</b-dropdown-item>
           <b-dropdown-item>Orte</b-dropdown-item>
           <b-dropdown-item>Institutionen</b-dropdown-item>
@@ -96,10 +96,10 @@
           <b-dropdown-item>Fackel Texte</b-dropdown-item>
         </b-dropdown>
       </p>
-      <button type="button" class="btn nav-el handapparat">
+      <button type="button" class="btn nav-el rounded-0">
         <router-link router-link class="nav-link-ha" :to="'/handapparat'">Handapparat</router-link>
       </button>
-      <button type="button" class="btn nav-el handapparat">How to use</button>
+      <button type="button" class="btn nav-el handapparat  rounded-0"  variant='none'>How to use</button>
     </div>
   </main>
 </template>
@@ -110,6 +110,15 @@ export default {
 }
 </script>
 
+<style>
+.navigation .btn {
+  font-weight:600 !important;
+} 
+
+.navigation .dropdown-toggle::after {
+  display:none
+}
+</style>
 <style scoped>
 
 main {
@@ -132,7 +141,7 @@ main {
 }
 
 .handapparat {
-  background-color: #6c757d;
+  background-color: #565149;
   color: white;
   border-radius: 0.25rem;
   font-size: 1rem !important;
@@ -141,8 +150,8 @@ main {
 
 .handapparat:hover {
   color: white;
-  background-color: #5c636a;
-  border-color: #565e64;
+  background-color: #565149;
+  border-color: #565149;
 }
 
 .title {
@@ -155,12 +164,14 @@ main {
   border-top: 0.5rem solid var(--primary-red);
 }
 
+
+
 .nav-link {
   color: var(--text-gray);
 }
 
 .nav-link-ha {
-  color: var(--text-white);
+  color: var(--text-gray);
 }
 
 .nav-link:link, .nav-link-ha:link {
@@ -186,7 +197,6 @@ main {
 }
 
 .nav-el {
-  font-size: 1.5rem;
   margin-top: auto;
   margin-bottom: auto;
   margin-right: 1rem;

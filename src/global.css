@@ -1,6 +1,7 @@
 /*import font families*/
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap');
 
 :root{
     --primary-red: #C85545;
@@ -9,7 +10,7 @@
     --secondary-gray:#DDDBD8;
     --secondary-gray-dark: #C6C2BC;
     --secondary-gray-meta: #E0DED5;
-    --secondary-gray-light: #D8D8D8;
+    --secondary-gray-light: #f0f0f0;
 
     --handapparat-normal: #565149;
     --handapparat-hover: #7E766B;
