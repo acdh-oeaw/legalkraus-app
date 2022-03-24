@@ -323,9 +323,10 @@
             </b-form-checkbox>
 
           </div>
-          <div class="body">
-            <component class="w-95" v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"
+          <div class="body row m-0">
+            <component class="col-9"  v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"
                        v-on:child-mounted="childMounted"/>
+                       <div class="col-3 position-relative" id="comments"></div>
           </div>
         </div>
       </div>
@@ -568,31 +569,30 @@ export default {
     async childToParent(event) {
       this.toggleFacs(); //hide facsimile, switch to text-only view
       let elem = document.getElementById(event.htmlId);
-      let parent = elem.parentNode;
-
+     // let parent = elem.parentNode;
+      const comment = document.getElementById("comments");
       //work does not refer to a pmb entry
       if (event.type === 'work') {
         await new Promise(resolve => setTimeout(resolve, 500)); //vue needs time to change to card-full view
         let commentDiv = this.createCommentDiv(event, null, elem, event.type);
-        parent.appendChild(commentDiv);
+        comment.appendChild(commentDiv);
         return;
       }
 
       getPMBObjectWithId(event.pmbId, event.type, (rs) => {
         let commentDiv = this.createCommentDiv(event, rs, elem, event.type);
-        parent.appendChild(commentDiv);
+        comment.appendChild(commentDiv);
       });
     },
     createCommentDiv(event, rs, elem, type) {
-      var dblock = document.getElementsByClassName("d-block").item(0);
-      var rect = dblock.getBoundingClientRect();
+     // var dblock = document.getElementsByClassName("d-block").item(0);
+      //var rect = dblock.getBoundingClientRect();
 
       var div = document.createElement('div');
       div.className = "comment";
       div.style.border = "solid black 1px";
       div.style.color = "black";
       div.style.backgroundColor = "white";
-      div.style.width = "29rem";
       div.style.fontSize = "0.8rem";
       div.style.padding = "0.1rem";
       div.style.display = "flex";
@@ -623,7 +623,7 @@ export default {
       div.style.position = "absolute";
       div.style.cursor = "pointer";
       div.style.top = elem.offsetTop + "px"; //todo: check if div overlaps with another comment
-      div.style.left = rect.right * 0.5 + "px"; //todo: substitute magic number?
+      //div.style.left = rect.right * 0.5 + "px"; //todo: substitute magic number?
 
       let self = this; //"this" cannot be used in JS functions
       div.onclick = function () {
@@ -1033,6 +1033,17 @@ export default {
   display: block;
 }
 
+.card-full .lb::before {
+  content: attr(data-lbnr);
+  padding-top: 0.2rem;
+  left: 0.5rem;
+  width: auto;
+  text-align: right;
+  font-size: 80%;
+  position: absolute;
+  display: block;
+}
+
 .d-block p {
   padding-left: 1rem;
 }
@@ -1279,6 +1290,12 @@ mark {
 
 .hasActor {
   display: flex;
+}
+
+.comment {
+  max-width:100%;
+  width:100%;
+  word-break: break-all;
 }
 </style>
 
