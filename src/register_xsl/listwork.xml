@@ -18,7 +18,8 @@
     <text>
         <body>
            <p>Some text here.</p>
-           <listBibl><bibl xml:id="work__51826">
+           <listBibl>
+             <bibl xml:id="work__51826">
   <title type="main">Entscheidung Nr. 1723</title>
 
 
