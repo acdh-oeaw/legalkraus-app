@@ -299,7 +299,7 @@ module.exports.getTransformedHtmlResource = async (objectId, callback) => {
     }
 }
 
-module.exports.getTransformedHtmlRegistry = async (callback) => {
+/*module.exports.getTransformedHtmlRegistry = async (callback) => {
     //todo: add category parameter and load the corresponding registry
     try {
         const url = `https://service4tei.acdh-dev.oeaw.ac.at/tei2html.xql?tei=https://arche-dev.acdh-dev.oeaw.ac.at/api/310598&xsl=https://raw.githubusercontent.com/acdh-oeaw/dev-app/development/src/resgister_xsl/listwork.xsl`;
@@ -309,7 +309,7 @@ module.exports.getTransformedHtmlRegistry = async (callback) => {
     } catch (error) {
         console.log(error);
     }
-}
+}*/
 
 /*module.exports.getTransformedHTML = async (resourceId, callback) => {
     //const resp = await fetch(`tmp/${resourceId}.html`)
@@ -317,6 +317,13 @@ module.exports.getTransformedHtmlRegistry = async (callback) => {
     const data = await resp.text();
     return callback(data);
 }*/
+
+module.exports.getTransformedHtmlRegistry = async (callback) => {
+    //const resp = await fetch(`tmp/${resourceId}.html`)
+    const resp = await fetch('tmp/listwork.html')
+    const data = await resp.text();
+    return callback(data);
+}
 
 module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback) => {
     const url = `${ARCHE_BASE_URL}/search?`;

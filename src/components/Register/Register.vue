@@ -1,18 +1,35 @@
 <template>
-  <p class="navigation">Register
-    <span class="arrow">></span>
-    <span style="font-weight: bold">{{ this.category }}</span>
-  </p>
+  <main>
+    <p class="navigation">Register
+      <span class="arrow">></span>
+      <span style="font-weight: bold">{{ this.category }}</span>
+    </p>
+    <div class="body overflow-auto d-flex flex-row">
+      <!-- <div v-if="this.$store.getters.linebreaks" class="w-5 text-right position-relative">
+       </div>-->
+      <component class="position-relative" v-if="table" :is="dynComponent"/>
+    </div>
+  </main>
 </template>
 
 <script>
 import {getTransformedHtmlRegistry} from "../../services/ARCHEService";
+
 export default {
   name: "Register",
   data: function () {
     return {
       category: null,
       table: null
+    }
+  },
+  computed: {
+    dynComponent() {
+
+      const template = this.table;
+      return {
+        template,
+      }
     }
   },
   methods: {
@@ -41,7 +58,7 @@ export default {
     });
   },
   watch: {
-    $route () {
+    $route() {
       this.setCategory();
     }
   }
