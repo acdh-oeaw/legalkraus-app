@@ -339,7 +339,7 @@
 </template>
 
 <script>
-import {getCollectionOfObject, getEntity, getObjectWithId, getTransformedHTML} from "../../services/ARCHEService";
+import {getCollectionOfObject, getEntity, getObjectWithId, getTransformedHtmlResource} from "../../services/ARCHEService";
 import {getObjectWithId as getPMBObjectWithId} from "../../services/PMBService";
 import {ARCHErdfQuery} from "arche-api/src";
 import EntitySpan from "./EntitySpan";
@@ -764,7 +764,7 @@ export default {
       })
       this.downloadXMLFromUrl(url);
 
-      getTransformedHTML(this.objectId, (data) => {
+      getTransformedHtmlResource(this.objectId, (data) => {
         this.pages = data;
 
       });

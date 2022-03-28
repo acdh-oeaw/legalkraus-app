@@ -6,11 +6,13 @@
 </template>
 
 <script>
+import {getTransformedHtmlRegistry} from "../../services/ARCHEService";
 export default {
   name: "Register",
   data: function () {
     return {
-      category: null
+      category: null,
+      table: null
     }
   },
   methods: {
@@ -33,6 +35,10 @@ export default {
   },
   mounted() {
     this.setCategory();
+    getTransformedHtmlRegistry(rs => {
+      console.log(rs);
+      this.table = rs;
+    });
   },
   watch: {
     $route () {
