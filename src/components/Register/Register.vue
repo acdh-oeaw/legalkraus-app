@@ -387,7 +387,16 @@ export default {
 
     },
     processPerson(record) {
-      let p = {};
+      let p = {
+        "forename": "-",
+        "surname": "-",
+        "sex": "-",
+        "birthPlace": "-",
+        "birthDate": "-",
+        "deathPlace": "-",
+        "deathDate": "-",
+        "occupation": "-"
+      };
       if (record.persName[0]) {
         p.forename = (record.persName[0].forename ? record.persName[0].forename[0] : '-');
         p.surname = (record.persName[0].surname ? record.persName[0].surname[0] : '-');
@@ -422,7 +431,11 @@ export default {
       return p;
     },
     processPlace(record){
-      let o = {};
+      let o = {
+        "placeName": "-",
+        "location": "-",
+        "eventCount": "-"
+      };
       if(record.placeName){
         o.placeName = record.placeName[0] ? record.placeName[0] : '-';
       }
@@ -442,6 +455,58 @@ export default {
       }
       return o;
     },
+    processInstitutions(record){
+      let i = {
+        "orgName": "-",
+        "location": "-",
+        "eventCount": "-"
+      };
+      if(record.orgName){
+        i.orgName = record.orgName[0] ? record.orgName[0] : '-';
+      }
+
+      if(record.location){
+        i.location = record.location[0] ? record.location[0].placeName[0]._ : '-';
+        i.location += record.location[1] ? (", " + record.location[1].placeName[0]._) : '';
+      }
+
+      if(record.listEvent){
+        i.eventCount = record.listEvent[0].event ? record.listEvent[0].event.length : '-';
+      }
+
+      if (record.$) {
+        let xmlId = record.$['xml:id'];
+        let id = xmlId.substring(3)
+        i.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/institution/"+ id +"/detail";
+      }
+      return i;
+    },
+    processWork(record){
+      console.log(record)
+      let w = {
+        "title": "-",
+        "author": "-",
+        "date": "-"
+      };
+
+      if(record.title){
+        w.title = record.title[0] ? record.title[0]._ : '-'
+      }
+
+      if(record.author){
+        w.author = record.author[0] ? record.author[0]._ : '-'
+      }
+
+      if(record.date){
+        w.date = record.date[0] ? record.date[0]._ : '-'
+      }
+      if (record.$) {
+        let xmlId = record.$['xml:id'];
+        let id = xmlId.substring(3)
+        w.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/institution/"+ id +"/detail";
+      }
+      return w;
+    },
     openDetails(record) {
       let item;
       if(this.categoryShort === 'p'){
@@ -449,6 +514,12 @@ export default {
       }
       if(this.categoryShort === 'o'){
         item = this.processPlace(record);
+      }
+      if(this.categoryShort === 'i'){
+        item = this.processInstitutions(record);
+      }
+      if(this.categoryShort === 'w'){
+        item = this.processWork(record);
       }
       this.showDetails = true;
       this.details = item;
