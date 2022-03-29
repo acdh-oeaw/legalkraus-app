@@ -82,7 +82,7 @@ export default new Router({
 
         {path: '/register/personen', name: 'pReg', component: Register},
         {path: '/register/orte', name: 'oReg', component: Register},
-        {path: '/register/institutionen', name: 'pReg', component: Register},
+        {path: '/register/institutionen', name: 'iReg', component: Register},
         {path: '/register/werke', name: 'wReg', component: Register},
         {path: '/register/fackel', name: 'fReg', component: Register},
         {path: '/register/juristische-texte', name: 'gReg', component: Register},

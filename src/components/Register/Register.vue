@@ -4,7 +4,7 @@
       <span class="arrow">></span>
       <span style="font-weight: bold">{{ this.category }}</span>
     </p>
-    <div class="card">
+    <div v-if="categoryShort==='w'" class="card">
       <b-pagination
           page-class="custompaging"
           prev-class="custompagingarrows"
@@ -13,11 +13,11 @@
           last-class="custompagingarrows"
           class="custom-pagination"
           v-model="currentPage"
-          :total-rows="this.itemLength"
+          :total-rows="this.items.bibl.length"
           :per-page="perPage"
           aria-controls="col-table"
       ></b-pagination>
-      <b-table v-if="categoryShort==='w'" id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
+      <b-table id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
                :current-page="currentPage" :per-page="perPage"
                :busy.sync="isBusy" :fields="[
             {
@@ -89,6 +89,157 @@
         </template>
       </b-table>
     </div>
+    <div v-if="categoryShort==='p'" class="card">
+      <b-pagination
+          page-class="custompaging"
+          prev-class="custompagingarrows"
+          next-class="custompagingarrows"
+          first-class="custompagingarrows"
+          last-class="custompagingarrows"
+          class="custom-pagination"
+          v-model="currentPage"
+          :total-rows="this.items.person.length"
+          :per-page="perPage"
+          aria-controls="col-table"
+      ></b-pagination>
+      <b-table id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
+               :current-page="currentPage" :per-page="perPage"
+               :busy.sync="isBusy" :fields="[
+            {
+              key: 'persName',
+              label: 'Name'
+            },
+            {
+              key: 'occupation',
+              label: 'Beruf'
+            },
+            {
+              key: 'birth',
+              label: 'geboren'
+            },
+            {
+              key: 'death',
+              label: 'gestorben'
+            },
+          ]" :items="this.items.person">
+        <template #table-busy>
+          <div class="text-center my-2">
+            <b-spinner type="grow" class="align-middle"></b-spinner>
+            <strong>Loading...</strong>
+          </div>
+        </template>
+        <template #cell(persName)="data">
+          <div v-if="data.value && data.value[0] && data.value[0].surname && data.value[0].forename">{{data.value[0].surname[0].toUpperCase()}}, {{data.value[0].forename[0]}}</div>
+        </template>
+        <template #cell(occupation)="data">
+          <div v-if="data.value">{{data.value[0]._}}</div>
+        </template>
+        <template #cell(birth)="data">
+          <div v-if="data.value && data.value[0] && data.value[0].settlement && data.value[0].date"> {{data.value[0].settlement[0].placeName[0]._}}, {{data.value[0].date[0]._}}</div> <!-- {{data.value[0].settlement[0].placeName[0]._}}, {{data.value[0].date[0]._}}-->
+        </template>
+        <template #cell(death)="data">
+          <div v-if="data.value && data.value[0] && data.value[0].settlement && data.value[0].date">{{data.value[0].settlement[0].placeName[0]._}}, {{data.value[0].date[0]._}}</div>
+        </template>
+      </b-table>
+    </div>
+    <div v-if="categoryShort==='o'" class="card">
+      <b-pagination
+          page-class="custompaging"
+          prev-class="custompagingarrows"
+          next-class="custompagingarrows"
+          first-class="custompagingarrows"
+          last-class="custompagingarrows"
+          class="custom-pagination"
+          v-model="currentPage"
+          :total-rows="this.items.place.length"
+          :per-page="perPage"
+          aria-controls="col-table"
+      ></b-pagination>
+      <b-table id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
+               :current-page="currentPage" :per-page="perPage"
+               :busy.sync="isBusy" :fields="[
+            {
+              key: 'placeName',
+              label: 'Name'
+            },
+            {
+              key: 'location',
+              label: 'Lage'
+            },
+            {
+              key: 'listBibl',
+              label: 'Verweise'
+            }
+          ]" :items="this.items.place">
+        <template #table-busy>
+          <div class="text-center my-2">
+            <b-spinner type="grow" class="align-middle"></b-spinner>
+            <strong>Loading...</strong>
+          </div>
+        </template>
+        <template #cell(location)="data">
+          <div v-if="data.value && data.value[1] && data.value[1].placeName">{{data.value[1].placeName[0]._}} </div>
+        </template>
+        <template #cell(placeName)="data">
+          <span style="display: inline-flex">
+          <div v-if="data.value && data.value[0]">{{data.value[0]}}</div>
+          <div v-if="data.value && data.value[1] && data.value[1].$.type ==='alternative-name'">({{data.value[1]._}})</div>
+            </span>
+        </template>
+        <template #cell(listBibl)="data">
+          <div v-if="data.value && data.value[0] && data.value[0].bibl">{{data.value[0].bibl.length}} </div>
+        </template>
+      </b-table>
+    </div>
+    <div v-if="categoryShort==='i'" class="card">
+      <b-pagination
+          page-class="custompaging"
+          prev-class="custompagingarrows"
+          next-class="custompagingarrows"
+          first-class="custompagingarrows"
+          last-class="custompagingarrows"
+          class="custom-pagination"
+          v-model="currentPage"
+          :total-rows="this.items.org.length"
+          :per-page="perPage"
+          aria-controls="col-table"
+      ></b-pagination>
+      <b-table id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
+               :current-page="currentPage" :per-page="perPage"
+               :busy.sync="isBusy" :fields="[
+            {
+              key: 'orgName',
+              label: 'Name'
+            },
+            {
+              key: 'location',
+              label: 'Lage'
+            },
+            {
+              key: 'listEvent',
+              label: 'Verweise'
+            }
+          ]" :items="this.items.org">
+        <template #table-busy>
+          <div class="text-center my-2">
+            <b-spinner type="grow" class="align-middle"></b-spinner>
+            <strong>Loading...</strong>
+          </div>
+        </template>
+        <template #cell(location)="data">
+          <span style="display: flex">
+          <div v-if="data.value && data.value[0] && data.value[0].$.type==='located_in_place'">{{data.value[0].placeName[0]._}}</div>
+          <div v-if="data.value && data.value[1] && data.value[1].$.type==='located_in_place'">({{ data.value[1].placeName[0]._}})</div>
+            </span>
+        </template>
+        <template #cell(orgName)="data">
+          <div v-if="data.value && data.value[0]">{{data.value[0]}}</div>
+        </template>
+        <template #cell(listEvent)="data">
+          <div v-if="data.value && data.value[0]">{{data.value[0].event.length}} </div>
+        </template>
+      </b-table>
+    </div>
   </main>
 </template>
 
@@ -104,7 +255,6 @@ export default {
       currentPage: 1,
       perPage: 10,
       isBusy: false,
-      itemLength: 0
     }
   },
 
@@ -170,7 +320,16 @@ export default {
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
           break;
         case "i":
-          url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/310598";
+          url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/310597";
+          fetch(url)
+              .then(response => response.text())
+              .then(str => {
+                parseString(str, function (err, rs){
+                  self.items = rs.TEI.text[0].body[0].listOrg[0];
+                  console.log(self.items)
+                });
+              })
+              .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
           break;
         case "w":
           url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/310598";
@@ -186,12 +345,15 @@ export default {
           break;
         case "f":
           url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/310596";
+          //todo: noch nicht erstellt
           break;
         case "j":
           url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/310593";
+          //todo: noch nicht erstellt
           break;
       }
-      self.itemLength = self.items.length;
+
+
     }
   },
   created() {
