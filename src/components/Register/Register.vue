@@ -554,6 +554,7 @@ export default {
 
 .tables{
   min-width: 70%;
+  max-width: 70%;
 }
 
 .card:hover{
