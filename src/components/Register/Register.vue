@@ -502,8 +502,8 @@ export default {
       }
       if (record.$) {
         let xmlId = record.$['xml:id'];
-        let id = xmlId.substring(3)
-        w.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/institution/"+ id +"/detail";
+        let id = xmlId.substring(6)
+        w.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/"+ id +"/detail";
       }
       return w;
     },
