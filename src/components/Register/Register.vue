@@ -111,12 +111,13 @@
               :per-page="perPage"
               aria-controls="col-table"
           ></b-pagination>
-          <b-table id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
+          <b-table id="col-table" :small="'small'" sort-by="persName" :sort-compare="tableSortCompare"  :no-border-collapse="true" :borderless="'borderless'"
                    :current-page="currentPage" :per-page="perPage"
                    :busy.sync="isBusy" :fields="[
             {
               key: 'persName',
-              label: 'Name'
+              label: 'Name',
+              sortable: true
             },
             {
               key: 'occupation',
@@ -517,6 +518,14 @@ export default {
       }
       this.showDetails = true;
       this.details = item;
+    },
+    tableSortCompare(a, b, key) {
+      if (key === 'persName') {
+        
+        return a[key][0].surname[0].localeCompare(b[key][0].surname[0])
+      } else {
+        return false
+      }
     }
   },
   created() {
