@@ -30,7 +30,7 @@ export default {
 
 <style>
 #app {
-  font-family: var(--open-sans-regular);
+  font-family: var(--open-sans-regular) !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

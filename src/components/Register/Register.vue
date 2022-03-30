@@ -551,7 +551,11 @@ export default {
   max-width: 70%;
 }
 
-.card:hover{
+.tables > .card {
+  border:none;
+}
+
+.tables > .card:hover{
   cursor: pointer !important;
 }
 
