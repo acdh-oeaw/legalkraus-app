@@ -333,7 +333,6 @@ export default {
               .then(str => {
                 parseString(str, function (err, rs) {
                   self.items = rs.TEI.text[0].body[0].listPerson[0];
-                  console.log(self.items)
                 });
               })
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
@@ -345,7 +344,6 @@ export default {
               .then(str => {
                 parseString(str, function (err, rs) {
                   self.items = rs.TEI.text[0].body[0].listPlace[0];
-                  console.log(self.items)
                 });
               })
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
@@ -357,7 +355,6 @@ export default {
               .then(str => {
                 parseString(str, function (err, rs) {
                   self.items = rs.TEI.text[0].body[0].listOrg[0];
-                  console.log(self.items)
                 });
               })
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
@@ -369,7 +366,6 @@ export default {
               .then(str => {
                 parseString(str, function (err, rs) {
                   self.items = rs.TEI.text[0].body[0].listBibl[0];
-                  console.log(self.items)
                 });
               })
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
@@ -425,7 +421,6 @@ export default {
       if (record.$) {
         let xmlId = record.$['xml:id'];
         let id = xmlId.substring(3)
-        console.log(id);
         p.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/person/" + id + "/detail";
       }
       return p;
@@ -482,7 +477,6 @@ export default {
       return i;
     },
     processWork(record){
-      console.log(record)
       let w = {
         "title": "-",
         "author": "-",
