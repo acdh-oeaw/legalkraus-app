@@ -288,7 +288,7 @@ module.exports.getAllResources = async (startPage, callback) => {
     }
 }
 
-module.exports.getTransformedHTML = async (objectId, callback) => {
+module.exports.getTransformedHtmlResource = async (objectId, callback) => {
     try {
         const url = `https://service4tei.acdh-dev.oeaw.ac.at/tei2html.xql?tei=https://arche-dev.acdh-dev.oeaw.ac.at/api/${objectId}&xsl=https://raw.githubusercontent.com/acdh-oeaw/legalkraus-app/development/src/lesefassung_xsl/legal_kraus_lesefassung.xsl`;
         const resp = await fetch(url);
@@ -299,12 +299,31 @@ module.exports.getTransformedHTML = async (objectId, callback) => {
     }
 }
 
+/*module.exports.getTransformedHtmlRegistry = async (callback) => {
+    //todo: add category parameter and load the corresponding registry
+    try {
+        const url = `https://service4tei.acdh-dev.oeaw.ac.at/tei2html.xql?tei=https://arche-dev.acdh-dev.oeaw.ac.at/api/310598&xsl=https://raw.githubusercontent.com/acdh-oeaw/dev-app/development/src/resgister_xsl/listwork.xsl`;
+        const resp = await fetch(url);
+        const data = await resp.text();
+        return callback(data);
+    } catch (error) {
+        console.log(error);
+    }
+}*/
+
 /*module.exports.getTransformedHTML = async (resourceId, callback) => {
     //const resp = await fetch(`tmp/${resourceId}.html`)
     const resp = await fetch('tmp/37600.html')
     const data = await resp.text();
     return callback(data);
 }*/
+
+module.exports.getTransformedHtmlRegistry = async (callback) => {
+    //const resp = await fetch(`tmp/${resourceId}.html`)
+    const resp = await fetch('tmp/listwork.html')
+    const data = await resp.text();
+    return callback(data);
+}
 
 module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback) => {
     const url = `${ARCHE_BASE_URL}/search?`;
