@@ -19,12 +19,13 @@
               :per-page="perPage"
               aria-controls="col-table"
           ></b-pagination>
-          <b-table id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
+          <b-table id="col-table" :small="'small'" :sort-by="'title'" :sort-compare="tableSortCompare" :no-border-collapse="true" :borderless="'borderless'"
                    :current-page="currentPage" :per-page="perPage"
                    :busy.sync="isBusy" :fields="[
             {
               key: 'title',
-              label: 'Titel'
+              label: 'Titel',
+              sortable: true
             },
             {
               key: 'author',
@@ -42,7 +43,7 @@
               </div>
             </template>
             <template #cell(title)="data">
-              <div>{{ data.value[0]._ }}</div>
+              <div>{{ data.value[0]._}}</div>
             </template>
             <template #cell(author)="data">
               <div v-if="data.value">{{ data.value[0]._ }}</div>
@@ -171,12 +172,13 @@
               :per-page="perPage"
               aria-controls="col-table"
           ></b-pagination>
-          <b-table id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
+          <b-table id="col-table" :small="'small'"  :sort-by="'placeName'" :sort-compare="tableSortCompare" :no-border-collapse="true" :borderless="'borderless'"
                    :current-page="currentPage" :per-page="perPage"
                    :busy.sync="isBusy" :fields="[
             {
               key: 'placeName',
-              label: 'Name'
+              label: 'Name',
+              sortable: true
             },
             {
               key: 'location',
@@ -222,7 +224,7 @@
               :per-page="perPage"
               aria-controls="col-table"
           ></b-pagination>
-          <b-table id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
+          <b-table id="col-table" :small="'small'" :sort-by="'orgName'" :sort-compare="tableSortCompare" :no-border-collapse="true" :borderless="'borderless'"
                    :current-page="currentPage" :per-page="perPage"
                    :busy.sync="isBusy" :fields="[
             {
@@ -312,16 +314,6 @@ export default {
         this.category = "Juristische Texte";
         this.categoryShort = "j";
       }
-    },
-    saveStringToXML(xmlString) {
-      var textFile = null
-      var data = new Blob([xmlString], {type: 'text/xml'});
-
-      textFile = window.URL.createObjectURL(data);
-
-      // returns a URL you can use as a href
-      return textFile;
-
     },
     downloadRegistry() {
       let url = null;
@@ -523,7 +515,14 @@ export default {
       if (key === 'persName') {
         
         return a[key][0].surname[0].localeCompare(b[key][0].surname[0])
-      } else {
+      }
+      else if(key === 'title'){
+        return a[key][0]._.localeCompare(b[key][0]._)
+      }
+      else if(key === 'placeName' || key === 'orgName'){
+        return a[key][0].localeCompare(b[key][0]);
+      }
+      else {
         return false
       }
     }
