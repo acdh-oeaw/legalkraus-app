@@ -104,7 +104,7 @@
 import {getCollections} from "@/services/ARCHEService";
 import Search from "../Search";
 import SearchResultItem from "./SearchResultItem";
-import {getArcheIdFromXmlId} from "../../services/ARCHEService";
+import {getColArcheIdFromColXmlId} from "../../services/ARCHEService";
 //import {getCollectionsByArrayOfIDs} from "../../services/ARCHEService";
 
 export default {
@@ -151,7 +151,7 @@ export default {
       callback(this.cases.slice(offset, offset + ctx.perPage))
     },
     navToObjects: async function (record) {
-      getArcheIdFromXmlId(record.id, id => {
+      getColArcheIdFromColXmlId(record.id, id => {
         if (this.currSubCat === this.pR) {
           this.$router.push({name: "privatrecht-objects", params: {id: id}});
         } else if (this.currSubCat === this.sR) {

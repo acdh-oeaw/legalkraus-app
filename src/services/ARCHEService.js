@@ -106,9 +106,9 @@ module.exports.getCollections = async (startPage, callback) => {
     }
 }
 
-module.exports.getArcheIdFromXmlId = async (xmlId, callback) => {
+module.exports.getColArcheIdFromColXmlId = async (xmlId, callback) => {
     const resourceId = 37565;
-    let id = xmlId.substring(0, xmlId.length-4);
+    let id = xmlId.substring(0, xmlId.length-4); //remove .xml
     const options = {
         "host": ARCHE_BASE_URL,
         "format": "application/n-triples",

@@ -14,14 +14,17 @@
         {{ this.case.title }} ({{ this.case.start_date }})
       </div>
     </div>
-    <div v-if="showDocs">
+    <div v-if="showDocs && !this.case.currDocs">
       <div class="obj" v-for="d in this.case.doc_objs" :key="d.id">{{ d.title }}</div>
+    </div>
+    <div v-if="showDocs && this.case.currDocs">
+      <div class="obj" v-for="d in this.case.currDocs" :key="d.id" v-on:click="navToLF(d)">{{ d.title }}</div>
     </div>
   </main>
 </template>
 
 <script>
-import {getArcheIdFromXmlId, getObjectsOfCollection} from "../../services/ARCHEService";
+import {getColArcheIdFromColXmlId} from "../../services/ARCHEService";
 
 export default {
   name: "DetailCase",
@@ -37,18 +40,26 @@ export default {
   methods: {
     toggleDocs() {
       this.showDocs = !this.showDocs;
-      console.log(this.showDocs)
-      if (this.caseIdArche === null) {
-        getArcheIdFromXmlId(this.case.id, rs => {
+      if (!this.case.currDocs && this.caseIdArche === null) {
+        getColArcheIdFromColXmlId(this.case.id, rs => {
           this.caseIdArche = rs;
-          getObjectsOfCollection(rs, docs => {
+          //todo: if currDocs is not set (e.g. for persons), find a way to extract documents that mention said entity
+         /* getObjectsOfCollection(rs, docs => {
             console.log(docs);
-          });
+
+          });*/
         });
       }
     },
     navToObjects() {
+      getColArcheIdFromColXmlId(this.case.id, rs=>{
+        this.$router.push({name: "overview-objects", params: {id: rs}});
+      });
 
+    },
+    navToLF(d){
+      console.log(d);
+      //todo
     }
   },
   mounted() {

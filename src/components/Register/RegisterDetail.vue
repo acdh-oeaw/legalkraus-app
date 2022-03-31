@@ -12,18 +12,20 @@
       <div v-if="this.cases.length>0">
         <div>Beteiligt an:</div>
         <div class="btns">
-          <svg v-on:click="prev " xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-short" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
+          <svg v-on:click="prev " xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-left-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
           </svg>
-          <svg v-on:click="next" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-short" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
+          <svg v-on:click="next" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
           </svg>
         </div>
         <div v-for="c in currentCases" :key="c.id" class="case">
           <detail-case v-bind:case="c"></detail-case>
         </div>
-
-
       </div>
 
     </div>
@@ -33,7 +35,24 @@
       <div>Lage: <b>{{ this.item.location }}</b></div>
       <div>Verweise: {{ this.item.eventCount }}</div>
       <div>PMB: <a v-bind:href="item.pmbURL" target="_blank">{{ this.item.placeName }}</a></div>
-      <div>coming soon: Verweise/Erwähnungen Dokumente</div>
+      <div v-if="this.cases.length>0">
+        <div>Beteiligt an:</div>
+        <div class="btns">
+          <svg v-on:click="prev " xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-left-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
+          </svg>
+          <svg v-on:click="next" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
+          </svg>
+        </div>
+        <div v-for="c in currentCases" :key="c.id" class="case">
+          <detail-case v-bind:case="c"></detail-case>
+        </div>
+      </div>
     </div>
     <div v-if="category==='w'" class="detail">
       <div>Werk:</div>
@@ -59,7 +78,7 @@ import DetailCase from "./DetailCase";
 
 export default {
   name: "RegisterDetail",
-  components:{
+  components: {
     DetailCase: DetailCase
   },
   props: {
@@ -69,12 +88,14 @@ export default {
   data: function () {
     return {
       cases: [],
+      docs: [],
       currentCases: [],
       idx: 5,
       step: 5,
+      caseInfo: null
     }
   },
-  methods:{
+  methods: {
     next() {
       if ((this.idx + this.step) < this.cases.length) {
         //more than 10 cases left
@@ -89,36 +110,74 @@ export default {
         this.currentCases = this.cases.slice(this.idx - this.step, this.idx);
       }
     },
+    setCases() {
+      this.cases = [];
+      this.docs = [];
+
+      this.caseInfo.then(data => {
+        const cases = data.cases;
+        if (this.category === 'p') {
+          cases.forEach(c => {
+            c.actors.forEach(a => {
+              if (a.id.includes(this.item.pmbID)) {
+                this.cases.push(c);
+              }
+            });
+          });
+        } else if (this.category === 'o') {
+          //extract all document-ids from the location
+          this.item.events.forEach(e => {
+            let url = e.linkGrp[0].link[0].$.target;
+            let idx = url.lastIndexOf('/');
+            let id = url.substring(idx +1);
+            this.docs.push(id);
+          });
+
+          //extract cases
+          cases.forEach(c => {
+            this.docs.forEach(d =>{
+              if(c.docs.includes(d)){
+                if(!this.cases.includes(c)){
+                  //case is not part of this.cases
+                  /*let cs = c;
+                  cs.currDocs = [];
+                  cs.currDocs.push(d);*/
+                  this.cases.push(c);
+                }/*else{
+                  //case is already part of this.cases
+                  let idx = this.cases.indexOf(c);
+                  this.cases[idx].currDocs.push(d);
+                }*/
+              }
+            });
+          });
+
+          //match cases and doc-ids
+          this.cases.forEach(c =>{
+            c.currDocs = [];
+            c.doc_objs.forEach(d => {
+              if(this.docs.includes(d.id)){
+                c.currDocs.push(d);
+              }
+            })
+          });
+        }
+
+      });
+    }
+  },
+  created() {
+    this.caseInfo = this.$store.getters.caseInfo;
   },
   mounted() {
-    this.cases = [];
-    const caseInfo = this.$store.getters.caseInfo;
-    caseInfo.then(data => {
-      const cases = data.cases;
-      cases.forEach(c => {
-        c.actors.forEach(a => {
-          if(a.id.includes(this.item.pmbID)){
-            this.cases.push(c);
-          }
-        })
-      });
-    });
-  },
+    this.setCases();
+  }
+  ,
   watch: {
     item() {
-      this.cases = [];
-      const caseInfo = this.$store.getters.caseInfo;
-      caseInfo.then(data => {
-        const cases = data.cases;
-        cases.forEach(c => {
-          c.actors.forEach(a => {
-            if(a.id.includes(this.item.pmbID)){
-                this.cases.push(c);
-            }
-          })
-        });
-      });
-    },
+      this.setCases();
+    }
+    ,
     cases() {
       this.idx = 5;
       this.currentCases = this.cases.slice(0, this.idx)
@@ -132,10 +191,10 @@ export default {
   text-align: left;
 }
 
-.btns{
+.btns {
   display: flex;
   justify-content: space-between;
-  margin-top:1rem;
+  margin-top: 1rem;
 }
 
 </style>

@@ -423,7 +423,8 @@ export default {
       let o = {
         "placeName": "-",
         "location": "-",
-        "eventCount": "-"
+        "eventCount": "-",
+        "events": "-"
       };
       if(record.placeName){
         o.placeName = record.placeName[0] ? record.placeName[0] : '-';
@@ -435,6 +436,9 @@ export default {
 
       if(record.listEvent){
         o.eventCount = record.listEvent[0].event ? record.listEvent[0].event.length : '-';
+      }
+      if(record.listEvent){
+        o.events = record.listEvent[0].event ? record.listEvent[0].event : '-';
       }
 
       if (record.$) {
