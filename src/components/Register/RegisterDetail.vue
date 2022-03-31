@@ -7,31 +7,47 @@
       <div>Geschlecht: <b> {{ this.item.sex }}</b></div>
       <div>Geboren: <b>{{ this.item.birthDate }}, {{ this.item.birthPlace }}</b></div>
       <div>Gestorben: <b>{{ this.item.deathDate }}, {{ this.item.deathPlace }}</b></div>
-      <div>Beruf: <b>{{this.item.occupation}}</b></div>
-      <div>PMB: <a v-bind:href="item.pmbURL" target="_blank">{{this.item.surname}}</a></div>
-      <div>coming soon: Verweise/Erwähnungen Dokumente</div>
+      <div>Beruf: <b>{{ this.item.occupation }}</b></div>
+      <div>PMB: <a v-bind:href="item.pmbURL" target="_blank">{{ this.item.surname }}</a></div>
+      <div v-if="this.cases.length>0">
+        <div>Beteiligt an:</div>
+        <div class="btns">
+          <svg v-on:click="prev " xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
+          </svg>
+          <svg v-on:click="next" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
+          </svg>
+        </div>
+        <div v-for="c in currentCases" :key="c.id" class="case">
+          <detail-case v-bind:case="c"></detail-case>
+        </div>
+
+
+      </div>
+
     </div>
     <div v-if="category==='o'" class="detail">
       <div>Ort:</div>
-      <div>Name: <b>{{this.item.placeName}}</b></div>
-      <div>Lage: <b>{{this.item.location}}</b></div>
-      <div>Verweise: {{this.item.eventCount}}</div>
-      <div>PMB:  <a v-bind:href="item.pmbURL" target="_blank">{{this.item.placeName}}</a></div>
+      <div>Name: <b>{{ this.item.placeName }}</b></div>
+      <div>Lage: <b>{{ this.item.location }}</b></div>
+      <div>Verweise: {{ this.item.eventCount }}</div>
+      <div>PMB: <a v-bind:href="item.pmbURL" target="_blank">{{ this.item.placeName }}</a></div>
       <div>coming soon: Verweise/Erwähnungen Dokumente</div>
     </div>
     <div v-if="category==='w'" class="detail">
       <div>Werk:</div>
-      <div>Titel: <b>{{this.item.title}}</b></div>
-      <div>Autor: <b>{{this.item.author}}</b></div>
-      <div>Datum:<b>{{this.item.date}}</b></div>
-      <div>PMB: <a v-bind:href="item.pmbURL" target="_blank">{{this.item.title}}</a></div>
+      <div>Titel: <b>{{ this.item.title }}</b></div>
+      <div>Autor: <b>{{ this.item.author }}</b></div>
+      <div>Datum:<b>{{ this.item.date }}</b></div>
+      <div>PMB: <a v-bind:href="item.pmbURL" target="_blank">{{ this.item.title }}</a></div>
     </div>
     <div v-if="category==='i'" class="detail">
       <div>Institution:</div>
-      <div>Name: <b>{{this.item.orgName}}</b></div>
-      <div>Lage: <b>{{this.item.location}}</b></div>
-      <div>Verweise: {{this.item.eventCount}}</div>
-      <div>PMB:  <a v-bind:href="item.pmbURL" target="_blank">{{this.item.orgName}}</a></div>
+      <div>Name: <b>{{ this.item.orgName }}</b></div>
+      <div>Lage: <b>{{ this.item.location }}</b></div>
+      <div>Verweise: {{ this.item.eventCount }}</div>
+      <div>PMB: <a v-bind:href="item.pmbURL" target="_blank">{{ this.item.orgName }}</a></div>
       <div>coming soon: Verweise/Erwähnungen Dokumente</div>
     </div>
 
@@ -39,11 +55,74 @@
 </template>
 
 <script>
+import DetailCase from "./DetailCase";
+
 export default {
   name: "RegisterDetail",
+  components:{
+    DetailCase: DetailCase
+  },
   props: {
     item: null,
     category: null
+  },
+  data: function () {
+    return {
+      cases: [],
+      currentCases: [],
+      idx: 5,
+      step: 5,
+    }
+  },
+  methods:{
+    next() {
+      if ((this.idx + this.step) < this.cases.length) {
+        //more than 10 cases left
+        this.currentCases = this.cases.slice(this.idx, this.idx + this.step);
+        this.idx += this.step;
+      }
+    },
+    prev() {
+      if ((this.idx - this.step) > 0) {
+        //more than 10 cases left
+        this.idx -= this.step;
+        this.currentCases = this.cases.slice(this.idx - this.step, this.idx);
+      }
+    },
+  },
+  mounted() {
+    this.cases = [];
+    const caseInfo = this.$store.getters.caseInfo;
+    caseInfo.then(data => {
+      const cases = data.cases;
+      cases.forEach(c => {
+        c.actors.forEach(a => {
+          if(a.id.includes(this.item.pmbID)){
+            this.cases.push(c);
+          }
+        })
+      });
+    });
+  },
+  watch: {
+    item() {
+      this.cases = [];
+      const caseInfo = this.$store.getters.caseInfo;
+      caseInfo.then(data => {
+        const cases = data.cases;
+        cases.forEach(c => {
+          c.actors.forEach(a => {
+            if(a.id.includes(this.item.pmbID)){
+                this.cases.push(c);
+            }
+          })
+        });
+      });
+    },
+    cases() {
+      this.idx = 5;
+      this.currentCases = this.cases.slice(0, this.idx)
+    }
   }
 }
 </script>
@@ -51,6 +130,12 @@ export default {
 <style scoped>
 .detail {
   text-align: left;
+}
+
+.btns{
+  display: flex;
+  justify-content: space-between;
+  margin-top:1rem;
 }
 
 </style>

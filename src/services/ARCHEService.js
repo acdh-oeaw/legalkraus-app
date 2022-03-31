@@ -181,13 +181,22 @@ module.exports.getObjectsOfCollection = async (resourceId, callback) => {
                     "object": null,
                     "expiry": 14
                 };
+
+                const optionsActor = {
+                    "subject": childResources.value[i].isPartOf.subject,
+                    "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasActor",
+                    "object": null,
+                    "expiry": 14
+                };
                 let title = ARCHErdfQuery(optionsTitle, rs);
                 let identifier = ARCHErdfQuery(optionsIdentifier, rs);
+                let actors = ARCHErdfQuery(optionsActor,rs);
 
                 result.push({
                     url: childResources.value[i].isPartOf.subject,
                     title: title.value[0].hasTitle.object,
-                    identifier: identifier.value[1].hasIdentifier.object
+                    identifier: identifier.value[1].hasIdentifier.object,
+                    actors: actors.value
                 });
             }
             return callback(result);

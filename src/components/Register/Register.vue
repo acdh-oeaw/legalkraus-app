@@ -285,7 +285,7 @@ export default {
       categoryShort: null,
       items: [],
       currentPage: 1,
-      perPage: 10,
+      perPage: 15,
       isBusy: false,
       showDetails: false,
       details: String,
@@ -413,6 +413,7 @@ export default {
 
       if (record.$) {
         let xmlId = record.$['xml:id'];
+        p.pmbID = xmlId;
         let id = xmlId.substring(3)
         p.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/person/" + id + "/detail";
       }
@@ -438,6 +439,7 @@ export default {
 
       if (record.$) {
         let xmlId = record.$['xml:id'];
+        o.pmbID = xmlId;
         let id = xmlId.substring(3)
         o.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/place/"+ id +"/detail";
       }
@@ -464,7 +466,8 @@ export default {
 
       if (record.$) {
         let xmlId = record.$['xml:id'];
-        let id = xmlId.substring(3)
+        i.pmbID = xmlId;
+        let id = xmlId.substring(3);
         i.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/institution/"+ id +"/detail";
       }
       return i;
@@ -489,6 +492,7 @@ export default {
       }
       if (record.$) {
         let xmlId = record.$['xml:id'];
+        w.pmbID = xmlId;
         let id = xmlId.substring(6)
         w.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/"+ id +"/detail";
       }
