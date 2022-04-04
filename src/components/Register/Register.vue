@@ -1,9 +1,17 @@
 <template>
   <main>
-    <p class="navigation">Register
-      <span class="arrow">></span>
-      <span style="font-weight: bold">{{ this.category }}</span>
-    </p>
+
+    <div class="filter-nav">
+      <p class="navigation">Register
+        <span class="arrow">></span>
+        <span style="font-weight: bold">{{ this.category }}</span>
+      </p>
+      <div class="abc">
+        <p class="l" :id="l" v-for="l in abc" :key="l" v-on:click="filterLetter(l)">{{ l }}</p>
+      </div>
+      <input class="vt-suche" type="text" placeholder="Volltextsuche:" v-model="keyword"
+             @keyup="filterKeyword(keyword)"/>
+    </div>
     <div class="wrapper">
       <div class="tables">
         <div v-if="categoryShort==='w'" class="card">
@@ -15,11 +23,12 @@
               last-class="custompagingarrows"
               class="custom-pagination"
               v-model="currentPage"
-              :total-rows="this.items.bibl.length"
+              :total-rows="this.currentItems.bibl.length"
               :per-page="perPage"
               aria-controls="col-table"
           ></b-pagination>
-          <b-table id="col-table" :small="'small'" :sort-by="'title'" :sort-compare="tableSortCompare" :no-border-collapse="true" :borderless="'borderless'"
+          <b-table id="col-table" :small="'small'" :sort-by="'title'" :sort-compare="tableSortCompare"
+                   :no-border-collapse="true" :borderless="'borderless'"
                    :current-page="currentPage" :per-page="perPage"
                    :busy.sync="isBusy" :fields="[
             {
@@ -35,7 +44,7 @@
               key: 'date',
               label: 'Datum'
             },
-          ]" :items="this.items.bibl" @row-clicked="openDetails">
+          ]" :items="this.currentItems.bibl" @row-clicked="openDetails">
             <template #table-busy>
               <div class="text-center my-2">
                 <b-spinner type="grow" class="align-middle"></b-spinner>
@@ -43,7 +52,7 @@
               </div>
             </template>
             <template #cell(title)="data">
-              <div>{{ data.value[0]._}}</div>
+              <div>{{ data.value[0]._ }}</div>
             </template>
             <template #cell(author)="data">
               <div v-if="data.value">{{ data.value[0]._ }}</div>
@@ -72,7 +81,7 @@
               key: 'death',
               label: 'gestorben'
             },
-          ]" :items="this.items.person">
+          ]" :items="this.currentItems.person">
             <template #table-busy>
               <div class="text-center my-2">
                 <b-spinner type="grow" class="align-middle"></b-spinner>
@@ -108,11 +117,12 @@
               last-class="custompagingarrows"
               class="custom-pagination"
               v-model="currentPage"
-              :total-rows="this.items.person.length"
+              :total-rows="this.currentItems.person.length"
               :per-page="perPage"
               aria-controls="col-table"
           ></b-pagination>
-          <b-table id="col-table" :small="'small'" sort-by="persName" :sort-compare="tableSortCompare"  :no-border-collapse="true" :borderless="'borderless'"
+          <b-table id="col-table" :small="'small'" sort-by="persName" :sort-compare="tableSortCompare"
+                   :no-border-collapse="true" :borderless="'borderless'"
                    :current-page="currentPage" :per-page="perPage"
                    :busy.sync="isBusy" :fields="[
             {
@@ -132,7 +142,7 @@
               key: 'death',
               label: 'gestorben'
             },
-          ]" :items="this.items.person" @row-clicked="openDetails">
+          ]" :items="this.currentItems.person" @row-clicked="openDetails">
             <template #table-busy>
               <div class="text-center my-2">
                 <b-spinner type="grow" class="align-middle"></b-spinner>
@@ -168,11 +178,12 @@
               last-class="custompagingarrows"
               class="custom-pagination"
               v-model="currentPage"
-              :total-rows="this.items.place.length"
+              :total-rows="this.currentItems.place.length"
               :per-page="perPage"
               aria-controls="col-table"
           ></b-pagination>
-          <b-table id="col-table" :small="'small'"  :sort-by="'placeName'" :sort-compare="tableSortCompare" :no-border-collapse="true" :borderless="'borderless'"
+          <b-table id="col-table" :small="'small'" :sort-by="'placeName'" :sort-compare="tableSortCompare"
+                   :no-border-collapse="true" :borderless="'borderless'"
                    :current-page="currentPage" :per-page="perPage"
                    :busy.sync="isBusy" :fields="[
             {
@@ -188,7 +199,7 @@
               key: 'listEvent',
               label: 'Verweise'
             }
-          ]" :items="this.items.place" @row-clicked="openDetails">
+          ]" :items="this.currentItems.place" @row-clicked="openDetails">
             <template #table-busy>
               <div class="text-center my-2">
                 <b-spinner type="grow" class="align-middle"></b-spinner>
@@ -203,7 +214,9 @@
           <span style="display: inline-flex">
           <div v-if="data.value && data.value[0]">{{ data.value[0] }}</div>
           <div
-              v-if="data.value && data.value[1] && data.value[1].$.type ==='alternative-name'">({{ data.value[1]._ }})</div>
+              v-if="data.value && data.value[1] && data.value[1].$.type ==='alternative-name'">({{
+              data.value[1]._
+            }})</div>
             </span>
             </template>
             <template #cell(listEvent)="data">
@@ -220,11 +233,12 @@
               last-class="custompagingarrows"
               class="custom-pagination"
               v-model="currentPage"
-              :total-rows="this.items.org.length"
+              :total-rows="this.currentItems.org.length"
               :per-page="perPage"
               aria-controls="col-table"
           ></b-pagination>
-          <b-table id="col-table" :small="'small'" :sort-by="'orgName'" :sort-compare="tableSortCompare" :no-border-collapse="true" :borderless="'borderless'"
+          <b-table id="col-table" :small="'small'" :sort-by="'orgName'" :sort-compare="tableSortCompare"
+                   :no-border-collapse="true" :borderless="'borderless'"
                    :current-page="currentPage" :per-page="perPage"
                    :busy.sync="isBusy" :fields="[
             {
@@ -239,7 +253,7 @@
               key: 'listEvent',
               label: 'Verweise'
             }
-          ]" :items="this.items.org" @row-clicked="openDetails">
+          ]" :items="this.currentItems.org" @row-clicked="openDetails">
             <template #table-busy>
               <div class="text-center my-2">
                 <b-spinner type="grow" class="align-middle"></b-spinner>
@@ -249,9 +263,13 @@
             <template #cell(location)="data">
           <span style="display: flex">
           <div
-              v-if="data.value && data.value[0] && data.value[0].$.type==='located_in_place'">{{ data.value[0].placeName[0]._ }}</div>
+              v-if="data.value && data.value[0] && data.value[0].$.type==='located_in_place'">{{
+              data.value[0].placeName[0]._
+            }}</div>
           <div
-              v-if="data.value && data.value[1] && data.value[1].$.type==='located_in_place'">({{ data.value[1].placeName[0]._ }})</div>
+              v-if="data.value && data.value[1] && data.value[1].$.type==='located_in_place'">({{
+              data.value[1].placeName[0]._
+            }})</div>
             </span>
             </template>
             <template #cell(orgName)="data">
@@ -283,12 +301,15 @@ export default {
     return {
       category: null,
       categoryShort: null,
-      items: [],
+      currentItems: [],
+      allItems: [],
       currentPage: 1,
       perPage: 15,
       isBusy: false,
       showDetails: false,
       details: String,
+      keyword: null,
+      abc: ["Kein Filter", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "Sonderzeichen"]
     }
   },
 
@@ -325,7 +346,8 @@ export default {
               .then(response => response.text())
               .then(str => {
                 parseString(str, function (err, rs) {
-                  self.items = rs.TEI.text[0].body[0].listPerson[0];
+                  self.currentItems = rs.TEI.text[0].body[0].listPerson[0];
+                  self.allItems = JSON.parse(JSON.stringify(rs.TEI.text[0].body[0].listPerson[0])); //deep copy
                 });
               })
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
@@ -336,7 +358,8 @@ export default {
               .then(response => response.text())
               .then(str => {
                 parseString(str, function (err, rs) {
-                  self.items = rs.TEI.text[0].body[0].listPlace[0];
+                  self.currentItems = rs.TEI.text[0].body[0].listPlace[0];
+                  self.allItems = JSON.parse(JSON.stringify(rs.TEI.text[0].body[0].listPlace[0]));
                 });
               })
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
@@ -347,7 +370,8 @@ export default {
               .then(response => response.text())
               .then(str => {
                 parseString(str, function (err, rs) {
-                  self.items = rs.TEI.text[0].body[0].listOrg[0];
+                  self.currentItems = rs.TEI.text[0].body[0].listOrg[0];
+                  self.allItems = JSON.parse(JSON.stringify(rs.TEI.text[0].body[0].listOrg[0]));
                 });
               })
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
@@ -358,7 +382,8 @@ export default {
               .then(response => response.text())
               .then(str => {
                 parseString(str, function (err, rs) {
-                  self.items = rs.TEI.text[0].body[0].listBibl[0];
+                  self.currentItems = rs.TEI.text[0].body[0].listBibl[0];
+                  self.allItems = JSON.parse(JSON.stringify(rs.TEI.text[0].body[0].listBibl[0]));
                 });
               })
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
@@ -395,7 +420,7 @@ export default {
 
       if (record.birth) {
         p.birthPlace = (record.birth[0].settlement && record.birth[0].settlement[0].placeName) ? record.birth[0].settlement[0].placeName[0]._ : '-';
-        p.birthDate = ( record.birth[0].date && record.birth[0].date[0]) ? record.birth[0].date[0]._ : '-';
+        p.birthDate = (record.birth[0].date && record.birth[0].date[0]) ? record.birth[0].date[0]._ : '-';
       }
 
       if (record.death) {
@@ -419,25 +444,25 @@ export default {
       }
       return p;
     },
-    processPlace(record){
+    processPlace(record) {
       let o = {
         "placeName": "-",
         "location": "-",
         "eventCount": "-",
         "events": "-"
       };
-      if(record.placeName){
+      if (record.placeName) {
         o.placeName = record.placeName[0] ? record.placeName[0] : '-';
       }
 
-      if(record.location){
+      if (record.location) {
         o.location = record.location[1] ? record.location[1].placeName[0]._ : '-';
       }
 
-      if(record.listEvent){
+      if (record.listEvent) {
         o.eventCount = record.listEvent[0].event ? record.listEvent[0].event.length : '-';
       }
-      if(record.listEvent){
+      if (record.listEvent) {
         o.events = record.listEvent[0].event ? record.listEvent[0].event : '-';
       }
 
@@ -445,26 +470,26 @@ export default {
         let xmlId = record.$['xml:id'];
         o.pmbID = xmlId;
         let id = xmlId.substring(3)
-        o.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/place/"+ id +"/detail";
+        o.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/place/" + id + "/detail";
       }
       return o;
     },
-    processInstitutions(record){
+    processInstitutions(record) {
       let i = {
         "orgName": "-",
         "location": "-",
         "eventCount": "-"
       };
-      if(record.orgName){
+      if (record.orgName) {
         i.orgName = record.orgName[0] ? record.orgName[0] : '-';
       }
 
-      if(record.location){
+      if (record.location) {
         i.location = record.location[0] ? record.location[0].placeName[0]._ : '-';
         i.location += record.location[1] ? (", " + record.location[1].placeName[0]._) : '';
       }
 
-      if(record.listEvent){
+      if (record.listEvent) {
         i.eventCount = record.listEvent[0].event ? record.listEvent[0].event.length : '-';
       }
 
@@ -472,48 +497,48 @@ export default {
         let xmlId = record.$['xml:id'];
         i.pmbID = xmlId;
         let id = xmlId.substring(3);
-        i.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/institution/"+ id +"/detail";
+        i.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/institution/" + id + "/detail";
       }
       return i;
     },
-    processWork(record){
+    processWork(record) {
       let w = {
         "title": "-",
         "author": "-",
         "date": "-"
       };
 
-      if(record.title){
+      if (record.title) {
         w.title = record.title[0] ? record.title[0]._ : '-'
       }
 
-      if(record.author){
+      if (record.author) {
         w.author = record.author[0] ? record.author[0]._ : '-'
       }
 
-      if(record.date){
+      if (record.date) {
         w.date = record.date[0] ? record.date[0]._ : '-'
       }
       if (record.$) {
         let xmlId = record.$['xml:id'];
         w.pmbID = xmlId;
         let id = xmlId.substring(6)
-        w.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/"+ id +"/detail";
+        w.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + id + "/detail";
       }
       return w;
     },
     openDetails(record) {
       let item;
-      if(this.categoryShort === 'p'){
+      if (this.categoryShort === 'p') {
         item = this.processPerson(record);
       }
-      if(this.categoryShort === 'o'){
+      if (this.categoryShort === 'o') {
         item = this.processPlace(record);
       }
-      if(this.categoryShort === 'i'){
+      if (this.categoryShort === 'i') {
         item = this.processInstitutions(record);
       }
-      if(this.categoryShort === 'w'){
+      if (this.categoryShort === 'w') {
         item = this.processWork(record);
       }
       this.showDetails = true;
@@ -521,18 +546,81 @@ export default {
     },
     tableSortCompare(a, b, key) {
       if (key === 'persName') {
-        
+
         return a[key][0].surname[0].localeCompare(b[key][0].surname[0])
-      }
-      else if(key === 'title'){
+      } else if (key === 'title') {
         return a[key][0]._.localeCompare(b[key][0]._)
-      }
-      else if(key === 'placeName' || key === 'orgName'){
+      } else if (key === 'placeName' || key === 'orgName') {
         return a[key][0].localeCompare(b[key][0]);
-      }
-      else {
+      } else {
         return false
       }
+    },
+    filterLetter(l) {
+      //remove old highlight
+      for (let i = 0; i < document.getElementsByClassName('active').length; i++) {
+        document.getElementsByClassName('active')[i].classList.remove('active');
+      }
+      //highlight current letter
+      document.getElementById(l).classList.add('active');
+
+
+      if (l === 'Kein Filter') {
+        this.currentItems = JSON.parse(JSON.stringify(this.allItems)); //deep copy
+        return;
+      }
+      if (this.categoryShort === 'p') {
+        if (l === 'Sonderzeichen') {
+          this.currentItems.person = this.allItems.person.filter(p =>
+              (p.persName[0].surname[0].charAt(0) < 'A' || p.persName[0].surname[0].charAt(0) > 'Z'));
+        } else {
+          this.currentItems.person = this.allItems.person.filter(p =>
+              p.persName[0].surname[0].startsWith(l));
+        }
+
+      } else if (this.categoryShort === 'o') {
+        if (l === 'Sonderzeichen') {
+          this.currentItems.place = this.allItems.place.filter(o =>
+              (o.placeName[0].charAt(0) < 'A' || o.placeName[0].charAt(0) > 'Z'));
+        } else {
+          this.currentItems.place = this.allItems.place.filter(o =>
+              o.placeName[0].startsWith(l));
+        }
+      } else if (this.categoryShort === 'w') {
+        if (l === 'Sonderzeichen') {
+          this.currentItems.bibl = this.allItems.bibl.filter(w =>
+              (w.title[0]._.charAt(0) < 'A' || w.title[0]._.charAt(0) > 'Z'));
+        } else {
+          this.currentItems.bibl = this.allItems.bibl.filter(w =>
+              w.title[0]._.startsWith(l));
+        }
+      } else if (this.categoryShort === 'i') {
+        console.log(this.allItems.org)
+        if (l === 'Sonderzeichen') {
+          this.currentItems.org = this.allItems.org.filter(i =>
+              (i.orgName[0].charAt(0) < 'A' || i.orgName[0].charAt(0) > 'Z'));
+        } else {
+          this.currentItems.org = this.allItems.org.filter(i =>
+              i.orgName[0].startsWith(l));
+        }
+      }
+
+    },
+    filterKeyword(keyword) {
+      let kw = keyword.toUpperCase();
+      if (this.categoryShort === 'p') {
+        this.currentItems.person = this.allItems.person.filter(p => p.persName[0].surname[0].toUpperCase().includes(kw));
+      } else if (this.categoryShort === 'w') {
+        this.currentItems.bibl = this.allItems.bibl.filter(w =>
+            w.title[0]._.toUpperCase().includes(kw));
+      } else if (this.categoryShort === 'i') {
+        this.currentItems.org = this.allItems.org.filter(i =>
+            i.orgName[0].toUpperCase().includes(kw));
+      } else if (this.categoryShort === 'o') {
+        this.currentItems.place = this.allItems.place.filter(o =>
+            o.placeName[0].toUpperCase().includes(kw));
+      }
+
     }
   },
   created() {
@@ -562,17 +650,47 @@ export default {
   min-width: 20%;
 }
 
-.tables{
+.tables {
   min-width: 70%;
   max-width: 70%;
 }
 
 .tables > .card {
-  border:none;
+  border: none;
 }
 
-.tables > .card:hover{
+.tables > .card:hover {
   cursor: pointer !important;
+}
+
+.filter-nav {
+  background-color: var(--secondary-gray-meta);
+  border-bottom: solid var(--primary-red) 0.3rem;
+}
+
+.abc {
+  display: inline-flex;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.l {
+  margin: 0.3rem;
+  cursor: pointer;
+}
+
+.l:hover {
+  text-decoration: underline;
+}
+
+.active {
+  text-decoration: underline;
+  color: var(--primary-red);
+  font-weight: bold;
+}
+
+.vt-suche{
+  margin: 2rem;
 }
 
 </style>
