@@ -126,8 +126,7 @@ module.exports.getColArcheIdFromColXmlId = async (xmlId, callback) => {
                     "object": "https://id.acdh.oeaw.ac.at/legalkraus/"+id,
                     "expiry": 14
                 };
-               let res = ARCHErdfQuery(options, rs);
-                console.log(res)//.value[0].hasIdentifier.subject.replace(`${ARCHE_BASE_URL}/`, "");
+               let res = ARCHErdfQuery(options, rs).value[0].hasIdentifier.subject.replace(`${ARCHE_BASE_URL}/`, "");
                callback(res)
 
             });
@@ -143,8 +142,7 @@ module.exports.getColArcheIdFromColXmlId = async (xmlId, callback) => {
             "object": "https://id.acdh.oeaw.ac.at/legalkraus/"+id,
             "expiry": 14
         };
-        let res = ARCHErdfQuery(options, metadata);
-        console.log(res)//.value[0].hasIdentifier.subject.replace(`${ARCHE_BASE_URL}/`, "");
+        let res = ARCHErdfQuery(options, metadata).value[0].hasIdentifier.subject.replace(`${ARCHE_BASE_URL}/`, "");
         callback(res)
 
     }
