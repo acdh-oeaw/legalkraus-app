@@ -320,7 +320,7 @@ export default {
       var self = this;
       switch (this.categoryShort) {
         case "p":
-          url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/310595";
+          url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/27726";
           fetch(url)
               .then(response => response.text())
               .then(str => {
@@ -331,7 +331,7 @@ export default {
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
           break;
         case "o":
-          url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/310594";
+          url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/27721";
           fetch(url)
               .then(response => response.text())
               .then(str => {
@@ -342,7 +342,7 @@ export default {
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
           break;
         case "i":
-          url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/310597";
+          url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/27722";
           fetch(url)
               .then(response => response.text())
               .then(str => {
@@ -353,7 +353,7 @@ export default {
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
           break;
         case "w":
-          url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/310598";
+          url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/27723";
           fetch(url)
               .then(response => response.text())
               .then(str => {
@@ -364,11 +364,11 @@ export default {
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
           break;
         case "f":
-          url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/310596";
+          url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/27724";
           //todo: noch nicht erstellt
           break;
         case "j":
-          url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/310593";
+          url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/27725";
           //todo: noch nicht erstellt
           break;
       }
@@ -503,6 +503,7 @@ export default {
       return w;
     },
     openDetails(record) {
+      console.log(record);
       let item;
       if(this.categoryShort === 'p'){
         item = this.processPerson(record);
