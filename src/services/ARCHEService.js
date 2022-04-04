@@ -66,7 +66,7 @@ module.exports.getEntity = async (resourceId, callback) => {
 }
 
 module.exports.getMetaData = async (callback) => {
-    const resourceId = 37562;
+    const resourceId = 17722;
     const options = {
         "host": ARCHE_BASE_URL,
         "format": "application/n-triples",
@@ -84,7 +84,7 @@ module.exports.getMetaData = async (callback) => {
 }
 
 module.exports.getCollections = async (startPage, callback) => {
-    const resourceId = 37565;
+    const resourceId = 17722;
 
     const options = {
         "host": ARCHE_BASE_URL,
@@ -107,7 +107,7 @@ module.exports.getCollections = async (startPage, callback) => {
 }
 
 module.exports.getColArcheIdFromColXmlId = async (xmlId, callback) => {
-    const resourceId = 37565;
+    const resourceId = 17722;
     let id = xmlId.substring(0, xmlId.length-4); //remove .xml
     const options = {
         "host": ARCHE_BASE_URL,
@@ -118,6 +118,7 @@ module.exports.getColArcheIdFromColXmlId = async (xmlId, callback) => {
     if (store.default.getters.MDAllCollections === null) {
         try {
             ARCHEdownloadResourceIdM(options, (rs) => {
+                console.log(rs)
                 store.default.dispatch('setMDAllCollections', rs);
                 const options = {
                     "subject": null,
@@ -125,7 +126,8 @@ module.exports.getColArcheIdFromColXmlId = async (xmlId, callback) => {
                     "object": "https://id.acdh.oeaw.ac.at/legalkraus/"+id,
                     "expiry": 14
                 };
-               let res = ARCHErdfQuery(options, rs).value[0].hasIdentifier.subject.replace(`${ARCHE_BASE_URL}/`, "");
+               let res = ARCHErdfQuery(options, rs);
+                console.log(res)//.value[0].hasIdentifier.subject.replace(`${ARCHE_BASE_URL}/`, "");
                callback(res)
 
             });
@@ -134,13 +136,15 @@ module.exports.getColArcheIdFromColXmlId = async (xmlId, callback) => {
         }
     } else {
         let metadata = store.default.getters.MDAllCollections;
+        console.log(metadata)
         const options = {
             "subject": null,
             "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier",
             "object": "https://id.acdh.oeaw.ac.at/legalkraus/"+id,
             "expiry": 14
         };
-        let res = ARCHErdfQuery(options, metadata).value[0].hasIdentifier.subject.replace(`${ARCHE_BASE_URL}/`, "");
+        let res = ARCHErdfQuery(options, metadata);
+        console.log(res)//.value[0].hasIdentifier.subject.replace(`${ARCHE_BASE_URL}/`, "");
         callback(res)
 
     }
@@ -276,7 +280,7 @@ module.exports.getCollectionOfObject = async (resourceId, callback) => {
 }
 
 module.exports.getAllResources = async (startPage, callback) => {
-    const resourceId = 37565;
+    const resourceId = 17722;
     const options = {
         "host": ARCHE_BASE_URL,
         "format": FORMAT_NTRIPLES,

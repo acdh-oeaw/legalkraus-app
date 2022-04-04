@@ -43,6 +43,7 @@ export default {
       if (!this.case.currDocs && this.caseIdArche === null) {
         getColArcheIdFromColXmlId(this.case.id, rs => {
           this.caseIdArche = rs;
+          console.log(rs);
           //todo: if currDocs is not set (e.g. for persons), find a way to extract documents that mention said entity
          /* getObjectsOfCollection(rs, docs => {
             console.log(docs);

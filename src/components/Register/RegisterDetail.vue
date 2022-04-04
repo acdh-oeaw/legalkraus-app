@@ -113,50 +113,41 @@ export default {
     setCases() {
       this.cases = [];
       this.docs = [];
-
       this.caseInfo.then(data => {
         const cases = data.cases;
         if (this.category === 'p') {
+          let pmbId = this.item.pmbID;
+          //match pmbId to case;
           cases.forEach(c => {
-            c.actors.forEach(a => {
-              if (a.id.includes(this.item.pmbID)) {
-                this.cases.push(c);
-              }
-            });
+            if (c.men_pers[pmbId] !== null && !this.cases.includes(c)) {
+              this.cases.push(c);
+            }
           });
         } else if (this.category === 'o') {
           //extract all document-ids from the location
           this.item.events.forEach(e => {
             let url = e.linkGrp[0].link[0].$.target;
             let idx = url.lastIndexOf('/');
-            let id = url.substring(idx +1);
+            let id = url.substring(idx + 1);
             this.docs.push(id);
           });
 
           //extract cases
           cases.forEach(c => {
-            this.docs.forEach(d =>{
-              if(c.docs.includes(d)){
-                if(!this.cases.includes(c)){
-                  //case is not part of this.cases
-                  /*let cs = c;
-                  cs.currDocs = [];
-                  cs.currDocs.push(d);*/
+            this.docs.forEach(d => {
+              if (c.docs.includes(d)) {
+                if (!this.cases.includes(c)) {
                   this.cases.push(c);
-                }/*else{
-                  //case is already part of this.cases
-                  let idx = this.cases.indexOf(c);
-                  this.cases[idx].currDocs.push(d);
-                }*/
+                }
               }
             });
           });
 
           //match cases and doc-ids
-          this.cases.forEach(c =>{
+          this.cases.forEach(c => {
             c.currDocs = [];
             c.doc_objs.forEach(d => {
-              if(this.docs.includes(d.id)){
+              if (this.docs.includes(d.id)) {
                 c.currDocs.push(d);
               }
             })

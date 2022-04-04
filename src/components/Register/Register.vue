@@ -394,13 +394,13 @@ export default {
       p.sex = record.sex[0] ? record.sex[0].$.value : '-';
 
       if (record.birth) {
-        p.birthPlace = record.birth[0].settlement[0].placeName ? record.birth[0].settlement[0].placeName[0]._ : '-';
-        p.birthDate = record.birth[0].date[0] ? record.birth[0].date[0]._ : '-';
+        p.birthPlace = (record.birth[0].settlement && record.birth[0].settlement[0].placeName) ? record.birth[0].settlement[0].placeName[0]._ : '-';
+        p.birthDate = ( record.birth[0].date && record.birth[0].date[0]) ? record.birth[0].date[0]._ : '-';
       }
 
       if (record.death) {
         p.deathPlace = (record.death[0].settlement && record.death[0].settlement[0].placeName) ? record.death[0].settlement[0].placeName[0]._ : '-';
-        p.deathDate = record.death[0].date[0] ? record.death[0].date[0]._ : '-';
+        p.deathDate = (record.death[0].date && record.death[0].date[0]) ? record.death[0].date[0]._ : '-';
       }
 
       if (record.occupation) {
@@ -503,7 +503,6 @@ export default {
       return w;
     },
     openDetails(record) {
-      console.log(record);
       let item;
       if(this.categoryShort === 'p'){
         item = this.processPerson(record);
