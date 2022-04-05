@@ -107,14 +107,15 @@ module.exports.getCollections = async (startPage, callback) => {
 }
 
 module.exports.getColArcheIdFromColXmlId = async (xmlId, callback) => {
-    const resourceId = 17722;
-    let id = xmlId.substring(0, xmlId.length-4); //remove .xml
-    const options = {
+
+    let id = xmlId.substring(0, xmlId.length - 4); //remove .xml
+    /*const options = {
         "host": ARCHE_BASE_URL,
         "format": "application/n-triples",
         "resourceId": resourceId,
         "readMode": "neighbors",
     };
+    const resourceId = 17722;
     if (store.default.getters.MDAllCollections === null) {
         try {
             ARCHEdownloadResourceIdM(options, (rs) => {
@@ -145,7 +146,22 @@ module.exports.getColArcheIdFromColXmlId = async (xmlId, callback) => {
         let res = ARCHErdfQuery(options, metadata).value[0].hasIdentifier.subject.replace(`${ARCHE_BASE_URL}/`, "");
         callback(res)
 
-    }
+    }*/
+    var myHeaders = new Headers();
+    myHeaders.append("X-METADATA-READ-MODE", "ids");
+
+    var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    fetch("https://id.acdh.oeaw.ac.at/legalkraus/" + id, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            callback(result);
+        })
+        .catch(error => console.log('error', error));
 }
 
 module.exports.getObjectsOfCollection = async (resourceId, callback) => {
@@ -192,7 +208,7 @@ module.exports.getObjectsOfCollection = async (resourceId, callback) => {
                 };
                 let title = ARCHErdfQuery(optionsTitle, rs);
                 let identifier = ARCHErdfQuery(optionsIdentifier, rs);
-                let actors = ARCHErdfQuery(optionsActor,rs);
+                let actors = ARCHErdfQuery(optionsActor, rs);
 
                 result.push({
                     url: childResources.value[i].isPartOf.subject,
@@ -310,31 +326,12 @@ module.exports.getTransformedHtmlResource = async (objectId, callback) => {
     }
 }
 
-/*module.exports.getTransformedHtmlRegistry = async (callback) => {
-    //todo: add category parameter and load the corresponding registry
-    try {
-        const url = `https://service4tei.acdh-dev.oeaw.ac.at/tei2html.xql?tei=https://arche-dev.acdh-dev.oeaw.ac.at/api/310598&xsl=https://raw.githubusercontent.com/acdh-oeaw/dev-app/development/src/resgister_xsl/listwork.xsl`;
-        const resp = await fetch(url);
-        const data = await resp.text();
-        return callback(data);
-    } catch (error) {
-        console.log(error);
-    }
-}*/
-
 /*module.exports.getTransformedHTML = async (resourceId, callback) => {
     //const resp = await fetch(`tmp/${resourceId}.html`)
     const resp = await fetch('tmp/37600.html')
     const data = await resp.text();
     return callback(data);
 }*/
-
-module.exports.getTransformedHtmlRegistry = async (callback) => {
-    //const resp = await fetch(`tmp/${resourceId}.html`)
-    const resp = await fetch('tmp/listwork.html')
-    const data = await resp.text();
-    return callback(data);
-}
 
 module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback) => {
     const url = `${ARCHE_BASE_URL}/search?`;
@@ -376,10 +373,7 @@ module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback)
     } else {
         console.log('all')
         //searches in all collections
-
-        //id 37565
-        const url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/search?sql=SELECT id  FROM      full_text_search      JOIN (          SELECT (get_relatives(id, ?, 9999, 0)).id          FROM identifiers          WHERE ids = ?      ) t USING (id)  WHERE websearch_to_tsquery('simple', ?) @@ segments&sqlParam[]=https://vocabs.acdh.oeaw.ac.at/schema%23isPartOf&sqlParam[]=https://arche-dev.acdh-dev.oeaw.ac.at/api/37565&format=application/json&sqlParam[]=" + searchTerm + "&readMode=ids&limit=25&ftsQuery=" + searchTerm;
-        //const url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/search?sql=SELECT id  FROM      full_text_search      JOIN (          SELECT (get_relatives(id, ?, 9999, 0)).id          FROM identifiers          WHERE ids = ?      ) t USING (id)  WHERE websearch_to_tsquery('simple', ?) @@ segments&sqlParam[]=https://vocabs.acdh.oeaw.ac.at/schema%23isPartOf&sqlParam[]=https://arche-dev.acdh-dev.oeaw.ac.at/api/37565&format=application/json&sqlParam[]=Beilegen&readMode=ids&limit=25&ftsQuery="+searchTerm+"&readMode=resource";
+        const url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/search?sql=SELECT id  FROM      full_text_search      JOIN (          SELECT (get_relatives(id, ?, 9999, 0)).id          FROM identifiers          WHERE ids = ?      ) t USING (id)  WHERE websearch_to_tsquery('simple', ?) @@ segments&sqlParam[]=https://vocabs.acdh.oeaw.ac.at/schema%23isPartOf&sqlParam[]=https://arche-dev.acdh-dev.oeaw.ac.at/api/17722&format=application/json&sqlParam[]=" + searchTerm + "&readMode=ids&limit=25&ftsQuery=" + searchTerm;
         fetch(url).then(rs => rs.json()).then(data => {
             return callback(data);
         });

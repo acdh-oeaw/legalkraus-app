@@ -104,7 +104,13 @@
 
 <script>
 import {ARCHEdownloadResourceIdM, ARCHErdfQuery} from "arche-api/src";
-import {getObjectWithId, getMetaData, getObjectsOfCollection, getCollectionOfObject, getAllObjects} from "../services/ARCHEService";
+import {
+  getCollectionOfObject,
+  getCollections,
+  getMetaData,
+  getObjectsOfCollection,
+  getObjectWithId
+} from "../services/ARCHEService";
 
 
 function extractPredicateAndObjectAsJSONfromRDF(queryJson) {
@@ -112,9 +118,8 @@ function extractPredicateAndObjectAsJSONfromRDF(queryJson) {
   for (let i = 0; i < queryJson.length; i++) {
     let indexHT = queryJson[i].predicate.indexOf("#");
     const p = queryJson[i].predicate.substring(indexHT + 1);
-    const o = queryJson[i].object;
     //console.log(queryJson[i].predicate.substring(indexHT+1) + ": " + queryJson[i].object);
-    tempMetaData[p] = o;
+    tempMetaData[p] = queryJson[i].object;
   }
   return tempMetaData;
 }
@@ -229,10 +234,10 @@ export default {
     },
   },
   mounted() {
-    /*getCollections((result) => {
+    getCollections((result) => {
       //let queryJson = ARCHErdfQuery(null, null, null, result);
       this.archeCollections = result;
-    });*/
+    });
     getMetaData((result) => {
       const options = {
         "subject": null,
@@ -244,7 +249,7 @@ export default {
       this.archeMetaData = queryJson.value;
     });
 
-    getObjectWithId(37598, (result) => {
+    getObjectWithId(24060, (result) => {
 
       // query:
       const optionsTitle = {
@@ -256,7 +261,7 @@ export default {
 
       const optionsDateCreation = {
         "subject": null,
-        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasCreatedStartDate",
+        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasCoverageStartDate",
         "object": null,
         "expiry": 14
       };
@@ -275,24 +280,24 @@ export default {
       this.objectData.push({
         rdf: result,
         title: title.value[0].hasTitle.object,
-        dateOfCreation: dateCreation.value[0].hasCreatedStartDate.object.substring(0, 10),
+        dateOfCreation: dateCreation.value[0].hasCoverageStartDate.object.substring(0, 10),
         subjects: subjects.value
       });
     });
 
-    getObjectsOfCollection(37573, (result) => {
+    getObjectsOfCollection(17822, (result) => {
       //37571
       this.objectsOfCollection = result;
     });
 
-    getCollectionOfObject(37600, (rs) => {
+    getCollectionOfObject(24060, (rs) => {
       console.log(rs);
     })
 
-    getAllObjects((result) => {
+   /* getAllObjects((result) => {
       //let queryJson = ARCHErdfQuery(null, null, null, result);
       this.allObjects = result;
-    });
+    });*/
 
   }
 };
