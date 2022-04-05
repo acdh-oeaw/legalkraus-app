@@ -131,17 +131,13 @@
               sortable: true
             },
             {
+              key: 'birth',
+              label: 'Geburtsdatum'
+            },
+            {
               key: 'occupation',
               label: 'Beruf'
-            },
-            {
-              key: 'birth',
-              label: 'geboren'
-            },
-            {
-              key: 'death',
-              label: 'gestorben'
-            },
+            }
           ]" :items="this.currentItems.person" @row-clicked="openDetails">
             <template #table-busy>
               <div class="text-center my-2">
@@ -150,21 +146,20 @@
               </div>
             </template>
             <template #cell(persName)="data">
-              <div v-if="data.value && data.value[0] && data.value[0].surname && data.value[0].forename">
-                {{ data.value[0].surname[0].toUpperCase() }}, {{ data.value[0].forename[0] }}
-              </div>
+              <span style="display: inline-flex">
+          <div v-if="data.value && data.value[0] && data.value[0].surname">{{
+              data.value[0].surname[0].toUpperCase()
+            }}</div>
+          <div
+              v-if="data.value && data.value[0] && data.value[0].forename">, {{ data.value[0].forename[0] }}</div>
+            </span>
             </template>
             <template #cell(occupation)="data">
               <div v-if="data.value">{{ data.value[0]._ }}</div>
             </template>
             <template #cell(birth)="data">
-              <div v-if="data.value && data.value[0] && data.value[0].settlement && data.value[0].date">
-                {{ data.value[0].settlement[0].placeName[0]._ }}, {{ data.value[0].date[0]._ }}
-              </div>
-            </template>
-            <template #cell(death)="data">
-              <div v-if="data.value && data.value[0] && data.value[0].settlement && data.value[0].date">
-                {{ data.value[0].settlement[0].placeName[0]._ }}, {{ data.value[0].date[0]._ }}
+              <div v-if="data.value && data.value[0] && data.value[0].date">
+                {{ data.value[0].date[0]._ }}
               </div>
             </template>
           </b-table>
@@ -194,10 +189,6 @@
             {
               key: 'location',
               label: 'Lage'
-            },
-            {
-              key: 'listEvent',
-              label: 'Verweise'
             }
           ]" :items="this.currentItems.place" @row-clicked="openDetails">
             <template #table-busy>
@@ -218,9 +209,6 @@
               data.value[1]._
             }})</div>
             </span>
-            </template>
-            <template #cell(listEvent)="data">
-              <div v-if="data.value && data.value[0] && data.value[0].event">{{ data.value[0].event.length }}</div>
             </template>
           </b-table>
         </div>
@@ -247,11 +235,7 @@
             },
             {
               key: 'location',
-              label: 'Lage'
-            },
-            {
-              key: 'listEvent',
-              label: 'Verweise'
+              label: 'Ort'
             }
           ]" :items="this.currentItems.org" @row-clicked="openDetails">
             <template #table-busy>
@@ -274,9 +258,6 @@
             </template>
             <template #cell(orgName)="data">
               <div v-if="data.value && data.value[0]">{{ data.value[0] }}</div>
-            </template>
-            <template #cell(listEvent)="data">
-              <div v-if="data.value && data.value[0]">{{ data.value[0].event.length }}</div>
             </template>
           </b-table>
         </div>
@@ -528,6 +509,7 @@ export default {
       return w;
     },
     openDetails(record) {
+      console.log(record)
       let item;
       if (this.categoryShort === 'p') {
         item = this.processPerson(record);
@@ -689,7 +671,7 @@ export default {
   font-weight: bold;
 }
 
-.vt-suche{
+.vt-suche {
   margin: 2rem;
 }
 
