@@ -108,6 +108,7 @@ module.exports.getCollections = async (startPage, callback) => {
 
 module.exports.getColArcheIdFromColXmlId = async (xmlId, callback) => {
     let httpRequest = new XMLHttpRequest();
+    xmlId = xmlId.substring(0, xmlId.length-4);
     httpRequest.onload = function(){
         let url = httpRequest.responseURL;
         //remove /metadata

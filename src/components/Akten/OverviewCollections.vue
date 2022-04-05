@@ -56,45 +56,6 @@
         <SearchResultItem v-bind:item="item" v-on:nav-to-objects="navToObjects($event)"></SearchResultItem>
       </div>
 
-      <!--      <b-pagination
-                page-class="custompaging"
-                prev-class="custompagingarrows"
-                next-class="custompagingarrows"
-                first-class="custompagingarrows"
-                last-class="custompagingarrows"
-                class="custom-pagination"
-                v-model="currentPage"
-                :total-rows="searchResultsCount"
-                :per-page="perPage"
-                aria-controls="col-table"
-            ></b-pagination>
-            <b-table id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
-                     :current-page="currentPage" :per-page="perPage"
-                     :busy.sync="isBusy" :fields="[
-                  {
-                    key: 'collection',
-                    label: 'Collection'
-                  },
-                  {
-                    key: 'title',
-                    label: 'Titel'
-                  },
-                  {
-                    key: 'kwic',
-                    label: 'Textstellen'
-                  }
-                ]" :items="searchResults" @row-clicked="navToObjects">
-              <template #table-busy>
-                <div class="text-center my-2">
-                  <b-spinner type="grow" class="align-middle"></b-spinner>
-                  <strong>Loading...</strong>
-                </div>
-              </template>
-              <template #cell(url)="data">
-                <a target="_blank" rel="noopener noreferrer" :href="`${data.value}`">Daten in Arche</a>
-              </template>
-            </b-table>-->
-
     </div>
   </main>
 </template>
@@ -105,7 +66,6 @@ import {getCollections} from "@/services/ARCHEService";
 import Search from "../Search";
 import SearchResultItem from "./SearchResultItem";
 import {getColArcheIdFromColXmlId} from "../../services/ARCHEService";
-//import {getCollectionsByArrayOfIDs} from "../../services/ARCHEService";
 
 export default {
   name: "OverviewCollections",
@@ -151,7 +111,7 @@ export default {
       callback(this.cases.slice(offset, offset + ctx.perPage))
     },
     navToObjects: async function (record) {
-      getColArcheIdFromColXmlId(record.id, id => {
+      getColArcheIdFromColXmlId(record.id, async id => {
         if (this.currSubCat === this.pR) {
           this.$router.push({name: "privatrecht-objects", params: {id: id}});
         } else if (this.currSubCat === this.sR) {

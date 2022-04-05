@@ -27,7 +27,7 @@
         <div class="loader"></div>
       </div>
 
-      <p v-else> Dieser Fall hat {{ this.numberDocuments }} Dokumente. </p>
+      <p v-else> Dieser Fall hat {{ this.objects.length }} Dokumente. </p>
 
       <div v-if="searchView">
         <b-col>
@@ -229,20 +229,24 @@ export default {
         "expiry": 14
       };
 
-      const optionsSize = {
+      /*const optionsSize = {
         "subject": null,
         "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasNumberOfItems",
         "object": null,
         "expiry": 14
-      };
+      };*/
 
+      console.log(result)
       this.caseTitle = ARCHErdfQuery(optionsTitle, result).value[0].hasTitle.object;
-      let documents = ARCHErdfQuery(optionsSize, result).value[0].hasNumberOfItems.object;
-      let idx = documents.lastIndexOf('^');
-      this.numberDocuments = documents.substring(0, idx - 1);
+      //let documents = ARCHErdfQuery(optionsSize, result).value[0].hasNumberOfItems.object;
+     // let idx = documents.lastIndexOf('^');
+      //this.numberDocuments = documents.substring(0, idx - 1);
+      console.log(this.caseTitle);
+      //console.log(documents)
     });
 
     getObjectsOfCollection(this.colId, (result) => {
+      console.log(result)
       this.objects = result;
       this.loading = false;
     });
