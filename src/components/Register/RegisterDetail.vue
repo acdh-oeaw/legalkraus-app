@@ -4,9 +4,10 @@
       <div><b>Person:</b></div>
       <div>Vorname: <b>{{ this.item.forename }}</b></div>
       <div>Nachname: <b>{{ this.item.surname }}</b></div>
-      <div>Geschlecht: <b> {{ this.item.sex }}</b></div>
-      <div>Geboren: <b>{{ this.item.birthDate }}, {{ this.item.birthPlace }}</b></div>
-      <div>Gestorben: <b>{{ this.item.deathDate }}, {{ this.item.deathPlace }}</b></div>
+      <div>Geburtdatum: <b>{{ this.item.birthDate }}</b></div>
+      <div>Geburtsort: <b>{{ this.item.birthPlace }}</b></div>
+      <div>Sterbedatum: <b>{{ this.item.deathDate }}</b></div>
+      <div>Sterbeort: <b>{{ this.item.deathPlace }}</b> </div>
       <div>Beruf: <b>{{ this.item.occupation }}</b></div>
       <div>PMB: <a v-bind:href="item.pmbURL" target="_blank">{{ this.item.surname }}</a></div>
       <div v-if="this.cases.length>0">
@@ -23,9 +24,11 @@
                   d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
           </svg>
         </div>
-        <div v-for="c in currentCases" :key="c.id" class="case">
-          <detail-case v-bind:case="c"></detail-case>
+        <div  v-for="c in currentCases" :key="c.id" class="case">
+          <detail-case v-bind:case="c" v-bind:name="item.surname"></detail-case>
         </div>
+
+
       </div>
 
     </div>
@@ -33,7 +36,6 @@
       <div>Ort:</div>
       <div>Name: <b>{{ this.item.placeName }}</b></div>
       <div>Lage: <b>{{ this.item.location }}</b></div>
-      <div>Verweise: {{ this.item.eventCount }}</div>
       <div>PMB: <a v-bind:href="item.pmbURL" target="_blank">{{ this.item.placeName }}</a></div>
       <div v-if="this.cases.length>0">
         <div>Beteiligt an:</div>
@@ -50,7 +52,7 @@
           </svg>
         </div>
         <div v-for="c in currentCases" :key="c.id" class="case">
-          <detail-case v-bind:case="c"></detail-case>
+          <detail-case v-bind:case="c" v-bind:name="null"></detail-case>
         </div>
       </div>
     </div>
@@ -116,10 +118,11 @@ export default {
       this.caseInfo.then(data => {
         const cases = data.cases;
         if (this.category === 'p') {
-          let pmbId = this.item.pmbID;
+          let pmbId =  this.item.pmbID.toString();
+
           //match pmbId to case;
           cases.forEach(c => {
-            if (c.men_pers[pmbId] !== null && !this.cases.includes(c)) {
+            if (c.men_pers[pmbId] && !this.cases.includes(c)) {
               this.cases.push(c);
             }
           });

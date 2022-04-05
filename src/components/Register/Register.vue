@@ -509,7 +509,6 @@ export default {
       return w;
     },
     openDetails(record) {
-      console.log(record)
       let item;
       if (this.categoryShort === 'p') {
         item = this.processPerson(record);
