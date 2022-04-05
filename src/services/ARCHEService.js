@@ -108,7 +108,7 @@ module.exports.getCollections = async (startPage, callback) => {
 
 module.exports.getColArcheIdFromColXmlId = async (xmlId, callback) => {
     let httpRequest = new XMLHttpRequest();
-    httpRequest.onreadystatechange = function(){
+    httpRequest.onload = function(){
         let url = httpRequest.responseURL;
         //remove /metadata
         let urlShort = url.substring(0, url.length-9);
@@ -129,6 +129,7 @@ module.exports.getObjectsOfCollection = async (resourceId, callback) => {
     };
     try {
         ARCHEdownloadResourceIdM(options, (rs) => {
+            console.log(rs)
             // query:
             const optionsChildRes = {
                 "subject": null,
