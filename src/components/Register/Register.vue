@@ -592,16 +592,25 @@ export default {
     filterKeyword(keyword) {
       let kw = keyword.toUpperCase();
       if (this.categoryShort === 'p') {
-        this.currentItems.person = this.allItems.person.filter(p => p.persName[0].surname[0].toUpperCase().includes(kw));
+        this.currentItems.person = this.allItems.person.filter(p => (
+                p.persName[0].surname[0].toUpperCase().includes(kw) ||
+                (p.persName[0].forename && p.persName[0].forename[0].toUpperCase().includes(kw)) ||
+                (p.occupation && p.occupation[0]._.toUpperCase().includes(kw))) ||
+            (p.birth && p.birth[0].date && p.birth[0].date[0]._.includes(kw)));
       } else if (this.categoryShort === 'w') {
         this.currentItems.bibl = this.allItems.bibl.filter(w =>
-            w.title[0]._.toUpperCase().includes(kw));
+            (w.title[0]._.toUpperCase().includes(kw) ||
+                (w.date && w.date[0] && w.date[0]._ && w.date[0]._.includes(kw))||
+                (w.author && w.author[0] && w.author[0]._.toUpperCase().includes(kw))));
       } else if (this.categoryShort === 'i') {
         this.currentItems.org = this.allItems.org.filter(i =>
-            i.orgName[0].toUpperCase().includes(kw));
+            (i.orgName[0].toUpperCase().includes(kw)) ||
+            (i.location && i.location[0] && i.location[0].$.type==='located_in_place' && i.location[0].placeName[0]._.toUpperCase().includes(kw)) ||
+            (i.location && i.location[1] && i.location[1].$.type==='located_in_place' && i.location[1].placeName[0]._.toUpperCase().includes(kw)));
       } else if (this.categoryShort === 'o') {
         this.currentItems.place = this.allItems.place.filter(o =>
-            o.placeName[0].toUpperCase().includes(kw));
+            (o.placeName[0].toUpperCase().includes(kw) ||
+                (o.location && o.location[1] && o.location[1].placeName && o.location[1].placeName[0]._.toUpperCase().includes(kw))));
       }
 
     }
