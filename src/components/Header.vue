@@ -84,7 +84,9 @@
       <p class="nav-el">
         <b-dropdown id="dropdown-3" text="Statistik"  variant='none' class="m-md-2">
           <b-dropdown-item>Zeitstrahl</b-dropdown-item>
-          <b-dropdown-item>Fallstatistik</b-dropdown-item>
+          <b-dropdown-item><router-link class="dd-item" to="/statistik/fallstatistik">
+              Fallstatistik
+            </router-link></b-dropdown-item>
           <b-dropdown-item>Sonstiges</b-dropdown-item>
         </b-dropdown>
       </p>

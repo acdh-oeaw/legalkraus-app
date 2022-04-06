@@ -25,6 +25,7 @@ import Benutzungshinweise from "../components/Projekt/Benutzungshinweise";
 import Lizenzen from "../components/Projekt/Lizenzen";
 import Dokumentation from "../components/Projekt/Dokumentation";
 import Register from "../components/Register/Register";
+import Stats from "../components/Statistiken/Stats";
 
 
 Vue.use(Router)
@@ -86,6 +87,7 @@ export default new Router({
         {path: '/register/werke', name: 'wReg', component: Register},
         {path: '/register/fackel', name: 'fReg', component: Register},
         {path: '/register/juristische-texte', name: 'gReg', component: Register},
+        {path: '/statistik/fallstatistik', name: 'fstat', component: Stats},
         {path: '/projektinformationen', component: Projektinformationen},
         {path: '/editionsrichtlinien', component: Editionsrichtlinien},
         {path: '/projektteam', component: Projektteam},

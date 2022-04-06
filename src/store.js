@@ -21,7 +21,8 @@ export default new Vuex.Store({
         resourcePageSize: 10,
         MDAllResources: null,
         MDAllCollections: null,
-        caseInfo: null
+        caseInfo: null,
+        vocabs: {}
         
     },
 
@@ -55,6 +56,9 @@ export default new Vuex.Store({
         },
         caseInfo: state => {
             return state.caseInfo;
+        },
+        vocabs: state => {
+            return state.vocabs;
         }
     },
 
@@ -104,6 +108,15 @@ export default new Vuex.Store({
         },
         MUTATE_CASEINFO: (state, caseInfo) => {
             Vue.set(state, 'caseInfo', caseInfo)
+        },
+        MUTATE_VOCABS: (state, vocabs) => {
+            Vue.set(state, 'vocabs', vocabs)
+        },
+        ADD_CONCEPT: (state,concept) => {
+            Vue.set(state.vocabs,concept.uri,concept);
+        },
+        MUTATE_CONCEPT: (state,conceptinfo) => {
+            Vue.set(state.vocabs[conceptinfo.uri],conceptinfo.propname,conceptinfo.propval);
         }
     },
 
@@ -140,6 +153,15 @@ export default new Vuex.Store({
         },
         setCaseInfo: (context, caseInfo) => {
             context.commit('MUTATE_CASEINFO', caseInfo);
+        },
+        setVocabs: (context, vocabs) => {
+             context.commit('MUTATE_VOCABS', vocabs);
+        },
+        addConcept: (context, concept) => {
+            context.commit('ADD_CONCEPT', concept);
+        },
+        updateConcept: (context, conceptinfo) => {
+            context.commit('MUTATE_CONCEPT', conceptinfo);
         }
     }
 });
