@@ -25,7 +25,7 @@
           </svg>
         </div>
         <div  v-for="c in currentCases" :key="c.id" class="case">
-          <detail-case v-bind:case="c" v-bind:name="item.surname"></detail-case>
+          <detail-case v-bind:case="c" v-bind:name="item.surname" v-bind:category="category"></detail-case>
         </div>
 
 
@@ -38,7 +38,7 @@
       <div>Lage: <b>{{ this.item.location }}</b></div>
       <div>PMB: <a v-bind:href="item.pmbURL" target="_blank">{{ this.item.placeName }}</a></div>
       <div v-if="this.cases.length>0">
-        <div>Beteiligt an:</div>
+        <div>Erwähnungen:</div>
         <div class="btns">
           <svg v-on:click="prev " xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                class="bi bi-arrow-left-short" viewBox="0 0 16 16">
@@ -52,7 +52,7 @@
           </svg>
         </div>
         <div v-for="c in currentCases" :key="c.id" class="case">
-          <detail-case v-bind:case="c" v-bind:name="null"></detail-case>
+          <detail-case v-bind:case="c" v-bind:name="item.placeName" v-bind:category="category"></detail-case>
         </div>
       </div>
     </div>
@@ -66,10 +66,26 @@
     <div v-if="category==='i'" class="detail">
       <div>Institution:</div>
       <div>Name: <b>{{ this.item.orgName }}</b></div>
-      <div>Lage: <b>{{ this.item.location }}</b></div>
-      <div>Verweise: {{ this.item.eventCount }}</div>
+      <div>Ort: <b>{{ this.item.location }}</b></div>
       <div>PMB: <a v-bind:href="item.pmbURL" target="_blank">{{ this.item.orgName }}</a></div>
-      <div>coming soon: Verweise/Erwähnungen Dokumente</div>
+      <div v-if="this.cases.length>0">
+        <div>Erwähnungen:</div>
+        <div class="btns">
+          <svg v-on:click="prev " xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-left-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
+          </svg>
+          <svg v-on:click="next" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
+          </svg>
+        </div>
+        <div v-for="c in currentCases" :key="c.id" class="case">
+          <detail-case v-bind:case="c" v-bind:name="item.orgName" v-bind:category="category"></detail-case>
+        </div>
+      </div>
     </div>
 
   </main>
@@ -117,9 +133,8 @@ export default {
       this.docs = [];
       this.caseInfo.then(data => {
         const cases = data.cases;
+        let pmbId =  this.item.pmbID.toString();
         if (this.category === 'p') {
-          let pmbId =  this.item.pmbID.toString();
-
           //match pmbId to case;
           cases.forEach(c => {
             if (c.men_pers[pmbId] && !this.cases.includes(c)) {
@@ -127,33 +142,18 @@ export default {
             }
           });
         } else if (this.category === 'o') {
-          //extract all document-ids from the location
-          this.item.events.forEach(e => {
-            let url = e.linkGrp[0].link[0].$.target;
-            let idx = url.lastIndexOf('/');
-            let id = url.substring(idx + 1);
-            this.docs.push(id);
-          });
-
-          //extract cases
+          //match pmbId to case;
           cases.forEach(c => {
-            this.docs.forEach(d => {
-              if (c.docs.includes(d)) {
-                if (!this.cases.includes(c)) {
-                  this.cases.push(c);
-                }
-              }
-            });
+            if (c.men_pl[pmbId] && !this.cases.includes(c)) {
+              this.cases.push(c);
+            }
           });
-
-          //match cases and doc-ids
-          this.cases.forEach(c => {
-            c.currDocs = [];
-            c.doc_objs.forEach(d => {
-              if (this.docs.includes(d.id)) {
-                c.currDocs.push(d);
-              }
-            })
+        } else if (this.category === 'i') {
+          //match pmbId to case;
+          cases.forEach(c => {
+            if (c.men_orgs[pmbId] && !this.cases.includes(c)) {
+              this.cases.push(c);
+            }
           });
         }
 

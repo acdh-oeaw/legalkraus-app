@@ -341,6 +341,7 @@ export default {
                 parseString(str, function (err, rs) {
                   self.currentItems = rs.TEI.text[0].body[0].listPlace[0];
                   self.allItems = JSON.parse(JSON.stringify(rs.TEI.text[0].body[0].listPlace[0]));
+                  console.log(self.allItems)
                 });
               })
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
@@ -509,6 +510,7 @@ export default {
       return w;
     },
     openDetails(record) {
+      console.log(record)
       let item;
       if (this.categoryShort === 'p') {
         item = this.processPerson(record);

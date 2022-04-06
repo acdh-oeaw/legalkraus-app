@@ -111,7 +111,6 @@ module.exports.getColArcheIdFromColXmlId = async (xmlId, callback) => {
     if(xmlId.includes('C_')){
         xmlId = xmlId.substring(0, xmlId.length-4);
     }
-
     httpRequest.onload = function(){
         let url = httpRequest.responseURL;
         //remove /metadata
