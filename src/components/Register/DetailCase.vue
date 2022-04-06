@@ -59,8 +59,6 @@ export default {
         this.docsLoading = true;
         getColArcheIdFromColXmlId(this.case.id, rs => {
           this.caseIdArche = rs;
-          console.log(rs)
-          console.log(this.name)
           getObjectsOfCollection(rs, async docs => {
             let currdocs = [];
             docs.forEach(d => {
@@ -99,7 +97,6 @@ export default {
                     let idx = idLong.lastIndexOf('/');
                     let id = idLong.substring(idx + 1);
                     getEntity(id, rs => {
-                      console.log(rs)
                       if (rs.title.includes(this.name)) {
                         currdocs.push(d);
                       }
@@ -126,15 +123,9 @@ export default {
 
     },
     navToLF(d) {
-      let idx = '';
-      let id = '';
-      if (this.category === 'p') {
-        idx = d.identifier.lastIndexOf('/');
-        id = d.identifier.substring(idx + 1);
-      }
-      if (this.category === 'o') {
-        id = d.id;
-      }
+      let idx = d.identifier.lastIndexOf('/');
+      let id = d.identifier.substring(idx + 1);
+
       getColArcheIdFromColXmlId(id, rs => {
         this.$router.push({name: "lesefassung", params: {id: rs}});
       });

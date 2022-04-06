@@ -12,9 +12,10 @@
       <input class="vt-suche" type="text" placeholder="Volltextsuche:" v-model="keyword"
              @keyup="filterKeyword(keyword)"/>
     </div>
+    <div v-if="noItems" class="message">KEIN TREFFER</div>
     <div class="wrapper">
       <div class="tables">
-        <div v-if="categoryShort==='w'" class="card">
+        <div v-if="categoryShort==='w' && !noItems" class="card">
           <b-pagination
               page-class="custompaging"
               prev-class="custompagingarrows"
@@ -108,7 +109,7 @@
             </template>
           </b-table>
         </div>
-        <div v-if="categoryShort==='p'" class="card">
+        <div v-if="categoryShort==='p' && !noItems" class="card">
           <b-pagination
               page-class="custompaging"
               prev-class="custompagingarrows"
@@ -164,7 +165,7 @@
             </template>
           </b-table>
         </div>
-        <div v-if="categoryShort==='o'" class="card">
+        <div v-if="categoryShort==='o' && !noItems" class="card">
           <b-pagination
               page-class="custompaging"
               prev-class="custompagingarrows"
@@ -212,7 +213,7 @@
             </template>
           </b-table>
         </div>
-        <div v-if="categoryShort==='i'" class="card">
+        <div v-if="categoryShort==='i' && !noItems" class="card">
           <b-pagination
               page-class="custompaging"
               prev-class="custompagingarrows"
@@ -290,7 +291,9 @@ export default {
       showDetails: false,
       details: String,
       keyword: null,
-      abc: ["Kein Filter", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "Sonderzeichen"]
+      abc: ["Kein Filter", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "Sonderzeichen"],
+      query: null,
+      noItems: false
     }
   },
 
@@ -341,7 +344,6 @@ export default {
                 parseString(str, function (err, rs) {
                   self.currentItems = rs.TEI.text[0].body[0].listPlace[0];
                   self.allItems = JSON.parse(JSON.stringify(rs.TEI.text[0].body[0].listPlace[0]));
-                  console.log(self.allItems)
                 });
               })
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
@@ -510,7 +512,6 @@ export default {
       return w;
     },
     openDetails(record) {
-      console.log(record)
       let item;
       if (this.categoryShort === 'p') {
         item = this.processPerson(record);
@@ -590,42 +591,91 @@ export default {
 
     },
     filterKeyword(keyword) {
+      this.noItems = false;
       let kw = keyword.toUpperCase();
       if (this.categoryShort === 'p') {
         this.currentItems.person = this.allItems.person.filter(p => (
                 p.persName[0].surname[0].toUpperCase().includes(kw) ||
                 (p.persName[0].forename && p.persName[0].forename[0].toUpperCase().includes(kw)) ||
                 (p.occupation && p.occupation[0]._.toUpperCase().includes(kw))) ||
-            (p.birth && p.birth[0].date && p.birth[0].date[0]._.includes(kw)));
+            (p.birth && p.birth[0].date && p.birth[0].date[0] && p.birth[0].date[0]._ && p.birth[0].date[0]._.includes(kw)));
+        if (this.currentItems.person.length === 0) {
+          this.noItems = true;
+        }
       } else if (this.categoryShort === 'w') {
         this.currentItems.bibl = this.allItems.bibl.filter(w =>
             (w.title[0]._.toUpperCase().includes(kw) ||
-                (w.date && w.date[0] && w.date[0]._ && w.date[0]._.includes(kw))||
+                (w.date && w.date[0] && w.date[0]._ && w.date[0]._.includes(kw)) ||
                 (w.author && w.author[0] && w.author[0]._.toUpperCase().includes(kw))));
+        if (this.currentItems.bibl.length === 0) {
+          this.noItems = true;
+        }
       } else if (this.categoryShort === 'i') {
         this.currentItems.org = this.allItems.org.filter(i =>
             (i.orgName[0].toUpperCase().includes(kw)) ||
-            (i.location && i.location[0] && i.location[0].$.type==='located_in_place' && i.location[0].placeName[0]._.toUpperCase().includes(kw)) ||
-            (i.location && i.location[1] && i.location[1].$.type==='located_in_place' && i.location[1].placeName[0]._.toUpperCase().includes(kw)));
+            (i.location && i.location[0] && i.location[0].$.type === 'located_in_place' && i.location[0].placeName[0]._.toUpperCase().includes(kw)) ||
+            (i.location && i.location[1] && i.location[1].$.type === 'located_in_place' && i.location[1].placeName[0]._.toUpperCase().includes(kw)));
+        if (this.currentItems.org.length === 0) {
+          this.noItems = true;
+        }
       } else if (this.categoryShort === 'o') {
         this.currentItems.place = this.allItems.place.filter(o =>
             (o.placeName[0].toUpperCase().includes(kw) ||
                 (o.location && o.location[1] && o.location[1].placeName && o.location[1].placeName[0]._.toUpperCase().includes(kw))));
+        if (this.currentItems.place.length === 0) {
+          this.noItems = true;
+        }
       }
 
+    },
+    filterPmbId(pmbId) {
+      this.noItems = false;
+      pmbId = pmbId.substring(4); //slice the leading '#pmb'
+
+      if (pmbId) {
+        if (this.categoryShort === 'p') {
+          this.currentItems.person = this.allItems.person.filter(p => (p.idno[0]._.includes(pmbId)));
+          if (this.currentItems.person.length === 0) {
+            this.noItems = true;
+          }
+        } else if (this.categoryShort === 'w') {
+          console.log(1)
+        } else if (this.categoryShort === 'i') {
+          this.currentItems.org = this.allItems.org.filter(o => (o.$['xml:id'].includes(pmbId)));
+          if (this.currentItems.org.length === 0) {
+            this.noItems = true;
+          }
+        } else if (this.categoryShort === 'o') {
+          this.currentItems.place = this.allItems.place.filter(o => (o.$['xml:id'].includes(pmbId)));
+          if (this.currentItems.place.length === 0) {
+            this.noItems = true;
+          }
+        }
+      }
     }
   },
   created() {
     this.setCategory();
+    this.query = this.$route.query;
   },
-  mounted() {
+  async mounted() {
     this.downloadRegistry();
+
+
   },
   watch: {
     $route() {
       this.setCategory();
       this.downloadRegistry();
       this.showDetails = false;
+      this.noItems = false;
+      this.keyword = null;
+    },
+    async allItems() {
+      if (this.query) {
+        this.filterPmbId(this.query.pmbId);
+
+      }
     }
   }
 }
@@ -685,4 +735,8 @@ export default {
   margin: 2rem;
 }
 
+.message {
+  margin: 5rem;
+
+}
 </style>

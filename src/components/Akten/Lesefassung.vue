@@ -357,7 +357,13 @@
 </template>
 
 <script>
-import {getCollectionOfObject, getEntity, getObjectWithId, getTransformedHtmlResource} from "../../services/ARCHEService";
+import {
+  getColArcheIdFromColXmlId,
+  getCollectionOfObject,
+  getEntity,
+  getObjectWithId,
+  getTransformedHtmlResource
+} from "../../services/ARCHEService";
 import {getObjectWithId as getPMBObjectWithId} from "../../services/PMBService";
 import {ARCHErdfQuery} from "arche-api/src";
 import EntitySpan from "./EntitySpan";
@@ -581,10 +587,7 @@ export default {
         comments.forEach(e => {
           const eBCR = e.getBoundingClientRect();
           if(eBCR.top === commentDiv.style.top){
-
-            console.log("inline collision")
             commentDiv.style.top = commentDiv.style.top + eBCR.height;
-
           }
         })
         comment.appendChild(commentDiv);
@@ -605,7 +608,6 @@ export default {
         curcomments.forEach(e => {
           const eBCR = e.getBoundingClientRect();
           if(e.style.top === commentDiv.style.top){
-            console.log("inline collision")
             commentDiv.style.top = `${parseInt(commentDiv.style.top.replace('px',''),10) + eBCR.height}px`
           }
         })
@@ -621,10 +623,6 @@ export default {
       });
     },
     createCommentDiv(event, rs, elem, type) {
-      console.log("creating comment: " + type)
-      // var dblock = document.getElementsByClassName("d-block").item(0);
-      //var rect = dblock.getBoundingClientRect();
-
       var div = document.createElement('div');
       div.className = "comment";
       div.style.color = "var(--text-black)";
@@ -651,7 +649,23 @@ export default {
 
       let self = this; //"this" cannot be used in JS functions
       div.onclick = function () {
-        let routeData = self.$router.resolve({name: "pReg", hash: event.pmbId});
+        let routeData = "";
+        if (type === 'person') {
+          routeData = self.$router.resolve({name: "pReg", query: {pmbId: event.pmbId} });
+        } else if (type === 'place') {
+          routeData = self.$router.resolve({name: "oReg", query: {pmbId: event.pmbId} });
+        } else if (type === 'institution') {
+          routeData = self.$router.resolve({name: "iReg", query: {pmbId: event.pmbId} });
+        } else if (type === 'work') {
+          let idx = event.pmbId.lastIndexOf('/');
+          let xmlId = event.pmbId.substring(idx +1) + '.xml';
+          getColArcheIdFromColXmlId(xmlId, rs => {
+            routeData = self.$router.resolve({name: "lesefassung", params: {id: rs} });
+            window.open(routeData.href, '_blank');
+          });
+
+        }
+
         window.open(routeData.href, '_blank');
       };
 
