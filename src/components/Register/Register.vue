@@ -487,7 +487,7 @@ export default {
       }
       return i;
     },
-    processWork(record) {
+    async processWork(record) {
       let w = {
         "title": "-",
         "author": "-",
@@ -510,9 +510,11 @@ export default {
         w.pmbID = xmlId;
         let id = xmlId.substring(3)
         w.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + id + "/detail";
-        getPMBObjectWithId(id, 'work', rs => {
+        await getPMBObjectWithId(id, 'work', rs => {
           let relations = [];
+          console.log(rs)
           rs.relations.works.forEach(w => {
+             console.log(w)
             relations.push(w.target);
           })
           w.relations = relations;
@@ -533,9 +535,9 @@ export default {
         item = this.processInstitutions(record);
       }
       if (this.categoryShort === 'w') {
-        item = this.processWork(record);
+        item = await this.processWork(record);
       }
-
+      console.log(item)
       this.details = item;
       this.showDetails = true;
     },
