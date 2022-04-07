@@ -20,7 +20,7 @@
     <ul v-if="showDocs && !this.case.currDocs">
       <div v-if="docsLoading">Loading....</div>
       <ul v-if="!docsLoading" style="padding-left: 0;">
-        <li class="obj" v-for="d in this.case.doc_objs" :key="d.id" v-on:click="navToLF(d)">{{ d.title }}</li>
+        <li>Keine weitere Aufschlüsselung</li>
       </ul>
     </ul>
     <ul v-if="showDocs && this.case.currDocs">
@@ -55,7 +55,12 @@ export default {
   methods: {
     toggleDocs() {
       this.showDocs = !this.showDocs;
+
       if (this.showDocs) {
+        if(this.category === 'w'){
+          this.docsLoading = false;
+          return;
+        }
         this.docsLoading = true;
         getColArcheIdFromColXmlId(this.case.id, rs => {
           this.caseIdArche = rs;
@@ -103,7 +108,6 @@ export default {
                     });
                   });
                 }
-
 
               });
             });

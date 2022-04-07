@@ -273,7 +273,7 @@
 <script>
 import {parseString} from "xml2js"
 import RegisterDetail from "./RegisterDetail";
-import {getObjectWithId as getPMBObjectWithId} from "../../services/PMBService";
+//import {getObjectWithId as getPMBObjectWithId} from "../../services/PMBService";
 
 export default {
   name: "Register",
@@ -510,15 +510,13 @@ export default {
         w.pmbID = xmlId;
         let id = xmlId.substring(6)
         w.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + id + "/detail";
-        getPMBObjectWithId(id, 'work', rs => {
+     /*   getPMBObjectWithId(id, 'work', rs => {
           let relations = [];
           rs.relations.works.forEach(w => {
             relations.push(w.target);
           })
           w.relations = relations;
-
-
-        });
+        });*/
 
       }
       return w;
