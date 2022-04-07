@@ -273,6 +273,7 @@
 <script>
 import {parseString} from "xml2js"
 import RegisterDetail from "./RegisterDetail";
+import {getObjectWithId as getPMBObjectWithId} from "../../services/PMBService";
 
 export default {
   name: "Register",
@@ -368,6 +369,7 @@ export default {
                 parseString(str, function (err, rs) {
                   self.currentItems = rs.TEI.text[0].body[0].listBibl[0];
                   self.allItems = JSON.parse(JSON.stringify(rs.TEI.text[0].body[0].listBibl[0]));
+                  console.log(self.allItems);
                 });
               })
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
@@ -508,10 +510,20 @@ export default {
         w.pmbID = xmlId;
         let id = xmlId.substring(6)
         w.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + id + "/detail";
+        getPMBObjectWithId(id, 'work', rs => {
+          let relations = [];
+          rs.relations.works.forEach(w => {
+            relations.push(w.target);
+          })
+          w.relations = relations;
+
+
+        });
+
       }
       return w;
     },
-    openDetails(record) {
+    async openDetails(record) {
       let item;
       if (this.categoryShort === 'p') {
         item = this.processPerson(record);
@@ -523,10 +535,11 @@ export default {
         item = this.processInstitutions(record);
       }
       if (this.categoryShort === 'w') {
-        item = this.processWork(record);
+       item = this.processWork(record);
       }
-      this.showDetails = true;
+
       this.details = item;
+      this.showDetails = true;
     },
     tableSortCompare(a, b, key) {
       if (key === 'persName') {
@@ -656,7 +669,10 @@ export default {
   },
   created() {
     this.setCategory();
-    this.query = this.$route.query;
+    if (this.query !== null) {
+      this.query = this.$route.query;
+    }
+
   },
   async mounted() {
     this.downloadRegistry();
@@ -672,7 +688,7 @@ export default {
       this.keyword = null;
     },
     async allItems() {
-      if (this.query) {
+      if (this.query !== null) {
         this.filterPmbId(this.query.pmbId);
 
       }

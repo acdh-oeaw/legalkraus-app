@@ -61,6 +61,10 @@
       <div>Titel: <b>{{ this.item.title }}</b></div>
       <div>Autor: <b>{{ this.item.author }}</b></div>
       <div>Datum:<b>{{ this.item.date }}</b></div>
+      <div>Enthalten in:
+        <div>{{this.item.relations}}</div>
+        <div v-for="r in this.item.relations" :key="r.id"><b>{{r.name}}</b></div>
+      </div>
       <div>PMB: <a v-bind:href="item.pmbURL" target="_blank">{{ this.item.title }}</a></div>
     </div>
     <div v-if="category==='i'" class="detail">
