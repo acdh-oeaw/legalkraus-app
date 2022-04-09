@@ -45,18 +45,18 @@
           <img class="embedded-img" :src="val.facs" alt="facsimile" v-on:click="navToLesefassung(val)">
           <div class="case-data scroll">
             <h6 class="card-title" v-on:click="navToLesefassung(val)"> Titel: <b>{{ val.title }}</b></h6>
-            <div class="a-s" v-if="val.actors.length > 0">
+            <span v-if="val.actors.length > 0">
               <p> <b>Beteiligte:</b> </p>
             <div class="pmb-link" v-for="a in val.actorObjs" :key="a.identifier" v-on:click="navToPMBActor($event, a)"><!--   v-on:click="navToPMB($event, a)"-->
                 {{ a.name }}
               </div>
-            </div>
+            </span>
             <div v-if="val.actors.length === 0">Beteiligte: -</div>
-            <div v-if="val.places.length > 0">
-              <p> <b>Orte:</b> </p>
+            <span v-if="val.places.length > 0">
+              <p class="p-s"> Orte:</p>
               <div class="pmb-link" v-for="pl in val.placeObjs" :key="pl.identifier" v-on:click="navToPMBPlace($event, pl)">
                 {{ pl.name }}</div>
-            </div>
+            </span>
             <div v-if="val.places.length === 0">Orte: -</div>
           </div>
         </div>
@@ -374,10 +374,16 @@ export default {
 .case-data {
   grid-column: 2/3;
   margin-top: 3rem;
+  text-align: left;
 }
 
 .card-title:hover {
   text-decoration: underline;
+}
+
+.card-title{
+  border-bottom: solid var(--primary-red) 5px;
+  padding-bottom: 0.5rem;
 }
 
 .card-deck {
@@ -394,8 +400,9 @@ export default {
   margin: 2rem;
 }
 
-.a-s{
-  padding-bottom: 2rem;
+.p-s{
+  padding-top: 2rem;
+  font-weight: bold;
 }
 
 .pmb-link:hover {
