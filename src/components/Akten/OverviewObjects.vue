@@ -337,7 +337,6 @@ export default {
 
             this.loading = false;
           }
-          console.log(objs)
           this.objects = objs
         });
 
