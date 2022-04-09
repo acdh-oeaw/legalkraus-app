@@ -507,8 +507,10 @@ export default {
       }
       if (record.$) {
         let xmlId = record.$['xml:id'];
+        console.log(xmlId)
         w.pmbID = xmlId;
         let id = xmlId.substring(3)
+        console.log(id)
         w.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + id + "/detail";
         await getPMBObjectWithId(id, 'work', rs => {
           let relations = [];
