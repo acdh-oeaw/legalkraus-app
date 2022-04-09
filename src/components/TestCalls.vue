@@ -53,7 +53,7 @@
     </div>
 
     <div class="card">
-      <h4 class="card-title">Example: Documents of Collection 37573 </h4>
+      <h4 class="card-title">Example: Documents of Collection 17822 </h4>
       <table>
         <tr>
           <th>Title</th>
@@ -285,7 +285,7 @@ export default {
       });
     });
 
-    getObjectsOfCollection(17822, (result) => {
+    getObjectsOfCollection(17839, (result) => {
       //37571
       this.objectsOfCollection = result;
     });
