@@ -45,16 +45,17 @@
           <img class="embedded-img" :src="val.facs" alt="facsimile" v-on:click="navToLesefassung(val)">
           <div class="case-data scroll">
             <h6 class="card-title" v-on:click="navToLesefassung(val)"> Titel: <b>{{ val.title }}</b></h6>
-            <div v-if="val.actors.length > 0">
-              <p>Beteiligte: </p>
-            <div class="actor" v-for="a in val.actorObjs" :key="a.identifier" v-on:click="navToPMB($event, a)"><!--   v-on:click="navToPMB($event, a)"-->
+            <div class="a-s" v-if="val.actors.length > 0">
+              <p> <b>Beteiligte:</b> </p>
+            <div class="pmb-link" v-for="a in val.actorObjs" :key="a.identifier" v-on:click="navToPMBActor($event, a)"><!--   v-on:click="navToPMB($event, a)"-->
                 {{ a.name }}
               </div>
             </div>
             <div v-if="val.actors.length === 0">Beteiligte: -</div>
             <div v-if="val.places.length > 0">
-              <p>Orte: </p>
-              <p v-for="pl in val.places" :key="pl.hasSpatialCoverage.object">{{ pl.hasSpatialCoverage.object }}</p>
+              <p> <b>Orte:</b> </p>
+              <div class="pmb-link" v-for="pl in val.placeObjs" :key="pl.identifier" v-on:click="navToPMBPlace($event, pl)">
+                {{ pl.name }}</div>
             </div>
             <div v-if="val.places.length === 0">Orte: -</div>
           </div>
@@ -225,8 +226,12 @@ export default {
     toggleView() {
       this.searchView = false;
     },
-    navToPMB(event, a) {
+    navToPMBActor(event, a) {
       let url = 'https://pmb.acdh.oeaw.ac.at/apis/entities/entity/person/' + a.id + '/detail'
+      window.open(url, '_blank').focus();
+    },
+    navToPMBPlace(event, pl){
+      let url = 'https://pmb.acdh.oeaw.ac.at/apis/entities/entity/place/' + pl.id + '/detail';
       window.open(url, '_blank').focus();
     }
   },
@@ -313,9 +318,23 @@ export default {
               });
             });
 
-            //console.log(o.actors.value[0].hasActor.object.substring(o.actors.value[0].hasActor.object.lastIndexOf('/')+1));
             //places
-            console.log(o.places)
+            o.placeObjs = [];
+            o.places.forEach(p => {
+              let id = p.hasSpatialCoverage.object.substring(p.hasSpatialCoverage.object.lastIndexOf('/') + 1);
+              getEntity(id, rs => {
+                for (var key in this.caseData.men_pl) {
+                  if (this.caseData.men_pl[key] === rs.title) {
+                    o.placeObjs.push({
+                      id: key.substring(3),
+                      name: this.caseData.men_pl[key]
+                    });
+                  }
+
+                }
+              });
+            });
+
             this.loading = false;
           }
           console.log(objs)
@@ -376,7 +395,11 @@ export default {
   margin: 2rem;
 }
 
-.actor:hover {
+.a-s{
+  padding-bottom: 2rem;
+}
+
+.pmb-link:hover {
   text-decoration: underline;
 }
 
