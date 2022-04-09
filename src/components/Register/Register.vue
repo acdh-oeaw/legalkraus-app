@@ -369,7 +369,6 @@ export default {
                 parseString(str, function (err, rs) {
                   self.currentItems = rs.TEI.text[0].body[0].listBibl[0];
                   self.allItems = JSON.parse(JSON.stringify(rs.TEI.text[0].body[0].listBibl[0]));
-                  console.log(self.allItems);
                 });
               })
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
@@ -507,16 +506,12 @@ export default {
       }
       if (record.$) {
         let xmlId = record.$['xml:id'];
-        console.log(xmlId)
         w.pmbID = xmlId;
         let id = xmlId.substring(3)
-        console.log(id)
         w.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + id + "/detail";
         await getPMBObjectWithId(id, 'work', rs => {
           let relations = [];
-          console.log(rs)
           rs.relations.works.forEach(w => {
-             console.log(w)
             relations.push(w.target);
           })
           w.relations = relations;
@@ -539,7 +534,6 @@ export default {
       if (this.categoryShort === 'w') {
         item = await this.processWork(record);
       }
-      console.log(item)
       this.details = item;
       this.showDetails = true;
     },
@@ -594,7 +588,6 @@ export default {
               w.title[0]._.startsWith(l));
         }
       } else if (this.categoryShort === 'i') {
-        console.log(this.allItems.org)
         if (l === 'Sonderzeichen') {
           this.currentItems.org = this.allItems.org.filter(i =>
               (i.orgName[0].charAt(0) < 'A' || i.orgName[0].charAt(0) > 'Z'));
@@ -653,8 +646,6 @@ export default {
           if (this.currentItems.person.length === 0) {
             this.noItems = true;
           }
-        } else if (this.categoryShort === 'w') {
-          console.log(1)
         } else if (this.categoryShort === 'i') {
           this.currentItems.org = this.allItems.org.filter(o => (o.$['xml:id'].includes(pmbId)));
           if (this.currentItems.org.length === 0) {
