@@ -41,10 +41,23 @@
     </div>
     <div class="cards-wrapper">
       <div v-if="!searchView" class="card-deck">
-        <div class="card" v-for="val in objects" v-bind:key="val.title" v-on:click="navToLesefassung(val)">
-          <h4 class="card-title"> {{ val.title }}</h4>
-          <p> {{ val.identifier }}</p>
-          <p> {{ val.url }}</p>
+        <div class="card" v-for="val in objects" v-bind:key="val.title">
+          <img class="embedded-img" :src="val.facs" alt="facsimile" v-on:click="navToLesefassung(val)">
+          <div class="case-data scroll">
+            <h6 class="card-title" v-on:click="navToLesefassung(val)"> Titel: <b>{{ val.title }}</b></h6>
+            <div v-if="val.actors.length > 0">
+              <p>Beteiligte: </p>
+            <div class="actor" v-for="a in val.actorObjs" :key="a.identifier" v-on:click="navToPMB($event, a)"><!--   v-on:click="navToPMB($event, a)"-->
+                {{ a.name }}
+              </div>
+            </div>
+            <div v-if="val.actors.length === 0">Beteiligte: -</div>
+            <div v-if="val.places.length > 0">
+              <p>Orte: </p>
+              <p v-for="pl in val.places" :key="pl.hasSpatialCoverage.object">{{ pl.hasSpatialCoverage.object }}</p>
+            </div>
+            <div v-if="val.places.length === 0">Orte: -</div>
+          </div>
         </div>
       </div>
       <div v-if="searchView" class="card-deck">
@@ -68,6 +81,7 @@
 import {getObjectsOfCollection, getObjectWithId} from "@/services/ARCHEService";
 import {ARCHErdfQuery} from "arche-api/src";
 import Search from "../Search";
+import {getEntity} from "../../services/ARCHEService";
 
 export default {
   name: "OverviewObjects",
@@ -83,6 +97,8 @@ export default {
       keyword: String,
       caseTitle: String,
       numberDocuments: Number,
+      xmlIdCase: null,
+      caseData: null,
       loading: true,
       path: String,
       searchView: false,
@@ -91,6 +107,7 @@ export default {
       catLower: String,
       subCatLower: String,
       categorySet: true,
+      caseInfo: null,
 
       r: 'Recht',
       k: 'Kultur',
@@ -207,15 +224,17 @@ export default {
     },
     toggleView() {
       this.searchView = false;
+    },
+    navToPMB(event, a) {
+      let url = 'https://pmb.acdh.oeaw.ac.at/apis/entities/entity/person/' + a.id + '/detail'
+      window.open(url, '_blank').focus();
     }
   },
   created() {
     this.colId = this.$route.params.id;
     this.path = this.$route.path;
     this.setCurrPageAndCategory();
-
-  },
-  mounted() {
+    this.caseInfo = this.$store.getters.caseInfo;
     if (isNaN(parseInt(this.colId)) || this.colId === -1) {
       this.$router.push({name: "home"});
       //todo: go to "home" when id-parameter is empty
@@ -229,40 +248,118 @@ export default {
         "expiry": 14
       };
 
-      /*const optionsSize = {
+      const optionsXmlId = {
+        "subject": null,
+        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier",
+        "object": null,
+        "expiry": 14
+      };
+
+      const optionsSize = {
         "subject": null,
         "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasNumberOfItems",
         "object": null,
         "expiry": 14
-      };*/
+      };
 
-      console.log(result)
       this.caseTitle = ARCHErdfQuery(optionsTitle, result).value[0].hasTitle.object;
-      //let documents = ARCHErdfQuery(optionsSize, result).value[0].hasNumberOfItems.object;
-     // let idx = documents.lastIndexOf('^');
-      //this.numberDocuments = documents.substring(0, idx - 1);
-      console.log(this.caseTitle);
-      //console.log(documents)
+      let xmlId = ARCHErdfQuery(optionsXmlId, result).value[1].hasIdentifier.object;
+      let documents = ARCHErdfQuery(optionsSize, result).value[0].hasNumberOfItems.object;
+
+      let idx1 = documents.lastIndexOf('^');
+      this.numberDocuments = documents.substring(0, idx1 - 1);
+
+      let idx2 = xmlId.lastIndexOf('/');
+      this.xmlIdCase = xmlId.substring(idx2 + 1) + '.xml';
+
+      this.caseInfo.then(data => {
+        const cases = data.cases;
+        cases.forEach(c => {
+          if (c.id === this.xmlIdCase)
+            this.caseData = c;
+        });
+
+        getObjectsOfCollection(this.colId, async (result) => {
+          let objs = result.filter(r => !r.identifier.includes('C_'));
+
+          //get facs preview, actors, places
+          for (const o of objs) {
+            //extract xml id
+            let id = o.identifier.substring(o.identifier.lastIndexOf('/') + 1);
+
+            //facs preview
+            this.caseData.doc_objs.forEach(d => {
+              if (d.id === id) {
+                o.facs = d.facs;
+              }
+            });
+
+            //actors
+            o.actorObjs = [];
+            o.actors.forEach(a => {
+              let id = a.hasActor.object.substring(a.hasActor.object.lastIndexOf('/') + 1);
+              getEntity(id, rs => {
+                for (var key in this.caseData.men_pers) {
+
+                  if (this.caseData.men_pers[key] === rs.title) {
+                    o.actorObjs.push({
+                      id: key.substring(3),
+                      name: this.caseData.men_pers[key]
+                    });
+
+                  }
+
+                }
+              });
+            });
+
+            //console.log(o.actors.value[0].hasActor.object.substring(o.actors.value[0].hasActor.object.lastIndexOf('/')+1));
+            //places
+            console.log(o.places)
+            this.loading = false;
+          }
+          console.log(objs)
+          this.objects = objs
+        });
+
+      });
+
     });
 
-    getObjectsOfCollection(this.colId, (result) => {
-      console.log(result)
-      this.objects = result;
-      this.loading = false;
-    });
-  }
-
+  },
 }
 </script>
 
 <style scoped>
 .card {
-  width: 25rem;
+  width: 30rem;
   height: 25rem;
   padding: 2rem;
   margin: auto;
   grid-column: auto;
+  display: grid;
+  grid-template-columns: 40% 60%;
+  grid-column-gap: 1rem;
+  background-color: var(--secondary-gray-light);
+}
+
+.scroll {
+  overflow-y: scroll;
+}
+
+.embedded-img {
+  grid-column: 1/2;
+  width: auto;
   cursor: pointer;
+}
+
+.case-data {
+  grid-column: 2/3;
+  margin-top: 3rem;
+}
+
+.card-title:hover {
+  text-decoration: underline;
 }
 
 .card-deck {
@@ -277,6 +374,10 @@ export default {
 
 .case-info {
   margin: 2rem;
+}
+
+.actor:hover {
+  text-decoration: underline;
 }
 
 .cards-wrapper {
