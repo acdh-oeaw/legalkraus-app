@@ -16,9 +16,12 @@
           //params: { category: currentCategory, label: item.label, id: item.id, item: item },
         }"
       >-->
-        <span   @click="toggle">
+        <router-link class="dd-item" :to="{ path: '/alle-akten', query: {filter:item.prefLabel || item.label || item.title} }">
+        <span @click="toggle">
+          
          {{item.prefLabel || item.label || item.title}} 
         </span> <span v-if="item.cases">({{item.cases.length}})</span>
+        </router-link>
         <!--</b-link
       >-->
     </div>
@@ -55,7 +58,7 @@ export default {
 
   computed: {
     isFolder() {
-      return this.item.children && this.item.children.length || this.item.cases && this.item.cases.length;
+      return this.item.children && this.item.children.length;
     },
     /*isActive() {
       return (
@@ -69,6 +72,7 @@ export default {
     },
     toggle() {
       if (this.isFolder) {
+        console.log(this)
         this.isOpen = !this.isOpen;
       }
     },

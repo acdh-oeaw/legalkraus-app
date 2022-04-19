@@ -12,6 +12,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import {downloadCaseInfo} from "./services/ARCHEService";
+import {processCaseInfo} from "./utils";
 
 export default {
   name: "App",
@@ -20,9 +21,11 @@ export default {
     Footer
   },
   created() {
-    let data = downloadCaseInfo();
-    this.$store.dispatch('setCaseInfo', data);
-    console.log(data);
+    downloadCaseInfo().then(data=>{
+      this.$store.dispatch('setCaseInfo', data);
+      processCaseInfo(data);
+    });
+    
   }
 };
 

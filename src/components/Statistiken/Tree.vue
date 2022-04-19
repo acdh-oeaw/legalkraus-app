@@ -1,7 +1,6 @@
 <template>
 
   <div class="text-left">
-
     <!-- <b-select
       v-model="selectedCategory"
       :options="selectOptions"
@@ -46,7 +45,6 @@ export default {
     },
   },
   mounted() {
-    console.log(this.treeData)
   }
 };
 </script>

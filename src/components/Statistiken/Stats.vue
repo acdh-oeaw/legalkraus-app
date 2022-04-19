@@ -1,43 +1,43 @@
 <template>
   <div class="container">
+   
     <div class="row">
       <div class="col-md-12">
+        <div v-if="this.$store.getters.vocabReady">
         <AreaChart
           :title="'Rechtsbereich'"
           :yAxisLabel="'Fälle'"
-          v-if="this.dataLoaded"
-          :chart-data="this.topConceptsCases['Rechtsbereich']"
+          :chart-data="this.$store.getters.getConceptWithCases('Rechtsbereich')"
         />
         <AreaChart
           :title="'Art der Akte / des Deliktes'"
           :yAxisLabel="'Fälle'"
-          v-if="this.dataLoaded"
-          :chart-data="this.topConceptsCases['Art der Akte / des Deliktes']"
+          :chart-data="this.$store.getters.getConceptWithCases('Art der Akte / des Deliktes')"
         />
         <AreaChart
           :title="'Delikttyp'"
           :yAxisLabel="'Fälle'"
-          v-if="this.dataLoaded"
-          :chart-data="this.topConceptsCases['Delikttyp']"
+          :chart-data="this.$store.getters.getConceptWithCases('Delikttyp')"
         />
         <AreaChart
           :title="'Ausgang / Ende des Verfahrens'"
           :yAxisLabel="'Fälle'"
-          v-if="this.dataLoaded"
-          :chart-data="this.topConceptsCases['Ausgang / Ende des Verfahrens']"
+          :chart-data="this.$store.getters.getConceptWithCases('Ausgang / Ende des Verfahrens')"
         />
-        <Tree
+         <Tree
         class="tree"
-          v-if="this.dataLoaded"
-          :tree-data="{ children: [this.topConceptsCases['Ausgehend von']] }"
+          :tree-data="{ children: [this.$store.getters.getConceptWithCases('Ausgehend von')] }"
         />
-        <Tree
+       <Tree
         class="tree"
-          v-if="this.dataLoaded"
           :tree-data="{
-            children: [this.additionalTreeData['Gerichtliche Institution']],
-          }"
+            children: [this.$store.getters.getGroupedCases('Gerichtliche Institution')]}"
         />
+
+        </div>
+        
+       
+        
         <Tree
         class="tree"
           v-if="this.dataLoaded"
@@ -55,7 +55,6 @@
 </template>
 
 <script>
-import { getVocab, getChildrenOfConcept } from "../../services/VocabsService";
 import Tree from "./Tree";
 import AreaChart from "./Chart";
 
@@ -74,7 +73,7 @@ export default {
     Tree,
   },
   mounted() {
-    this.$store.getters.caseInfo.then((data) => {
+    /*this.$store.getters.caseInfo.then((data) => {
 
       data.cases.map((cs) => {
         cs.org_actor.map((oa) => {
@@ -130,16 +129,14 @@ export default {
           this.casesForKeyword[kw]["cases"].push(cs);
         });
       });
-      getVocab().then((data) => {
-        /**------------------**/
+      /*getVocab().then((data) => {
         data.topconcepts.map(async (tc) => {
           this.getChildren(tc).then(() => {
             for (const [uri, concept] of Object.entries(
               this.$store.getters.vocabs
             )) {
               if (this.casesForKeyword[concept.prefLabel]) {
-                //this.concepts[uri].cases = [];
-
+                
                 this.$store.dispatch("updateConcept", {
                   uri: uri,
                   propname: "cases",
@@ -165,40 +162,11 @@ export default {
           ],
         };
       });
-    });
+    });*/
   },
   methods: {
-    getChildren(concept) {
-      this.$store.dispatch("addConcept", concept);
-
-      if (concept.hasChildren === true) {
-        return getChildrenOfConcept(concept.uri).then((data) => {
-          this.$store.dispatch("updateConcept", {
-            uri: concept.uri,
-            propname: "children",
-            propval: data.narrower,
-          });
-          data.narrower.forEach((c) => this.getChildren(c));
-        });
-      }
-    },
-    groupCasesByTopConcepts() {
-      Object.values(this.$store.getters.vocabs).forEach((c) => {
-        if (c.topConceptOf) {
-          this.topConceptsCases[c.label] = {};
-          this.getDesc(c, c.label);
-        }
-      });
-    },
-    getDesc(concept, label) {
-      if (concept.children) {
-        concept.children.forEach((child) => {
-          this.getDesc(child, label);
-        });
-      } else {
-        this.topConceptsCases[label] = concept;
-      }
-    },
+  
+    
   },
 };
 </script>

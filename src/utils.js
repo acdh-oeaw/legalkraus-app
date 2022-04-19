@@ -5,6 +5,8 @@ const {
     ARCHEdownloadResourceIdM2
 } = require("arche-api");
 
+const { getVocab, getChildrenOfConcept } = require('./services/VocabsService.js')
+
 const collections2view = (collections) => {
     const collectionViewData = [];
     collections.forEach(collection => {
@@ -109,8 +111,154 @@ const queryAndProcessMD = (archetype, baseurl, startPage, callback) => {
     });
 }
 
+const processCaseInfo = (caseInfo) => {
+
+    const groupedData = group(caseInfo);
+   
+
+    getVocab().then((data) => {
+        
+        data.topconcepts.map(async (tc) => {
+            getConceptChildren(tc).then(() => {
+                for (const [uri, concept] of Object.entries(
+                    store.default.getters.vocabs
+                )) {
+                    if (groupedData[concept.prefLabel]) {
+                        
+                        store.default.dispatch("updateConcept", {
+                            uri: uri,
+                            propname: "cases",
+                            propval: groupedData[concept.prefLabel],
+                        });
+                    }
+                }
+            });
+        });
+
+        
+        createListsFromCases(caseInfo)
+        store.default.dispatch("setVocabReady",true)
+        //groupCasesByTopConcepts();
+    })
+
+    
+}
+
+const createListsFromCases = (data) => {
+    let lists = {};
+    data.cases.map((cs) => {
+        cs.org_actor.map((oa) => {
+          if (!lists[oa.role_label]) {
+            lists[oa.role_label] = {
+              isTopElement: true,
+              label: oa.role_label,
+              children: [],
+            };
+          }
+          if (
+            lists[oa.role_label].children.filter(
+              (ch) => ch.title === oa.title
+            ).length === 0
+          ) {
+            lists[oa.role_label].children.push({
+              ...oa,
+              cases: [],
+            });
+          }
+          lists[oa.role_label].children
+            .filter((ch) => ch.title === oa.title)[0]
+            .cases.push(cs);
+        });
+
+        cs.actors.map((oa) => {
+          if (!lists[oa.role_label]) {
+           lists[oa.role_label] = {
+              isTopElement: true,
+              label: oa.role_label,
+              children: [],
+            };
+          }
+          if (
+            lists[oa.role_label].children.filter(
+              (ch) => ch.title === oa.title
+            ).length === 0
+          ) {
+            lists[oa.role_label].children.push({
+              ...oa,
+              cases: [],
+            });
+          }
+          lists[oa.role_label].children
+            .filter((ch) => ch.title === oa.title)[0]
+            .cases.push(cs);
+        });
+      
+      
+      });
+      store.default.dispatch("setGroupedCases",lists)
+}
+
+/*const groupCasesByTopConcepts = () => {
+    let topConceptsCases = {};
+    Object.values(store.default.getters.vocabs).forEach((c) => {
+        if (c.topConceptOf) {
+            topConceptsCases[c.label] = {};
+            getDesc(c, c.label);
+        }
+    });
+    store.default.dispatch('setTopConceptsCases',topConceptsCases)
+}
+
+const getDesc = (concept, label) => {
+    if (concept.children) {
+        concept.children.forEach((child) => {
+            this.getDesc(child, label);
+        });
+    } else {
+        //this.topConceptsCases[label] = concept;
+    }
+}*/
+
+const getConceptChildren = (concept) => {
+    store.default.dispatch("addConcept", concept);
+
+    if (concept.hasChildren === true) {
+        return getChildrenOfConcept(concept.uri).then((data) => {
+            store.default.dispatch("updateConcept", {
+                uri: concept.uri,
+                propname: "children",
+                propval: data.narrower,
+            });
+            data.narrower.forEach((c) => getConceptChildren(c));
+        });
+    }
+}
+
+
+
+
+const group = (items) => {
+    let grouped = {};
+
+
+    items['keywords'].map(gval => {
+        grouped[gval] = items.cases.filter(item => item['keywords'].indexOf(gval) !== -1)
+    })
+
+    Object.values(items['orgs']).map(gval => {
+        grouped[gval] = items.cases.filter(item => item.org_actor.filter(oa => oa.title === gval).length > 0)
+    })
+
+    Object.values(items['persons']).map(gval => {
+        grouped[gval] = items.cases.filter(item => item.actors.filter(oa => oa.title === gval).length > 0)
+    })
+
+    return grouped;
+}
+
 module.exports = {
     collections2view,
     //resources2view
-    queryAndProcessMD
+    queryAndProcessMD,
+    processCaseInfo
 }

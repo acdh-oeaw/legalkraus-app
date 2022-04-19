@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main v-if="this.$store.getters.vocabReady">
   
   <p class="navigation">Akten-Edition <span class="arrow">></span> Alle Akten</p>
   <div>{{this.$store.getters.noOfCollections}} Sammlungen</div>
@@ -12,7 +12,7 @@
       last-class="custompagingarrows"
       class="custom-pagination"
       v-model="currentPage"
-      :total-rows="this.$store.getters.noOfCollections"
+      :total-rows="this.$store.getters.caseInfo.cases.length"
       :per-page="perPage"
       aria-controls="col-table"
     ></b-pagination>
@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import {getCollections} from "@/services/ARCHEService";
+//import {getCollections} from "@/services/ARCHEService";
 
 export default {
   name: "OverviewAllCollections",
@@ -77,9 +77,10 @@ export default {
   methods: {
     getArcheCollections(ctx, callback)  { 
     const offset = ctx.currentPage === 1 ? 0 : (ctx.currentPage - 1) * ctx.perPage
-    getCollections(offset,(result) => {
+    callback(this.$store.getters.caseInfo.cases.slice(offset, offset + ctx.perPage))
+    /*getCollections(offset,(result) => {
       callback(result)
-    });
+    });*/
     
     },
     navToObjects: function (url) {
@@ -93,6 +94,7 @@ export default {
     }
   },
   mounted() {
+    
     /*getCollections((result) => {
       this.collections = result;
     });*/

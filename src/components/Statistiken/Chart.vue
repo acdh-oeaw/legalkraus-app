@@ -97,12 +97,11 @@ export default {
        return years;
    },
    series() {
-        
        let series = [];
        if (this.chartData.children) {
          
        this.chartData.children.forEach((item,idx)=>{
-           
+          
            let data = [];
            this.years.forEach(year => {
              data.push( item.cases ? item.cases.filter(cs => new Date(cs.start_date).getFullYear() === year).length : 0)

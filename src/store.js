@@ -22,7 +22,10 @@ export default new Vuex.Store({
         MDAllResources: null,
         MDAllCollections: null,
         caseInfo: null,
-        vocabs: {}
+        vocabs: {},
+        topConceptsCases:{},
+        vocabReady:false,
+        groupedCases: {}
         
     },
 
@@ -59,6 +62,18 @@ export default new Vuex.Store({
         },
         vocabs: state => {
             return state.vocabs;
+        },
+        topConceptsCases: state => {
+            return state.topConceptsCases
+        },
+        getConceptWithCases: (state) => (label) => {
+            return Object.values(state.vocabs).filter(concept => concept.label === label)[0]
+        },
+        vocabReady: state => {
+            return state.vocabReady
+        },
+        getGroupedCases: (state) => (groupingkey) => {
+            return state.groupedCases[groupingkey]
         }
     },
 
@@ -117,6 +132,15 @@ export default new Vuex.Store({
         },
         MUTATE_CONCEPT: (state,conceptinfo) => {
             Vue.set(state.vocabs[conceptinfo.uri],conceptinfo.propname,conceptinfo.propval);
+        },
+        MUTATE_TOP_CONCEPTS_CASES: (state,topconceptscases) => {
+            Vue.set(state.topConceptsCases, topconceptscases);
+        },
+        MUTATE_VOCAB_READY: (state,vocabready) => {
+            state.vocabReady = vocabready;
+        },
+        MUTATE_GROUPED_CASES: (state, groupedcases) => {
+            Vue.set(state, 'groupedCases', groupedcases);
         }
     },
 
@@ -162,6 +186,15 @@ export default new Vuex.Store({
         },
         updateConcept: (context, conceptinfo) => {
             context.commit('MUTATE_CONCEPT', conceptinfo);
+        },
+        setTopConceptsCases: (context, topconceptscases) => {
+            context.commit(' MUTATE_TOP_CONCEPTS_CASES', topconceptscases);
+        },
+        setVocabReady: (context, vocabready) => {
+            context.commit('MUTATE_VOCAB_READY', vocabready);
+        },
+        setGroupedCases: (context, groupedcases) => {
+            context.commit('MUTATE_GROUPED_CASES', groupedcases);
         }
     }
 });

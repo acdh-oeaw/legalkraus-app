@@ -70,6 +70,7 @@ export default new Router({
 
         {path: '/handschriftliches', component: OverviewObjects}, //todo: create page that loads objects with tag handschriftlich
         {path: '/alle-akten', component: OverviewAllCollections},
+        {path: '/alle-akten', component: OverviewAllCollections, props: route => ({ filter: route.query.filter })},   
         {path: '/alle-resourcen', component: OverviewAllResources},
         {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung},
 
