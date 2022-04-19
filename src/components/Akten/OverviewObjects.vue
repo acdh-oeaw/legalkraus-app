@@ -384,6 +384,7 @@ export default {
 .card-title{
   border-bottom: solid var(--primary-red) 5px;
   padding-bottom: 0.5rem;
+  margin-right: 1rem;
 }
 
 .card-deck {
