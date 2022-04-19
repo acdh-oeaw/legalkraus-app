@@ -1,25 +1,54 @@
 <template>
   <main>
     <div class="title">
-      <router-link class="logo-link" to="/">
-        RECHTSAKTEN <br> Karl Kraus
+      <router-link class="nav-link" to="/">
+        <p class="logo">RECHTSAKTEN</p>
+        <p class="logo">Karl Kraus</p>
       </router-link>
     </div>
 
     <div class="navigation">
       <p class="nav-el">
-        <b-dropdown id="dropdown-1" text="Projekt" class="m-md-2">
-          <b-dropdown-item>Projektinformation</b-dropdown-item>
-          <b-dropdown-item>Editionsrichtlinien</b-dropdown-item>
-          <b-dropdown-item>Projektteam</b-dropdown-item>
-          <b-dropdown-item>Publikationen</b-dropdown-item>
-          <b-dropdown-item>Benutzungshinweise</b-dropdown-item>
-          <b-dropdown-item>Lizenzen</b-dropdown-item>
-          <b-dropdown-item>Technische Dokumentation</b-dropdown-item>
+        <b-dropdown id="dropdown-1" text="Projekt" variant='none' class="m-md-2">
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/projektinformationen">
+              Projektinformation
+            </router-link>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/editionsrichtlinien">
+              Editionsrichtlinien
+            </router-link>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/projektteam">
+              Projektteam
+            </router-link>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/publikationen">
+              Publikationen
+            </router-link>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/benutzungshinweise">
+              Benutzungshinweise
+            </router-link>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/lizenzen">
+              Lizenzen
+            </router-link>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/dokumentation">
+              Technische Dokumentation
+            </router-link>
+          </b-dropdown-item>
         </b-dropdown>
       </p>
       <p class="nav-el">
-        <b-dropdown id="dropdown-2" text="Akten-Edition" class="m-md-2">
+        <b-dropdown id="dropdown-2" text="Akten-Edition"  variant='none' class="m-md-2">
           <b-dropdown-item>
             <router-link class="dd-item" to="/kultur">
               Kultur
@@ -45,26 +74,58 @@
               Alle Akten
             </router-link>
           </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/alle-resourcen">
+              Alle Dokumente
+            </router-link>
+          </b-dropdown-item>
         </b-dropdown>
       </p>
       <p class="nav-el">
-        <b-dropdown id="dropdown-3" text="Statistik" class="m-md-2">
+        <b-dropdown id="dropdown-3" text="Statistik"  variant='none' class="m-md-2">
           <b-dropdown-item>Zeitstrahl</b-dropdown-item>
           <b-dropdown-item>Fallstatistik</b-dropdown-item>
           <b-dropdown-item>Sonstiges</b-dropdown-item>
         </b-dropdown>
       </p>
       <p class="nav-el">
-        <b-dropdown id="dropdown-4" text="Register" class="m-md-2">
-          <b-dropdown-item>Personen</b-dropdown-item>
-          <b-dropdown-item>Orte</b-dropdown-item>
-          <b-dropdown-item>Institutionen</b-dropdown-item>
-          <b-dropdown-item>Werke</b-dropdown-item>
-          <b-dropdown-item>Juristische Texte</b-dropdown-item>
+        <b-dropdown id="dropdown-4" text="Register" variant="none" class="m-md-2">
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/register/personen">
+              Personen
+            </router-link>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/register/orte">
+              Orte
+            </router-link>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/register/institutionen">
+              Institutionen
+            </router-link>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/register/werke">
+              Werke
+            </router-link>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/register/juristische-texte">
+              Juristische Texte
+            </router-link>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <router-link class="dd-item" to="/register/fackel">
+              Fackel Texte
+            </router-link>
+          </b-dropdown-item>
         </b-dropdown>
       </p>
-      <button type="button" class="btn nav-el handapparat">Handapparat</button>
-      <button type="button" class="btn nav-el handapparat">How to use</button>
+      <button type="button" class="btn nav-el rounded-0">
+        <router-link router-link class="nav-link-ha" :to="'/handapparat'">Handapparat</router-link>
+      </button>
+      <button type="button" class="btn nav-el handapparat  rounded-0"  variant='none'>How to use</button>
     </div>
   </main>
 </template>
@@ -75,6 +136,15 @@ export default {
 }
 </script>
 
+<style>
+.navigation .btn {
+  font-weight:600 !important;
+}
+
+.navigation .dropdown-toggle::after {
+  display:none
+}
+</style>
 <style scoped>
 
 main {
@@ -83,7 +153,11 @@ main {
   display: grid;
   justify-content: space-between;
   grid-template-columns: auto auto auto auto auto;
-  margin-left: 2rem;
+  grid-template-rows: 6rem;
+  margin-left: 0;
+  border-bottom: solid 0.3rem var(--primary-red);
+  margin-bottom: 0;
+  padding-bottom: 0.1rem;
 }
 
 .navigation {
@@ -93,7 +167,7 @@ main {
 }
 
 .handapparat {
-  background-color: #6c757d;
+  background-color: #565149;
   color: white;
   border-radius: 0.25rem;
   font-size: 1rem !important;
@@ -102,8 +176,8 @@ main {
 
 .handapparat:hover {
   color: white;
-  background-color: #5c636a;
-  border-color: #565e64;
+  background-color: #565149;
+  border-color: #565149;
 }
 
 .title {
@@ -111,33 +185,42 @@ main {
   font-family: 'Open Sans', sans-serif;
   font-weight: 800;
   margin-top: 1rem;
+  margin-left: 2rem;
   margin-bottom: 2rem;
-  margin-left: 0;
-  border-top: 5px solid var(--primary-red);
+  border-top: 0.5rem solid var(--primary-red);
 }
 
-.logo-link {
+.nav-link {
   color: var(--text-gray);
 }
 
-.logo-link:link {
+.nav-link-ha {
+  color: var(--text-gray);
+}
+
+.nav-link:link, .nav-link-ha:link {
   text-decoration: none;
 }
 
-.logo-link:visited {
+.nav-link:visited, .nav-link-ha:visited {
   text-decoration: none;
 }
 
-.logo-link:hover {
+.nav-link:hover, .nav-link-ha:hover {
   text-decoration: none;
 }
 
-.logo-link:active {
+.nav-link:active, .nav-link-ha:active {
   text-decoration: none;
+}
+
+.logo {
+  margin-top: 0;
+  margin-bottom: 0;
+  text-align: left;
 }
 
 .nav-el {
-  font-size: 1.5rem;
   margin-top: auto;
   margin-bottom: auto;
   margin-right: 1rem;

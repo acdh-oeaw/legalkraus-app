@@ -1,10 +1,9 @@
 <template>
   <main>
   
-  <p class="navigation">Akten-Edition <span class="arrow">></span> Alle Akten</p>
-  <div>{{this.$store.getters.noOfCollections}} Sammlungen</div>
+  <p class="navigation">Alle Resourcen</p>
     <div class="card">
-  <b-pagination
+ <b-pagination
       page-class="custompaging"
       prev-class="custompagingarrows"
       next-class="custompagingarrows"
@@ -12,7 +11,7 @@
       last-class="custompagingarrows"
       class="custom-pagination"
       v-model="currentPage"
-      :total-rows="this.$store.getters.noOfCollections"
+      :total-rows="this.$store.getters.noOfResources"
       :per-page="perPage"
       aria-controls="col-table"
     ></b-pagination>
@@ -23,14 +22,10 @@
               label: 'Titel'
             },
             {
-              key: 'size',
-              label: 'Anzahl Dokumente'
-            },
-            {
               key: 'url',
               label: ''
             },
-          ]" :items="getArcheCollections">
+          ]" :items="getArcheResources" @row-clicked="navToObjects">
           <template #table-busy>
         <div class="text-center my-2">
           <b-spinner type="grow" class="align-middle"></b-spinner>
@@ -61,13 +56,12 @@
 </template>
 
 <script>
-import {getCollections} from "@/services/ARCHEService";
+import {getAllResources} from "@/services/ARCHEService";
 
 export default {
-  name: "OverviewAllCollections",
+  name: "OverviewAllResources",
   data: function () {
     return {
-      collections: [],
       isBusy: false,
       perPage: 10,
       currentPage: 1,
@@ -75,17 +69,20 @@ export default {
     }
   },
   methods: {
-    getArcheCollections(ctx, callback)  { 
+    getArcheResources(ctx, callback)  { 
+      console.log(this.currentPage);
     const offset = ctx.currentPage === 1 ? 0 : (ctx.currentPage - 1) * ctx.perPage
-    getCollections(offset,(result) => {
+    getAllResources(offset,(result) => {
       callback(result)
     });
     
     },
-    navToObjects: function (url) {
+    navToObjects: function (record) {
+      let url = record.url;
+      console.log(url);
       let id = this.getIdFromUrl(url)
       //this.$router.push({path: 'recht/objects/1'});
-      this.$router.push({name: "recht-objects", params: {id: id}});
+      this.$router.push({name: "lesefassung", params: {id: id}});
     },
     getIdFromUrl(url) {
       let idx = url.lastIndexOf('/');

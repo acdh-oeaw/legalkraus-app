@@ -1,51 +1,93 @@
 <template>
   <main>
+    <Search class="py-2" v-on:searchPerformed="searchPerformed($event)"></Search>
     <p class="navigation">Akten-Edition
       <span class="arrow">></span>
       <router-link router-link class="nav-link" :to="'/' + catLower">
         {{ this.category }}
       </router-link>
       <span class="arrow">></span>
-      {{ this.currPage }}
+      <span style="font-weight: bold">{{ this.currSubCat }}</span>
     </p>
-    <!--    <filter-component></filter-component>-->
-    <table class="table-bordered">
-      <tr>
-        <th>Title</th>
-        <th>Number of Documents</th>
-      </tr>
+    <div>{{ this.$store.getters.noOfCollections }} Sammlungen</div>
+    <div v-if="!searchView" class="card">
+      <b-pagination
+          page-class="custompaging"
+          prev-class="custompagingarrows"
+          next-class="custompagingarrows"
+          first-class="custompagingarrows"
+          last-class="custompagingarrows"
+          class="custom-pagination"
+          v-model="currentPage"
+          :total-rows="this.$store.getters.noOfCollections"
+          :per-page="perPage"
+          aria-controls="col-table"
+      ></b-pagination>
+      <b-table id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
+               :current-page="currentPage" :per-page="perPage"
+               :busy.sync="isBusy" :fields="[
+            {
+              key: 'title',
+              label: 'Titel'
+            },
+            {
+              key: 'size',
+              label: 'Anzahl Dokumente'
+            },
+            {
+              key: 'url',
+              label: ''
+            },
+          ]" :items="cases" @row-clicked="navToObjects">
+        <template #table-busy>
+          <div class="text-center my-2">
+            <b-spinner type="grow" class="align-middle"></b-spinner>
+            <strong>Loading...</strong>
+          </div>
+        </template>
+        <template #cell(url)="data">
+          <a target="_blank" rel="noopener noreferrer" :href="`${data.value}`">Daten in Arche</a>
+        </template>
+      </b-table>
+    </div>
+    <div v-if="searchView">
+      <p>{{ searchResultsCount }} Ergebnisse für "{{ keyword }}"</p>
+      <div v-for="item in searchResults" v-bind:key="item.key">
+        <SearchResultItem v-bind:item="item" v-on:nav-to-objects="navToObjects($event)"></SearchResultItem>
+      </div>
 
-      <tr v-for="collection in collections" v-bind:key="collection.val1"
-          v-on:click="navToObjects(collection.url.subject)">
-
-        <td>{{ collection.title }}</td>
-        <td>{{ collection.size }}</td>
-
-      </tr>
-
-
-    </table>
+    </div>
   </main>
 </template>
 
 <script>
 
-import FilterComponent from "./FilterComponent";
 import {getCollections} from "@/services/ARCHEService";
+import Search from "../Search";
+import SearchResultItem from "./SearchResultItem";
+import {getColArcheIdFromColXmlId} from "../../services/ARCHEService";
 
 export default {
   name: "OverviewCollections",
-  comments: {
-    'filter-component': FilterComponent
+  components: {
+    Search: Search,
+    SearchResultItem: SearchResultItem
   },
-
   data: function () {
     return {
       collections: [],
+      isBusy: false,
+      perPage: 10,
+      currentPage: 1,
+      searchView: false,
+      searchResults: [],
+      searchResultsCount: Number,
+      keyword: String,
       path: String,
-      currPage: String,
+      currSubCat: String,
       category: String,
       catLower: String,
+      cases: [],
       r: 'Recht',
       k: 'Kultur',
       p: 'Politik',
@@ -64,40 +106,36 @@ export default {
     }
   },
   methods: {
-    navToObjects: function (url) {
-      console.log(url);
-      console.log(this.currPage);
-      let id = this.getIdFromUrl(url);
-      //this.$router.push({path: 'recht/objects/1'});
-      if (this.currPage === this.pR) {
-        this.$router.push({name: "privatrecht-objects", params: {id: id}});
-      } else if (this.currPage === this.sR) {
-        this.$router.push({name: "strafrecht-objects", params: {id: id}});
-      } else if (this.currPage === this.vR) {
-        this.$router.push({name: "verwaltungsrecht-objects", params: {id: id}});
-      } else if (this.currPage === this.zR) {
-        this.$router.push({name: "zivilrecht-objects", params: {id: id}});
-      } else if (this.currPage === this.fK) {
-        this.$router.push({name: "fackel-objects", params: {id: id}});
-      } else if (this.currPage === this.tK) {
-        this.$router.push({name: "theater-objects", params: {id: id}});
-      } else if (this.currPage === this.vK) {
-        this.$router.push({name: "verlagswesen-objects", params: {id: id}});
-      } else if (this.currPage === this.pK) {
-        this.$router.push({name: "polemiken-objects", params: {id: id}});
-      } else if (this.currPage === this.sP) {
-        this.$router.push({name: "sozialdemokratie-objects", params: {id: id}});
-      } else if (this.currPage === this.cP) {
-        this.$router.push({name: "christlich-national-objects", params: {id: id}});
-      } else if (this.currPage === this.nP) {
-        this.$router.push({name: "nationalsozialismus-objects", params: {id: id}});
-      }
-
+    getArcheCollections(ctx, callback) {
+      const offset = ctx.currentPage === 1 ? 0 : (ctx.currentPage - 1) * ctx.perPage;
+      callback(this.cases.slice(offset, offset + ctx.perPage))
     },
-    getIdFromUrl(url) {
-      console.log(url);
-      let idx = url.lastIndexOf('/');
-      return url.substring(idx + 1);
+    navToObjects: async function (record) {
+      getColArcheIdFromColXmlId(record.id, async id => {
+        if (this.currSubCat === this.pR) {
+          this.$router.push({name: "privatrecht-objects", params: {id: id}});
+        } else if (this.currSubCat === this.sR) {
+          this.$router.push({name: "strafrecht-objects", params: {id: id}});
+        } else if (this.currSubCat === this.vR) {
+          this.$router.push({name: "verwaltungsrecht-objects", params: {id: id}});
+        } else if (this.currSubCat === this.zR) {
+          this.$router.push({name: "zivilrecht-objects", params: {id: id}});
+        } else if (this.currSubCat === this.fK) {
+          this.$router.push({name: "fackel-objects", params: {id: id}});
+        } else if (this.currSubCat === this.tK) {
+          this.$router.push({name: "theater-objects", params: {id: id}});
+        } else if (this.currSubCat === this.vK) {
+          this.$router.push({name: "verlagswesen-objects", params: {id: id}});
+        } else if (this.currSubCat === this.pK) {
+          this.$router.push({name: "polemiken-objects", params: {id: id}});
+        } else if (this.currSubCat === this.sP) {
+          this.$router.push({name: "sozialdemokratie-objects", params: {id: id}});
+        } else if (this.currSubCat === this.cP) {
+          this.$router.push({name: "christlich-national-objects", params: {id: id}});
+        } else if (this.currSubCat === this.nP) {
+          this.$router.push({name: "nationalsozialismus-objects", params: {id: id}});
+        }
+      });
     },
     setCurrPageAndCategory() {
       //category
@@ -112,29 +150,39 @@ export default {
       this.catLower = this.category.toString().toLowerCase();
       //currPage
       if (this.path.toString().includes('privatrecht')) {
-        this.currPage = this.pR;
+        this.currSubCat = this.pR;
       } else if (this.path.toString().includes('strafrecht')) {
-        this.currPage = this.sR;
+        this.currSubCat = this.sR;
       } else if (this.path.toString().includes('verwaltungsrecht')) {
-        this.currPage = this.vR;
+        this.currSubCat = this.vR;
       } else if (this.path.toString().includes('zivilrecht')) {
-        this.currPage = this.zR;
+        this.currSubCat = this.zR;
       } else if (this.path.toString().includes('fackel')) {
-        this.currPage = this.fK;
+        this.currSubCat = this.fK;
       } else if (this.path.toString().includes('theater')) {
-        this.currPage = this.tK;
+        this.currSubCat = this.tK;
       } else if (this.path.toString().includes('verlagswesen')) {
-        this.currPage = this.vK;
+        this.currSubCat = this.vK;
       } else if (this.path.toString().includes('polemiken')) {
-        this.currPage = this.pK;
+        this.currSubCat = this.pK;
       } else if (this.path.toString().includes('sozialdemokratie')) {
-        this.currPage = this.sP;
+        this.currSubCat = this.sP;
       } else if (this.path.toString().includes('christlich-national')) {
-        this.currPage = this.cP;
+        this.currSubCat = this.cP;
       } else if (this.path.toString().includes('nationalsozialismus')) {
-        this.currPage = this.nP;
+        this.currSubCat = this.nP;
       }
-    }
+    },
+    async searchPerformed(event) {
+      if (event.keyword === "") {
+        this.searchView = false;
+        return;
+      }
+      this.searchView = true;
+      this.searchResults = event.searchResults;
+      this.searchResultsCount = event.searchResults.length;
+      this.keyword = event.keyword;
+    },
   },
   created() {
     this.path = this.$route.path;
@@ -142,10 +190,36 @@ export default {
 
   },
   mounted() {
-    getCollections((result) => {
-      console.log(result);
-      this.collections = result;
-    });
+    if (this.category && this.currSubCat === "Die großen Polemiken") {
+      const caseInfo = this.$store.getters.caseInfo;
+      caseInfo.then(data => {
+        const cases = data.cases;
+        cases.forEach(c => {
+          if (c.keywords.includes("Schober, 15. Juli 1927" || "Die Stunde, Békessy" || "Berliner Tageblatt, Kerr, Wolff")) {
+            c.size = c.docs.length;
+            this.cases.push(c);
+          }
+        });
+        this.$store.dispatch("setNoOfCollections", this.cases.length)
+      });
+    } else if (this.category) {
+      const caseInfo = this.$store.getters.caseInfo;
+      caseInfo.then(data => {
+        const cases = data.cases;
+        cases.forEach(c => {
+          if (c.keywords.includes(this.currSubCat)) {
+            c.size = c.docs.length;
+            this.cases.push(c);
+          }
+        });
+        this.$store.dispatch("setNoOfCollections", this.cases.length)
+
+      });
+    } else {
+      getCollections(0, (result) => {
+        this.collections = result;
+      });
+    }
   }
 }
 
@@ -153,18 +227,9 @@ export default {
 
 <style scoped>
 main {
-  /*display: flex;
-  justify-content: center;*/
-  display: grid;
-  grid-gap: 2rem;
   margin-left: 1rem;
   margin-right: 1rem;
   padding-left: 2rem;
-}
-
-.table-bordered {
-  align-self: center;
-  width: 100%;
 }
 
 .navigation {
@@ -172,7 +237,7 @@ main {
 }
 
 .arrow {
-  color: #C85545;
+  color: var(--primary-red);
 }
 
 .nav-link {

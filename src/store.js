@@ -15,6 +15,13 @@ export default new Vuex.Store({
             work: false,
             quote: false,
         },
+        noOfCollections: null,
+        collectionPageSize: 10,
+        noOfResource: null,
+        resourcePageSize: 10,
+        MDAllResources: null,
+        MDAllCollections: null,
+        caseInfo: null
         
     },
 
@@ -27,6 +34,27 @@ export default new Vuex.Store({
         },
         highlighter: state => {
             return state.highlighter
+        },
+        noOfCollections: state => {
+            return state.noOfCollections
+        },
+        collectionPageSize: state => {
+            return state.collectionPageSize
+        },
+        noOfResources: state => {
+            return state.noOfResources
+        },
+        resourcePageSize: state => {
+            return state.resourcePageSize
+        },
+        MDAllResources: state => {
+            return state.MDAllResources;
+        },
+        MDAllCollections: state => {
+            return state.MDAllCollections;
+        },
+        caseInfo: state => {
+            return state.caseInfo;
         }
     },
 
@@ -35,7 +63,8 @@ export default new Vuex.Store({
             Vue.set(state, 'linebreaks', linebreaks);
         },
         MUTATE_SELECTED_PAGE: (state, selectedPage) => {
-            Vue.set(state, 'selectedPage', selectedPage);
+            //Vue.set(state, 'selectedPage', selectedPage);
+            state.selectedPage = selectedPage;
         },
         MUTATE_SELECTED_PAGE_INCREMENT: (state) => {
             state.selectedPage++
@@ -54,6 +83,27 @@ export default new Vuex.Store({
             state.highlighter.law = b.highlightbool;
             state.highlighter.work = b.highlightbool;
             state.highlighter.quote = b.highlightbool;
+        },
+        MUTATE_NOOFCOLLECTIONS: (state, noofcollections) => {
+            Vue.set(state, 'noOfCollections', noofcollections);
+        },
+        MUTATE_NOOFRESOURCES: (state, noofresources) => {
+            Vue.set(state, 'noOfResources', noofresources);
+        },
+        MUTATE_COLLECTION_PAGE_SIZE: (state, collectionpagesize) => {
+            Vue.set(state, 'collectionPageSize', collectionpagesize);
+        },
+        MUTATE_RESOURCE_PAGE_SIZE: (state, resourcepagesize) => {
+            Vue.set(state, 'resourcePageSize', resourcepagesize);
+        },
+        MUTATE_MD_ALL_RESOURCES: (state, mdallresources) => {
+            Vue.set(state, 'MDAllResources', mdallresources);
+        },
+        MUTATE_MD_ALL_COLLECTIONS: (state, mdallcollections) => {
+            Vue.set(state, 'MDAllCollections', mdallcollections);
+        },
+        MUTATE_CASEINFO: (state, caseInfo) => {
+            Vue.set(state, 'caseInfo', caseInfo)
         }
     },
 
@@ -68,7 +118,6 @@ export default new Vuex.Store({
             context.commit('MUTATE_SELECTED_PAGE_DECREMENT');
         },
         pageNext: (context) => {
-            console.log('here')
             context.commit('MUTATE_SELECTED_PAGE_INCREMENT');
         },
         updateHighlighter: (context, highlight) => {
@@ -76,6 +125,21 @@ export default new Vuex.Store({
         },
         updateAllHighlighters: (context, b) => {
             context.commit('MUTATE_All_HIGHLIGHTERS', b)
+        },
+        setNoOfCollections: (context, noofcollections) => {
+            context.commit('MUTATE_NOOFCOLLECTIONS', noofcollections)
+        },
+        setNoOfResources: (context, noofresources) => {
+            context.commit('MUTATE_NOOFRESOURCES', noofresources)
+        },
+        setMDAllResources: (context, mdallresources) => {
+            context.commit('MUTATE_MD_ALL_RESOURCES', mdallresources)
+        },
+        setMDAllCollections: (context, mdallcollections) => {
+            context.commit('MUTATE_MD_ALL_COLLECTIONS', mdallcollections)
+        },
+        setCaseInfo: (context, caseInfo) => {
+            context.commit('MUTATE_CASEINFO', caseInfo);
         }
     }
 });

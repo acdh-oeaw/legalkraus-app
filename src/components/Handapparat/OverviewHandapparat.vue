@@ -1,18 +1,17 @@
 <template>
   <main>
-    <p class="navigation">Akten-Edition <span class="arrow">></span> <span style="font-weight: bold">Recht</span></p>
+    <p class="navigation">Handapparat <span class="arrow">></span></p>
+
+
     <div class="grid-container">
       <button type="button" class="item">
-        <router-link class="nav-link" to="/recht/privatrecht/collections">Privatrecht</router-link>
+        <router-link class="nav-link" to="/handapparat/boehm">Böhm Edition</router-link>
       </button>
       <button type="button" class="item">
-        <router-link class="nav-link" to="/recht/strafrecht/collections">Strafrecht</router-link>
+        <router-link class="nav-link" to="/handapparat/beitraege">Beiträge</router-link>
       </button>
       <button type="button" class="item">
-        <router-link class="nav-link" to="/recht/verwaltungsrecht/collections">Verwaltungsrecht</router-link>
-      </button>
-      <button type="button" class="item">
-        <router-link class="nav-link" to="/recht/zivilrecht/collections">Zivilrecht</router-link>
+        <router-link class="nav-link" to="/handapparat/oskar-samek">Oskar Samek</router-link>
       </button>
     </div>
   </main>
@@ -25,11 +24,6 @@ export default {
 </script>
 
 <style scoped>
-main {
-  display: grid;
-  grid-gap: 2rem;
-}
-
 .grid-container {
   display: grid;
   grid-gap: 2rem;
@@ -44,6 +38,17 @@ main {
   border-radius: 0.25rem;
   border: transparent;
   padding: 0.5rem;
+}
+
+
+.navigation {
+  margin-left: 1rem;
+  text-align: left;
+  padding-left: 2rem;
+}
+
+.arrow {
+  color: var(--primary-red);
 }
 
 .nav-link {
@@ -66,15 +71,5 @@ main {
   text-decoration: none;
 }
 
-
-.navigation {
-  margin-left: 1rem;
-  text-align: left;
-  padding-left: 2rem;
-}
-
-.arrow {
-  color: #C85545;
-}
 
 </style>

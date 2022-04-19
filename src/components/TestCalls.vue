@@ -18,8 +18,8 @@
             {{ val.dateOfCreation }}
           </td>
           <td>
-            <div v-for="subject in val.subjects" v-bind:key="subject.object">
-              {{ subject.object }}
+            <div v-for="subject in val.subjects" v-bind:key="subject.hasSubject.object">
+              {{ subject.hasSubject.object }}
             </div>
           </td>
 
@@ -53,7 +53,7 @@
     </div>
 
     <div class="card">
-      <h4 class="card-title">Example: Documents of Collection 37573 </h4>
+      <h4 class="card-title">Example: Documents of Collection 17822 </h4>
       <table>
         <tr>
           <th>Title</th>
@@ -67,7 +67,7 @@
             {{ val.title }}
           </td>
           <td>
-            {{ val.url.subject }}
+            {{ val.url }}
           </td>
           <td> {{val.identifier}}</td>
         </tr>
@@ -79,7 +79,6 @@
       <table>
         <tr>
           <th>Title</th>
-          <th>URL</th>
           <th>Identifier</th>
 
         </tr>
@@ -88,9 +87,6 @@
           <td>
             {{ val.title }}
           </td>
-          <td>
-            {{ val.url.subject }}
-          </td>
           <td> {{val.identifier}}</td>
         </tr>
       </table>
@@ -98,8 +94,8 @@
 
     <div class="card">
       <h4 class="card-title">Example: Metadata</h4>
-      <p class="meta_data" v-for="item in archeMetaData" :key="item" :item="item">
-        {{ item.object }}
+      <p class="meta_data">
+        {{ archeMetaData }}
       </p>
     </div>
 
@@ -108,7 +104,13 @@
 
 <script>
 import {ARCHEdownloadResourceIdM, ARCHErdfQuery} from "arche-api/src";
-import {getObjectWithId, getMetaData, getCollections, getObjectsOfCollection, getAllObjects} from "../services/ARCHEService";
+import {
+  getCollectionOfObject,
+  getCollections,
+  getMetaData,
+  getObjectsOfCollection,
+  getObjectWithId
+} from "../services/ARCHEService";
 
 
 function extractPredicateAndObjectAsJSONfromRDF(queryJson) {
@@ -116,9 +118,8 @@ function extractPredicateAndObjectAsJSONfromRDF(queryJson) {
   for (let i = 0; i < queryJson.length; i++) {
     let indexHT = queryJson[i].predicate.indexOf("#");
     const p = queryJson[i].predicate.substring(indexHT + 1);
-    const o = queryJson[i].object;
     //console.log(queryJson[i].predicate.substring(indexHT+1) + ": " + queryJson[i].object);
-    tempMetaData[p] = o;
+    tempMetaData[p] = queryJson[i].object;
   }
   return tempMetaData;
 }
@@ -233,43 +234,70 @@ export default {
     },
   },
   mounted() {
-    //this.getMetaData().call(this);
-    //this.getCollections().call(this);
-    //this.getMetaData();
-    //this.getCollections();
-    //this.getObject(37598)
     getCollections((result) => {
       //let queryJson = ARCHErdfQuery(null, null, null, result);
       this.archeCollections = result;
     });
     getMetaData((result) => {
-      let queryJson = ARCHErdfQuery(null, null, null, result);
-      this.archeMetaData = queryJson;//extractPredicateAndObjectAsJSONfromRDF(queryJson);
+      const options = {
+        "subject": null,
+        "predicate": null,
+        "object": null,
+        "expiry": 14
+      };
+      let queryJson = ARCHErdfQuery(options, result);
+      this.archeMetaData = queryJson.value;
     });
 
-    getObjectWithId(37598, (result) => {
-      let title = ARCHErdfQuery(null, "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle", null, result);
-      let dateCreation = ARCHErdfQuery(null, "https://vocabs.acdh.oeaw.ac.at/schema#hasCreatedStartDate", null, result);
-      let subjects = ARCHErdfQuery(null, "https://vocabs.acdh.oeaw.ac.at/schema#hasSubject", null, result);
+    getObjectWithId(24060, (result) => {
+
+      // query:
+      const optionsTitle = {
+        "subject": null,
+        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle",
+        "object": null,
+        "expiry": 14
+      };
+
+      const optionsDateCreation = {
+        "subject": null,
+        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasCoverageStartDate",
+        "object": null,
+        "expiry": 14
+      };
+
+      const optionsSubjects = {
+        "subject": null,
+        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasSubject",
+        "object": null,
+        "expiry": 14
+      };
+      let title = ARCHErdfQuery(optionsTitle, result);
+      let dateCreation = ARCHErdfQuery(optionsDateCreation, result);
+      let subjects = ARCHErdfQuery(optionsSubjects, result);
 
       //console.log(extractPredicateAndObjectAsJSONfromRDF(queryJson));
       this.objectData.push({
         rdf: result,
-        title: title[0].object.substring(0, title[0].object.length - 3),
-        dateOfCreation: dateCreation[0].object.substring(0, 10),
-        subjects: subjects
+        title: title.value[0].hasTitle.object,
+        dateOfCreation: dateCreation.value[0].hasCoverageStartDate.object.substring(0, 10),
+        subjects: subjects.value
       });
     });
 
-    getObjectsOfCollection(37573, (result) => {
+    getObjectsOfCollection(17839, (result) => {
       //37571
       this.objectsOfCollection = result;
     });
 
-    getAllObjects((result) => {
+    getCollectionOfObject(24060, (rs) => {
+      console.log(rs);
+    })
+
+   /* getAllObjects((result) => {
       //let queryJson = ARCHErdfQuery(null, null, null, result);
       this.allObjects = result;
-    });
+    });*/
 
   }
 };
