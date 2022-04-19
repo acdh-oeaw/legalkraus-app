@@ -1,14 +1,40 @@
 <template>
   <main>
     <Search class="py-2" v-on:searchPerformed="searchPerformed($event)"></Search>
-    <p class="navigation">Akten-Edition
-      <span class="arrow">></span>
-      <router-link router-link class="nav-link" :to="'/' + catLower">
-        {{ this.category }}
-      </router-link>
-      <span class="arrow">></span>
-      <span style="font-weight: bold">{{ this.currSubCat }}</span>
-    </p>
+    <div class="filter-nav">
+      <p class="navigation">Akten-Edition
+        <span class="arrow">></span>
+        <router-link router-link class="nav-link" :to="'/' + catLower">
+          {{ this.category }}
+        </router-link>
+        <span class="arrow">></span>
+        <span style="font-weight: bold">{{ this.currSubCat }}</span>
+      </p>
+      <div class="filters">
+        <div class="searchPers">
+        <input class="vt-titel" placeholder="Person:" list="persons" v-model="kwP" @keyup.enter="setCurrPers(kwP)"/>
+        <datalist id="persons">
+          <option v-for="pers in this.allPersons" :key="pers.key" :value="pers.value">{{ pers.value }}</option>
+        </datalist>
+        </div>
+        <span class="lbls">
+        <div class="lbl" v-for="pers in currPersons" :key="pers.key">{{ pers.value }}
+          <svg v-on:click="removePers(pers.key)" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+               fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+  <path
+      d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+</svg></div>
+      </span>
+
+        <div class="reset-filter">
+        <button type="button" class="btn btn-secondary btn-sm" v-on:click="resetFilter">Filter zurücksetzen</button>
+        </div>
+
+        <input class="vt-titel" type="text" placeholder="Fall-Titel:" v-model="kw"
+               @keyup="filterTitleByKeyword(kw)"/>
+      </div>
+    </div>
     <div>{{ this.$store.getters.noOfCollections }} Sammlungen</div>
     <div v-if="!searchView" class="card">
       <b-pagination
@@ -38,7 +64,7 @@
               key: 'url',
               label: ''
             },
-          ]" :items="cases" @row-clicked="navToObjects">
+          ]" :items="currCases" @row-clicked="navToObjects">
         <template #table-busy>
           <div class="text-center my-2">
             <b-spinner type="grow" class="align-middle"></b-spinner>
@@ -52,6 +78,7 @@
     </div>
     <div v-if="searchView">
       <p>{{ searchResultsCount }} Ergebnisse für "{{ keyword }}"</p>
+      <button type="button" class="btn btn-secondary btn-sm" v-on:click="toggleView">Zurück zur Übersicht</button>
       <div v-for="item in searchResults" v-bind:key="item.key">
         <SearchResultItem v-bind:item="item" v-on:nav-to-objects="navToObjects($event)"></SearchResultItem>
       </div>
@@ -83,11 +110,17 @@ export default {
       searchResults: [],
       searchResultsCount: Number,
       keyword: String,
+      kw: null,
+      kwP: [],
       path: String,
       currSubCat: String,
       category: String,
       catLower: String,
       cases: [],
+      currCases: [],
+      caseInfo: [],
+      allPersons: [],
+      currPersons: [],
       r: 'Recht',
       k: 'Kultur',
       p: 'Politik',
@@ -183,6 +216,58 @@ export default {
       this.searchResultsCount = event.searchResults.length;
       this.keyword = event.keyword;
     },
+    filterTitleByKeyword(keyword) {
+      this.currCases = this.cases.filter(c => c.title.toUpperCase().includes(keyword.toUpperCase()));
+    },
+    setCurrPers(kwP) {
+      //get key of person and add person to this.currPersons
+      for (var key in this.allPersons) {
+        if (this.allPersons[key].value === kwP) {
+          //check if person is already in this.currPersons
+          if (!this.currPersons.filter(p => p.key === this.allPersons[key].key).length > 0) {
+            //remove leading '#' from key
+            this.currPersons.push({'key': this.allPersons[key].key.substring(1), 'value': this.allPersons[key].value});
+          }
+        }
+      }
+      console.log(this.currPersons)
+
+      this.filterPers();
+
+    },
+    filterPers() {
+      //extract cases that contain all persons in this.currPerson
+      let temp = [];
+      this.cases.forEach(c => {
+        let containsAll = true;
+        this.currPersons.forEach(p => {
+          if (!c.men_pers[p.key]) {
+            containsAll = false;
+          }
+        });
+        if (containsAll === true) {
+          temp.push(c)
+        }
+      });
+      this.currCases = temp;
+      this.kwP = null;
+    },
+    toggleView() {
+      this.searchView = !this.searchView;
+    },
+    resetFilter() {
+      this.currCases = this.cases;
+    },
+    removePers(key) {
+      for (let i = 0; i < this.currPersons.length; i++) {
+        if (this.currPersons[i].key === key) {
+          this.currPersons = this.currPersons.filter(p => p.key !== key);
+        }
+      }
+      console.log(this.currPersons)
+      this.filterPers();
+
+    },
   },
   created() {
     this.path = this.$route.path;
@@ -190,26 +275,39 @@ export default {
 
   },
   mounted() {
+    this.caseInfo = this.$store.getters.caseInfo;
     if (this.category && this.currSubCat === "Die großen Polemiken") {
-      const caseInfo = this.$store.getters.caseInfo;
-      caseInfo.then(data => {
+      this.caseInfo.then(data => {
+        for (var name in data.persons) {
+          let p = {};
+          p.key = name;
+          p.value = data.persons[name];
+          this.allPersons.push(p);
+        }
         const cases = data.cases;
         cases.forEach(c => {
           if (c.keywords.includes("Schober, 15. Juli 1927" || "Die Stunde, Békessy" || "Berliner Tageblatt, Kerr, Wolff")) {
             c.size = c.docs.length;
             this.cases.push(c);
+            this.currCases.push(c)
           }
         });
         this.$store.dispatch("setNoOfCollections", this.cases.length)
       });
     } else if (this.category) {
-      const caseInfo = this.$store.getters.caseInfo;
-      caseInfo.then(data => {
+      this.caseInfo.then(data => {
+        for (var name in data.persons) {
+          let p = {};
+          p.key = name;
+          p.value = data.persons[name];
+          this.allPersons.push(p);
+        }
         const cases = data.cases;
         cases.forEach(c => {
           if (c.keywords.includes(this.currSubCat)) {
             c.size = c.docs.length;
             this.cases.push(c);
+            this.currCases.push(c)
           }
         });
         this.$store.dispatch("setNoOfCollections", this.cases.length)
@@ -220,6 +318,8 @@ export default {
         this.collections = result;
       });
     }
+    console.log(this.cases)
+
   }
 }
 
@@ -249,5 +349,40 @@ main {
 
 .nav-link:hover {
   color: #C85545;
+}
+
+.filter-nav {
+  background-color: var(--secondary-gray-meta);
+  border-bottom: solid var(--primary-red) 0.3rem;
+}
+
+.vt-titel {
+  margin: 2rem;
+  grid-column: 2/3;
+  grid-row: 2/3;
+}
+
+.lbl {
+  background-color: var(--primary-red);
+  color: var(--text-white);
+  border-radius: 1.25rem;
+  width: fit-content;
+  padding: 0.1rem 0.3rem;
+  margin-left: 0.5rem;
+
+}
+.lbls{
+  grid-row: 3/4;
+  display: inline-flex;
+  grid-column: 1/4;
+}
+.filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(5rem, auto)) ;
+  grid-template-rows: auto auto auto;
+}
+.reset-filter{
+  grid-row: 2/3;
+  grid-column: 3/4;
 }
 </style>

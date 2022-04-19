@@ -60,7 +60,7 @@
       </div>
       <div class="vl meta7"></div>
       <div class="meta8">
-        <input class="vt-suche" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
+        <input class="vt-titel" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
         <button type="button" class="btn vt-button" data-search="next" v-on:click="highlightNext()">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                class="bi bi-arrow-down-short" viewBox="0 0 16 16">
@@ -215,7 +215,7 @@
           </div>
 
           <div class="vt-container">
-            <input class="vt-suche" type="text" placeholder="Volltextsuche:" v-model="keyword"
+            <input class="vt-titel" type="text" placeholder="Volltextsuche:" v-model="keyword"
                    @keyup="highlight(keyword)"/>
             <button type="button" class="btn vt-button" data-search="next" v-on:click="highlightNext()">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -957,7 +957,7 @@ export default {
   display: inline-flex;
 }
 
-.vt-suche {
+.vt-titel {
   padding: 0.375rem 0.375rem;
   margin-right: 2rem;
   border-radius: 0.25rem;

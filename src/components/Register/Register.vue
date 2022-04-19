@@ -9,7 +9,7 @@
       <div class="abc">
         <p class="l" :id="l" v-for="l in abc" :key="l" v-on:click="filterLetter(l)">{{ l }}</p>
       </div>
-      <input class="vt-suche" type="text" placeholder="Volltextsuche:" v-model="keyword"
+      <input class="vt-titel" type="text" placeholder="Volltextsuche:" v-model="keyword"
              @keyup="filterKeyword(keyword)"/>
     </div>
     <div v-if="noItems" class="message">KEIN TREFFER</div>
@@ -740,7 +740,7 @@ export default {
   font-weight: bold;
 }
 
-.vt-suche {
+.vt-titel {
   margin: 2rem;
 }
 
