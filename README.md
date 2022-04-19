@@ -1,4 +1,4 @@
-#Projekt
+# Projekt
 This is the Legalkraus project, implemented as VueJS Application.
 
 # install dependencies
