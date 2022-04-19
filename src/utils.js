@@ -114,7 +114,7 @@ const queryAndProcessMD = (archetype, baseurl, startPage, callback) => {
 const processCaseInfo = (caseInfo) => {
 
     const groupedData = group(caseInfo);
-   
+
 
     getVocab().then((data) => {
         
@@ -249,9 +249,9 @@ const group = (items) => {
         grouped[gval] = items.cases.filter(item => item.org_actor.filter(oa => oa.title === gval).length > 0)
     })
 
-    Object.values(items['persons']).map(gval => {
+    /*Object.values(items['persons']).map(gval => {
         grouped[gval] = items.cases.filter(item => item.actors.filter(oa => oa.title === gval).length > 0)
-    })
+    })*/
 
     return grouped;
 }

@@ -34,6 +34,7 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 
 export default new Router({
+    mode: 'history',
     routes: [
         {path: '/test', component: Test},
         {path: '/', name: 'home', component: Main},

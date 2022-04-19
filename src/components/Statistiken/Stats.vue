@@ -26,29 +26,32 @@
         />
          <Tree
         class="tree"
+          :filterprop ="'keyword'"
           :tree-data="{ children: [this.$store.getters.getConceptWithCases('Ausgehend von')] }"
         />
        <Tree
         class="tree"
+        :filterprop ="'org_actor-role_label:Gerichtliche Institution'"
           :tree-data="{
             children: [this.$store.getters.getGroupedCases('Gerichtliche Institution')]}"
         />
-
+        <Tree
+        class="tree"
+          :filterprop = "'actors-role_label:Vertreter (Ankläger / Anklägerin)'"
+          :tree-data="{
+            children: [this.$store.getters.getGroupedCases('Vertreter (Ankläger / Anklägerin)')]}"
+        />
+        <Tree
+        class="tree"
+        :filterprop = "'actors-role_label:Vertreter (Angeklagter / Angeklagte)'"
+          :tree-data="{
+            children: [this.$store.getters.getGroupedCases('Vertreter (Angeklagter / Angeklagte)')]}"
+        />
         </div>
         
        
         
-        <Tree
-        class="tree"
-          v-if="this.dataLoaded"
-          :tree-data="{
-            children: [
-              this.additionalTreeData[
-                'Vertreter (Ankläger / Anklägerin) / Vertreter (Angeklagter / Angeklagte)'
-              ],
-            ],
-          }"
-        />
+       
       </div>
     </div>
   </div>
@@ -73,96 +76,6 @@ export default {
     Tree,
   },
   mounted() {
-    /*this.$store.getters.caseInfo.then((data) => {
-
-      data.cases.map((cs) => {
-        cs.org_actor.map((oa) => {
-          if (!this.additionalTreeData[oa.role_label]) {
-            this.additionalTreeData[oa.role_label] = {
-              isTopElement: true,
-              label: oa.role_label,
-              children: [],
-            };
-          }
-          if (
-            this.additionalTreeData[oa.role_label].children.filter(
-              (ch) => ch.title === oa.title
-            ).length === 0
-          ) {
-            this.additionalTreeData[oa.role_label].children.push({
-              ...oa,
-              cases: [],
-            });
-          }
-          this.additionalTreeData[oa.role_label].children
-            .filter((ch) => ch.title === oa.title)[0]
-            .cases.push(cs);
-        });
-
-        cs.actors.map((oa) => {
-          if (!this.additionalTreeData[oa.role_label]) {
-            this.additionalTreeData[oa.role_label] = {
-              isTopElement: true,
-              label: oa.role_label,
-              children: [],
-            };
-          }
-          if (
-            this.additionalTreeData[oa.role_label].children.filter(
-              (ch) => ch.title === oa.title
-            ).length === 0
-          ) {
-            this.additionalTreeData[oa.role_label].children.push({
-              ...oa,
-              cases: [],
-            });
-          }
-          this.additionalTreeData[oa.role_label].children
-            .filter((ch) => ch.title === oa.title)[0]
-            .cases.push(cs);
-        });
-
-        cs.keywords.map((kw) => {
-          if (!this.casesForKeyword[kw]) {
-            this.casesForKeyword[kw] = { cases: [] };
-          }
-          this.casesForKeyword[kw]["cases"].push(cs);
-        });
-      });
-      /*getVocab().then((data) => {
-        data.topconcepts.map(async (tc) => {
-          this.getChildren(tc).then(() => {
-            for (const [uri, concept] of Object.entries(
-              this.$store.getters.vocabs
-            )) {
-              if (this.casesForKeyword[concept.prefLabel]) {
-                
-                this.$store.dispatch("updateConcept", {
-                  uri: uri,
-                  propname: "cases",
-                  propval: this.casesForKeyword[concept.prefLabel].cases,
-                });
-              }
-            }
-          });
-        });
-        this.groupCasesByTopConcepts();
-        this.dataLoaded = true;
-        this.additionalTreeData[
-          "Vertreter (Ankläger / Anklägerin) / Vertreter (Angeklagter / Angeklagte)"
-        ] = {
-          isTopElement: true,
-          label:
-            "Vertreter (Ankläger / Anklägerin) / Vertreter (Angeklagter / Angeklagte)",
-          children: [
-            ...this.additionalTreeData["Vertreter (Ankläger / Anklägerin)"]
-              .children,
-            ...this.additionalTreeData["Vertreter (Angeklagter / Angeklagte)"]
-              .children,
-          ],
-        };
-      });
-    });*/
   },
   methods: {
   
@@ -174,4 +87,5 @@ export default {
 .container {
   grid-template-columns: unset;
 }
+
 </style>

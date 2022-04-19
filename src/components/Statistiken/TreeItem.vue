@@ -16,12 +16,18 @@
           //params: { category: currentCategory, label: item.label, id: item.id, item: item },
         }"
       >-->
-        <router-link class="dd-item" :to="{ path: '/alle-akten', query: {filter:item.prefLabel || item.label || item.title} }">
+        
+        <span v-if="!isFolder">
+        <router-link class="dd-item" :to="{ path: '/alle-akten', query: {filter:filterprop + '.' + (item.prefLabel || item.label || item.title)} }">
         <span @click="toggle">
-          
          {{item.prefLabel || item.label || item.title}} 
         </span> <span v-if="item.cases">({{item.cases.length}})</span>
         </router-link>
+        </span>
+         <span v-else>
+          <span @click="toggle">
+         {{item.prefLabel || item.label || item.title}} 
+        </span> <span v-if="item.cases">({{item.cases.length}})</span></span>
         <!--</b-link
       >-->
     </div>
@@ -31,6 +37,7 @@
         v-for="(child, index) in item.children"
         :key="index"
         :item="child"
+        :filterprop="filterprop"
       ></tree-item>
     </div>
   </div>
@@ -44,6 +51,7 @@ export default {
   name: "TreeItem",
   props: {
     item: Object,
+    filterprop: String
   },
   /*  components: {
     Icon,
@@ -72,7 +80,6 @@ export default {
     },
     toggle() {
       if (this.isFolder) {
-        console.log(this)
         this.isOpen = !this.isOpen;
       }
     },
@@ -90,7 +97,11 @@ export default {
   cursor: pointer;
 }
 
-.root {
+.root > span > span {
   font-weight:bold;
+}
+
+a {
+  color: #000;
 }
 </style>
