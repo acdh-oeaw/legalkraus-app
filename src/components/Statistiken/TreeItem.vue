@@ -3,9 +3,7 @@
     <div
       :class="{
         pointer: true,
-        menuEntry: true,
-        'mb-3':  isOpen,
-        'font-weight-bold':isOpen
+        menuEntry: true
       }"
     >
     
@@ -17,8 +15,8 @@
         }"
       >-->
         
-        <span v-if="!isFolder">
-        <router-link class="dd-item" :to="{ path: '/alle-akten', query: {filter:filterprop + '.' + (item.prefLabel || item.label || item.title)} }">
+        <span v-if="!isFolder || isFilter">
+        <router-link class="dd-item" :to="{ path: '/alle-akten', query: {filter:filterprop + '-' + this.category +  '.' + (item.prefLabel || item.label || item.title)} }">
         <span @click="toggle">
          {{item.prefLabel || item.label || item.title}} 
         </span> <span v-if="item.cases">({{item.cases.length}})</span>
@@ -34,10 +32,13 @@
     <div  v-show="isOpen"> 
       <tree-item
         class="item pl-5 pb-1"
+        :class="{'active': isActive}"
         v-for="(child, index) in item.children"
         :key="index"
         :item="child"
+        :isFilter="isFilter"
         :filterprop="filterprop"
+        :category ="category"
       ></tree-item>
     </div>
   </div>
@@ -51,7 +52,9 @@ export default {
   name: "TreeItem",
   props: {
     item: Object,
-    filterprop: String
+    filterprop: String,
+    isFilter: Boolean,
+    category:String
   },
   /*  components: {
     Icon,
@@ -59,14 +62,26 @@ export default {
   data() {
     
     return {
-      isOpen: this.item.topConceptOf || this.item.isTopElement || false,
       treeData: [],
+      isOpen: true
     };
   },
 
   computed: {
     isFolder() {
       return this.item.children && this.item.children.length;
+    },
+    label() {
+      return this.item.label || this.item.prefLabel || this.item.title
+    },
+    isActive() {
+      
+      return this.$route.query.filter ? this.$route.query.filter.split(".").reverse()[0] === this.label : false
+      
+    },
+    hasActiveChild() {
+      console.log(this.item.children)
+      return this.item.children  ?  this.item.children.map(child=>child.isActive === true).length > -1 : false 
     },
     /*isActive() {
       return (
@@ -103,5 +118,10 @@ export default {
 
 a {
   color: #000;
+}
+
+a.router-link-exact-active {
+  color: var(--primary-red-dark);
+  font-weight:600;
 }
 </style>

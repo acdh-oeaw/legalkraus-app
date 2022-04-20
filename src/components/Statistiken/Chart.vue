@@ -80,7 +80,7 @@ export default {
             return `
               ${this.name} 
               
-              <a class="legend-link" href="/alle-akten?filter=keyword.${this.name}">&#8594</a>`
+              <a class="legend-link" href="/alle-akten?filter=keyword-${this.chart.title.textStr}.${this.name}">&#8594</a>`
             ;
           },
         },

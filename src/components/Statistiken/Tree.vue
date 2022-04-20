@@ -14,7 +14,9 @@
         v-for="(child, idx) in treeData.children"
         :key="`c${idx}`"
         class="item mb-3 root"
+        :isFilter="isFilter"
         :item="child"
+        :category="title"
         :filterprop="filterprop"
         @make-folder="makeFolder"
       ></tree-item>
@@ -26,7 +28,7 @@
 import TreeItem from "./TreeItem.vue";
 export default {
   name: "Tree",
-  props: ["treeData","filterprop"],
+  props: ["treeData","filterprop", "isFilter","title"],
   components: {
     TreeItem,
   },
@@ -50,5 +52,7 @@ export default {
 };
 </script>
 <style>
-
+.root > div > span {
+ font-weight:bold;
+}
 </style>

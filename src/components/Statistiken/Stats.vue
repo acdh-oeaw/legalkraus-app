@@ -26,23 +26,27 @@
         />
          <Tree
         class="tree"
+        :title="'Ausgehend von'"
           :filterprop ="'keyword'"
           :tree-data="{ children: [this.$store.getters.getConceptWithCases('Ausgehend von')] }"
         />
        <Tree
         class="tree"
+        :title="''"
         :filterprop ="'org_actor-role_label:Gerichtliche Institution'"
           :tree-data="{
             children: [this.$store.getters.getGroupedCases('Gerichtliche Institution')]}"
         />
         <Tree
         class="tree"
+          :title="''"
           :filterprop = "'actors-role_label:Vertreter (Ankläger / Anklägerin)'"
           :tree-data="{
             children: [this.$store.getters.getGroupedCases('Vertreter (Ankläger / Anklägerin)')]}"
         />
         <Tree
         class="tree"
+        :title="'Vertreter (Angeklagter / Angeklagte)'"
         :filterprop = "'actors-role_label:Vertreter (Angeklagter / Angeklagte)'"
           :tree-data="{
             children: [this.$store.getters.getGroupedCases('Vertreter (Angeklagter / Angeklagte)')]}"
@@ -87,5 +91,7 @@ export default {
 .container {
   grid-template-columns: unset;
 }
+
+
 
 </style>
