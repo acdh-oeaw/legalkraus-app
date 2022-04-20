@@ -1,6 +1,5 @@
 <template>
   <main>
-    <Search class="py-2" v-on:searchPerformed="searchPerformed($event)"></Search>
     <div class="filter-nav">
       <p class="navigation">Akten-Edition
         <span class="arrow">></span>
@@ -12,11 +11,18 @@
       </p>
       <div class="filters">
         <div class="searchPers">
-        <input class="vt-titel" placeholder="Person:" list="persons" v-model="kwP" @keyup.enter="setCurrPers(kwP)"/>
+        <input class="vt vtp" placeholder="Person:" list="persons" v-model="kwP" @keyup.enter="setCurrPers(kwP)"/>
         <datalist id="persons">
           <option v-for="pers in this.allPersons" :key="pers.key" :value="pers.value">{{ pers.value }}</option>
         </datalist>
         </div>
+        <div class="searchOrgs">
+          <input class="vt vto" placeholder="Institution:" list="orgs" v-model="kwO" @keyup.enter="setCurrOrgs(kwO)"/>
+          <datalist id="orgs">
+            <option v-for="org in this.allOrgs" :key="org.key" :value="org.value">{{ org.value }}</option>
+          </datalist>
+        </div>
+        <Search class="py-2 vt" v-on:searchPerformed="searchPerformed($event)"></Search>
         <span class="lbls">
         <div class="lbl" v-for="pers in currPersons" :key="pers.key">{{ pers.value }}
           <svg v-on:click="removePers(pers.key)" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -25,13 +31,20 @@
   <path
       d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
 </svg></div>
+          <div class="lbl" v-for="org in currOrgs" :key="org.key">{{ org.value }}
+          <svg v-on:click="removeOrg(org.key)" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+               fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+  <path
+      d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+</svg></div>
       </span>
 
         <div class="reset-filter">
-        <button type="button" class="btn btn-secondary btn-sm" v-on:click="resetFilter">Filter zurücksetzen</button>
+        <button type="button" class="btn btn-secondary btn-sm reset-button" v-on:click="resetFilter">Filter zurücksetzen</button>
         </div>
 
-        <input class="vt-titel" type="text" placeholder="Fall-Titel:" v-model="kw"
+        <input class="vt vtt" type="text" placeholder="Fall-Titel:" v-model="kw"
                @keyup="filterTitleByKeyword(kw)"/>
       </div>
     </div>
@@ -112,6 +125,7 @@ export default {
       keyword: String,
       kw: null,
       kwP: [],
+      kwO: [],
       path: String,
       currSubCat: String,
       category: String,
@@ -120,7 +134,9 @@ export default {
       currCases: [],
       caseInfo: [],
       allPersons: [],
+      allOrgs: [],
       currPersons: [],
+      currOrgs: [],
       r: 'Recht',
       k: 'Kultur',
       p: 'Politik',
@@ -230,12 +246,24 @@ export default {
           }
         }
       }
-      console.log(this.currPersons)
 
-      this.filterPers();
+      this.filterAll();
 
     },
-    filterPers() {
+    setCurrOrgs(kwO){
+      //get key of person and add person to this.currPersons
+      for (var key in this.allOrgs) {
+        if (this.allOrgs[key].value === kwO) {
+          //check if person is already in this.currPersons
+          if (!this.currOrgs.filter(o => o.key === this.allOrgs[key].key).length > 0) {
+            //remove leading '#' from key
+            this.currOrgs.push({'key': this.allOrgs[key].key.substring(1), 'value': this.allOrgs[key].value});
+          }
+        }
+      }
+      this.filterAll();
+    },
+    filterAll() {
       //extract cases that contain all persons in this.currPerson
       let temp = [];
       this.cases.forEach(c => {
@@ -245,17 +273,27 @@ export default {
             containsAll = false;
           }
         });
+        this.currOrgs.forEach(o => {
+          if (!c.men_orgs[o.key]) {
+            containsAll = false;
+          }
+        });
         if (containsAll === true) {
           temp.push(c)
         }
       });
       this.currCases = temp;
       this.kwP = null;
+      this.kwO = null
     },
     toggleView() {
       this.searchView = !this.searchView;
     },
     resetFilter() {
+      this.currOrgs = [];
+      this.currPersons = [];
+      this.kwP = null;
+      this.kwO = null;
       this.currCases = this.cases;
     },
     removePers(key) {
@@ -264,10 +302,17 @@ export default {
           this.currPersons = this.currPersons.filter(p => p.key !== key);
         }
       }
-      console.log(this.currPersons)
-      this.filterPers();
+      this.filterAll();
 
     },
+    removeOrg(key){
+      for (let i = 0; i < this.currOrgs.length; i++) {
+        if (this.currOrgs[i].key === key) {
+          this.currOrgs = this.currOrgs.filter(o => o.key !== key);
+        }
+      }
+      this.filterAll();
+    }
   },
   created() {
     this.path = this.$route.path;
@@ -283,6 +328,12 @@ export default {
           p.key = name;
           p.value = data.persons[name];
           this.allPersons.push(p);
+        }
+        for (var orgKey in data.orgs) {
+          let o = {};
+          o.key = orgKey;
+          o.value = data.orgs[orgKey];
+          this.allOrgs.push(o);
         }
         const cases = data.cases;
         cases.forEach(c => {
@@ -302,6 +353,14 @@ export default {
           p.value = data.persons[name];
           this.allPersons.push(p);
         }
+
+        for (var orgKey in data.orgs) {
+          let o = {};
+          o.key = orgKey;
+          o.value = data.orgs[orgKey];
+          this.allOrgs.push(o);
+        }
+
         const cases = data.cases;
         cases.forEach(c => {
           if (c.keywords.includes(this.currSubCat)) {
@@ -356,8 +415,11 @@ main {
   border-bottom: solid var(--primary-red) 0.3rem;
 }
 
-.vt-titel {
+.vt {
   margin: 2rem;
+}
+
+.vtt{
   grid-column: 2/3;
   grid-row: 2/3;
 }
@@ -369,6 +431,7 @@ main {
   width: fit-content;
   padding: 0.1rem 0.3rem;
   margin-left: 0.5rem;
+  margin-bottom: 0.5rem;
 
 }
 .lbls{
@@ -384,5 +447,14 @@ main {
 .reset-filter{
   grid-row: 2/3;
   grid-column: 3/4;
+}
+
+.py-2{
+  grid-row: 1/2;
+  grid-column: 3/4;
+}
+.reset-button{
+  padding: 0.375rem 0.375rem;
+  margin: 2rem;
 }
 </style>
