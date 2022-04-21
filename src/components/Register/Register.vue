@@ -516,6 +516,16 @@ export default {
           })
           w.relations = relations;
         });
+      }
+      if (record.listEvent) {
+        let docs =[];
+        record.listEvent[0].event.forEach(e => {
+          let url = e.linkGrp[0].link[0].$.target;
+          let idx = url.lastIndexOf('/');
+          let id = url.substring(idx+1);
+          docs.push(id);
+        });
+        w.docs = docs;
 
       }
       return w;

@@ -449,6 +449,23 @@ export default {
     }
   },
   methods: {
+    async highlightQueryOnMounted(q) {
+      let men_id = document.getElementsByClassName("#" + q);
+
+      //if class not found: go to next page until found
+      while (this.facsURLs.length > this.selectedPage) {
+        //there is at least one more page
+        this.next();
+        await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
+        men_id = document.getElementsByClassName("#" + q);
+        if (men_id.length > 0) {
+          //found next mark; reset idxCurrMark
+          this.idxCurrMark = 0;
+          break;
+        }
+      }
+      men_id.item(0).classList.add("current-mark");
+    },
     async highlightOnMounted(keyword) {
       var self = this;
       keyword = keyword.replace("\"", "?"); //markJS cannot detect quotes from our data
@@ -570,6 +587,9 @@ export default {
     childMounted() {
       if (this.keyword) {
         this.highlightOnMounted(this.keyword);
+      }
+      if(this.$route.query.q){
+        this.highlightQueryOnMounted(this.$route.query.q);
       }
     },
     async childToParent(event) {
@@ -785,6 +805,7 @@ export default {
     if (this.$route.params.subcat === "Die Fackel") {
       this.$route.params.subcat = "Fackel"
     }
+
   },
   mounted() {
     getCollectionOfObject(this.objectId, (rs) => {
