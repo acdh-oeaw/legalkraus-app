@@ -23,6 +23,8 @@
           </datalist>
         </div>
         <Search class="py-2 vt" v-on:searchPerformed="searchPerformed($event)"></Search>
+        <input class="vt vty" type="number" placeholder="Bis Jahr:" v-model="kwY"
+               @keyup="filterAll()"/>
         <span class="lbls">
         <div class="lbl" v-for="pers in currPersons" :key="pers.key">{{ pers.value }}
           <svg v-on:click="removePers(pers.key)" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -44,8 +46,8 @@
         <button type="button" class="btn btn-secondary btn-sm reset-button" v-on:click="resetFilter">Filter zurücksetzen</button>
         </div>
 
-        <input class="vt vtt" type="text" placeholder="Fall-Titel:" v-model="kw"
-               @keyup="filterTitleByKeyword(kw)"/>
+        <input class="vt vtt" type="text" placeholder="Fall-Titel:" v-model="kwT"
+               @keyup="filterAll()"/>
       </div>
     </div>
     <div>{{ this.$store.getters.noOfCollections }} Sammlungen</div>
@@ -123,9 +125,10 @@ export default {
       searchResults: [],
       searchResultsCount: Number,
       keyword: String,
-      kw: null,
+      kwT: null,
       kwP: [],
       kwO: [],
+      kwY: null,
       path: String,
       currSubCat: String,
       category: String,
@@ -232,9 +235,6 @@ export default {
       this.searchResultsCount = event.searchResults.length;
       this.keyword = event.keyword;
     },
-    filterTitleByKeyword(keyword) {
-      this.currCases = this.cases.filter(c => c.title.toUpperCase().includes(keyword.toUpperCase()));
-    },
     setCurrPers(kwP) {
       //get key of person and add person to this.currPersons
       for (var key in this.allPersons) {
@@ -264,7 +264,7 @@ export default {
       this.filterAll();
     },
     filterAll() {
-      //extract cases that contain all persons in this.currPerson
+      //extract cases that contain all persons in this.currPerson and all orgs in this.currOrgs and match title and year
       let temp = [];
       this.cases.forEach(c => {
         let containsAll = true;
@@ -278,6 +278,16 @@ export default {
             containsAll = false;
           }
         });
+        if(this.kwT){
+          if(!(c.title.toUpperCase().includes(this.kwT.toUpperCase()))){
+            containsAll = false;
+          }
+        }
+        if(this.kwY){
+          if(!(parseInt(c.start_date.substring(0,4))< this.kwY)){
+            containsAll = false;
+          }
+        }
         if (containsAll === true) {
           temp.push(c)
         }
@@ -294,6 +304,8 @@ export default {
       this.currPersons = [];
       this.kwP = null;
       this.kwO = null;
+      this.kwY = null;
+      this.kwT = null;
       this.currCases = this.cases;
     },
     removePers(key) {
@@ -416,12 +428,23 @@ main {
 }
 
 .vt {
+  display: flex;
   margin: 2rem;
+  font-size: inherit;
 }
 
 .vtt{
+  display: flex;
   grid-column: 2/3;
   grid-row: 2/3;
+  width: fit-content;
+}
+
+.vty{
+  display: flex;
+  grid-column: 1/2;
+  grid-row: 2/3;
+  width: fit-content;
 }
 
 .lbl {
@@ -445,15 +468,20 @@ main {
   grid-template-rows: auto auto auto;
 }
 .reset-filter{
+  display: flex;
   grid-row: 2/3;
   grid-column: 3/4;
 }
 
 .py-2{
+  display: flex;
   grid-row: 1/2;
   grid-column: 3/4;
+  padding: 0;
+  margin-left:0;
 }
 .reset-button{
+  display: flex;
   padding: 0.375rem 0.375rem;
   margin: 2rem;
 }
