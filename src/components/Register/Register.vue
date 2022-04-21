@@ -9,7 +9,7 @@
       <div class="abc">
         <p class="l" :id="l" v-for="l in abc" :key="l" v-on:click="filterLetter(l)">{{ l }}</p>
       </div>
-      <input class="vt-suche" type="text" placeholder="Volltextsuche:" v-model="keyword"
+      <input class="vt" type="text" placeholder="Volltextsuche:" v-model="keyword"
              @keyup="filterKeyword(keyword)"/>
     </div>
     <div v-if="noItems" class="message">KEIN TREFFER</div>
@@ -516,6 +516,16 @@ export default {
           })
           w.relations = relations;
         });
+      }
+      if (record.listEvent) {
+        let docs =[];
+        record.listEvent[0].event.forEach(e => {
+          let url = e.linkGrp[0].link[0].$.target;
+          let idx = url.lastIndexOf('/');
+          let id = url.substring(idx+1);
+          docs.push(id);
+        });
+        w.docs = docs;
 
       }
       return w;
@@ -740,7 +750,7 @@ export default {
   font-weight: bold;
 }
 
-.vt-suche {
+.vt {
   margin: 2rem;
 }
 
