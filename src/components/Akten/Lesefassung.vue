@@ -438,7 +438,10 @@ export default {
           ...mapGetters({
             selectedPage: 'selectedPage',
             highlighter: 'highlighter'
-          })
+          }),
+          currentFacsUrl() {
+              return this.$parent.getCurrentFacs();
+          },
         },
         methods: {
           navigateTo(pmbId, type, event) {

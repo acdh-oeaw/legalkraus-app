@@ -50,13 +50,17 @@
    <xsl:template match="tei:TEI[//tei:pb]">
         <xsl:variable name="result">
             <xsl:for-each select="//tei:pb">
+                <xsl:variable name="facs">
+                    <xsl:value-of select="@facs"/>
+                </xsl:variable>
+                <xsl:variable name="facsUrl" select=".//root()//*[@xml:id=$facs]//tei:graphic[@source='wienbibliothek']/@url"/>
                 <xsl:variable name="nextPb" select="current()/following::tei:pb[1]"/>
                 <div>
                     <xsl:if test="count(current()/following::*[@rend=('leftMargin','marginLeft')][. &lt;&lt; $nextPb]) > 0">
                         <xsl:attribute name="class" select="'addPadding'"/>
                     </xsl:if>
                     <xsl:attribute name="v-bind:class">
-                        <xsl:value-of select="'{ ''d-block'': selectedPage ==='||position()||', ''d-none'':selectedPage!=='||position()||'}'"/>
+                        <xsl:value-of select="'{ ''d-block'': currentFacsUrl ==='''||$facsUrl||''', ''d-none'':currentFacsUrl!=='''||$facsUrl||'''}'"/>
                     </xsl:attribute>
                     <xsl:attribute name="data-pgnr">
                         <xsl:value-of select="position()"/>
@@ -254,7 +258,7 @@
         </xsl:if>
     </xsl:template>
        
-    <xsl:template match="tei:note[@type = 'paratext' and @resp = 'lawfirm']">
+    <xsl:template match="tei:note[@type = 'paratext' and @resp = 'law-firm']">
         <span class="paratext">
             <xsl:apply-templates/>
         </span>
