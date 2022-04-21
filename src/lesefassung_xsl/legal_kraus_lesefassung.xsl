@@ -53,7 +53,7 @@
                 <xsl:variable name="facs">
                     <xsl:value-of select="@facs"/>
                 </xsl:variable>
-                <xsl:variable name="facsUrl" select=".//root()//*[@xml:id=($facs,substring-after('#',$facs))]//tei:graphic[@source='wienbibliothek']/@url"/>
+                <xsl:variable name="facsUrl" select=".//root()//*[@xml:id=($facs,substring-after($facs,'#'))]//tei:graphic[@source='wienbibliothek']/@url"/>
                 <xsl:variable name="nextPb" select="current()/following::tei:pb[1]"/>
                 <div>
                     <xsl:if test="count(current()/following::*[@rend=('leftMargin','marginLeft')][. &lt;&lt; $nextPb]) > 0">
