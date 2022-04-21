@@ -42,7 +42,10 @@
     <div class="cards-wrapper">
       <div v-if="!searchView" class="card-deck">
         <div class="card" v-for="val in objects" v-bind:key="val.title">
-          <img class="embedded-img" :src="val.facs" alt="facsimile" v-on:click="navToLesefassung(val)">
+          <div v-if="val.facs === '' || val.facs === 'no facs'">
+            <p>Kein Bild vorhanden</p>
+          </div>
+            <img v-else class="embedded-img" :src="fixFacsSize(val.facs)" onerror="this.onerror=null; this.src='../assets/noimage.svg'" alt="facsimile" v-on:click="navToLesefassung(val)">
           <div class="case-data scroll">
             <h6 class="card-title" v-on:click="navToLesefassung(val)"> Titel: <b>{{ val.title }}</b></h6>
             <span v-if="val.actors.length > 0">
@@ -160,6 +163,9 @@ export default {
       }
 
 
+    },
+    fixFacsSize(url) {
+      return url.replace('full/full/','full/304,/')
     },
     getIdFromUrl(url) {
       let idx = url.lastIndexOf('/');

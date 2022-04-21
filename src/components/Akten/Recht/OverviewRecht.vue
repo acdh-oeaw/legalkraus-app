@@ -3,16 +3,16 @@
     <p class="navigation">Akten-Edition <span class="arrow">></span> <span style="font-weight: bold">Recht</span></p>
     <div class="grid-container">
       <button type="button" class="item">
-        <router-link class="nav-link" to="/recht/privatrecht/collections">Privatrecht</router-link>
+        <router-link class="nav-link" to="/akten-edition/recht/privatrecht/collections">Privatrecht</router-link>
       </button>
       <button type="button" class="item">
-        <router-link class="nav-link" to="/recht/strafrecht/collections">Strafrecht</router-link>
+        <router-link class="nav-link" to="/akten-edition/recht/strafrecht/collections">Strafrecht</router-link>
       </button>
       <button type="button" class="item">
-        <router-link class="nav-link" to="/recht/verwaltungsrecht/collections">Verwaltungsrecht</router-link>
+        <router-link class="nav-link" to="/akten-edition/recht/verwaltungsrecht/collections">Verwaltungsrecht</router-link>
       </button>
       <button type="button" class="item">
-        <router-link class="nav-link" to="/recht/zivilrecht/collections">Zivilrecht</router-link>
+        <router-link class="nav-link" to="/akten-edition/recht/zivilrecht/collections">Zivilrecht</router-link>
       </button>
     </div>
   </main>

@@ -3,16 +3,16 @@
     <p class="navigation">Akten-Edition <span class="arrow">></span> <span style="font-weight: bold">Kultur</span></p>
     <div class="grid-container">
       <button type="button" class="item">
-        <router-link class="nav-link" to="/kultur/fackel/collections">Die Fackel</router-link>
+        <router-link class="nav-link" to="/akten-edition/kultur/fackel/collections">Die Fackel</router-link>
       </button>
       <button type="button" class="item">
-        <router-link class="nav-link" to="/kultur/theater/collections">Theater</router-link>
+        <router-link class="nav-link" to="/akten-edition/kultur/theater/collections">Theater</router-link>
       </button>
       <button type="button" class="item">
-        <router-link class="nav-link" to="/kultur/verlagswesen/collections">Verlagswesen</router-link>
+        <router-link class="nav-link" to="/akten-edition/kultur/verlagswesen/collections">Verlagswesen</router-link>
       </button>
       <button type="button" class="item">
-        <router-link class="nav-link" to="/kultur/polemiken/collections">Die großen Polemiken</router-link>
+        <router-link class="nav-link" to="/akten-edition/kultur/polemiken/collections">Die großen Polemiken</router-link>
       </button>
     </div>
   </main>

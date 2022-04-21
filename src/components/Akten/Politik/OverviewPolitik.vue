@@ -3,13 +3,13 @@
     <p class="navigation">Akten-Edition <span class="arrow">></span> <span style="font-weight: bold">Politik</span></p>
     <div class="grid-container">
       <button type="button" class="item">
-        <router-link class="nav-link" to="/politik/sozialdemokratie/collections">Sozialdemokratie</router-link>
+        <router-link class="nav-link" to="/akten-edition/politik/sozialdemokratie/collections">Sozialdemokratie</router-link>
       </button>
       <button type="button" class="item">
-        <router-link class="nav-link" to="/politik/christlich-national/collections">Christlich-National</router-link>
+        <router-link class="nav-link" to="/akten-edition/politik/christlich-national/collections">Christlich-National</router-link>
       </button>
       <button type="button" class="item">
-        <router-link class="nav-link" to="/politik/nationalsozialismus/collections">Nationalsozialismus</router-link>
+        <router-link class="nav-link" to="/akten-edition/politik/nationalsozialismus/collections">Nationalsozialismus</router-link>
       </button>
     </div>
   </main>

@@ -9,75 +9,49 @@
 
     <div class="navigation">
       <p class="nav-el">
-        <b-dropdown id="dropdown-1" text="Projekt" variant='none' class="m-md-2">
-          <b-dropdown-item>
-            <router-link class="dd-item" to="/projektinformationen">
+        <b-dropdown  id="dropdown-1" :class="{'active':this.itemIsActive('projekt')}" text="Projekt" variant='none' class="m-md-2">
+          <b-dropdown-item class="dd-item" to="/projekt/projektinformationen">
               Projektinformation
-            </router-link>
           </b-dropdown-item>
-          <b-dropdown-item>
-            <router-link class="dd-item" to="/editionsrichtlinien">
+          <b-dropdown-item class="dd-item" to="/projekt/editionsrichtlinien">
               Editionsrichtlinien
-            </router-link>
           </b-dropdown-item>
-          <b-dropdown-item>
-            <router-link class="dd-item" to="/projektteam">
+          <b-dropdown-item class="dd-item" to="/projekt/projektteam">
               Projektteam
-            </router-link>
           </b-dropdown-item>
-          <b-dropdown-item>
-            <router-link class="dd-item" to="/publikationen">
+          <b-dropdown-item class="dd-item" to="/projekt/publikationen">
               Publikationen
-            </router-link>
           </b-dropdown-item>
-          <b-dropdown-item>
-            <router-link class="dd-item" to="/benutzungshinweise">
+          <b-dropdown-item class="dd-item" to="/projekt/benutzungshinweise">
               Benutzungshinweise
-            </router-link>
           </b-dropdown-item>
-          <b-dropdown-item>
-            <router-link class="dd-item" to="/lizenzen">
+          <b-dropdown-item class="dd-item" to="/projekt/lizenzen">
               Lizenzen
-            </router-link>
           </b-dropdown-item>
-          <b-dropdown-item>
-            <router-link class="dd-item" to="/dokumentation">
-              Technische Dokumentation
-            </router-link>
+          <b-dropdown-item class="dd-item" to="/projekt/dokumentation">
+              Technische Dokumentsation
           </b-dropdown-item>
         </b-dropdown>
       </p>
       <p class="nav-el">
-        <b-dropdown id="dropdown-2" text="Akten-Edition"  variant='none' class="m-md-2">
-          <b-dropdown-item>
-            <router-link class="dd-item" to="/kultur">
+        <b-dropdown id="dropdown-2"  :class="{'active':this.itemIsActive('akten-edition')}" text="Akten-Edition"  variant='none' class="m-md-2">
+          <b-dropdown-item class="dd-item"  to="/akten-edition/kultur"> 
               Kultur
-            </router-link>
           </b-dropdown-item>
-          <b-dropdown-item>
-            <router-link class="dd-item" to="/recht">
+          <b-dropdown-item class="dd-item" to="/akten-edition/recht"> 
               Recht
-            </router-link>
           </b-dropdown-item>
-          <b-dropdown-item>
-            <router-link class="dd-item" to="/politik">
+          <b-dropdown-item class="dd-item" to="/akten-edition/politik">
               Politik
-            </router-link>
           </b-dropdown-item>
-          <b-dropdown-item>
-            <router-link class="dd-item" to="/handschriftliches">
+          <b-dropdown-item class="dd-item" to="/akten-edition/handschriftliches">
               Handschriftliches
-            </router-link>
           </b-dropdown-item>
-          <b-dropdown-item>
-            <router-link class="dd-item" to="/alle-akten">
+          <b-dropdown-item class="dd-item" to="/akten-edition/alle-akten">
               Alle Akten
-            </router-link>
           </b-dropdown-item>
-          <b-dropdown-item>
-            <router-link class="dd-item" to="/alle-resourcen">
+          <b-dropdown-item class="dd-item" to="/akten-edition/alle-resourcen">
               Alle Dokumente
-            </router-link>
           </b-dropdown-item>
         </b-dropdown>
       </p>
@@ -89,7 +63,7 @@
         </b-dropdown>
       </p>
       <p class="nav-el">
-        <b-dropdown id="dropdown-4" text="Register" variant="none" class="m-md-2">
+        <b-dropdown id="dropdown-4" :class="{'active':this.itemIsActive('register')}" text="Register" variant="none" class="m-md-2">
           <b-dropdown-item>
             <router-link class="dd-item" to="/register/personen">
               Personen
@@ -132,7 +106,13 @@
 
 <script>
 export default {
-  name: "Header"
+  name: "Header",
+  methods: {
+    itemIsActive(val) {
+      console.log(this.$route.path.includes(val))
+      return this.$route.path.includes(val)
+    }
+  }
 }
 </script>
 
@@ -144,6 +124,16 @@ export default {
 .navigation .dropdown-toggle::after {
   display:none
 }
+
+.navigation .dropdown.active .btn {
+  color: var(--primary-red-dark)
+}
+
+.btn:focus, .btn.focus {
+  box-shadow: none !important
+}
+
+
 </style>
 <style scoped>
 
@@ -196,6 +186,10 @@ main {
 
 .nav-link-ha {
   color: var(--text-gray);
+}
+
+.nav-link-ha.router-link-active {
+  color: var(--primary-red-dark)
 }
 
 .nav-link:link, .nav-link-ha:link {
