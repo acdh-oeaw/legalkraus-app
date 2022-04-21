@@ -11,10 +11,10 @@
       </p>
       <div class="filters">
         <div class="searchPers">
-        <input class="vt vtp" placeholder="Person:" list="persons" v-model="kwP" @keyup.enter="setCurrPers(kwP)"/>
-        <datalist id="persons">
-          <option v-for="pers in this.allPersons" :key="pers.key" :value="pers.value">{{ pers.value }}</option>
-        </datalist>
+          <input class="vt vtp" placeholder="Person:" list="persons" v-model="kwP" @keyup.enter="setCurrPers(kwP)"/>
+          <datalist id="persons">
+            <option v-for="pers in this.allPersons" :key="pers.key" :value="pers.value">{{ pers.value }}</option>
+          </datalist>
         </div>
         <div class="searchOrgs">
           <input class="vt vto" placeholder="Institution:" list="orgs" v-model="kwO" @keyup.enter="setCurrOrgs(kwO)"/>
@@ -43,14 +43,16 @@
       </span>
 
         <div class="reset-filter">
-        <button type="button" class="btn btn-secondary btn-sm reset-button" v-on:click="resetFilter">Filter zurücksetzen</button>
+          <button type="button" class="btn btn-secondary btn-sm reset-button" v-on:click="resetFilter">Filter
+            zurücksetzen
+          </button>
         </div>
 
         <input class="vt vtt" type="text" placeholder="Fall-Titel:" v-model="kwT"
                @keyup="filterAll()"/>
       </div>
     </div>
-    <div>{{ this.$store.getters.noOfCollections }} Sammlungen</div>
+    <div class="sammlungen">{{ this.$store.getters.noOfCollections }} Sammlungen</div>
     <div v-if="!searchView" class="card">
       <b-pagination
           page-class="custompaging"
@@ -68,16 +70,16 @@
                :current-page="currentPage" :per-page="perPage"
                :busy.sync="isBusy" :fields="[
             {
+              key: 'id',
+              label: 'Aktennummer'
+            },
+           {
               key: 'title',
               label: 'Titel'
             },
             {
               key: 'size',
               label: 'Anzahl Dokumente'
-            },
-            {
-              key: 'url',
-              label: ''
             },
           ]" :items="currCases" @row-clicked="navToObjects">
         <template #table-busy>
@@ -86,8 +88,8 @@
             <strong>Loading...</strong>
           </div>
         </template>
-        <template #cell(url)="data">
-          <a target="_blank" rel="noopener noreferrer" :href="`${data.value}`">Daten in Arche</a>
+        <template #cell(id)="data">
+          {{parseInt(data.item.id.substring(3,data.item.id.length-4))}}
         </template>
       </b-table>
     </div>
@@ -250,7 +252,7 @@ export default {
       this.filterAll();
 
     },
-    setCurrOrgs(kwO){
+    setCurrOrgs(kwO) {
       //get key of person and add person to this.currPersons
       for (var key in this.allOrgs) {
         if (this.allOrgs[key].value === kwO) {
@@ -278,13 +280,13 @@ export default {
             containsAll = false;
           }
         });
-        if(this.kwT){
-          if(!(c.title.toUpperCase().includes(this.kwT.toUpperCase()))){
+        if (this.kwT) {
+          if (!(c.title.toUpperCase().includes(this.kwT.toUpperCase()))) {
             containsAll = false;
           }
         }
-        if(this.kwY){
-          if(!(parseInt(c.start_date.substring(0,4))< this.kwY)){
+        if (this.kwY) {
+          if (!(parseInt(c.start_date.substring(0, 4)) < this.kwY)) {
             containsAll = false;
           }
         }
@@ -317,7 +319,7 @@ export default {
       this.filterAll();
 
     },
-    removeOrg(key){
+    removeOrg(key) {
       for (let i = 0; i < this.currOrgs.length; i++) {
         if (this.currOrgs[i].key === key) {
           this.currOrgs = this.currOrgs.filter(o => o.key !== key);
@@ -433,14 +435,14 @@ main {
   font-size: inherit;
 }
 
-.vtt{
+.vtt {
   display: flex;
   grid-column: 2/3;
   grid-row: 2/3;
   width: fit-content;
 }
 
-.vty{
+.vty {
   display: flex;
   grid-column: 1/2;
   grid-row: 2/3;
@@ -457,32 +459,40 @@ main {
   margin-bottom: 0.5rem;
 
 }
-.lbls{
+
+.lbls {
   grid-row: 3/4;
   display: inline-flex;
   grid-column: 1/4;
 }
+
 .filters {
   display: grid;
-  grid-template-columns: repeat(3, minmax(5rem, auto)) ;
+  grid-template-columns: repeat(3, minmax(5rem, auto));
   grid-template-rows: auto auto auto;
 }
-.reset-filter{
+
+.reset-filter {
   display: flex;
   grid-row: 2/3;
   grid-column: 3/4;
 }
 
-.py-2{
+.py-2 {
   display: flex;
   grid-row: 1/2;
   grid-column: 3/4;
   padding: 0;
-  margin-left:0;
+  margin-left: 0;
 }
-.reset-button{
+
+.reset-button {
   display: flex;
   padding: 0.375rem 0.375rem;
   margin: 2rem;
+}
+
+.sammlungen{
+  padding: 1rem;
 }
 </style>
