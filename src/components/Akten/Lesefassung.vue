@@ -3,17 +3,17 @@
     <Search class="py-2" v-bind:col-id="colId" v-bind:rs-id="objectId"></Search>
     <p v-if="propsSet" class="navigation">Akten-Edition
       <span class="arrow">></span>
-      <router-link router-link class="nav-link" :to="'/' + this.$route.params.cat.toLowerCase()">
+      <router-link router-link class="nav-link" :to="'/akten-edition/' + this.cat">
         {{ this.$route.params.cat }}
       </router-link>
       <span class="arrow">></span>
       <router-link router-link class="nav-link"
-                   :to="'/' + this.$route.params.cat.toLowerCase() + '/'+ this.$route.params.subcat.toLowerCase() +'/collections'">
+                   :to="'/akten-edition/' + this.cat + '/'+ this.subcat +'/collections'">
         {{ this.$route.params.subcat }}
       </router-link>
       <span class="arrow">></span>
       <router-link router-link class="nav-link"
-                   :to="'/' + this.$route.params.cat.toLowerCase() + '/'+ this.$route.params.subcat.toLowerCase() +'/objects/'+ this.colId">
+                   :to="'/akten-edition/' + this.cat + '/'+ this.subcat +'/objects/'+ this.colId">
         {{ this.colTitle }}
       </router-link>
       <span class="arrow">></span>
@@ -406,7 +406,9 @@ export default {
       actors: [],
       marks: [],
       idxCurrMark: 0,
-      actorsClosed: true
+      actorsClosed: true,
+      cat: null,
+      subcat: null
     }
   },
   computed: {
@@ -813,6 +815,21 @@ export default {
     if (this.$route.params.subcat === "Die Fackel") {
       this.$route.params.subcat = "Fackel"
     }
+
+    this.cat = this.$route.params.cat.toLowerCase();
+
+    if(this.$route.params.subcat.toLowerCase() === "berichtigung (ausgang)"){
+      this.subcat = 'berichtigung'
+    } else if(this.$route.params.subcat.toLowerCase().includes('tageblatt')){
+      this.subcat = "berliner-tageblatt";
+    } else if(this.$route.params.subcat.toLowerCase().includes('stunde')){
+      this.subcat = "die-stunde";
+    } else if(this.$route.params.subcat.toLowerCase().includes('schober')){
+      this.subcat = "schober";
+    }else{
+      this.subcat = this.$route.params.subcat.toLowerCase();
+    }
+
 
   },
   mounted() {

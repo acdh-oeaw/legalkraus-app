@@ -89,7 +89,7 @@
           </div>
         </template>
         <template #cell(id)="data">
-          {{parseInt(data.item.id.substring(3,data.item.id.length-4))}}
+          {{ parseInt(data.item.id.substring(3, data.item.id.length - 4)) }}
         </template>
       </b-table>
     </div>
@@ -152,7 +152,11 @@ export default {
       fK: 'Die Fackel',
       tK: 'Theater',
       vK: 'Verlagswesen',
-      pK: 'Die großen Polemiken',
+      mK: 'Medienhistorisches',
+      bK: 'Berichtigung (Ausgang)',
+      bbK: 'Berliner Tageblatt, Kerr, Wolff',
+      sK: 'Die Stunde, Békessy',
+      schK: 'Schober, 15. Juli 1927',
       sP: 'Sozialdemokratie',
       cP: 'Christlich-National',
       nP: 'Nationalsozialismus'
@@ -180,8 +184,16 @@ export default {
           this.$router.push({name: "theater-objects", params: {id: id}});
         } else if (this.currSubCat === this.vK) {
           this.$router.push({name: "verlagswesen-objects", params: {id: id}});
-        } else if (this.currSubCat === this.pK) {
-          this.$router.push({name: "polemiken-objects", params: {id: id}});
+        } else if (this.currSubCat === this.sK) {
+          this.$router.push({name: "stunde-objects", params: {id: id}});
+        } else if (this.currSubCat === this.mK) {
+          this.$router.push({name: "medienhistorisches-objects", params: {id: id}});
+        } else if (this.currSubCat === this.bK) {
+          this.$router.push({name: "berichtigung-objects", params: {id: id}});
+        } else if (this.currSubCat === this.schK) {
+          this.$router.push({name: "schober-objects", params: {id: id}});
+        } else if (this.currSubCat === this.bbK) {
+          this.$router.push({name: "tageblatt-objects", params: {id: id}});
         } else if (this.currSubCat === this.sP) {
           this.$router.push({name: "sozialdemokratie-objects", params: {id: id}});
         } else if (this.currSubCat === this.cP) {
@@ -217,8 +229,16 @@ export default {
         this.currSubCat = this.tK;
       } else if (this.path.toString().includes('verlagswesen')) {
         this.currSubCat = this.vK;
-      } else if (this.path.toString().includes('polemiken')) {
-        this.currSubCat = this.pK;
+      } else if (this.path.toString().includes('stunde')) {
+        this.currSubCat = this.sK;
+      } else if (this.path.toString().includes('schober')) {
+        this.currSubCat = this.schK;
+      } else if (this.path.toString().includes('tageblatt')) {
+        this.currSubCat = this.bbK;
+      } else if (this.path.toString().includes('medienhistorisches')) {
+        this.currSubCat = this.mK;
+      } else if (this.path.toString().includes('berichtigung')) {
+        this.currSubCat = this.bK;
       } else if (this.path.toString().includes('sozialdemokratie')) {
         this.currSubCat = this.sP;
       } else if (this.path.toString().includes('christlich-national')) {
@@ -335,31 +355,7 @@ export default {
   },
   mounted() {
     this.caseInfo = this.$store.getters.caseInfo;
-    if (this.category && this.currSubCat === "Die großen Polemiken") {
-      this.caseInfo.then(data => {
-        for (var name in data.persons) {
-          let p = {};
-          p.key = name;
-          p.value = data.persons[name];
-          this.allPersons.push(p);
-        }
-        for (var orgKey in data.orgs) {
-          let o = {};
-          o.key = orgKey;
-          o.value = data.orgs[orgKey];
-          this.allOrgs.push(o);
-        }
-        const cases = data.cases;
-        cases.forEach(c => {
-          if (c.keywords.includes("Schober, 15. Juli 1927" || "Die Stunde, Békessy" || "Berliner Tageblatt, Kerr, Wolff")) {
-            c.size = c.docs.length;
-            this.cases.push(c);
-            this.currCases.push(c)
-          }
-        });
-        this.$store.dispatch("setNoOfCollections", this.cases.length)
-      });
-    } else if (this.category) {
+    if (this.category) {
       this.caseInfo.then(data => {
         for (var name in data.persons) {
           let p = {};
@@ -375,6 +371,7 @@ export default {
           this.allOrgs.push(o);
         }
 
+        //set cases
         const cases = data.cases;
         cases.forEach(c => {
           if (c.keywords.includes(this.currSubCat)) {
@@ -492,7 +489,7 @@ main {
   margin: 2rem;
 }
 
-.sammlungen{
+.sammlungen {
   padding: 1rem;
 }
 </style>

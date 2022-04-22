@@ -63,8 +63,16 @@ export default new Router({
         {path: '/akten-edition/kultur/theater/objects/:id', name: 'theater-objects', component: OverviewObjects},
         {path: '/akten-edition/kultur/verlagswesen/collections', component: OverviewCollections},
         {path: '/akten-edition/kultur/verlagswesen/objects/:id', name: 'verlagswesen-objects', component: OverviewObjects},
-        {path: '/akten-edition/kultur/polemiken/collections', component: OverviewCollections},
-        {path: '/akten-edition/kultur/polemiken/objects/:id', name: 'polemiken-objects', component: OverviewObjects},
+        {path: '/akten-edition/kultur/medienhistorisches/collections', component: OverviewCollections},
+        {path: '/akten-edition/kultur/medienhistorisches/objects/:id', name: 'medienhistorisches-objects', component: OverviewObjects},
+        {path: '/akten-edition/kultur/berichtigung/collections', component: OverviewCollections},
+        {path: '/akten-edition/kultur/berichtigung/objects/:id', name: 'berichtigung-objects', component: OverviewObjects},
+        {path: '/akten-edition/kultur/schober/collections', component: OverviewCollections},
+        {path: '/akten-edition/kultur/schober/objects/:id', name: 'schober-objects', component: OverviewObjects},
+        {path: '/akten-edition/kultur/die-stunde/collections', component: OverviewCollections},
+        {path: '/akten-edition/kultur/die-stunde/objects/:id', name: 'stunde-objects', component: OverviewObjects},
+        {path: '/akten-edition/kultur/berliner-tageblatt/collections', component: OverviewCollections},
+        {path: '/akten-edition/kultur/berliner-tageblatt/objects/:id', name: 'tageblatt-objects', component: OverviewObjects},
 
         {path: '/objects/:id', name:'overview-objects', component: OverviewObjects},
 
