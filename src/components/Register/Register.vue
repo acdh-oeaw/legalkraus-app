@@ -206,7 +206,7 @@
           <span style="display: inline-flex">
           <div v-if="data.value && data.value[0]">{{ data.value[0] }}</div>
           <div
-              v-if="data.value && data.value[1] && data.value[1].$.type ==='alternative-name'">({{
+              v-if="data.value && data.value[1] && data.value[1].$.type ==='alternative-name'"> &nbsp;({{
               data.value[1]._
             }})</div>
             </span>
@@ -252,7 +252,7 @@
               data.value[0].placeName[0]._
             }}</div>
           <div
-              v-if="data.value && data.value[1] && data.value[1].$.type==='located_in_place'">({{
+              v-if="data.value && data.value[1] && data.value[1].$.type==='located_in_place'">&nbsp;({{
               data.value[1].placeName[0]._
             }})</div>
             </span>
