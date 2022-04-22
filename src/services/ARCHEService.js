@@ -239,7 +239,15 @@ module.exports.getCollectionOfObject = async (resourceId, callback) => {
                     "expiry": 14
                 };
 
+                const optionsIdentifier = {
+                    "subject": colFetchUrl,
+                    "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier",
+                    "object": null,
+                    "expiry": 14
+                };
+
                 let title = ARCHErdfQuery(optionsColTitle, rs);
+                let identifier = ARCHErdfQuery(optionsIdentifier, rs);
                 let documents = ARCHErdfQuery(optionsItems, rs);
                 let t = title.value[0].hasTitle.object;
 
@@ -251,7 +259,8 @@ module.exports.getCollectionOfObject = async (resourceId, callback) => {
                     url: colFetchUrl,
                     title: t,
                     size: docs,
-                    id: colId
+                    id: colId,
+                    xmlId: identifier.value[1].hasIdentifier.object.substring(identifier.value[1].hasIdentifier.object.lastIndexOf('/')+1)
                 });
                 return callback(result);
             });

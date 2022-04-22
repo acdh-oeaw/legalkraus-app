@@ -386,6 +386,7 @@ export default {
       colSize: Number,
       colUrl: String,
       colId: String,
+      colXmlId: String,
       objectTitle: String,
       showLF: true,
       showFacs: true,
@@ -408,7 +409,8 @@ export default {
       idxCurrMark: 0,
       actorsClosed: true,
       cat: null,
-      subcat: null
+      subcat: null,
+      caseInfo: null
     }
   },
   computed: {
@@ -649,7 +651,6 @@ export default {
       });
     },
     createCommentDiv(event, rs, elem, type) {
-      console.log(rs)
       var div = document.createElement('div');
       div.className = "comment";
       div.style.color = "var(--text-black)";
@@ -657,10 +658,10 @@ export default {
       div.style.fontSize = "0.8rem";
       div.style.padding = "0 0.2rem 0 0.2rem";
       div.style.display = "flex";
-      div.style.justifyContent = "space-between";
+      div.style.justifyContent = "flex-start";
 
       if (type === 'person') {
-        div.innerHTML = rs.name + ", " + rs.first_name + " (" + rs.start_date + " bis " + rs.end_date + ") " + ", <br> " +  rs.profession[0].name;
+        div.innerHTML = rs.name + ", " + rs.first_name + ", <br> " +  rs.profession[0].name;
       } else if (type === 'place') {
         div.innerHTML = rs.name + ", " + rs.kind.name;
       } else if (type === 'institution') {
@@ -669,7 +670,24 @@ export default {
           div.innerHTML = rs.name + ', ' + rs.kind.name;
         }
       } else if (type === 'work') {
-        div.innerHTML = event.pmbId;
+        if(event.pmbId === '' || event.pmbId === null){
+          div.innerHTML = 'nicht erfasst'
+        }else if(event.pmbId.includes('pmb')){
+          getPMBObjectWithId(event.pmbId, 'work', rs=>{
+            let url = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + rs.id + "/detail"
+            div.innerHTML="PMB: " + "<a href='"+url+"' target='_blank'>"+ rs.name + "</a>";
+          });
+        }else if(event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus")){
+          let filename = event.pmbId.substring(event.pmbId.lastIndexOf('/')+1)
+          this.caseInfo.then(data => {
+            let c = data.cases.filter(c => c.id.includes(this.colXmlId))[0];
+            let d = c.doc_objs.filter(d => d.id.includes(filename))[0];
+            let id = d.id.substring(3, d.id.length-4).replaceAll('-','.').replaceAll('0','');
+
+            div.innerHTML = id.substring(0, id.length-1) + " "+ d.title;
+          });
+        }
+
       }
 
       div.style.position = "absolute";
@@ -678,26 +696,30 @@ export default {
       //div.style.left = rect.right * 0.5 + "px"; //todo: substitute magic number?
 
       let self = this; //"this" cannot be used in JS functions
-      div.onclick = function () {
-        let routeData = "";
-        if (type === 'person') {
-          routeData = self.$router.resolve({name: "pReg", query: {pmbId: event.pmbId} });
-        } else if (type === 'place') {
-          routeData = self.$router.resolve({name: "oReg", query: {pmbId: event.pmbId} });
-        } else if (type === 'institution') {
-          routeData = self.$router.resolve({name: "iReg", query: {pmbId: event.pmbId} });
-        } else if (type === 'work') {
-          let idx = event.pmbId.lastIndexOf('/');
-          let xmlId = event.pmbId.substring(idx +1) + '.xml';
-          getColArcheIdFromColXmlId(xmlId, rs => {
-            routeData = self.$router.resolve({name: "lesefassung", params: {id: rs} });
-            window.open(routeData.href, '_blank');
-          });
 
-        }
+      //if a work only refers to a pmb entry, no onclick function is needed
+      if(!(type === 'work' && event.pmbId && event.pmbId.includes('pmb'))){
+        div.onclick = function () {
+          let routeData = "";
+          if (type === 'person') {
+            routeData = self.$router.resolve({name: "pReg", query: {pmbId: event.pmbId} });
+          } else if (type === 'place') {
+            routeData = self.$router.resolve({name: "oReg", query: {pmbId: event.pmbId} });
+          } else if (type === 'institution') {
+            routeData = self.$router.resolve({name: "iReg", query: {pmbId: event.pmbId} });
+          } else if (type === 'work') {
+            let idx = event.pmbId.lastIndexOf('/');
+            let xmlId = event.pmbId.substring(idx +1) + '.xml';
+            getColArcheIdFromColXmlId(xmlId, rs => {
+              routeData = self.$router.resolve({name: "lesefassung", params: {id: rs} });
+              window.open(routeData.href, '_blank');
+            });
 
-        window.open(routeData.href, '_blank');
-      };
+          }
+
+          window.open(routeData.href, '_blank');
+        };
+      }
 
       return div;
     },
@@ -833,11 +855,13 @@ export default {
 
   },
   mounted() {
+    this.caseInfo = this.$store.getters.caseInfo;
     getCollectionOfObject(this.objectId, (rs) => {
       this.colId = rs[0].id;
       this.colTitle = rs[0].title;
       this.colSize = rs[0].size;
       this.colUrl = rs[0].url;
+      this.colXmlId = rs[0].xmlId;
     });
     getObjectWithId(this.objectId, (rs) => {
       const optionsFilename = {
