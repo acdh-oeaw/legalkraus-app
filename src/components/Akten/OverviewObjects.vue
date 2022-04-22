@@ -74,7 +74,7 @@
             <p>Kein Bild vorhanden</p>
           </div>
           <img v-else class="embedded-img" :src="fixFacsSize(val.facs)"
-               onerror="this.onerror=null; this.src='../assets/noimage.svg'" alt="facsimile"
+               @error="fallbackImage" alt="facsimile"
                v-on:click="navToLesefassung(val)">
           <div class="case-data scroll">
             <h6 class="card-title" v-on:click="navToLesefassung(val)"> Titel: <b>{{ val.title }}</b></h6>
@@ -117,6 +117,7 @@ import {getObjectsOfCollection, getObjectWithId} from "@/services/ARCHEService";
 import {ARCHErdfQuery} from "arche-api/src";
 import Search from "../Search";
 import {getEntity} from "../../services/ARCHEService";
+import fallbackImage from '@/assets/noimage.svg';
 
 export default {
   name: "OverviewObjects",
@@ -166,6 +167,9 @@ export default {
     }
   },
   methods: {
+    fallbackImage: function(e) {
+      return e.target.src = `${fallbackImage}`
+    },
     navToLesefassung: function (val) {
       let id = this.getIdFromUrl(val.url)
       if (this.categorySet) {
