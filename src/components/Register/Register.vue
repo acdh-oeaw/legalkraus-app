@@ -427,6 +427,18 @@ export default {
         let id = xmlId.substring(3)
         p.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/person/" + id + "/detail";
       }
+
+      if (record.listEvent) {
+        let docs =[];
+        record.listEvent[0].event.forEach(e => {
+          let url = e.linkGrp[0].link[0].$.target;
+          let idx = url.lastIndexOf('/');
+          let id = url.substring(idx+1);
+          docs.push(id);
+        });
+        p.docs = docs;
+
+      }
       return p;
     },
     processPlace(record) {
@@ -456,6 +468,17 @@ export default {
         o.pmbID = xmlId;
         let id = xmlId.substring(3)
         o.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/place/" + id + "/detail";
+      }
+      if (record.listEvent) {
+        let docs =[];
+        record.listEvent[0].event.forEach(e => {
+          let url = e.linkGrp[0].link[0].$.target;
+          let idx = url.lastIndexOf('/');
+          let id = url.substring(idx+1);
+          docs.push(id);
+        });
+        o.docs = docs;
+
       }
       return o;
     },
