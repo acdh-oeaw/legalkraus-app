@@ -463,7 +463,12 @@ export default {
       }
       //found next mark; reset idxCurrMark
       this.idxCurrMark = 0;
+      let page = men_id[0].closest('[data-pgnr]').dataset.pgnr;
+      while(this.selectedPage < page){
+        this.next();
+      }
       men_id.item(0).classList.add("current-mark");
+
     },
     async highlightOnMounted(keyword) {
       var self = this;
