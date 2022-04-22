@@ -31,7 +31,7 @@
     <div class="meta-data">
       <p class="meta1">Metadaten Fall:</p>
       <div class="meta2">
-        <router-link class="back" to="/">Titel: {{ this.colTitle }}</router-link>
+        <router-link class="back" to="/">{{ this.colTitle }}</router-link>
         <p>Anzahl Dokumente: {{ this.colSize }}</p>
       </div>
       <div class="vl meta3"></div>

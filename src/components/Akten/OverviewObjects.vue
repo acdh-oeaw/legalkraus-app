@@ -77,7 +77,7 @@
                onerror="this.onerror=null; this.src='../assets/noimage.svg'" alt="facsimile"
                v-on:click="navToLesefassung(val)">
           <div class="case-data scroll">
-            <h6 class="card-title" v-on:click="navToLesefassung(val)"> Titel: <b>{{ val.title }}</b></h6>
+            <h6 class="card-title" v-on:click="navToLesefassung(val)"><b>{{ val.title }}</b></h6>
             <span v-if="val.actors.length > 0">
               <p> <b>Beteiligte:</b> </p>
             <div class="pmb-link" v-for="a in val.actorObjs" :key="a.identifier" v-on:click="navToPMBActor($event, a)"><!--   v-on:click="navToPMB($event, a)"-->
@@ -402,6 +402,14 @@ export default {
 
         getObjectsOfCollection(this.colId, async (result) => {
           let objs = result.filter(r => !r.identifier.includes('C_'));
+          objs.sort(function(a,b){
+            let aId = a.identifier.substring(a.identifier.lastIndexOf('/') + 1);
+            let bId = b.identifier.substring(b.identifier.lastIndexOf('/') + 1);
+            let aIdNum = parseInt(aId.replace("D_","").replaceAll('-',''));
+            let bIdNum = parseInt(bId.replace("D_","").replaceAll('-',''));
+
+            return aIdNum - bIdNum;
+          });
 
           //get facs preview, actors, places
           for (const o of objs) {
