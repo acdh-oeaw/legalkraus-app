@@ -450,20 +450,19 @@ export default {
   },
   methods: {
     async highlightQueryOnMounted(q) {
+      await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
       let men_id = document.getElementsByClassName("#" + q);
 
       //if class not found: go to next page until found
-      while (this.facsURLs.length > this.selectedPage) {
+      while (men_id.length === 0 && this.facsURLs.length > this.selectedPage) {
         //there is at least one more page
         this.next();
         await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
         men_id = document.getElementsByClassName("#" + q);
-        if (men_id.length > 0) {
-          //found next mark; reset idxCurrMark
-          this.idxCurrMark = 0;
-          break;
-        }
+
       }
+      //found next mark; reset idxCurrMark
+      this.idxCurrMark = 0;
       men_id.item(0).classList.add("current-mark");
     },
     async highlightOnMounted(keyword) {
@@ -643,6 +642,7 @@ export default {
       });
     },
     createCommentDiv(event, rs, elem, type) {
+      console.log(rs)
       var div = document.createElement('div');
       div.className = "comment";
       div.style.color = "var(--text-black)";
@@ -657,7 +657,10 @@ export default {
       } else if (type === 'place') {
         div.innerHTML = rs.name + ", " + rs.kind.name;
       } else if (type === 'institution') {
-        div.innerHTML = rs.name + ', ' + rs.kind.name + " (" + rs.start_date + " bis " + rs.end_date + ") ";
+        div.innerHTML = rs.name;
+        if(rs.kind && rs.kind.name){
+          div.innerHTML = rs.name + ', ' + rs.kind.name;
+        }
       } else if (type === 'work') {
         div.innerHTML = event.pmbId;
       }

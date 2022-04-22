@@ -285,7 +285,7 @@ module.exports.getAllResources = async (startPage, callback) => {
 
 module.exports.getTransformedHtmlResource = async (objectId, callback) => {
     try {
-        const url = `https://service4tei.acdh-dev.oeaw.ac.at/tei2html.xql?tei=https://arche-dev.acdh-dev.oeaw.ac.at/api/${objectId}&xsl=https://raw.githubusercontent.com/acdh-oeaw/legalkraus-app/dev-search-metadata/src/lesefassung_xsl/legal_kraus_lesefassung.xsl`;
+        const url = `https://service4tei.acdh-dev.oeaw.ac.at/tei2html.xql?tei=https://arche-dev.acdh-dev.oeaw.ac.at/api/${objectId}&xsl=https://raw.githubusercontent.com/acdh-oeaw/legalkraus-app/dev-register-again/src/lesefassung_xsl/legal_kraus_lesefassung.xsl`;
         const resp = await fetch(url);
         const data = await resp.text();
         return callback(data);

@@ -484,6 +484,18 @@ export default {
         let id = xmlId.substring(3);
         i.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/institution/" + id + "/detail";
       }
+
+      if (record.listEvent) {
+        let docs =[];
+        record.listEvent[0].event.forEach(e => {
+          let url = e.linkGrp[0].link[0].$.target;
+          let idx = url.lastIndexOf('/');
+          let id = url.substring(idx+1);
+          docs.push(id);
+        });
+        i.docs = docs;
+
+      }
       return i;
     },
     async processWork(record) {
@@ -531,6 +543,7 @@ export default {
       return w;
     },
     async openDetails(record) {
+      console.log(record)
       let item;
       if (this.categoryShort === 'p') {
         item = this.processPerson(record);
