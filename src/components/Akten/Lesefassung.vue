@@ -610,7 +610,6 @@ export default {
       }
     },
     async childToParent(event) {
-      console.log(event)
       //comment should only be generated if annotations for this type are highlighted
       if (!this.highlighter[event.type]) {
         return;
@@ -620,7 +619,7 @@ export default {
       let elem = document.getElementById(event.htmlId);
       const comments = document.querySelectorAll('.comment');
 
-      const comment = document.getElementById("comments");
+      const commentBox = document.getElementById("comments");
 
       //work does not refer to a pmb entry
       if (event.type === 'work' && this.highlighter.work) {
@@ -632,14 +631,7 @@ export default {
             commentDiv.style.top = commentDiv.style.top + eBCR.height;
           }
         })
-        let button = document.createElement('div');
-        button.innerHTML = "<button id=\"btn\" name=\"btn\">x</button>"
-        let c = document.createElement("div");
-        c.className = 'commentWrap';
-        c.style.display = 'flex'
-        c.appendChild(commentDiv);
-        c.appendChild(button)
-        comment.appendChild(commentDiv);
+        commentBox.appendChild(commentDiv);
 
         //in case of a normal collision, the old comment is removed
         comments.forEach(e => {
@@ -659,7 +651,7 @@ export default {
             commentDiv.style.top = commentDiv.style.top + eBCR.height;
           }
         })
-        comment.appendChild(commentDiv);
+        commentBox.appendChild(commentDiv);
 
         //in case of a normal collision, the old comment is removed
         comments.forEach(e => {
@@ -681,7 +673,7 @@ export default {
           }
         })
 
-        comment.appendChild(commentDiv);
+        commentBox.appendChild(commentDiv);
 
         //in case of a normal collision, the old comment is removed
         comments.forEach(e => {
@@ -692,8 +684,6 @@ export default {
       });
     },
     createCommentDiv(event, rs, elem, type) {
-      console.log(elem)
-      console.log(event)
       var div = document.createElement('div');
       div.className = "comment";
       div.style.color = "var(--text-black)";
@@ -702,32 +692,36 @@ export default {
       div.style.display = "flex";
       div.style.justifyContent = "flex-start";
 
+      let textinfo = document.createElement('p');
+      textinfo.className = "textinfo";
+
       if (type === 'person') {
         if (rs.profession[0]) {
-          div.innerHTML = "<b>|</b>&nbsp;" + rs.name + ", " + rs.first_name + ", <br> " + rs.profession[0].name;
+          // div.innerHTML = "<b>|</b>&nbsp;" + rs.name + ", " + rs.first_name + ", <br> " + rs.profession[0].name;
+          textinfo.innerHTML = "<b>|</b>&nbsp;" + rs.name + ", " + rs.first_name + ", <br> " + rs.profession[0].name;
         } else {
-          div.innerHTML = "<b>|</b>&nbsp;" + rs.name + ", " + rs.first_name;
+          textinfo.innerHTML = "<b>|</b>&nbsp;" + rs.name + ", " + rs.first_name;
         }
 
       } else if (type === 'place') {
         if (rs.kind.name !== undefined) {
-          div.innerHTML = "<b>|</b>&nbsp;" + rs.name + ", " + rs.kind.name;
+          textinfo.innerHTML = "<b>|</b>&nbsp;" + rs.name + ", " + rs.kind.name;
         } else {
-          div.innerHTML = "<b>|</b>&nbsp;" + rs.name;
+          textinfo.innerHTML = "<b>|</b>&nbsp;" + rs.name;
         }
 
       } else if (type === 'institution') {
-        div.innerHTML = "<b>|</b>&nbsp;" + rs.name;
+        textinfo.innerHTML = "<b>|</b>&nbsp;" + rs.name;
         if (rs.kind && rs.kind.name) {
-          div.innerHTML = "<b>|</b>&nbsp;" + rs.name + ', ' + rs.kind.name;
+          textinfo.innerHTML = "<b>|</b>&nbsp;" + rs.name + ', ' + rs.kind.name;
         }
       } else if (type === 'work') {
         if (event.pmbId === '' || event.pmbId === null) {
-          div.innerHTML = "<b>|</b>&nbsp;" + 'nicht erfasst'
+          textinfo.innerHTML = "<b>|</b>&nbsp;" + 'nicht erfasst'
         } else if (event.pmbId.includes('pmb')) {
           getPMBObjectWithId(event.pmbId, 'work', rs => {
             let url = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + rs.id + "/detail"
-            div.innerHTML = "<b>|</b>&nbsp;" + "PMB: " + "<a href='" + url + "' target='_blank'>" + rs.name + "</a>";
+            textinfo.innerHTML = "<b>|</b>&nbsp;" + "PMB: " + "<a href='" + url + "' target='_blank'>" + rs.name + "</a>";
           });
         } else if (event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus")) {
           let filename = event.pmbId.substring(event.pmbId.lastIndexOf('/') + 1)
@@ -736,17 +730,17 @@ export default {
             let d = c.doc_objs.filter(d => d.id.includes(filename))[0];
             let id = d.id.substring(3, d.id.length - 4).replaceAll('-', '.').replaceAll('0', '');
 
-            div.innerHTML = id.substring(0, id.length - 1) + " " + d.title;
+            textinfo.innerHTML = id.substring(0, id.length - 1) + " " + d.title;
           });
         }
 
       } else if (event.type === 'quote' || event.type === 'intertext') {
         if (event.pmbId === '' || event.pmbId === null) {
-          div.innerHTML = "<b>|</b>&nbsp;" + 'nicht erfasst'
+          textinfo.innerHTML = "<b>|</b>&nbsp;" + 'nicht erfasst'
         } else if (event.pmbId.includes('#')) {
           getPMBObjectWithId(event.pmbId.substring(1), 'quote', rs => {
             let url = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + rs.id + "/detail"
-            div.innerHTML = "<b>|</b>&nbsp;" + "PMB: " + "<a href='" + url + "' target='_blank'>" + rs.name + "</a>";
+            textinfo.innerHTML = "<b>|</b>&nbsp;" + "PMB: " + "<a href='" + url + "' target='_blank'>" + rs.name + "</a>";
           });
         } else if (event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus")) {
           let filename = event.pmbId.substring(event.pmbId.lastIndexOf('/') + 1)
@@ -755,10 +749,27 @@ export default {
             let d = c.doc_objs.filter(d => d.id.includes(filename))[0];
             let id = d.id.substring(3, d.id.length - 4).replaceAll('-', '.').replaceAll('0', '');
 
-            div.innerHTML = "<b>|</b>&nbsp;" + id.substring(0, id.length - 1) + " " + d.title;
+            textinfo.innerHTML = "<b>|</b>&nbsp;" + id.substring(0, id.length - 1) + " " + d.title;
           });
         }
       }
+
+      //close button for comment
+      let button = document.createElement('div');
+      button.innerHTML = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-x-circle\" viewBox=\"0 0 16 16\">\n" +
+          "  <path d=\"M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z\"/>\n" +
+          "  <path d=\"M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z\"/>\n" +
+          "</svg>";
+      button.style.minWidth = "15px";
+      button.style.maxWidth = "15px";
+      button.style.marginLeft = "0.2rem";
+      button.onclick = function (){
+        div.remove();
+      }
+
+      div.appendChild(textinfo);
+      div.appendChild(button)
+
       const comment = document.getElementById("comments");
       div.style.position = "absolute";
       div.style.cursor = "pointer";
@@ -768,7 +779,7 @@ export default {
 
       //if a work only refers to a pmb entry, no onclick function is needed
       if (!(type === 'work' && event.pmbId && event.pmbId.includes('pmb'))) {
-        div.onclick = function () {
+        textinfo.onclick = function () {
           let routeData = "";
           if (type === 'person') {
             routeData = self.$router.resolve({name: "pReg", query: {pmbId: event.pmbId}});
@@ -1506,6 +1517,10 @@ mark {
 .comments {
   width: 30%;
   margin-left: 1rem;
+}
+
+.commentWrap{
+  display: flex;
 }
 </style>
 
