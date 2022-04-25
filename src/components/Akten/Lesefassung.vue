@@ -1398,18 +1398,23 @@ export default {
   margin: 0;
 }
 
-.marginalie-text.marginLeft {
+.marginalie-text.marginLeft, .rdg.marginLeft {
   padding-top: 0.2rem;
   position: absolute;
   font-size: 80%;
-  left: -5rem;
+  left:0.8rem;
+  width:4.5rem;
 }
 
-.marginalie-text.marginRight {
+.marginalie-text.marginRight, .rdg {
   padding-top: 0.2rem;
   position: absolute;
   font-size: 80%;
-  right: -5rem;
+  right: -11rem;
+}
+
+.rdg {
+  width:10rem;
 }
 
 .pl-custom {
@@ -1442,6 +1447,12 @@ mark {
   width: 100%;
   word-break: break-all;
 }
+
+/*** additional padding if left marginal exists ***/
+.addPadding {
+  padding-left:4.5rem;
+}
+
 </style>
 
 
