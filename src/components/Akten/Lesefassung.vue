@@ -429,14 +429,16 @@ export default {
         },
         template,
         mounted() {
-          this.$refs['readview'].querySelectorAll(".lb").forEach((lb, idx) => {
-            const ln = idx + 1;
-            if (ln % 5 === 0) {
-              lb.setAttribute('data-lbnr', idx + 1);
-            }
-          });
-          this.$parent.childMounted();
-
+          this.$refs['readview'].querySelectorAll("[data-pgnr]").forEach((page) => {
+            page.querySelectorAll(".lb").forEach((lb,idx) => {
+              const ln = idx + 1;
+              if (ln % 5 === 0) {
+                lb.setAttribute('data-lbnr', idx + 1);
+              }
+            });
+            this.$parent.childMounted();
+          }
+          )
         },
         computed: {
           ...mapGetters({
