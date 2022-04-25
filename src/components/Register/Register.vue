@@ -9,7 +9,7 @@
       <div class="abc">
         <p class="l" :id="l" v-for="l in abc" :key="l" v-on:click="filterLetter(l)">{{ l }}</p>
       </div>
-      <input class="vt-suche" type="text" placeholder="Volltextsuche:" v-model="keyword"
+      <input class="vt" type="text" placeholder="Volltextsuche:" v-model="keyword"
              @keyup="filterKeyword(keyword)"/>
     </div>
     <div v-if="noItems" class="message">KEIN TREFFER</div>
@@ -206,7 +206,7 @@
           <span style="display: inline-flex">
           <div v-if="data.value && data.value[0]">{{ data.value[0] }}</div>
           <div
-              v-if="data.value && data.value[1] && data.value[1].$.type ==='alternative-name'">({{
+              v-if="data.value && data.value[1] && data.value[1].$.type ==='alternative-name'"> &nbsp;({{
               data.value[1]._
             }})</div>
             </span>
@@ -252,7 +252,7 @@
               data.value[0].placeName[0]._
             }}</div>
           <div
-              v-if="data.value && data.value[1] && data.value[1].$.type==='located_in_place'">({{
+              v-if="data.value && data.value[1] && data.value[1].$.type==='located_in_place'">&nbsp;({{
               data.value[1].placeName[0]._
             }})</div>
             </span>
@@ -427,6 +427,18 @@ export default {
         let id = xmlId.substring(3)
         p.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/person/" + id + "/detail";
       }
+
+      if (record.listEvent) {
+        let docs =[];
+        record.listEvent[0].event.forEach(e => {
+          let url = e.linkGrp[0].link[0].$.target;
+          let idx = url.lastIndexOf('/');
+          let id = url.substring(idx+1);
+          docs.push(id);
+        });
+        p.docs = docs;
+
+      }
       return p;
     },
     processPlace(record) {
@@ -457,6 +469,17 @@ export default {
         let id = xmlId.substring(3)
         o.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/place/" + id + "/detail";
       }
+      if (record.listEvent) {
+        let docs =[];
+        record.listEvent[0].event.forEach(e => {
+          let url = e.linkGrp[0].link[0].$.target;
+          let idx = url.lastIndexOf('/');
+          let id = url.substring(idx+1);
+          docs.push(id);
+        });
+        o.docs = docs;
+
+      }
       return o;
     },
     processInstitutions(record) {
@@ -483,6 +506,18 @@ export default {
         i.pmbID = xmlId;
         let id = xmlId.substring(3);
         i.pmbURL = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/institution/" + id + "/detail";
+      }
+
+      if (record.listEvent) {
+        let docs =[];
+        record.listEvent[0].event.forEach(e => {
+          let url = e.linkGrp[0].link[0].$.target;
+          let idx = url.lastIndexOf('/');
+          let id = url.substring(idx+1);
+          docs.push(id);
+        });
+        i.docs = docs;
+
       }
       return i;
     },
@@ -516,11 +551,22 @@ export default {
           })
           w.relations = relations;
         });
+      }
+      if (record.listEvent) {
+        let docs =[];
+        record.listEvent[0].event.forEach(e => {
+          let url = e.linkGrp[0].link[0].$.target;
+          let idx = url.lastIndexOf('/');
+          let id = url.substring(idx+1);
+          docs.push(id);
+        });
+        w.docs = docs;
 
       }
       return w;
     },
     async openDetails(record) {
+      console.log(record)
       let item;
       if (this.categoryShort === 'p') {
         item = this.processPerson(record);
@@ -662,14 +708,13 @@ export default {
   },
   created() {
     this.setCategory();
-    if (this.query !== null) {
+    if (this.$route.query !== null) {
       this.query = this.$route.query;
     }
 
   },
   async mounted() {
     this.downloadRegistry();
-
 
   },
   watch: {
@@ -740,7 +785,7 @@ export default {
   font-weight: bold;
 }
 
-.vt-suche {
+.vt {
   margin: 2rem;
 }
 

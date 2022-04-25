@@ -7,7 +7,6 @@ import OverviewPolitik from "@/components/Akten/Politik/OverviewPolitik";
 import OverviewKultur from "@/components/Akten/Kultur/OverviewKultur";
 import OverviewObjects from "@/components/Akten/OverviewObjects";
 import OverviewAllCollections from "@/components/Akten/OverviewAllCollections"
-import OverviewAllResources from "@/components/Akten/OverviewAllResources";
 import Lesefassung from "@/components/Akten/Lesefassung";
 import Main from "@/components/Main";
 import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
@@ -25,6 +24,7 @@ import Benutzungshinweise from "../components/Projekt/Benutzungshinweise";
 import Lizenzen from "../components/Projekt/Lizenzen";
 import Dokumentation from "../components/Projekt/Dokumentation";
 import Register from "../components/Register/Register";
+import Stats from "../components/Statistiken/Stats";
 
 
 Vue.use(Router)
@@ -33,43 +33,51 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 
 export default new Router({
+    mode: 'history',
     routes: [
         {path: '/test', component: Test},
         {path: '/', name: 'home', component: Main},
-        {path: '/recht', component: OverviewRecht},
-        {path: '/recht/privatrecht/collections', component: OverviewCollections},
-        {path: '/recht/privatrecht/objects/:id', name: 'privatrecht-objects', component: OverviewObjects},
-        {path: '/recht/strafrecht/collections', component: OverviewCollections},
-        {path: '/recht/strafrecht/objects/:id', name: 'strafrecht-objects', component: OverviewObjects},
-        {path: '/recht/verwaltungsrecht/collections', component: OverviewCollections},
-        {path: '/recht/verwaltungsrecht/objects/:id', name: 'verwaltungsrecht-objects', component: OverviewObjects},
-        {path: '/recht/zivilrecht/collections', component: OverviewCollections},
-        {path: '/recht/zivilrecht/objects/:id', name: 'zivilrecht-objects', component: OverviewObjects},
+        {path: '/akten-edition/recht', component: OverviewRecht},
+        {path: '/akten-edition/recht/privatrecht/collections', component: OverviewCollections},
+        {path: '/akten-edition/recht/privatrecht/objects/:id', name: 'privatrecht-objects', component: OverviewObjects},
+        {path: '/akten-edition/recht/strafrecht/collections', component: OverviewCollections},
+        {path: '/akten-edition/recht/strafrecht/objects/:id', name: 'strafrecht-objects', component: OverviewObjects},
+        {path: '/akten-edition/recht/verwaltungsrecht/collections', component: OverviewCollections},
+        {path: '/akten-edition/recht/verwaltungsrecht/objects/:id', name: 'verwaltungsrecht-objects', component: OverviewObjects},
+        {path: '/akten-edition/recht/zivilrecht/collections', component: OverviewCollections},
+        {path: '/akten-edition/recht/zivilrecht/objects/:id', name: 'zivilrecht-objects', component: OverviewObjects},
 
-        {path: '/politik', component: OverviewPolitik},
-        {path: '/politik/sozialdemokratie/collections', component: OverviewCollections},
-        {path: '/politik/sozialdemokratie/objects/:id', name: 'sozialdemokratie-objects', component: OverviewObjects},
-        {path: '/politik/christlich-national/collections', component: OverviewCollections},
-        {path: '/politik/christlich-national/objects/:id', name: 'christlich-national-objects', component: OverviewObjects},
-        {path: '/politik/nationalsozialismus/collections', component: OverviewCollections},
-        {path: '/politik/nationalsozialismus/objects/:id', name: 'nationalsozialismus-objects', component: OverviewObjects},
+        {path: '/akten-edition/politik', component: OverviewPolitik},
+        {path: '/akten-edition/politik/sozialdemokratie/collections', component: OverviewCollections},
+        {path: '/akten-edition/politik/sozialdemokratie/objects/:id', name: 'sozialdemokratie-objects', component: OverviewObjects},
+        {path: '/akten-edition/politik/christlich-national/collections', component: OverviewCollections},
+        {path: '/akten-edition/politik/christlich-national/objects/:id', name: 'christlich-national-objects', component: OverviewObjects},
+        {path: '/akten-edition/politik/nationalsozialismus/collections', component: OverviewCollections},
+        {path: '/akten-edition/politik/nationalsozialismus/objects/:id', name: 'nationalsozialismus-objects', component: OverviewObjects},
        // {path: '/politik/objects/:id', name: 'politik-objects', component: OverviewObjects},
 
-        {path: '/kultur', component: OverviewKultur},
-        {path: '/kultur/fackel/collections', component: OverviewCollections},
-        {path: '/kultur/fackel/objects/:id', name: 'fackel-objects', component: OverviewObjects},
-        {path: '/kultur/theater/collections', component: OverviewCollections},
-        {path: '/kultur/theater/objects/:id', name: 'theater-objects', component: OverviewObjects},
-        {path: '/kultur/verlagswesen/collections', component: OverviewCollections},
-        {path: '/kultur/verlagswesen/objects/:id', name: 'verlagswesen-objects', component: OverviewObjects},
-        {path: '/kultur/polemiken/collections', component: OverviewCollections},
-        {path: '/kultur/polemiken/objects/:id', name: 'polemiken-objects', component: OverviewObjects},
+        {path: '/akten-edition/kultur', component: OverviewKultur},
+        {path: '/akten-edition/kultur/fackel/collections', component: OverviewCollections},
+        {path: '/akten-edition/kultur/fackel/objects/:id', name: 'fackel-objects', component: OverviewObjects},
+        {path: '/akten-edition/kultur/theater/collections', component: OverviewCollections},
+        {path: '/akten-edition/kultur/theater/objects/:id', name: 'theater-objects', component: OverviewObjects},
+        {path: '/akten-edition/kultur/verlagswesen/collections', component: OverviewCollections},
+        {path: '/akten-edition/kultur/verlagswesen/objects/:id', name: 'verlagswesen-objects', component: OverviewObjects},
+        {path: '/akten-edition/kultur/medienhistorisches/collections', component: OverviewCollections},
+        {path: '/akten-edition/kultur/medienhistorisches/objects/:id', name: 'medienhistorisches-objects', component: OverviewObjects},
+        {path: '/akten-edition/kultur/berichtigung/collections', component: OverviewCollections},
+        {path: '/akten-edition/kultur/berichtigung/objects/:id', name: 'berichtigung-objects', component: OverviewObjects},
+        {path: '/akten-edition/kultur/schober/collections', component: OverviewCollections},
+        {path: '/akten-edition/kultur/schober/objects/:id', name: 'schober-objects', component: OverviewObjects},
+        {path: '/akten-edition/kultur/die-stunde/collections', component: OverviewCollections},
+        {path: '/akten-edition/kultur/die-stunde/objects/:id', name: 'stunde-objects', component: OverviewObjects},
+        {path: '/akten-edition/kultur/berliner-tageblatt/collections', component: OverviewCollections},
+        {path: '/akten-edition/kultur/berliner-tageblatt/objects/:id', name: 'tageblatt-objects', component: OverviewObjects},
 
         {path: '/objects/:id', name:'overview-objects', component: OverviewObjects},
 
-        {path: '/handschriftliches', component: OverviewObjects}, //todo: create page that loads objects with tag handschriftlich
-        {path: '/alle-akten', component: OverviewAllCollections},
-        {path: '/alle-resourcen', component: OverviewAllResources},
+        {path: '/akten-edition/handschriftliches', component: OverviewObjects}, //todo: create page that loads objects with tag handschriftlich
+        {path: '/akten-edition/alle-akten', component: OverviewAllCollections},
         {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung},
 
         {path: '/handapparat', component: OverviewHandapparat},
@@ -86,15 +94,13 @@ export default new Router({
         {path: '/register/werke', name: 'wReg', component: Register},
         {path: '/register/fackel', name: 'fReg', component: Register},
         {path: '/register/juristische-texte', name: 'gReg', component: Register},
-        {path: '/projektinformationen', component: Projektinformationen},
-        {path: '/editionsrichtlinien', component: Editionsrichtlinien},
-        {path: '/projektteam', component: Projektteam},
-        {path: '/publikationen', component: Publikationen},
-        {path: '/benutzungshinweise', component: Benutzungshinweise},
-        {path: '/lizenzen', component: Lizenzen},
-        {path: '/dokumentation', component: Dokumentation},
-
-
-
+        {path: '/projekt/projektinformationen', component: Projektinformationen},
+        {path: '/projekt/editionsrichtlinien', component: Editionsrichtlinien},
+        {path: '/projekt/projektteam', component: Projektteam},
+        {path: '/projekt/publikationen', component: Publikationen},
+        {path: '/projekt/benutzungshinweise', component: Benutzungshinweise},
+        {path: '/projekt/lizenzen', component: Lizenzen},
+        {path: '/projekt/dokumentation', component: Dokumentation},
+        {path: '/statistik/fallstatistik', name: 'fstat', component: Stats},
     ]
 })

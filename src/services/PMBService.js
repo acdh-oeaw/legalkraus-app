@@ -1,7 +1,7 @@
 //https://pmb.acdh.oeaw.ac.at/entity/${resourceId}/
 
 module.exports.getObjectWithId = async (resourceId, type, callback) => {
-    if (type !== 'work') {
+    if (resourceId.startsWith('#pmb')) {
         resourceId = resourceId.substring(4); //removes the leading '#pmb'
     }
     let url = "";
