@@ -153,30 +153,30 @@
     </xsl:template>
 
     <xsl:template match="tei:quote">
-        <span class="quote">
+        <entity-span id="{generate-id()}" class="quote {@ref}" v-on:click="navigateTo('{@ref}', '{@type}', $event)">
             <xsl:attribute name="v-bind:class">
                 <xsl:text>{ highlighter: highlighter.quote }</xsl:text>
             </xsl:attribute>
             <xsl:apply-templates/>
-        </span>
+        </entity-span>
     </xsl:template>
 
     <xsl:template match="tei:q[@type='spoken']">
-        <span class="quote-spoken">
+        <entity-span id="{generate-id()}" class="quote-spoken {@ref}" v-on:click="navigateTo('{@ref}', '{@type}', $event)">
             <xsl:attribute name="v-bind:class">
                 <xsl:text>{ highlighter: highlighter.quote }</xsl:text>
             </xsl:attribute>
             <xsl:apply-templates/>
-        </span>
+        </entity-span>
     </xsl:template>
 
     <xsl:template match="tei:note[@type = 'intertext' and starts-with(@source, 'https://fackel')]">
-        <span class="fackel-ref">
+        <entity-span id="{generate-id()}" class="fackel-ref {@ref}" v-on:click="navigateTo('{@ref}', '{@type}', $event)">
             <xsl:attribute name="v-bind:class">
                 <xsl:text>{ highlighter: highlighter.quote }</xsl:text>
             </xsl:attribute>
             <xsl:apply-templates/>
-        </span>
+        </entity-span>
     </xsl:template>
 
     <xsl:template match="tei:note[@hand = '*']">
