@@ -7,7 +7,6 @@ import OverviewPolitik from "@/components/Akten/Politik/OverviewPolitik";
 import OverviewKultur from "@/components/Akten/Kultur/OverviewKultur";
 import OverviewObjects from "@/components/Akten/OverviewObjects";
 import OverviewAllCollections from "@/components/Akten/OverviewAllCollections"
-import OverviewAllResources from "@/components/Akten/OverviewAllResources";
 import Lesefassung from "@/components/Akten/Lesefassung";
 import Main from "@/components/Main";
 import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
@@ -79,7 +78,6 @@ export default new Router({
 
         {path: '/akten-edition/handschriftliches', component: OverviewObjects}, //todo: create page that loads objects with tag handschriftlich
         {path: '/akten-edition/alle-akten', component: OverviewAllCollections},
-        {path: '/akten-edition/alle-resourcen', component: OverviewAllResources},
         {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung},
 
         {path: '/handapparat', component: OverviewHandapparat},

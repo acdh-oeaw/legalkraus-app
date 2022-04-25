@@ -50,9 +50,6 @@
           <b-dropdown-item class="dd-item" to="/akten-edition/alle-akten">
               Alle Akten
           </b-dropdown-item>
-          <b-dropdown-item class="dd-item" to="/akten-edition/alle-resourcen">
-              Alle Dokumente
-          </b-dropdown-item>
         </b-dropdown>
       </p>
       <p class="nav-el">
@@ -101,7 +98,6 @@
       <button type="button" class="btn nav-el rounded-0">
         <router-link router-link class="nav-link-ha" :to="'/handapparat'">Handapparat</router-link>
       </button>
-      <button type="button" class="btn nav-el handapparat  rounded-0"  variant='none'>How to use</button>
     </div>
   </main>
 </template>

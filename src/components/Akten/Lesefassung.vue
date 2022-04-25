@@ -605,17 +605,19 @@ export default {
       }
     },
     async childToParent(event) {
-      console.log(event)
+      //comment should only be generated if annotations for this type are highlighted
+      if(!this.highlighter[event.type]){
+        return;
+      }
       this.toggleFacs(); //hide facsimile, switch to text-only view
       await new Promise(resolve => setTimeout(resolve, 500)); //vue needs time to change to card-full view
       let elem = document.getElementById(event.htmlId);
-      console.log(elem)
       const comments = document.querySelectorAll('.comment');
 
       const comment = document.getElementById("comments");
 
       //work does not refer to a pmb entry
-      if (event.type === 'work') {
+      if (event.type === 'work' && this.highlighter.work) {
         let commentDiv = this.createCommentDiv(event, null, elem, event.type);
         //in case of an inline collision (due to nested elements, the comment is placed directly beneath the other comment)
         comments.forEach(e => {
@@ -708,8 +710,7 @@ export default {
 
       div.style.position = "absolute";
       div.style.cursor = "pointer";
-      div.style.top = elem.offsetTop + "px"; //todo: check if div overlaps with another comment
-      //div.style.left = rect.right * 0.5 + "px"; //todo: substitute magic number?
+      div.style.top = elem.offsetTop + "px";
 
       let self = this; //"this" cannot be used in JS functions
 
