@@ -451,7 +451,6 @@ export default {
         },
         methods: {
           navigateTo(pmbId, type, event) {
-            console.log(event)
             this.$emit('childToParent', {pmbId: pmbId, type: type, htmlId: event.target.id});
           },
         }
@@ -628,6 +627,33 @@ export default {
             commentDiv.style.top = commentDiv.style.top + eBCR.height;
           }
         })
+        let button = document.createElement('div');
+        button.innerHTML = "<button id=\"btn\" name=\"btn\">x</button>"
+        let c = document.createElement("div");
+        c.className = 'commentWrap';
+        c.style.display = 'flex'
+        c.appendChild(commentDiv);
+        c.appendChild(button)
+        comment.appendChild(commentDiv);
+
+        //in case of a normal collision, the old comment is removed
+        comments.forEach(e => {
+          if(this.hasCollision(e, commentDiv)){
+            e.remove();
+          }
+        })
+        return;
+      }
+
+      if(event.type === 'quote'|| event.type === 'intertext'){
+        let commentDiv = this.createCommentDiv(event, null, elem, event.type);
+        //in case of an inline collision (due to nested elements, the comment is placed directly beneath the other comment)
+        comments.forEach(e => {
+          const eBCR = e.getBoundingClientRect();
+          if(eBCR.top === commentDiv.style.top){
+            commentDiv.style.top = commentDiv.style.top + eBCR.height;
+          }
+        })
         comment.appendChild(commentDiv);
 
         //in case of a normal collision, the old comment is removed
@@ -708,6 +734,24 @@ export default {
           });
         }
 
+      } else if(event.type === 'quote' || event.type === 'intertext'){
+        if(event.pmbId === '' || event.pmbId === null){
+          div.innerHTML = 'nicht erfasst'
+        }else if(event.pmbId.includes('#')){
+          getPMBObjectWithId(event.pmbId.substring(1), 'quote', rs=>{
+            let url = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + rs.id + "/detail"
+            div.innerHTML="PMB: " + "<a href='"+url+"' target='_blank'>"+ rs.name + "</a>";
+          });
+        } else if(event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus")){
+          let filename = event.pmbId.substring(event.pmbId.lastIndexOf('/')+1)
+          this.caseInfo.then(data => {
+            let c = data.cases.filter(c => c.id.includes(this.colXmlId))[0];
+            let d = c.doc_objs.filter(d => d.id.includes(filename))[0];
+            let id = d.id.substring(3, d.id.length-4).replaceAll('-','.').replaceAll('0','');
+
+            div.innerHTML = id.substring(0, id.length-1) + " "+ d.title;
+          });
+        }
       }
 
       div.style.position = "absolute";
@@ -733,7 +777,13 @@ export default {
               routeData = self.$router.resolve({name: "lesefassung", params: {id: rs} });
               window.open(routeData.href, '_blank');
             });
-
+          } else if(type === 'quote' || type === 'intertext'){
+            let idx = event.pmbId.lastIndexOf('/');
+            let xmlId = event.pmbId.substring(idx +1);
+            getColArcheIdFromColXmlId(xmlId, rs => {
+              routeData = self.$router.resolve({name: "lesefassung", params: {id: rs} });
+              window.open(routeData.href, '_blank');
+            });
           }
 
           window.open(routeData.href, '_blank');
@@ -1201,7 +1251,7 @@ export default {
   width: 95%;
 }
 
-.person, .work, .institution, .place {
+.person, .work, .institution, .place, .quote, .quote-spoken {
   cursor: pointer;
 }
 
