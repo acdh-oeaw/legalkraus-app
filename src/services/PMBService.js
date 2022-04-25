@@ -1,7 +1,6 @@
 //https://pmb.acdh.oeaw.ac.at/entity/${resourceId}/
 
 module.exports.getObjectWithId = async (resourceId, type, callback) => {
-    console.log(resourceId)
     if (resourceId.startsWith('#pmb')) {
         resourceId = resourceId.substring(4); //removes the leading '#pmb'
     }

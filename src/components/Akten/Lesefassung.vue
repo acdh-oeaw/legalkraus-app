@@ -446,6 +446,7 @@ export default {
         },
         methods: {
           navigateTo(pmbId, type, event) {
+            console.log(event)
             this.$emit('childToParent', {pmbId: pmbId, type: type, htmlId: event.target.id});
           },
         }
@@ -601,9 +602,11 @@ export default {
       }
     },
     async childToParent(event) {
+      console.log(event)
       this.toggleFacs(); //hide facsimile, switch to text-only view
       await new Promise(resolve => setTimeout(resolve, 500)); //vue needs time to change to card-full view
       let elem = document.getElementById(event.htmlId);
+      console.log(elem)
       const comments = document.querySelectorAll('.comment');
 
       const comment = document.getElementById("comments");
@@ -661,9 +664,19 @@ export default {
       div.style.justifyContent = "flex-start";
 
       if (type === 'person') {
-        div.innerHTML = rs.name + ", " + rs.first_name + ", <br> " +  rs.profession[0].name;
+        if(rs.profession[0]){
+          div.innerHTML = rs.name + ", " + rs.first_name + ", <br> " +  rs.profession[0].name;
+        }else{
+          div.innerHTML = rs.name + ", " + rs.first_name;
+        }
+
       } else if (type === 'place') {
-        div.innerHTML = rs.name + ", " + rs.kind.name;
+        if(rs.kind.name !== undefined){
+          div.innerHTML = rs.name + ", " + rs.kind.name;
+        }else{
+          div.innerHTML = rs.name;
+        }
+
       } else if (type === 'institution') {
         div.innerHTML = rs.name;
         if(rs.kind && rs.kind.name){

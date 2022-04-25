@@ -708,14 +708,13 @@ export default {
   },
   created() {
     this.setCategory();
-    if (this.query !== null) {
+    if (this.$route.query !== null) {
       this.query = this.$route.query;
     }
 
   },
   async mounted() {
     this.downloadRegistry();
-
 
   },
   watch: {
