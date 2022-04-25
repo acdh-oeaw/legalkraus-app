@@ -25,6 +25,7 @@ import Benutzungshinweise from "../components/Projekt/Benutzungshinweise";
 import Lizenzen from "../components/Projekt/Lizenzen";
 import Dokumentation from "../components/Projekt/Dokumentation";
 import Register from "../components/Register/Register";
+import Stats from "../components/Statistiken/Stats";
 
 
 Vue.use(Router)

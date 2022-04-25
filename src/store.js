@@ -21,7 +21,11 @@ export default new Vuex.Store({
         resourcePageSize: 10,
         MDAllResources: null,
         MDAllCollections: null,
-        caseInfo: null
+        caseInfo: null,
+        vocabs: {},
+        topConceptsCases:{},
+        vocabReady:false,
+        groupedCases: {}
         
     },
 
@@ -55,6 +59,21 @@ export default new Vuex.Store({
         },
         caseInfo: state => {
             return state.caseInfo;
+        },
+        vocabs: state => {
+            return state.vocabs;
+        },
+        topConceptsCases: state => {
+            return state.topConceptsCases
+        },
+        getConceptWithCases: (state) => (label) => {
+            return Object.values(state.vocabs).filter(concept => concept.label === label)[0]
+        },
+        vocabReady: state => {
+            return state.vocabReady
+        },
+        getGroupedCases: (state) => (groupingkey) => {
+            return state.groupedCases[groupingkey]
         }
     },
 
@@ -104,6 +123,24 @@ export default new Vuex.Store({
         },
         MUTATE_CASEINFO: (state, caseInfo) => {
             Vue.set(state, 'caseInfo', caseInfo)
+        },
+        MUTATE_VOCABS: (state, vocabs) => {
+            Vue.set(state, 'vocabs', vocabs)
+        },
+        ADD_CONCEPT: (state,concept) => {
+            Vue.set(state.vocabs,concept.uri,concept);
+        },
+        MUTATE_CONCEPT: (state,conceptinfo) => {
+            Vue.set(state.vocabs[conceptinfo.uri],conceptinfo.propname,conceptinfo.propval);
+        },
+        MUTATE_TOP_CONCEPTS_CASES: (state,topconceptscases) => {
+            Vue.set(state.topConceptsCases, topconceptscases);
+        },
+        MUTATE_VOCAB_READY: (state,vocabready) => {
+            state.vocabReady = vocabready;
+        },
+        MUTATE_GROUPED_CASES: (state, groupedcases) => {
+            Vue.set(state, 'groupedCases', groupedcases);
         }
     },
 
@@ -140,6 +177,24 @@ export default new Vuex.Store({
         },
         setCaseInfo: (context, caseInfo) => {
             context.commit('MUTATE_CASEINFO', caseInfo);
+        },
+        setVocabs: (context, vocabs) => {
+             context.commit('MUTATE_VOCABS', vocabs);
+        },
+        addConcept: (context, concept) => {
+            context.commit('ADD_CONCEPT', concept);
+        },
+        updateConcept: (context, conceptinfo) => {
+            context.commit('MUTATE_CONCEPT', conceptinfo);
+        },
+        setTopConceptsCases: (context, topconceptscases) => {
+            context.commit(' MUTATE_TOP_CONCEPTS_CASES', topconceptscases);
+        },
+        setVocabReady: (context, vocabready) => {
+            context.commit('MUTATE_VOCAB_READY', vocabready);
+        },
+        setGroupedCases: (context, groupedcases) => {
+            context.commit('MUTATE_GROUPED_CASES', groupedcases);
         }
     }
 });
