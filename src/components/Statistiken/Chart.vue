@@ -130,7 +130,7 @@ export default {
           this.years.forEach((year) => {
             totals.push(
               
-              this.$store.getters.caseInfo.cases.filter(
+              this.$store.getters.cases.filter(
                     (cs) => new Date(cs.start_date).getFullYear() === year
                   ).length
             );

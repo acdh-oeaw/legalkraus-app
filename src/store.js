@@ -25,7 +25,8 @@ export default new Vuex.Store({
         vocabs: {},
         topConceptsCases:{},
         vocabReady:false,
-        groupedCases: {}
+        groupedCases: {},
+        cases: null
         
     },
 
@@ -74,6 +75,9 @@ export default new Vuex.Store({
         },
         getGroupedCases: (state) => (groupingkey) => {
             return state.groupedCases[groupingkey]
+        },
+        cases: state => {
+            return state.cases
         }
     },
 
@@ -141,6 +145,9 @@ export default new Vuex.Store({
         },
         MUTATE_GROUPED_CASES: (state, groupedcases) => {
             Vue.set(state, 'groupedCases', groupedcases);
+        },
+        MUTATE_CASES: (state, cases) => {
+            Vue.set(state, 'cases', cases);
         }
     },
 
@@ -195,6 +202,9 @@ export default new Vuex.Store({
         },
         setGroupedCases: (context, groupedcases) => {
             context.commit('MUTATE_GROUPED_CASES', groupedcases);
+        },
+        setCases: (context, cases) => {
+            context.commit('MUTATE_CASES', cases);
         }
     }
 });

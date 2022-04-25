@@ -154,7 +154,7 @@ export default {
     getArcheCollections(ctx, callback) {
       const offset =
         ctx.currentPage === 1 ? 0 : (ctx.currentPage - 1) * ctx.perPage;
-      let items = this.$store.getters.caseInfo.cases;
+      let items = this.$store.getters.cases;
       if (this.filterParams) {
         const filterprop = this.filterParams[0];
        
