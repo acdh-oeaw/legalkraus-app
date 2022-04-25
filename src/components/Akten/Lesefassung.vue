@@ -254,80 +254,84 @@
             Download PDF
           </a>
         </div>
-        <div class="card card-full bg-light">
-          <div class="header">
-            <div class="all-annotations">
+        <div class="text-comment-wrap">
+          <div class="card card-full bg-light">
+            <div class="header">
+              <div class="all-annotations">
+                <b-form-checkbox
+                    v-model="showAllAnnotations"
+                    value="true"
+                    unchecked-value="false"
+                    v-on:change="updateAllHighlighters()"
+                    switch
+                    size="lg"
+                >Alle Annotationen
+                </b-form-checkbox>
+
+              </div>
+            </div>
+            <div class="toggles">
               <b-form-checkbox
-                  v-model="showAllAnnotations"
-                  value="true"
-                  unchecked-value="false"
-                  v-on:change="updateAllHighlighters()"
+                  id="pe-toggle"
+                  v-model="highlighter['person']"
+                  v-on:change="updateHighlighter('person', highlighter['person'])"
                   switch
-                  size="lg"
-              >Alle Annotationen
+              >
+                Personen
+              </b-form-checkbox>
+              <b-form-checkbox
+                  id="i-toggle"
+                  v-model="highlighter['institution']"
+                  v-on:change="updateHighlighter('institution', highlighter['institution'])"
+                  switch
+              >
+                Institution
+              </b-form-checkbox>
+
+              <b-form-checkbox
+                  id="pl-toggle"
+                  v-model="highlighter['place']"
+                  v-on:change="updateHighlighter('place', highlighter['place'])"
+                  switch
+              >
+                Place
+              </b-form-checkbox>
+
+              <b-form-checkbox
+                  id="l-toggle"
+                  v-model="highlighter['law']"
+                  v-on:change="updateHighlighter('law', highlighter['law'])"
+                  switch
+              >
+                jur. Texte
+              </b-form-checkbox>
+              <b-form-checkbox
+                  id="w-toggle"
+                  v-model="highlighter['work']"
+                  v-on:change="updateHighlighter('work', highlighter['work'])"
+                  switch
+              >
+                Werke
+              </b-form-checkbox>
+
+              <b-form-checkbox
+                  id="q-toggle"
+                  v-model="highlighter['quote']"
+                  v-on:change="updateHighlighter('quote', highlighter['quote'])"
+                  switch
+              >
+                Zitat
               </b-form-checkbox>
 
             </div>
-          </div>
-          <div class="toggles">
-            <b-form-checkbox
-                id="pe-toggle"
-                v-model="highlighter['person']"
-                v-on:change="updateHighlighter('person', highlighter['person'])"
-                switch
-            >
-              Personen
-            </b-form-checkbox>
-            <b-form-checkbox
-                id="i-toggle"
-                v-model="highlighter['institution']"
-                v-on:change="updateHighlighter('institution', highlighter['institution'])"
-                switch
-            >
-              Institution
-            </b-form-checkbox>
 
-            <b-form-checkbox
-                id="pl-toggle"
-                v-model="highlighter['place']"
-                v-on:change="updateHighlighter('place', highlighter['place'])"
-                switch
-            >
-              Place
-            </b-form-checkbox>
-
-            <b-form-checkbox
-                id="l-toggle"
-                v-model="highlighter['law']"
-                v-on:change="updateHighlighter('law', highlighter['law'])"
-                switch
-            >
-              jur. Texte
-            </b-form-checkbox>
-            <b-form-checkbox
-                id="w-toggle"
-                v-model="highlighter['work']"
-                v-on:change="updateHighlighter('work', highlighter['work'])"
-                switch
-            >
-              Werke
-            </b-form-checkbox>
-
-            <b-form-checkbox
-                id="q-toggle"
-                v-model="highlighter['quote']"
-                v-on:change="updateHighlighter('quote', highlighter['quote'])"
-                switch
-            >
-              Zitat
-            </b-form-checkbox>
+            <div class="body row m-0 overflow-auto">
+              <component class="col-9" v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"
+                         v-on:child-mounted="childMounted"/>
+            </div>
 
           </div>
-          <div class="body row m-0 overflow-auto">
-            <component class="col-9" v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"
-                       v-on:child-mounted="childMounted"/>
-            <div class="col-3 position-relative" id="comments"></div>
-          </div>
+          <div class="comments" id="comments"></div>
         </div>
       </div>
 
@@ -430,14 +434,14 @@ export default {
         template,
         mounted() {
           this.$refs['readview'].querySelectorAll("[data-pgnr]").forEach((page) => {
-            page.querySelectorAll(".lb").forEach((lb,idx) => {
-              const ln = idx + 1;
-              if (ln % 5 === 0) {
-                lb.setAttribute('data-lbnr', idx + 1);
+                page.querySelectorAll(".lb").forEach((lb, idx) => {
+                  const ln = idx + 1;
+                  if (ln % 5 === 0) {
+                    lb.setAttribute('data-lbnr', idx + 1);
+                  }
+                });
+                this.$parent.childMounted();
               }
-            });
-            this.$parent.childMounted();
-          }
           )
         },
         computed: {
@@ -446,7 +450,7 @@ export default {
             highlighter: 'highlighter'
           }),
           currentFacsUrl() {
-              return this.$parent.getCurrentFacs();
+            return this.$parent.getCurrentFacs();
           },
         },
         methods: {
@@ -473,7 +477,7 @@ export default {
       //found next mark; reset idxCurrMark
       this.idxCurrMark = 0;
       let page = men_id[0].closest('[data-pgnr]').dataset.pgnr;
-      while(this.selectedPage < page){
+      while (this.selectedPage < page) {
         this.next();
       }
       men_id.item(0).classList.add("current-mark");
@@ -601,13 +605,14 @@ export default {
       if (this.keyword) {
         this.highlightOnMounted(this.keyword);
       }
-      if(this.$route.query.q){
+      if (this.$route.query.q) {
         this.highlightQueryOnMounted(this.$route.query.q);
       }
     },
     async childToParent(event) {
+      console.log(event)
       //comment should only be generated if annotations for this type are highlighted
-      if(!this.highlighter[event.type]){
+      if (!this.highlighter[event.type]) {
         return;
       }
       this.toggleFacs(); //hide facsimile, switch to text-only view
@@ -623,7 +628,7 @@ export default {
         //in case of an inline collision (due to nested elements, the comment is placed directly beneath the other comment)
         comments.forEach(e => {
           const eBCR = e.getBoundingClientRect();
-          if(eBCR.top === commentDiv.style.top){
+          if (eBCR.top === commentDiv.style.top) {
             commentDiv.style.top = commentDiv.style.top + eBCR.height;
           }
         })
@@ -638,19 +643,19 @@ export default {
 
         //in case of a normal collision, the old comment is removed
         comments.forEach(e => {
-          if(this.hasCollision(e, commentDiv)){
+          if (this.hasCollision(e, commentDiv)) {
             e.remove();
           }
         })
         return;
       }
 
-      if(event.type === 'quote'|| event.type === 'intertext'){
+      if (event.type === 'quote' || event.type === 'intertext') {
         let commentDiv = this.createCommentDiv(event, null, elem, event.type);
         //in case of an inline collision (due to nested elements, the comment is placed directly beneath the other comment)
         comments.forEach(e => {
           const eBCR = e.getBoundingClientRect();
-          if(eBCR.top === commentDiv.style.top){
+          if (eBCR.top === commentDiv.style.top) {
             commentDiv.style.top = commentDiv.style.top + eBCR.height;
           }
         })
@@ -658,7 +663,7 @@ export default {
 
         //in case of a normal collision, the old comment is removed
         comments.forEach(e => {
-          if(this.hasCollision(e, commentDiv)){
+          if (this.hasCollision(e, commentDiv)) {
             e.remove();
           }
         })
@@ -668,11 +673,11 @@ export default {
       getPMBObjectWithId(event.pmbId, event.type, (rs) => {
         let commentDiv = this.createCommentDiv(event, rs, elem, event.type);
         //in case of an inline collision (due to nested elements, the comment is placed directly beneath the other comment)
-         const curcomments = document.querySelectorAll('.comment');
+        const curcomments = document.querySelectorAll('.comment');
         curcomments.forEach(e => {
           const eBCR = e.getBoundingClientRect();
-          if(e.style.top === commentDiv.style.top){
-            commentDiv.style.top = `${parseInt(commentDiv.style.top.replace('px',''),10) + eBCR.height}px`
+          if (e.style.top === commentDiv.style.top) {
+            commentDiv.style.top = `${parseInt(commentDiv.style.top.replace('px', ''), 10) + eBCR.height}px`
           }
         })
 
@@ -680,108 +685,109 @@ export default {
 
         //in case of a normal collision, the old comment is removed
         comments.forEach(e => {
-          if(this.hasCollision(e, commentDiv)){
+          if (this.hasCollision(e, commentDiv)) {
             e.remove();
           }
         })
       });
     },
     createCommentDiv(event, rs, elem, type) {
+      console.log(elem)
+      console.log(event)
       var div = document.createElement('div');
       div.className = "comment";
       div.style.color = "var(--text-black)";
-      div.style.backgroundColor = "var(--comment-brown)";
       div.style.fontSize = "0.8rem";
       div.style.padding = "0 0.2rem 0 0.2rem";
       div.style.display = "flex";
       div.style.justifyContent = "flex-start";
 
       if (type === 'person') {
-        if(rs.profession[0]){
-          div.innerHTML = rs.name + ", " + rs.first_name + ", <br> " +  rs.profession[0].name;
-        }else{
-          div.innerHTML = rs.name + ", " + rs.first_name;
+        if (rs.profession[0]) {
+          div.innerHTML = "<b>|</b>&nbsp;" + rs.name + ", " + rs.first_name + ", <br> " + rs.profession[0].name;
+        } else {
+          div.innerHTML = "<b>|</b>&nbsp;" + rs.name + ", " + rs.first_name;
         }
 
       } else if (type === 'place') {
-        if(rs.kind.name !== undefined){
-          div.innerHTML = rs.name + ", " + rs.kind.name;
-        }else{
-          div.innerHTML = rs.name;
+        if (rs.kind.name !== undefined) {
+          div.innerHTML = "<b>|</b>&nbsp;" + rs.name + ", " + rs.kind.name;
+        } else {
+          div.innerHTML = "<b>|</b>&nbsp;" + rs.name;
         }
 
       } else if (type === 'institution') {
-        div.innerHTML = rs.name;
-        if(rs.kind && rs.kind.name){
-          div.innerHTML = rs.name + ', ' + rs.kind.name;
+        div.innerHTML = "<b>|</b>&nbsp;" + rs.name;
+        if (rs.kind && rs.kind.name) {
+          div.innerHTML = "<b>|</b>&nbsp;" + rs.name + ', ' + rs.kind.name;
         }
       } else if (type === 'work') {
-        if(event.pmbId === '' || event.pmbId === null){
-          div.innerHTML = 'nicht erfasst'
-        }else if(event.pmbId.includes('pmb')){
-          getPMBObjectWithId(event.pmbId, 'work', rs=>{
+        if (event.pmbId === '' || event.pmbId === null) {
+          div.innerHTML = "<b>|</b>&nbsp;" + 'nicht erfasst'
+        } else if (event.pmbId.includes('pmb')) {
+          getPMBObjectWithId(event.pmbId, 'work', rs => {
             let url = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + rs.id + "/detail"
-            div.innerHTML="PMB: " + "<a href='"+url+"' target='_blank'>"+ rs.name + "</a>";
+            div.innerHTML = "<b>|</b>&nbsp;" + "PMB: " + "<a href='" + url + "' target='_blank'>" + rs.name + "</a>";
           });
-        }else if(event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus")){
-          let filename = event.pmbId.substring(event.pmbId.lastIndexOf('/')+1)
+        } else if (event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus")) {
+          let filename = event.pmbId.substring(event.pmbId.lastIndexOf('/') + 1)
           this.caseInfo.then(data => {
             let c = data.cases.filter(c => c.id.includes(this.colXmlId))[0];
             let d = c.doc_objs.filter(d => d.id.includes(filename))[0];
-            let id = d.id.substring(3, d.id.length-4).replaceAll('-','.').replaceAll('0','');
+            let id = d.id.substring(3, d.id.length - 4).replaceAll('-', '.').replaceAll('0', '');
 
-            div.innerHTML = id.substring(0, id.length-1) + " "+ d.title;
+            div.innerHTML = id.substring(0, id.length - 1) + " " + d.title;
           });
         }
 
-      } else if(event.type === 'quote' || event.type === 'intertext'){
-        if(event.pmbId === '' || event.pmbId === null){
-          div.innerHTML = 'nicht erfasst'
-        }else if(event.pmbId.includes('#')){
-          getPMBObjectWithId(event.pmbId.substring(1), 'quote', rs=>{
+      } else if (event.type === 'quote' || event.type === 'intertext') {
+        if (event.pmbId === '' || event.pmbId === null) {
+          div.innerHTML = "<b>|</b>&nbsp;" + 'nicht erfasst'
+        } else if (event.pmbId.includes('#')) {
+          getPMBObjectWithId(event.pmbId.substring(1), 'quote', rs => {
             let url = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + rs.id + "/detail"
-            div.innerHTML="PMB: " + "<a href='"+url+"' target='_blank'>"+ rs.name + "</a>";
+            div.innerHTML = "<b>|</b>&nbsp;" + "PMB: " + "<a href='" + url + "' target='_blank'>" + rs.name + "</a>";
           });
-        } else if(event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus")){
-          let filename = event.pmbId.substring(event.pmbId.lastIndexOf('/')+1)
+        } else if (event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus")) {
+          let filename = event.pmbId.substring(event.pmbId.lastIndexOf('/') + 1)
           this.caseInfo.then(data => {
             let c = data.cases.filter(c => c.id.includes(this.colXmlId))[0];
             let d = c.doc_objs.filter(d => d.id.includes(filename))[0];
-            let id = d.id.substring(3, d.id.length-4).replaceAll('-','.').replaceAll('0','');
+            let id = d.id.substring(3, d.id.length - 4).replaceAll('-', '.').replaceAll('0', '');
 
-            div.innerHTML = id.substring(0, id.length-1) + " "+ d.title;
+            div.innerHTML = "<b>|</b>&nbsp;" + id.substring(0, id.length - 1) + " " + d.title;
           });
         }
       }
-
+      const comment = document.getElementById("comments");
       div.style.position = "absolute";
       div.style.cursor = "pointer";
-      div.style.top = elem.offsetTop + "px";
+      div.style.top = elem.offsetTop + elem.parentElement.offsetTop + elem.parentElement.parentElement.offsetTop + elem.parentElement.parentElement.parentElement.offsetTop + comment.offsetTop + "px";
 
       let self = this; //"this" cannot be used in JS functions
 
       //if a work only refers to a pmb entry, no onclick function is needed
-      if(!(type === 'work' && event.pmbId && event.pmbId.includes('pmb'))){
+      if (!(type === 'work' && event.pmbId && event.pmbId.includes('pmb'))) {
         div.onclick = function () {
           let routeData = "";
           if (type === 'person') {
-            routeData = self.$router.resolve({name: "pReg", query: {pmbId: event.pmbId} });
+            routeData = self.$router.resolve({name: "pReg", query: {pmbId: event.pmbId}});
           } else if (type === 'place') {
-            routeData = self.$router.resolve({name: "oReg", query: {pmbId: event.pmbId} });
+            routeData = self.$router.resolve({name: "oReg", query: {pmbId: event.pmbId}});
           } else if (type === 'institution') {
-            routeData = self.$router.resolve({name: "iReg", query: {pmbId: event.pmbId} });
+            routeData = self.$router.resolve({name: "iReg", query: {pmbId: event.pmbId}});
           } else if (type === 'work') {
             let idx = event.pmbId.lastIndexOf('/');
-            let xmlId = event.pmbId.substring(idx +1) + '.xml';
+            let xmlId = event.pmbId.substring(idx + 1) + '.xml';
             getColArcheIdFromColXmlId(xmlId, rs => {
-              routeData = self.$router.resolve({name: "lesefassung", params: {id: rs} });
+              routeData = self.$router.resolve({name: "lesefassung", params: {id: rs}});
               window.open(routeData.href, '_blank');
             });
-          } else if(type === 'quote' || type === 'intertext'){
+          } else if (type === 'quote' || type === 'intertext') {
             let idx = event.pmbId.lastIndexOf('/');
-            let xmlId = event.pmbId.substring(idx +1);
+            let xmlId = event.pmbId.substring(idx + 1);
             getColArcheIdFromColXmlId(xmlId, rs => {
-              routeData = self.$router.resolve({name: "lesefassung", params: {id: rs} });
+              routeData = self.$router.resolve({name: "lesefassung", params: {id: rs}});
               window.open(routeData.href, '_blank');
             });
           }
@@ -909,15 +915,15 @@ export default {
 
     this.cat = this.$route.params.cat.toLowerCase();
 
-    if(this.$route.params.subcat.toLowerCase() === "berichtigung (ausgang)"){
+    if (this.$route.params.subcat.toLowerCase() === "berichtigung (ausgang)") {
       this.subcat = 'berichtigung'
-    } else if(this.$route.params.subcat.toLowerCase().includes('tageblatt')){
+    } else if (this.$route.params.subcat.toLowerCase().includes('tageblatt')) {
       this.subcat = "berliner-tageblatt";
-    } else if(this.$route.params.subcat.toLowerCase().includes('stunde')){
+    } else if (this.$route.params.subcat.toLowerCase().includes('stunde')) {
       this.subcat = "die-stunde";
-    } else if(this.$route.params.subcat.toLowerCase().includes('schober')){
+    } else if (this.$route.params.subcat.toLowerCase().includes('schober')) {
       this.subcat = "schober";
-    }else{
+    } else {
       this.subcat = this.$route.params.subcat.toLowerCase();
     }
 
@@ -1489,8 +1495,17 @@ mark {
 
 .comment {
   max-width: 100%;
-  width: 100%;
   word-break: break-all;
+  text-align: left;
+}
+
+.text-comment-wrap {
+  display: flex;
+}
+
+.comments {
+  width: 30%;
+  margin-left: 1rem;
 }
 </style>
 
