@@ -153,7 +153,7 @@
     </xsl:template>
 
     <xsl:template match="tei:quote">
-        <entity-span id="{generate-id()}" class="quote {@source}" v-on:click="navigateTo('{@source}', '{@type}', $event)">
+        <entity-span id="{generate-id()}" class="quote {@source}" v-on:click="navigateTo('{@source}', 'quote', $event)">
             <xsl:attribute name="v-bind:class">
                 <xsl:text>{ highlighter: highlighter.quote }</xsl:text>
             </xsl:attribute>
