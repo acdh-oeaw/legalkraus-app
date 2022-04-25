@@ -101,7 +101,7 @@
     <xsl:template match="tei:rs">
         <xsl:choose>
             <xsl:when test="@type = 'person'">
-                <entity-span id="{generate-id()}" class="person" v-on:click="navigateTo('{@ref}', '{@type}' , $event)">
+                <entity-span id="{generate-id()}" class="person {@ref}" v-on:click="navigateTo('{@ref}', '{@type}' , $event)">
                     <xsl:attribute name="v-bind:class">
                         <xsl:text>{ highlighter: highlighter.person }</xsl:text>
                     </xsl:attribute>
@@ -110,7 +110,7 @@
             </xsl:when>
 
             <xsl:when test="@type = 'institution'">
-                <entity-span id="{generate-id()}" class="institution" v-on:click="navigateTo('{@ref}', '{@type}', $event)">
+                <entity-span id="{generate-id()}" class="institution {@ref}" v-on:click="navigateTo('{@ref}', '{@type}', $event)">
                     <xsl:attribute name="v-bind:class">
                         <xsl:text>{ highlighter: highlighter.institution }</xsl:text>
                     </xsl:attribute>
@@ -119,7 +119,7 @@
             </xsl:when>
 
             <xsl:when test="@type = 'place'">
-                <entity-span id="{generate-id()}" class="place" v-on:click="navigateTo('{@ref}', '{@type}', $event)">
+                <entity-span id="{generate-id()}" class="place {@ref}" v-on:click="navigateTo('{@ref}', '{@type}', $event)">
                     <xsl:attribute name="v-bind:class">
                         <xsl:text>{ highlighter: highlighter.place }</xsl:text>
                     </xsl:attribute>
@@ -128,7 +128,7 @@
             </xsl:when>
 
             <xsl:when test="@type = 'law'">
-                <span class="law">
+                <span class="law {@ref}">
                     <xsl:attribute name="v-bind:class">
                         <xsl:text>{ highlighter: highlighter.law }</xsl:text>
                     </xsl:attribute>

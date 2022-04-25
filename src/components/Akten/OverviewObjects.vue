@@ -3,11 +3,11 @@
     <div class="filter-nav">
       <p v-if="categorySet" class="navigation">Akten-Edition
         <span class="arrow">></span>
-        <router-link router-link class="nav-link" :to="'/' + catLower">
+        <router-link router-link class="nav-link" :to="'/akten-edition/' + catLower">
           {{ this.category }}
         </router-link>
         <span class="arrow">></span>
-        <router-link router-link class="nav-link" :to="'/' + catLower + '/'+ subCatLower +'/collections'">
+        <router-link router-link class="nav-link" :to="'/akten-edition/' + catLower + '/'+ subCatLower +'/collections'">
           {{ this.subCategory }}
         </router-link>
         <span class="arrow">></span>
@@ -77,7 +77,7 @@
                @error="fallbackImage" alt="facsimile"
                v-on:click="navToLesefassung(val)">
           <div class="case-data scroll">
-            <h6 class="card-title" v-on:click="navToLesefassung(val)"> Titel: <b>{{ val.title }}</b></h6>
+            <h6 class="card-title" v-on:click="navToLesefassung(val)"><b>{{ val.title }}</b></h6>
             <span v-if="val.actors.length > 0">
               <p> <b>Beteiligte:</b> </p>
             <div class="pmb-link" v-for="a in val.actorObjs" :key="a.identifier" v-on:click="navToPMBActor($event, a)"><!--   v-on:click="navToPMB($event, a)"-->
@@ -160,7 +160,11 @@ export default {
       fK: 'Die Fackel',
       tK: 'Theater',
       vK: 'Verlagswesen',
-      pK: 'Die großen Polemiken',
+      mK: 'Medienhistorisches',
+      bK: 'Berichtigung (Ausgang)',
+      bbK: 'Berliner Tageblatt, Kerr, Wolff',
+      sK: 'Die Stunde, Békessy',
+      schK: 'Schober, 15. Juli 1927',
       sP: 'Sozialdemokratie',
       cP: 'Christlich-National',
       nP: 'Nationalsozialismus'
@@ -240,8 +244,16 @@ export default {
         this.subCategory = this.tK;
       } else if (this.path.toString().includes('verlagswesen')) {
         this.subCategory = this.vK;
-      } else if (this.path.toString().includes('polemiken')) {
-        this.subCategory = this.pK;
+      } else if (this.path.toString().includes('stunde')) {
+        this.subCategory = this.sK;
+      } else if (this.path.toString().includes('schober')) {
+        this.subCategory = this.schK;
+      } else if (this.path.toString().includes('tageblatt')) {
+        this.subCategory = this.bbK;
+      }else if (this.path.toString().includes('medienhistorisches')) {
+        this.subCategory = this.mK;
+      }else if (this.path.toString().includes('berichtigung')) {
+        this.subCategory = this.bK;
       } else if (this.path.toString().includes('sozialdemokratie')) {
         this.subCategory = this.sP;
       } else if (this.path.toString().includes('christlich-national')) {
@@ -252,8 +264,12 @@ export default {
 
       if (this.subCategory === this.fK) {
         this.subCatLower = 'fackel';
-      } else if (this.subCategory === this.pK) {
-        this.subCatLower = 'polemiken';
+      } else if (this.subCategory === this.sK) {
+        this.subCatLower = 'die-stunde';
+      } else if (this.subCategory === this.schK) {
+        this.subCatLower = 'schober';
+      } else if (this.subCategory === this.bbK) {
+        this.subCatLower = 'berliner-tageblatt';
       } else {
         this.subCatLower = this.subCategory.toString().toLowerCase();
       }
@@ -406,6 +422,14 @@ export default {
 
         getObjectsOfCollection(this.colId, async (result) => {
           let objs = result.filter(r => !r.identifier.includes('C_'));
+          objs.sort(function(a,b){
+            let aId = a.identifier.substring(a.identifier.lastIndexOf('/') + 1);
+            let bId = b.identifier.substring(b.identifier.lastIndexOf('/') + 1);
+            let aIdNum = parseInt(aId.replace("D_","").replaceAll('-',''));
+            let bIdNum = parseInt(bId.replace("D_","").replaceAll('-',''));
+
+            return aIdNum - bIdNum;
+          });
 
           //get facs preview, actors, places
           for (const o of objs) {

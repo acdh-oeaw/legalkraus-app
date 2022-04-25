@@ -3,17 +3,17 @@
     <Search class="py-2" v-bind:col-id="colId" v-bind:rs-id="objectId"></Search>
     <p v-if="propsSet" class="navigation">Akten-Edition
       <span class="arrow">></span>
-      <router-link router-link class="nav-link" :to="'/' + this.$route.params.cat.toLowerCase()">
+      <router-link router-link class="nav-link" :to="'/akten-edition/' + this.cat">
         {{ this.$route.params.cat }}
       </router-link>
       <span class="arrow">></span>
       <router-link router-link class="nav-link"
-                   :to="'/' + this.$route.params.cat.toLowerCase() + '/'+ this.$route.params.subcat.toLowerCase() +'/collections'">
+                   :to="'/akten-edition/' + this.cat + '/'+ this.subcat +'/collections'">
         {{ this.$route.params.subcat }}
       </router-link>
       <span class="arrow">></span>
       <router-link router-link class="nav-link"
-                   :to="'/' + this.$route.params.cat.toLowerCase() + '/'+ this.$route.params.subcat.toLowerCase() +'/objects/'+ this.colId">
+                   :to="'/akten-edition/' + this.cat + '/'+ this.subcat +'/objects/'+ this.colId">
         {{ this.colTitle }}
       </router-link>
       <span class="arrow">></span>
@@ -31,7 +31,7 @@
     <div class="meta-data">
       <p class="meta1">Metadaten Fall:</p>
       <div class="meta2">
-        <router-link class="back" to="/">Titel: {{ this.colTitle }}</router-link>
+        <router-link class="back" to="/">{{ this.colTitle }}</router-link>
         <p>Anzahl Dokumente: {{ this.colSize }}</p>
       </div>
       <div class="vl meta3"></div>
@@ -386,6 +386,7 @@ export default {
       colSize: Number,
       colUrl: String,
       colId: String,
+      colXmlId: String,
       objectTitle: String,
       showLF: true,
       showFacs: true,
@@ -406,7 +407,10 @@ export default {
       actors: [],
       marks: [],
       idxCurrMark: 0,
-      actorsClosed: true
+      actorsClosed: true,
+      cat: null,
+      subcat: null,
+      caseInfo: null
     }
   },
   computed: {
@@ -445,6 +449,7 @@ export default {
         },
         methods: {
           navigateTo(pmbId, type, event) {
+            console.log(event)
             this.$emit('childToParent', {pmbId: pmbId, type: type, htmlId: event.target.id});
           },
         }
@@ -453,21 +458,25 @@ export default {
   },
   methods: {
     async highlightQueryOnMounted(q) {
+      await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
       let men_id = document.getElementsByClassName("#" + q);
 
       //if class not found: go to next page until found
-      while (this.facsURLs.length > this.selectedPage) {
+      while (men_id.length === 0 && this.facsURLs.length > this.selectedPage) {
         //there is at least one more page
         this.next();
         await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
         men_id = document.getElementsByClassName("#" + q);
-        if (men_id.length > 0) {
-          //found next mark; reset idxCurrMark
-          this.idxCurrMark = 0;
-          break;
-        }
+
+      }
+      //found next mark; reset idxCurrMark
+      this.idxCurrMark = 0;
+      let page = men_id[0].closest('[data-pgnr]').dataset.pgnr;
+      while(this.selectedPage < page){
+        this.next();
       }
       men_id.item(0).classList.add("current-mark");
+
     },
     async highlightOnMounted(keyword) {
       var self = this;
@@ -596,9 +605,11 @@ export default {
       }
     },
     async childToParent(event) {
+      console.log(event)
       this.toggleFacs(); //hide facsimile, switch to text-only view
       await new Promise(resolve => setTimeout(resolve, 500)); //vue needs time to change to card-full view
       let elem = document.getElementById(event.htmlId);
+      console.log(elem)
       const comments = document.querySelectorAll('.comment');
 
       const comment = document.getElementById("comments");
@@ -653,16 +664,46 @@ export default {
       div.style.fontSize = "0.8rem";
       div.style.padding = "0 0.2rem 0 0.2rem";
       div.style.display = "flex";
-      div.style.justifyContent = "space-between";
+      div.style.justifyContent = "flex-start";
 
       if (type === 'person') {
-        div.innerHTML = rs.name + ", " + rs.first_name + " (" + rs.start_date + " bis " + rs.end_date + ") " + ", <br> " +  rs.profession[0].name;
+        if(rs.profession[0]){
+          div.innerHTML = rs.name + ", " + rs.first_name + ", <br> " +  rs.profession[0].name;
+        }else{
+          div.innerHTML = rs.name + ", " + rs.first_name;
+        }
+
       } else if (type === 'place') {
-        div.innerHTML = rs.name + ", " + rs.kind.name;
+        if(rs.kind.name !== undefined){
+          div.innerHTML = rs.name + ", " + rs.kind.name;
+        }else{
+          div.innerHTML = rs.name;
+        }
+
       } else if (type === 'institution') {
-        div.innerHTML = rs.name + ', ' + rs.kind.name + " (" + rs.start_date + " bis " + rs.end_date + ") ";
+        div.innerHTML = rs.name;
+        if(rs.kind && rs.kind.name){
+          div.innerHTML = rs.name + ', ' + rs.kind.name;
+        }
       } else if (type === 'work') {
-        div.innerHTML = event.pmbId;
+        if(event.pmbId === '' || event.pmbId === null){
+          div.innerHTML = 'nicht erfasst'
+        }else if(event.pmbId.includes('pmb')){
+          getPMBObjectWithId(event.pmbId, 'work', rs=>{
+            let url = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + rs.id + "/detail"
+            div.innerHTML="PMB: " + "<a href='"+url+"' target='_blank'>"+ rs.name + "</a>";
+          });
+        }else if(event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus")){
+          let filename = event.pmbId.substring(event.pmbId.lastIndexOf('/')+1)
+          this.caseInfo.then(data => {
+            let c = data.cases.filter(c => c.id.includes(this.colXmlId))[0];
+            let d = c.doc_objs.filter(d => d.id.includes(filename))[0];
+            let id = d.id.substring(3, d.id.length-4).replaceAll('-','.').replaceAll('0','');
+
+            div.innerHTML = id.substring(0, id.length-1) + " "+ d.title;
+          });
+        }
+
       }
 
       div.style.position = "absolute";
@@ -671,26 +712,30 @@ export default {
       //div.style.left = rect.right * 0.5 + "px"; //todo: substitute magic number?
 
       let self = this; //"this" cannot be used in JS functions
-      div.onclick = function () {
-        let routeData = "";
-        if (type === 'person') {
-          routeData = self.$router.resolve({name: "pReg", query: {pmbId: event.pmbId} });
-        } else if (type === 'place') {
-          routeData = self.$router.resolve({name: "oReg", query: {pmbId: event.pmbId} });
-        } else if (type === 'institution') {
-          routeData = self.$router.resolve({name: "iReg", query: {pmbId: event.pmbId} });
-        } else if (type === 'work') {
-          let idx = event.pmbId.lastIndexOf('/');
-          let xmlId = event.pmbId.substring(idx +1) + '.xml';
-          getColArcheIdFromColXmlId(xmlId, rs => {
-            routeData = self.$router.resolve({name: "lesefassung", params: {id: rs} });
-            window.open(routeData.href, '_blank');
-          });
 
-        }
+      //if a work only refers to a pmb entry, no onclick function is needed
+      if(!(type === 'work' && event.pmbId && event.pmbId.includes('pmb'))){
+        div.onclick = function () {
+          let routeData = "";
+          if (type === 'person') {
+            routeData = self.$router.resolve({name: "pReg", query: {pmbId: event.pmbId} });
+          } else if (type === 'place') {
+            routeData = self.$router.resolve({name: "oReg", query: {pmbId: event.pmbId} });
+          } else if (type === 'institution') {
+            routeData = self.$router.resolve({name: "iReg", query: {pmbId: event.pmbId} });
+          } else if (type === 'work') {
+            let idx = event.pmbId.lastIndexOf('/');
+            let xmlId = event.pmbId.substring(idx +1) + '.xml';
+            getColArcheIdFromColXmlId(xmlId, rs => {
+              routeData = self.$router.resolve({name: "lesefassung", params: {id: rs} });
+              window.open(routeData.href, '_blank');
+            });
 
-        window.open(routeData.href, '_blank');
-      };
+          }
+
+          window.open(routeData.href, '_blank');
+        };
+      }
 
       return div;
     },
@@ -809,13 +854,30 @@ export default {
       this.$route.params.subcat = "Fackel"
     }
 
+    this.cat = this.$route.params.cat.toLowerCase();
+
+    if(this.$route.params.subcat.toLowerCase() === "berichtigung (ausgang)"){
+      this.subcat = 'berichtigung'
+    } else if(this.$route.params.subcat.toLowerCase().includes('tageblatt')){
+      this.subcat = "berliner-tageblatt";
+    } else if(this.$route.params.subcat.toLowerCase().includes('stunde')){
+      this.subcat = "die-stunde";
+    } else if(this.$route.params.subcat.toLowerCase().includes('schober')){
+      this.subcat = "schober";
+    }else{
+      this.subcat = this.$route.params.subcat.toLowerCase();
+    }
+
+
   },
   mounted() {
+    this.caseInfo = this.$store.getters.caseInfo;
     getCollectionOfObject(this.objectId, (rs) => {
       this.colId = rs[0].id;
       this.colTitle = rs[0].title;
       this.colSize = rs[0].size;
       this.colUrl = rs[0].url;
+      this.colXmlId = rs[0].xmlId;
     });
     getObjectWithId(this.objectId, (rs) => {
       const optionsFilename = {
