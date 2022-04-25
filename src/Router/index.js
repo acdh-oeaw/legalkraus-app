@@ -95,8 +95,6 @@ export default new Router({
         {path: '/projekt/benutzungshinweise', component: Benutzungshinweise},
         {path: '/projekt/lizenzen', component: Lizenzen},
         {path: '/projekt/dokumentation', component: Dokumentation},
-
-
-
+        {path: '/statistik/fallstatistik', name: 'fstat', component: Stats},
     ]
 })

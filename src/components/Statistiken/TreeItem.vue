@@ -16,7 +16,7 @@
       >-->
         
         <span v-if="!isFolder || isFilter">
-        <router-link class="dd-item" :to="{ path: '/alle-akten', query: {filter:filterprop + '-' + this.category +  '.' + (item.prefLabel || item.label || item.title)} }">
+        <router-link class="dd-item" :to="{ path: '/akten-edition/alle-akten', query: {filter:filterprop + '-' + this.category +  '.' + (item.prefLabel || item.label || item.title)} }">
         <span @click="toggle">
          {{item.prefLabel || item.label || item.title}} 
         </span> <span v-if="item.cases">({{item.cases.length}})</span>
