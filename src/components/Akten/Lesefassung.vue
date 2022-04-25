@@ -352,7 +352,16 @@
               d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
       </svg>
     </div>
-
+ <b-modal id="bv-modal-witness" size="xl"  hide-footer>
+    <template #modal-title>
+      Textzeuge
+    </template>
+    <div class="d-block text-center">
+      <div :key="`w${idx}`" v-for="(imgurl,idx) in this.witness">
+      <img :src="witnessImageSize(imgurl)"/>
+      </div>
+    </div>
+  </b-modal>
   </div>
 </template>
 
@@ -410,7 +419,8 @@ export default {
       actorsClosed: true,
       cat: null,
       subcat: null,
-      caseInfo: null
+      caseInfo: null,
+      witness: []
     }
   },
   computed: {
@@ -454,11 +464,19 @@ export default {
             console.log(event)
             this.$emit('childToParent', {pmbId: pmbId, type: type, htmlId: event.target.id});
           },
+          setWitness(val) {
+            console.log(val)
+            this.$parent.witness = val
+            }
         }
       }
     }
   },
   methods: {
+    witnessImageSize(val) {
+      console.log(val)
+      return val.replace('full/full/', 'full/600,/')
+  },
     async highlightQueryOnMounted(q) {
       await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
       let men_id = document.getElementsByClassName("#" + q);
@@ -596,7 +614,34 @@ export default {
 
     },
     changePage(event) {
+      
       this.$store.dispatch('setSelectedPage', parseInt(event.target.value))
+      this.alignRdgs();
+    },
+    async alignRdgs() {
+      await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
+          const rdgsLeft = document.querySelectorAll(".rdg.marginLeft");
+          const rdgsRight = document.querySelectorAll(".rdg.mRight");
+          rdgsLeft.forEach(async (rdg,idx) => {
+      
+            if (idx > 0) {
+              await rdgsLeft[idx-1].offsetTop > 0;
+              console.log(rdgsLeft[idx-1].offsetTop)
+               const prevBottom = rdgsLeft[idx-1].offsetTop + rdgsLeft[idx-1].clientHeight;
+               
+            if ( prevBottom > rdg.offsetTop) {
+              rdg.style.top = `${prevBottom + 10}px`;
+            }
+            }
+          })
+           rdgsRight.forEach(async (rdg,idx) => {
+            if (idx > 0) {
+               const prevBottom = rdgsRight[idx-1].offsetTop + rdgsRight[idx-1].clientHeight;
+            if ( prevBottom > rdg.offsetTop) {
+              rdg.style.top = `${prevBottom + 10}px`;
+            }
+            }
+          })
     },
     childMounted() {
       if (this.keyword) {
@@ -828,6 +873,7 @@ export default {
         this.removeAllComments();
         this.i++;
         this.$store.dispatch('pageNext')
+        this.alignRdgs();
       }
     },
     prev() {
@@ -835,6 +881,7 @@ export default {
         this.removeAllComments();
         this.i--;
         this.$store.dispatch('pagePrev')
+        this.alignRdgs();
       }
     },
     updateHighlighter(highlightprop, bool) {
@@ -1415,6 +1462,7 @@ export default {
 
 .rdg {
   width:10rem;
+  background: var(--comment-brown);
 }
 
 .pl-custom {
@@ -1446,6 +1494,12 @@ mark {
   max-width: 100%;
   width: 100%;
   word-break: break-all;
+}
+
+.witness-link {
+  color:var(--primary-red-dark);
+  text-decoration:underline;
+  cursor:pointer;
 }
 
 /*** additional padding if left marginal exists ***/

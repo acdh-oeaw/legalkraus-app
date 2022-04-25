@@ -6,6 +6,7 @@
     <xsl:output encoding="UTF-8" media-type="text/html" method="html" version="5.0" indent="yes"/>
     <!-- fragmenting function based on https://wiki.tei-c.org/index.php/Milestone-chunk.xquery -->
     <xsl:variable name="teiHeader" select="//tei:teiHeader"/>
+    <xsl:variable name="facs" select="//tei:facsimile"/>
     <xsl:function name="local:split">
         <xsl:param name="ms1" as="element()"/>
         <xsl:param name="ms2" as="element()"/>
@@ -286,8 +287,16 @@
         </xsl:copy>
     </xsl:template>
     <xsl:template match="tei:rdg">
-        <span class="rdg {if (tei:note[@rend='leftMargin']) then 'marginLeft' else ()}">
+        <xsl:variable name="witid" select="substring-after(@wit,'#')"/>
+        <xsl:variable name="witfacsid">
+            <xsl:value-of select="$teiHeader//tei:witness[@xml:id=$witid]/substring-after(@facs,'#')"/>
+        </xsl:variable>
+        <span class="rdg {if (tei:note[@rend='leftMargin']) then 'marginLeft' else ('mRight')}">
             <xsl:apply-templates/>
+            <xsl:variable name="witnessfacs">
+                <xsl:value-of select="'['||string-join($facs[@xml:id=$witfacsid]//tei:graphic[@source='wienbibliothek']/@url/(''''||string()||''''),',')||']'"/>
+            </xsl:variable>
+            <a id="show-btn" class="d-block witness-link"  v-on:click="setWitness({$witnessfacs});$bvModal.show('bv-modal-witness')">Textzeuge</a>
         </span>
     </xsl:template>
 </xsl:stylesheet>
