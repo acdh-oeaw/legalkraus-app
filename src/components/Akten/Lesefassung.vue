@@ -447,7 +447,7 @@ export default {
 
           let dbl = await document.querySelector(`.d-block`);
           console.log(document.getElementsByClassName('d-block'))
-          this.$parent.saveStringToPDF(dbl.textContent);
+          this.$parent.pdfFile = this.$parent.saveStringToPDF(dbl.textContent);
         },
         computed: {
           ...mapGetters({
