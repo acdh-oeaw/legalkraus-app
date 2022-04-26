@@ -254,7 +254,13 @@
         <xsl:variable name="seg">
             <xsl:copy-of select="./root()//tei:seg[@type='transposition'][position()=$ptrpos]"/>
         </xsl:variable>
+        <xsl:if test="not(preceding::*[2]/name()= 'metamark')">
+            <xsl:value-of select="'{'"/>
+        </xsl:if>
         <xsl:apply-templates select="$seg"/>
+        <xsl:if test="not(following::*[2]/name()= 'metamark')">
+            <xsl:value-of select="'}'"/>
+        </xsl:if>
     </xsl:template>
     <xsl:template match="tei:seg[@type='transposition']">
         <xsl:if test="not(ancestor::*[1])">
