@@ -706,6 +706,14 @@ export default {
         })
       });
     },
+    /**
+     * Creates a comment containing text next to the element clicked (elem)
+     * @param event is the triggered event, containing pmbId, htmlId and type
+     * @param rs contains informations form PMB
+     * @param elem is the element that was clicked
+     * @param type is the rs-type of the element that was clicked
+     * @returns {HTMLDivElement}
+     */
     createCommentDiv(event, rs, elem, type) {
       var div = document.createElement('div');
       div.className = "comment";
@@ -765,7 +773,7 @@ export default {
             let url = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + rs.id + "/detail"
             textinfo.innerHTML = "<b>|</b>&nbsp;" + "PMB: " + "<a href='" + url + "' target='_blank'>" + rs.name + "</a>";
           });
-        } else if (event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus")) {
+        } else if (event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus") || event.pmbId.includes("https://legalkraus.acdh.oeaw.ac.at/id/")) {
           let filename = event.pmbId.substring(event.pmbId.lastIndexOf('/') + 1)
           this.caseInfo.then(data => {
             let c = data.cases.filter(c => c.id.includes(this.colXmlId))[0];
@@ -796,7 +804,8 @@ export default {
       const comment = document.getElementById("comments");
       div.style.position = "absolute";
       div.style.cursor = "pointer";
-      div.style.top = elem.offsetTop + elem.parentElement.offsetTop + elem.parentElement.parentElement.offsetTop + comment.offsetTop + "px";
+      //offset from nearest <p> + offset from d-block + offset from body + card offset offset of the comments container
+      div.style.top = elem.offsetTop + elem.parentElement.offsetTop + elem.parentElement.parentElement.offsetTop +elem.parentElement.parentElement.parentElement.offsetTop + comment.offsetTop + "px";
 
       let self = this; //"this" cannot be used in JS functions
 
