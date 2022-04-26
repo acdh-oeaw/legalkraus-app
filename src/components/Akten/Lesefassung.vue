@@ -83,6 +83,7 @@
         <div class="facs">
           <button class="format btn btn-light">Facsimile</button>
         </div>
+         
         <div class="card card-fixed-small">
           <img class="embedded-img-small" :src="getCurrentFacs()" alt="facsimile">
         </div>
@@ -91,7 +92,9 @@
       <div id="card-left-medium" class="card-left" v-if="this.showLF && this.showFacs">
         <div class="facs">
           <button class="format btn btn-light mb-2 btn-red">Facsimile</button>
+          <button class="btn btn-light mb-2" v-if="this.furtherWitnesses.length > 0" v-on:click="$bvModal.show('bv-modal-further-witnesses')">Weitere Textzeugen</button>
         </div>
+        
         <div class="card card-fixed border-0 bg-light">
           <div class="header">
             <svg v-on:click="toggleLF()" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -107,6 +110,7 @@
       <div id="card-left-large" class="view-full-width-left" v-if="!this.showLF && this.showFacs">
         <div class="facs-full-width">
           <button class="format btn btn-light btn-red">Facsimile</button>
+          <button class="btn btn-light mb-2" v-if="this.furtherWitnesses.length > 0" v-on:click="$bvModal.show('bv-modal-further-witnesses')">Weitere Textzeugen</button>
         </div>
         <div class="card card-full">
           <img class="embedded-img" :src="getCurrentFacs()" alt="facsimile">
@@ -219,9 +223,8 @@
             >
               Intertext Fackel
             </b-form-checkbox>
-
           </div>
-
+         
           <div class="vt-container">
             <input class="vt" type="text" placeholder="Volltextsuche:" v-model="keyword"
                    @keyup="highlight(keyword)"/>
@@ -338,6 +341,7 @@
               Intertext Fackel
             </b-form-checkbox>
           </div>
+          
           <div class="body row m-0 overflow-auto">
             <component class="col-9" v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"
                        v-on:child-mounted="childMounted"/>
@@ -373,6 +377,16 @@
     </template>
     <div class="d-block text-center">
       <div :key="`w${idx}`" v-for="(imgurl,idx) in this.witness">
+      <img :src="witnessImageSize(imgurl)"/>
+      </div>
+    </div>
+  </b-modal>
+  <b-modal id="bv-modal-further-witnesses" size="xl"  hide-footer>
+    <template #modal-title>
+      Weitere Textzeugen
+    </template>
+    <div class="d-block text-center">
+      <div :key="`w${idx}`" v-for="(imgurl,idx) in this.furtherWitnesses">
       <img :src="witnessImageSize(imgurl)"/>
       </div>
     </div>
@@ -437,6 +451,7 @@ export default {
       caseInfo: null,
       witness: [],
       dataLoaded:false,
+      furtherWitnesses:[]
     }
   },
   computed: {
@@ -826,12 +841,18 @@ export default {
             this.pdfFile = this.saveStringToPDF(str);
             this.dom = dom;
             this.teiHeader = this.dom.getElementsByTagName("teiHeader")[0];
+            
             const pbsfacs = Array.from(this.dom.getElementsByTagName("pb")).map(pb => pb.attributes.facs.nodeValue.replace('#',''));
             pbsfacs.forEach(facsid => {
               let facsUrl = this.dom.querySelectorAll(`[*|id='${facsid}'] graphic[source='wienbibliothek']`)[0].attributes.url.nodeValue
               this.facsURLs.push(facsUrl)
             })
            this.dataLoaded = true;
+           const furtherWitnesses = this.dom.querySelectorAll("facsimile[ana='further-witnesses'] graphic[source='wienbibliothek']")
+            if (furtherWitnesses.length > 0) {
+               this.furtherWitnesses = Array.from(furtherWitnesses).map(furtherWitness => furtherWitness.attributes.url.nodeValue)
+            }
+            console.log(this.furtherWitnesses)
            /*  let facs = this.dom.getElementsByTagName("graphic");
            for (let item of facs) {
               if (item.getAttribute("source") === "wienbibliothek") {
