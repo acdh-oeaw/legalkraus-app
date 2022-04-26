@@ -193,13 +193,11 @@ export default {
       this.searchView = !this.searchView;
     },
     resetFilter() {
-      this.currOrgs = [];
+      this.currMat = [];
       this.currPersons = [];
       this.kwP = null;
-      this.kwO = null;
-      this.kwY = null;
       this.kwT = null;
-      this.currCases = this.cases;
+      this.filteredObjs = JSON.parse(JSON.stringify(this.docObjs)); //deep copy
     },
     removePers(key) {
       for (let i = 0; i < this.currPersons.length; i++) {
