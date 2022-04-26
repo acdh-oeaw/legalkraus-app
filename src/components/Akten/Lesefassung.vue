@@ -1493,12 +1493,26 @@ export default {
   margin: 0;
 }
 
+.marginalie-text {
+  font-weight: 600;
+}
+
+.marginalie-text.marginLeft {
+  border-right: 1.8px solid;
+}
+
+.marginalie-text.marginRight {
+  border-left: 1.8px solid left;
+}
+
 .marginalie-text.marginLeft, .rdg.marginLeft {
   padding-top: 0.2rem;
+  padding-right: 2px;
+  text-align:right;
   position: absolute;
   font-size: 80%;
-  left:0.8rem;
-  width:4.5rem;
+  left:-1rem;
+  width:6rem;
 }
 
 .marginalie-text.marginRight, .rdg {

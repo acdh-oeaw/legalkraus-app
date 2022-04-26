@@ -183,7 +183,7 @@
         </span>
     </xsl:template>
 
-    <xsl:template match="tei:note[@hand = '*']">
+    <xsl:template match="tei:note[@hand]">
         <span class="note-hand">
             <xsl:apply-templates/>
         </span>
@@ -195,7 +195,7 @@
         </span>
     </xsl:template>
 
-    <xsl:template match="tei:hi[@rend = 'underlined' and @hand = '*']">
+    <xsl:template match="tei:hi[@rend = 'underlined'][@hand]">
         <span class="hi-hand-underlined">
             <xsl:apply-templates/>
         </span>
@@ -213,7 +213,7 @@
         </span>
     </xsl:template>
 
-    <xsl:template match="tei:add[@hand = '*']">
+    <xsl:template match="tei:add[@hand]">
         <span class="add-hand">
             <xsl:apply-templates/>
         </span>
@@ -225,7 +225,7 @@
         </span>
     </xsl:template>
 
-    <xsl:template match="tei:del[@hand = '*']">
+    <xsl:template match="tei:del[@hand]">
         <span class="del-hand">
             <xsl:apply-templates/>
         </span>
