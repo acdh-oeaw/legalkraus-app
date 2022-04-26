@@ -131,11 +131,11 @@
         <div class="formats mb-2">
           <button class="format btn btn-light btn-red">Lesefassung</button>
           <a class="format btn btn-light" role="button" :href="xmlFile"
-             :download="filename">
+             :download="xmlFilename">
             Download XML
           </a>
           <a class="format btn btn-light" role="button" :href="pdfFile"
-             :download="filename">
+             :download="pdfFilename">
             Download PDF
           </a>
         </div>
@@ -246,11 +246,11 @@
         <div class="formats-full-width">
           <button class="format btn btn-light btn-red">Lesefassung</button>
           <a class="format btn btn-light" role="button" :href="xmlFile"
-             :download="filename">
+             :download="xmlFilename">
             Download XML
           </a>
           <a class="format btn btn-light" role="button" :href="pdfFile"
-             :download="filename">
+             :download="pdfFilename">
             Download PDF
           </a>
         </div>
@@ -400,7 +400,8 @@ export default {
       pdfFile: String,
       dom: Object,
       teiHeader: Object,
-      filename: String,
+      xmlFilename: String,
+      pdfFilename: String,
       facsURLs: [],
       i: 0,
       transformedHTML: null,
@@ -432,7 +433,7 @@ export default {
           };
         },
         template,
-        mounted() {
+        async mounted() {
           this.$refs['readview'].querySelectorAll("[data-pgnr]").forEach((page) => {
                 page.querySelectorAll(".lb").forEach((lb, idx) => {
                   const ln = idx + 1;
@@ -442,7 +443,11 @@ export default {
                 });
                 this.$parent.childMounted();
               }
-          )
+          );
+
+          let dbl = await document.querySelector(`.d-block`);
+          console.log(document.getElementsByClassName('d-block'))
+          this.$parent.saveStringToPDF(dbl.textContent);
         },
         computed: {
           ...mapGetters({
@@ -829,7 +834,7 @@ export default {
             let dom = new window.DOMParser().parseFromString(str, "text/xml");
             this.xml = str;
             this.xmlFile = this.saveStringToXML(this.xml);
-            this.pdfFile = this.saveStringToPDF(str);
+            //this.pdfFile = this.saveStringToPDF(str);
             this.dom = dom;
             this.teiHeader = this.dom.getElementsByTagName("teiHeader")[0];
             let facs = this.dom.getElementsByTagName("graphic");
@@ -978,7 +983,8 @@ export default {
         "expiry": 14
       };
       this.objectTitle = ARCHErdfQuery(optionsTitle, rs).value[0].hasTitle.object;
-      this.filename = ARCHErdfQuery(optionsFilename, rs).value[0].hasFilename.object;
+      this.xmlFilename = ARCHErdfQuery(optionsFilename, rs).value[0].hasFilename.object;
+      this.pdfFilename = this.xmlFilename.substring(0, this.xmlFilename.length-4) + ".pdf";
       let url = ARCHErdfQuery(optionsUrl, rs).value[0].hasIdentifier.object;
       var actors = ARCHErdfQuery(optionsHasActor, rs).value;
       actors.forEach(x => {
@@ -993,7 +999,6 @@ export default {
 
       getTransformedHtmlResource(this.objectId, (data) => {
         this.pages = data;
-
       });
     });
 
