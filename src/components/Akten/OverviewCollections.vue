@@ -3,7 +3,7 @@
     <div class="filter-nav">
       <p class="navigation">Akten-Edition
         <span class="arrow">></span>
-        <router-link router-link class="nav-link" :to="'/' + catLower">
+        <router-link router-link class="nav-link" :to="'/akten-edition/' + catLower">
           {{ this.category }}
         </router-link>
         <span class="arrow">></span>

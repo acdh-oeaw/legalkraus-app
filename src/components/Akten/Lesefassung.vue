@@ -1,6 +1,5 @@
 <template>
   <div class="main">
-    <Search class="py-2" v-bind:col-id="colId" v-bind:rs-id="objectId"></Search>
     <p v-if="propsSet" class="navigation">Akten-Edition
       <span class="arrow">></span>
       <router-link router-link class="nav-link" :to="'/akten-edition/' + this.cat">
@@ -28,14 +27,42 @@
       <span class="arrow">></span>
       <span style="font-weight: bold">{{ this.objectTitle }}</span>
     </p>
-    <div class="meta-data">
-      <p class="meta1">Metadaten Fall:</p>
+    <div v-if="simpleMD" class="meta-data">
+      <p class="meta1">Metadaten Dokument:</p>
       <div class="meta2">
-        <router-link class="back" to="/">{{ this.colTitle }}</router-link>
-        <p>Anzahl Dokumente: {{ this.colSize }}</p>
+        <router-link class="back" to="/">{{ this.objectTitle }}</router-link>
+      </div>
+      <div class="meta5">
+        <p>Seitenanzahl: {{ this.facsURLs.length }}</p>
       </div>
       <div class="vl meta3"></div>
-      <p class="meta4">Datum: (coming soon)</p>
+      <p class="meta4">Datum: {{this.docInfo.date}}</p>
+      <div class="meta8">
+        <input class="vt" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
+        <button type="button" class="btn vt-button" data-search="next" v-on:click="highlightNext()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-down-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
+          </svg>
+        </button>
+        <button type="button" class="btn vt-button" data-search="prev" v-on:click="highlightPrev()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-up-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div v-if="letterMD" class="meta-data">
+      <p class="meta1">Metadaten Dokument:</p>
+      <div class="meta2">
+        <router-link class="back" to="/">{{ this.objectTitle }}</router-link>
+        <p>Seitenanzahl: {{ this.facsURLs.length }}</p>
+      </div>
+      <div class="vl meta3"></div>
+      <p class="meta4">Materialitätstyp: {{this.docInfo.materiality[0]}}</p>
       <div class="meta5">
         <span v-if="actorsClosed" class="hasActor">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right"
@@ -43,7 +70,7 @@
           <path
               d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
         </svg>
-        Beteiligte: {{ actors.length }}
+        Beteiligte: {{ this.docInfo.pers.length }}
           </span>
         <div v-if="!actorsClosed">
         <span class="hasActor">
@@ -55,7 +82,7 @@
         Beteiligte:
 
           </span>
-          <p v-for="actor in actors" v-bind:key="actor.identifier">{{ actor.title }}</p>
+          <p v-for="actor in this.docInfo.pers" v-bind:key="actor.key">{{ actor.value }}</p>
         </div>
       </div>
       <div class="vl meta7"></div>
@@ -371,7 +398,6 @@ import {
 import {getObjectWithId as getPMBObjectWithId} from "../../services/PMBService";
 import {ARCHErdfQuery} from "arche-api/src";
 import EntitySpan from "./EntitySpan";
-import Search from "../Search";
 import {jsPDF} from "jspdf";
 import {mapGetters} from 'vuex';
 import * as Mark from "mark.js/dist/mark.min.js"
@@ -380,7 +406,6 @@ import * as Mark from "mark.js/dist/mark.min.js"
 export default {
   components: {
     EntitySpan: EntitySpan,
-    Search: Search
   },
   name: "Lesefassung",
   data: function () {
@@ -415,7 +440,11 @@ export default {
       actorsClosed: true,
       cat: null,
       subcat: null,
-      caseInfo: null
+      caseInfo: null,
+      docInfo: null,
+      simpleMD: false,
+      letterMD: false,
+      defaultMD: false
     }
   },
   computed: {
@@ -942,6 +971,30 @@ export default {
     updateAllHighlighters() {
       let bool = this.showAllAnnotations === "true";
       this.$store.dispatch('updateAllHighlighters', {highlightbool: bool})
+    },
+    getDocInfosFromCaseInfo(xmlid){
+      this.caseInfo.then(async cd => {
+        for (let i = 0; i < cd.cases.length; i++) {
+          if (cd.cases[i].id === (this.colXmlId + '.xml')) {
+            let c = cd.cases[i];
+            for (let j = 0; j < c.doc_objs.length; j++) {
+              if (c.doc_objs[j].id === xmlid) {
+                this.docInfo = c.doc_objs[j];
+                this.docInfo.acts = [];
+                for (const [key, value] of Object.entries(this.docInfo.persons)) {
+                  this.docInfo.acts.push({'pmbId': key, 'value': value})
+                }
+                for (const [key, value] of Object.entries(this.docInfo.orgs)) {
+                  this.docInfo.acts.push({'pmbId': key, 'value': value})
+                }
+                console.log(this.docInfo)
+                break;
+              }
+            }
+            break;
+          }
+        }
+      });
     }
   },
   created() {
@@ -980,54 +1033,65 @@ export default {
       this.colSize = rs[0].size;
       this.colUrl = rs[0].url;
       this.colXmlId = rs[0].xmlId;
-    });
-    getObjectWithId(this.objectId, (rs) => {
-      const optionsFilename = {
-        "subject": null,
-        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasFilename",
-        "object": null,
-        "expiry": 14
-      };
 
-      const optionsTitle = {
-        "subject": null,
-        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle",
-        "object": null,
-        "expiry": 14
-      };
+      getObjectWithId(this.objectId, (rs) => {
+        const optionsFilename = {
+          "subject": null,
+          "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasFilename",
+          "object": null,
+          "expiry": 14
+        };
 
-      const optionsUrl = {
-        "subject": null,
-        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier",
-        "object": null,
-        "expiry": 14
-      };
+        const optionsTitle = {
+          "subject": null,
+          "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle",
+          "object": null,
+          "expiry": 14
+        };
 
-      const optionsHasActor = {
-        "subject": null,
-        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasActor",
-        "object": null,
-        "expiry": 14
-      };
-      this.objectTitle = ARCHErdfQuery(optionsTitle, rs).value[0].hasTitle.object;
-      this.xmlFilename = ARCHErdfQuery(optionsFilename, rs).value[0].hasFilename.object;
-      this.pdfFilename = this.xmlFilename.substring(0, this.xmlFilename.length-4) + ".pdf";
-      let url = ARCHErdfQuery(optionsUrl, rs).value[0].hasIdentifier.object;
-      var actors = ARCHErdfQuery(optionsHasActor, rs).value;
-      actors.forEach(x => {
-        let idLong = x.hasActor.object;
-        let idx = idLong.lastIndexOf('/');
-        let id = idLong.substring(idx + 1);
-        getEntity(id, rs => {
-          this.actors.push(rs);
+        const optionsUrl = {
+          "subject": null,
+          "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier",
+          "object": null,
+          "expiry": 14
+        };
+
+        const optionsHasActor = {
+          "subject": null,
+          "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasActor",
+          "object": null,
+          "expiry": 14
+        };
+        this.objectTitle = ARCHErdfQuery(optionsTitle, rs).value[0].hasTitle.object;
+        this.xmlFilename = ARCHErdfQuery(optionsFilename, rs).value[0].hasFilename.object;
+        this.pdfFilename = this.xmlFilename.substring(0, this.xmlFilename.length-4) + ".pdf";
+        let url = ARCHErdfQuery(optionsUrl, rs).value[0].hasIdentifier.object;
+        var actors = ARCHErdfQuery(optionsHasActor, rs).value;
+        actors.forEach(x => {
+          let idLong = x.hasActor.object;
+          let idx = idLong.lastIndexOf('/');
+          let id = idLong.substring(idx + 1);
+          getEntity(id, rs => {
+            this.actors.push(rs);
+          });
+        })
+        this.downloadXMLFromUrl(url);
+
+        if(this.objectTitle.includes('Zeitungsartikel') || this.objectTitle.includes('Originalmappe') || this.objectTitle.includes('Aktenvermerk')){
+          this.simpleMD = true;
+        }else if(this.objectTitle.includes('Brief')){
+          this.letterMD = true;
+        }else{
+          this.defaultMD = true;
+        }
+
+        this.getDocInfosFromCaseInfo(this.xmlFilename);
+        getTransformedHtmlResource(this.objectId, (data) => {
+          this.pages = data;
         });
-      })
-      this.downloadXMLFromUrl(url);
-
-      getTransformedHtmlResource(this.objectId, (data) => {
-        this.pages = data;
       });
     });
+
 
   }
 }
