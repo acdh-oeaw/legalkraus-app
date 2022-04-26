@@ -468,15 +468,33 @@ export default {
   },
   methods: {
     async highlightQueryOnMounted(q) {
+      console.log(q)
       await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
-      let men_id = document.getElementsByClassName("#" + q);
+      let men_id = [];
+      //mark law
+      if(q.includes('alex.onb')){
+        men_id = document.getElementsByClassName(q);
+      }else if(q.includes("fackel.oeaw.ac.at")){
+        men_id = document.getElementsByClassName(q);
+      }
+      else{
+        men_id = document.getElementsByClassName("#" + q);
+      }
+
 
       //if class not found: go to next page until found
       while (men_id.length === 0 && this.facsURLs.length > this.selectedPage) {
         //there is at least one more page
         this.next();
         await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
-        men_id = document.getElementsByClassName("#" + q);
+        if(q.includes('alex.onb')){
+          men_id = document.getElementsByClassName(q);
+        }else if(q.includes("fackel.oeaw.ac.at")){
+          men_id = document.getElementsByClassName(q);
+        }
+        else{
+          men_id = document.getElementsByClassName("#" + q);
+        }
 
       }
       //found next mark; reset idxCurrMark

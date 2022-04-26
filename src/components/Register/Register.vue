@@ -349,6 +349,42 @@
             </template>
           </b-table>
         </div>
+        <div v-if="categoryShort==='j' && !noItems" class="card">
+          <b-pagination
+              page-class="custompaging"
+              prev-class="custompagingarrows"
+              next-class="custompagingarrows"
+              first-class="custompagingarrows"
+              last-class="custompagingarrows"
+              class="custom-pagination"
+              v-model="currentPage"
+              :total-rows="this.currentItems.bibl.length"
+              :per-page="perPage"
+              aria-controls="col-table"
+          ></b-pagination>
+          <b-table id="col-table" :small="'small'" :sort-by="'title'" :sort-compare="tableSortCompare"
+                   :no-border-collapse="true" :borderless="'borderless'"
+                   :current-page="currentPage" :per-page="perPage"
+                   :busy.sync="isBusy" :fields="[
+            {
+              key: 'title',
+              label: 'Titel',
+              sortable: true
+            },
+
+          ]" :items="this.currentItems.bibl" @row-clicked="openDetails">
+            <template #table-busy>
+              <div class="text-center my-2">
+                <b-spinner type="grow" class="align-middle"></b-spinner>
+                <strong>Loading...</strong>
+              </div>
+            </template>
+            <template #cell(title)="data">
+              <div>{{ data.value[0]._ }}</div>
+            </template>
+          </b-table>
+
+        </div>
       </div>
       <register-detail v-if="showDetails" v-bind:item="details" v-bind:category="categoryShort" class="details card">
         {{ details }}
@@ -381,7 +417,8 @@ export default {
       keyword: null,
       abc: ["Kein Filter", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "Sonderzeichen"],
       query: null,
-      noItems: false
+      noItems: false,
+      caseInfo: null
     }
   },
 
@@ -454,7 +491,6 @@ export default {
               .then(response => response.text())
               .then(str => {
                 parseString(str, function (err, rs) {
-                  console.log(rs)
                   self.currentItems = rs.TEI.text[0].body[0].listBibl[0];
                   self.allItems = JSON.parse(JSON.stringify(rs.TEI.text[0].body[0].listBibl[0]));
                 });
@@ -469,7 +505,6 @@ export default {
                 parseString(str, function (err, rs) {
                   self.currentItems = rs.TEI.text[0].body[0].listBibl[0];
                   self.allItems = JSON.parse(JSON.stringify(rs.TEI.text[0].body[0].listBibl[0]));
-                  console.log(self.allItems)
                 });
               })
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
@@ -480,9 +515,8 @@ export default {
               .then(response => response.text())
               .then(str => {
                 parseString(str, function (err, rs) {
-                  console.log(rs)
-                  /*self.currentItems = rs.TEI.text[0].body[0].listBibl[0];
-                  self.allItems = JSON.parse(JSON.stringify(rs.TEI.text[0].body[0].listBibl[0]));*/
+                  self.currentItems = rs.TEI.text[0].body[0].listBibl[0];
+                  self.allItems = JSON.parse(JSON.stringify(rs.TEI.text[0].body[0].listBibl[0]));
                 });
               })
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
@@ -692,17 +726,90 @@ export default {
       }
 
       if (record.biblScope) {
-        f.biblScope = record.author[0] ? record.biblScope[0]._ : '-'
+        f.biblScope = record.biblScope[0] ? record.biblScope[0]._ : '-'
       }
 
       if(record.$.corresp){
         f.url = record.$.corresp;
       }
-      console.log(f);
+
+      if(record.ref){
+        let refCases = [];
+        let refDocs = [];
+
+        record.ref.forEach(r =>{
+          let xmlId = r._.substring(record.ref[0]._.lastIndexOf('|')+1);
+          let caseId = parseInt(xmlId.replace("D_","").substring(0,6).replace('0',''));
+          this.caseInfo.then(cd =>{
+            cd.cases.forEach(c => {
+              let cid = parseInt(c.id.replace("C_",'').substring(0, c.id.length-4));
+              if(cid === caseId){
+                refCases.push(c);
+                for (let i = 0; i < c.doc_objs.length; i++) {
+                  if(c.doc_objs[i].id === xmlId){
+                    refDocs.push(c.doc_objs[i]);
+                    break;
+                  }
+                }
+              }
+            });
+          })
+        });
+        f.docs = refDocs;
+        f.cases = refCases;
+      }
       return f;
     },
+    processLaw(record){
+      let l = {
+        "title": "-",
+        "url": "-",
+        "date": "-",
+      };
+
+      if (record.title) {
+        l.title = record.title[0] ? record.title[0]._ : '-'
+      }
+
+      if(record.$.corresp){
+        l.url = record.$.corresp;
+      }
+
+      if (record.date) {
+        l.date = record.date[0] ? record.date[0]._ : '-'
+      }
+
+      if (record.biblScope) {
+        l.biblScope = record.biblScope[0] ? record.biblScope[0]._ : '-'
+      }
+
+      if(record.ref){
+        let refCases = [];
+        let refDocs = [];
+        record.ref.forEach(r =>{
+          let caseId = parseInt(r.$.target.replace("D_","").substring(0,6).replace('0',''));
+          this.caseInfo.then(cd =>{
+            cd.cases.forEach(c => {
+              let cid = parseInt(c.id.replace("C_",'').substring(0, c.id.length-4));
+              if(cid === caseId){
+                refCases.push(c);
+                for (let i = 0; i < c.doc_objs.length; i++) {
+                  if(c.doc_objs[i].id === r.$.target){
+                    refDocs.push(c.doc_objs[i]);
+                    break;
+                  }
+                }
+              }
+            });
+          })
+        });
+        l.docs = refDocs;
+        l.cases = refCases;
+      }
+
+      return l;
+    },
     async openDetails(record) {
-      console.log(record)
       let item;
       if (this.categoryShort === 'p') {
         item = this.processPerson(record);
@@ -717,6 +824,9 @@ export default {
         item = await this.processWork(record);
       }if (this.categoryShort === 'f'){
         item = this.processFackel(record);
+      }
+      if (this.categoryShort === 'j'){
+        item = this.processLaw(record);
       }
       this.details = item;
       this.showDetails = true;
@@ -779,6 +889,12 @@ export default {
           this.currentItems.org = this.allItems.org.filter(i =>
               i.orgName[0].startsWith(l));
         }
+      }else if (this.categoryShort === 'j'){
+        this.currentItems.bibl = this.allItems.bibl.filter(j =>
+            j.title[1]._.startsWith(l));
+      }else if (this.categoryShort === 'f'){
+        this.currentItems.bibl = this.allItems.bibl.filter(j =>
+            j.title[0]._.startsWith(l));
       }
 
     },
@@ -817,6 +933,21 @@ export default {
         if (this.currentItems.place.length === 0) {
           this.noItems = true;
         }
+      }else if (this.categoryShort === 'j') {
+        this.currentItems.bibl = this.allItems.bibl.filter(j =>
+            (j.title[0]._.toUpperCase().includes(kw) ||
+                (j.title[1]._.toUpperCase().includes(kw))));
+        if (this.currentItems.place.length === 0) {
+          this.noItems = true;
+        }
+      }
+      else if (this.categoryShort === 'f') {
+        this.currentItems.bibl = this.allItems.bibl.filter(j =>
+            (j.title[0]._.toUpperCase().includes(kw) ||
+                (j.num[0]._.toUpperCase().includes(kw)) || (j.num[1]._.toUpperCase().includes(kw))));
+        if (this.currentItems.place.length === 0) {
+          this.noItems = true;
+        }
       }
 
     },
@@ -846,12 +977,13 @@ export default {
   },
   created() {
     this.setCategory();
-    if (this.$route.query !== null) {
+    if (this.$route.query) {
       this.query = this.$route.query;
     }
 
   },
   async mounted() {
+    this.caseInfo = this.$store.getters.caseInfo;
     this.downloadRegistry();
 
   },
@@ -864,7 +996,7 @@ export default {
       this.keyword = null;
     },
     async allItems() {
-      if (this.query !== null) {
+      if (this.query) {
         this.filterPmbId(this.query.pmbId);
 
       }
