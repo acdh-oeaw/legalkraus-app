@@ -262,6 +262,93 @@
             </template>
           </b-table>
         </div>
+        <div v-if="categoryShort==='f' && !noItems" class="card">
+          <b-pagination
+              page-class="custompaging"
+              prev-class="custompagingarrows"
+              next-class="custompagingarrows"
+              first-class="custompagingarrows"
+              last-class="custompagingarrows"
+              class="custom-pagination"
+              v-model="currentPage"
+              :total-rows="this.currentItems.bibl.length"
+              :per-page="perPage"
+              aria-controls="col-table"
+          ></b-pagination>
+          <b-table id="col-table" :small="'small'" :sort-by="'title'" :sort-compare="tableSortCompare"
+                   :no-border-collapse="true" :borderless="'borderless'"
+                   :current-page="currentPage" :per-page="perPage"
+                   :busy.sync="isBusy" :fields="[
+            {
+              key: 'title',
+              label: 'Titel',
+              sortable: true
+            },
+            {
+              key: 'num',
+              label: 'Nummer'
+            },
+          ]" :items="this.currentItems.bibl" @row-clicked="openDetails">
+            <template #table-busy>
+              <div class="text-center my-2">
+                <b-spinner type="grow" class="align-middle"></b-spinner>
+                <strong>Loading...</strong>
+              </div>
+            </template>
+            <template #cell(title)="data">
+              <div>{{ data.value[0]._ }}</div>
+            </template>
+            <template #cell(num)="data">
+              <div v-if="data.value">Fackel &nbsp; {{ data.value[0]._ }}/{{ data.value[1]._ }}</div>
+            </template>
+          </b-table>
+          <b-table v-if="categoryShort==='p'" id="col-table" :small="'small'" :no-border-collapse="true"
+                   :borderless="'borderless'"
+                   :current-page="currentPage" :per-page="perPage"
+                   :busy.sync="isBusy" :fields="[
+            {
+              key: 'persName',
+              label: 'Name'
+            },
+            {
+              key: 'occupation',
+              label: 'Beruf'
+            },
+            {
+              key: 'birth',
+              label: 'geboren'
+            },
+            {
+              key: 'death',
+              label: 'gestorben'
+            },
+          ]" :items="this.currentItems.person">
+            <template #table-busy>
+              <div class="text-center my-2">
+                <b-spinner type="grow" class="align-middle"></b-spinner>
+                <strong>Loading...</strong>
+              </div>
+            </template>
+            <template #cell(persName)="data">
+              <div v-if="data.value && data.value[0] && data.value[0].surname && data.value[0].forename">
+                {{ data.value[0].surname[0].toUpperCase() }}, {{ data.value[0].forename[0] }}
+              </div>
+            </template>
+            <template #cell(occupation)="data">
+              <div v-if="data.value">{{ data.value[0]._ }}</div>
+            </template>
+            <template #cell(birth)="data">
+              <div v-if="data.value && data.value[0] && data.value[0].settlement && data.value[0].date">
+                {{ data.value[0].settlement[0].placeName[0]._ }}, {{ data.value[0].date[0]._ }}
+              </div> <!-- {{data.value[0].settlement[0].placeName[0]._}}, {{data.value[0].date[0]._}}-->
+            </template>
+            <template #cell(death)="data">
+              <div v-if="data.value && data.value[0] && data.value[0].settlement && data.value[0].date">
+                {{ data.value[0].settlement[0].placeName[0]._ }}, {{ data.value[0].date[0]._ }}
+              </div>
+            </template>
+          </b-table>
+        </div>
       </div>
       <register-detail v-if="showDetails" v-bind:item="details" v-bind:category="categoryShort" class="details card">
         {{ details }}
@@ -367,6 +454,7 @@ export default {
               .then(response => response.text())
               .then(str => {
                 parseString(str, function (err, rs) {
+                  console.log(rs)
                   self.currentItems = rs.TEI.text[0].body[0].listBibl[0];
                   self.allItems = JSON.parse(JSON.stringify(rs.TEI.text[0].body[0].listBibl[0]));
                 });
@@ -375,14 +463,31 @@ export default {
           break;
         case "f":
           url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/27724";
-          //todo: noch nicht erstellt
+          fetch(url)
+              .then(response => response.text())
+              .then(str => {
+                parseString(str, function (err, rs) {
+                  self.currentItems = rs.TEI.text[0].body[0].listBibl[0];
+                  self.allItems = JSON.parse(JSON.stringify(rs.TEI.text[0].body[0].listBibl[0]));
+                  console.log(self.allItems)
+                });
+              })
+              .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
           break;
         case "j":
           url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/27725";
-          //todo: noch nicht erstellt
+          fetch(url)
+              .then(response => response.text())
+              .then(str => {
+                parseString(str, function (err, rs) {
+                  console.log(rs)
+                  /*self.currentItems = rs.TEI.text[0].body[0].listBibl[0];
+                  self.allItems = JSON.parse(JSON.stringify(rs.TEI.text[0].body[0].listBibl[0]));*/
+                });
+              })
+              .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
           break;
       }
-
 
     },
     processPerson(record) {
@@ -565,6 +670,37 @@ export default {
       }
       return w;
     },
+    processFackel(record){
+      let f = {
+        "title": "-",
+        "author": "-",
+        "url": "-",
+        "date": "-",
+        "biblScope": "-"
+      };
+
+      if (record.title) {
+        f.title = record.title[0] ? record.title[0]._ : '-'
+      }
+
+      if (record.date) {
+        f.date = record.date[0] ? record.date[0]._ : '-'
+      }
+
+      if (record.author) {
+        f.author = record.author[0] ? record.author[0]._ : '-'
+      }
+
+      if (record.biblScope) {
+        f.biblScope = record.author[0] ? record.biblScope[0]._ : '-'
+      }
+
+      if(record.$.corresp){
+        f.url = record.$.corresp;
+      }
+      console.log(f);
+      return f;
+    },
     async openDetails(record) {
       console.log(record)
       let item;
@@ -579,6 +715,8 @@ export default {
       }
       if (this.categoryShort === 'w') {
         item = await this.processWork(record);
+      }if (this.categoryShort === 'f'){
+        item = this.processFackel(record);
       }
       this.details = item;
       this.showDetails = true;

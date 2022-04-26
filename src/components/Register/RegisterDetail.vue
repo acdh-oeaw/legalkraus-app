@@ -180,6 +180,12 @@
         </div>
       </div>
     </div>
+    <div v-if="category==='f'" class="detail">
+      <div>Die Fackel: <a v-bind:href="item.url" target="_blank">{{ this.item.title }}</a></div>
+      <div>Autor:&nbsp;{{item.author}} </div>
+      <div>Datum:&nbsp;{{item.date}} </div>
+      <div>Stelle:&nbsp; {{item.biblScope}} </div>
+    </div>
 
   </main>
 </template>
