@@ -26,7 +26,8 @@ export default {
     this.$store.dispatch('setCaseInfo', data);
     data.then(dt=>{
       this.$store.dispatch('setCases', dt.cases);
-      processCaseInfo(dt)
+      processCaseInfo(dt);
+      console.log(dt)
     })  
   }
 };

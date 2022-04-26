@@ -376,7 +376,8 @@ module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback)
 
 module.exports.downloadCaseInfo = async () => {
     try {
-        const url = "https://id.acdh.oeaw.ac.at/legalkraus/cases-index.json";
+       // const url = "https://id.acdh.oeaw.ac.at/legalkraus/cases-index.json";
+        const url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/17726";
         const resp = await fetch(url);
         return await resp.json();
     } catch (error) {
