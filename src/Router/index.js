@@ -34,6 +34,7 @@ Vue.use(IconsPlugin)
 
 export default new Router({
     mode: 'history',
+	base: process.env.BASE_URL,
     routes: [
         {path: '/test', component: Test},
         {path: '/', name: 'home', component: Main},
