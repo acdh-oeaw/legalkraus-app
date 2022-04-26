@@ -47,7 +47,7 @@
       </div>
     </div>
     <div class="cards-wrapper">
-      <div v-if="!searchView" class="card-deck">
+      <div class="card-deck">
         <div class="card" v-for="val in currentDocObjs " v-bind:key="val.id">
           <div v-if="val.facs === '' || val.facs === 'no facs'">
             <p>Kein Bild vorhanden</p>
@@ -57,7 +57,7 @@
                v-on:click="navToLesefassung(val)">
           <div class="case-data scroll">
             <h6 class="card-title" v-on:click="navToLesefassung(val)"><b>{{ val.title }}</b></h6>
-            <div> Typ: {{ val.materiality[0] }}</div>
+            <div style="padding-bottom: 1rem"> Typ: {{ val.materiality[0] }}</div>
             <span v-if="val.pers.length > 0">
               <p> <b>Beteiligte:</b> </p>
             <div class="pmb-link" v-for="a in val.pers" :key="a.pmbId" v-on:click="navToPMBActor($event, a)"><!--   v-on:click="navToPMB($event, a)"-->
@@ -83,8 +83,8 @@
               d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
       </svg>
 
-        <span>
-          Seite {{this.idxD/step}} von {{Math.ceil(this.filteredObjs.length/this.step)}}
+      <span>
+          Seite {{ this.idxD / step }} von {{ Math.ceil(this.filteredObjs.length / this.step) }}
     </span>
 
       <svg v-on:click="nextDocs()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
@@ -98,15 +98,12 @@
 
 <script>
 import fallbackImage from '@/assets/noimage.svg';
+import {getArcheIdFromXmlId} from "../../services/ARCHEService";
 
 export default {
   name: "OverviewHandschriftliches",
   data: function () {
     return {
-      matTypeCodes: ["https://vocabs.acdh.oeaw.ac.at/legalkraus/v1.0/M.D.HSN", "https://vocabs.acdh.oeaw.ac.at/legalkraus/v1.0/M.D.HSU", "https://vocabs.acdh.oeaw.ac.at/legalkraus/v1.0/M.T.DHN",
-        "https://vocabs.acdh.oeaw.ac.at/legalkraus/v1.0/M.T.DHU", "https://vocabs.acdh.oeaw.ac.at/legalkraus/v1.0/M.T.DHM", "https://vocabs.acdh.oeaw.ac.at/legalkraus/v1.0/M.T.DHS",
-        "https://vocabs.acdh.oeaw.ac.at/legalkraus/v1.0/M.M", "https://vocabs.acdh.oeaw.ac.at/legalkraus/v1.0/M.M.HSN", "https://vocabs.acdh.oeaw.ac.at/legalkraus/v1.0/M.M.HSM",
-        "https://vocabs.acdh.oeaw.ac.at/legalkraus/v1.0/M.T.HSN", "https://vocabs.acdh.oeaw.ac.at/legalkraus/v1.0/M.T.HSU", "https://vocabs.acdh.oeaw.ac.at/legalkraus/v1.0/M.T.HSM", "https://vocabs.acdh.oeaw.ac.at/legalkraus/v1.0/M.T.HSS"],
       matTypeStrings: ["Druck mit handschriftlichen Annotationen", "Druck mit handschriftlichen Überarbeitungen",
         "Durchschlag mit handschriftlichen Annotationen", "Durchschlag mit handschriftlichen Überarbeitungen",
         "Durchschlag mit handschriftlicher Mitteilung", "Durchschlag mit sonstigen Schreibspuren", "Manuskript",
@@ -116,7 +113,6 @@ export default {
       allPersons: [],
       currPersons: [],
       currMat: [],
-      searchView: false,
       searchResults: [],
       searchResultsCount: Number,
       keyword: String,
@@ -239,46 +235,35 @@ export default {
     fallbackImage: function (e) {
       return e.target.src = `${fallbackImage}`
     },
+    getIdFromUrl(url) {
+      let idx = url.lastIndexOf('/');
+      return url.substring(idx + 1);
+    },
     navToLesefassung: function (val) {
-      let id = this.getIdFromUrl(val.url)
-      if (this.categorySet) {
-        if (this.searchView) {
-          let text = new DOMParser()
-              .parseFromString(val.kwic[0], "text/html")
-              .documentElement.textContent;
-          //remove multiple whitespaces
-          let contextNoMultSpace = text.replace(/\s\s+/g, ' ').substring(0, 20);
+      let xmlid =this.getIdFromUrl(val.id);
+      getArcheIdFromXmlId(xmlid, rs =>{
+        if (this.categorySet) {
           this.$router.push({
             name: "lesefassung",
-            params: {
-              id: id,
-              cat: this.category,
-              subcat: this.subCategory,
-              case: this.caseTitle,
-              searchTermContext: contextNoMultSpace
-            }
+            params: {id: rs, cat: this.category, subcat: this.subCategory, case: this.caseTitle}
           });
-        } else {
-          this.$router.push({
-            name: "lesefassung",
-            params: {id: id, cat: this.category, subcat: this.subCategory, case: this.caseTitle}
-          });
-        }
+
       } else {
         this.$router.push({
           name: "lesefassung",
-          params: {id: id, case: this.caseTitle}
+          params: {id: rs, case: this.caseTitle}
         });
       }
-
-
+      })
     },
     navToPMBActor(event, a) {
-      let url = 'https://pmb.acdh.oeaw.ac.at/apis/entities/entity/person/' + a.id + '/detail'
+      let id = a.pmbId.substring(3); //remove leading 'pmb'
+      let url = 'https://pmb.acdh.oeaw.ac.at/apis/entities/entity/person/' +id + '/detail'
       window.open(url, '_blank').focus();
     },
     navToPMBPlace(event, pl) {
-      let url = 'https://pmb.acdh.oeaw.ac.at/apis/entities/entity/place/' + pl.id + '/detail';
+      let id = pl.pmbId.substring(3); //remove leading 'pmb'
+      let url = 'https://pmb.acdh.oeaw.ac.at/apis/entities/entity/place/' + id + '/detail';
       window.open(url, '_blank').focus();
     },
   },

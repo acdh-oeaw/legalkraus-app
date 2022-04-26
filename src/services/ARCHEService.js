@@ -106,7 +106,7 @@ module.exports.getCollections = async (startPage, callback) => {
     }
 }
 
-module.exports.getColArcheIdFromColXmlId = async (xmlId, callback) => {
+module.exports.getArcheIdFromXmlId = async (xmlId, callback) => {
     let httpRequest = new XMLHttpRequest();
     if(xmlId.includes('C_')){
         xmlId = xmlId.substring(0, xmlId.length-4);

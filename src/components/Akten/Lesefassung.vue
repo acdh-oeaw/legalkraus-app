@@ -362,7 +362,7 @@
 
 <script>
 import {
-  getColArcheIdFromColXmlId,
+  getArcheIdFromXmlId,
   getCollectionOfObject,
   getEntity,
   getObjectWithId,
@@ -796,7 +796,7 @@ export default {
       const comment = document.getElementById("comments");
       div.style.position = "absolute";
       div.style.cursor = "pointer";
-      div.style.top = elem.offsetTop + elem.parentElement.offsetTop + elem.parentElement.parentElement.offsetTop + elem.parentElement.parentElement.parentElement.offsetTop + comment.offsetTop + "px";
+      div.style.top = elem.offsetTop + elem.parentElement.offsetTop + elem.parentElement.parentElement.offsetTop + comment.offsetTop + "px";
 
       let self = this; //"this" cannot be used in JS functions
 
@@ -813,14 +813,14 @@ export default {
           } else if (type === 'work') {
             let idx = event.pmbId.lastIndexOf('/');
             let xmlId = event.pmbId.substring(idx + 1) + '.xml';
-            getColArcheIdFromColXmlId(xmlId, rs => {
+            getArcheIdFromXmlId(xmlId, rs => {
               routeData = self.$router.resolve({name: "lesefassung", params: {id: rs}});
               window.open(routeData.href, '_blank');
             });
           } else if (type === 'quote' || type === 'intertext') {
             let idx = event.pmbId.lastIndexOf('/');
             let xmlId = event.pmbId.substring(idx + 1);
-            getColArcheIdFromColXmlId(xmlId, rs => {
+            getArcheIdFromXmlId(xmlId, rs => {
               routeData = self.$router.resolve({name: "lesefassung", params: {id: rs}});
               window.open(routeData.href, '_blank');
             });

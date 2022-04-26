@@ -244,7 +244,7 @@
 </template>
 
 <script>
-import {getColArcheIdFromColXmlId} from "../../services/ARCHEService";
+import {getArcheIdFromXmlId} from "../../services/ARCHEService";
 
 export default {
   name: "RegisterDetail",
@@ -343,7 +343,7 @@ export default {
       });
     },
     navToObjects(c) {
-      getColArcheIdFromColXmlId(c.id, rs => {
+      getArcheIdFromXmlId(c.id, rs => {
         this.$router.push({name: "overview-objects", params: {id: rs}});
       });
 
@@ -352,7 +352,7 @@ export default {
       let idx = d.id.lastIndexOf('/');
       let id = d.id.substring(idx + 1);
 
-      getColArcheIdFromColXmlId(id, rs => {
+      getArcheIdFromXmlId(id, rs => {
         if(!(this.category === 'j'|| this.category === 'f')){
           this.$router.push({name: "lesefassung", params: {id: rs}, query: {q: this.item.pmbID}});
         }else{
