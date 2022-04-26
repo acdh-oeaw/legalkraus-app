@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="main" v-if="this.dataLoaded">
     <Search class="py-2" v-bind:col-id="colId" v-bind:rs-id="objectId"></Search>
     <p v-if="propsSet" class="navigation">Akten-Edition
       <span class="arrow">></span>
@@ -435,7 +435,8 @@ export default {
       cat: null,
       subcat: null,
       caseInfo: null,
-      witness: []
+      witness: [],
+      dataLoaded:false,
     }
   },
   computed: {
@@ -825,12 +826,19 @@ export default {
             this.pdfFile = this.saveStringToPDF(str);
             this.dom = dom;
             this.teiHeader = this.dom.getElementsByTagName("teiHeader")[0];
-            let facs = this.dom.getElementsByTagName("graphic");
-            for (let item of facs) {
+            const pbsfacs = Array.from(this.dom.getElementsByTagName("pb")).map(pb => pb.attributes.facs.nodeValue.replace('#',''));
+            pbsfacs.forEach(facsid => {
+              let facsUrl = this.dom.querySelectorAll(`[*|id='${facsid}'] graphic[source='wienbibliothek']`)[0].attributes.url.nodeValue
+              this.facsURLs.push(facsUrl)
+            })
+           this.dataLoaded = true;
+           /*  let facs = this.dom.getElementsByTagName("graphic");
+           for (let item of facs) {
               if (item.getAttribute("source") === "wienbibliothek") {
                 this.facsURLs.push(item.getAttribute("url"));
               }
-            }
+            }*/
+            
 
           })
           .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
