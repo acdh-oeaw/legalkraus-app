@@ -14,6 +14,7 @@ export default new Vuex.Store({
             law: false,
             work: false,
             quote: false,
+            intertext: false,
         },
         noOfCollections: null,
         collectionPageSize: 10,
@@ -106,6 +107,7 @@ export default new Vuex.Store({
             state.highlighter.law = b.highlightbool;
             state.highlighter.work = b.highlightbool;
             state.highlighter.quote = b.highlightbool;
+            state.highlighter.intertext = b.highlightbool;
         },
         MUTATE_NOOFCOLLECTIONS: (state, noofcollections) => {
             Vue.set(state, 'noOfCollections', noofcollections);

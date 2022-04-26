@@ -159,7 +159,7 @@
 
             </div>
           </div>
-          <div class="toggles">
+          <div class="toggles  mx-auto">
             <b-form-checkbox
                 id="pe-toggle"
                 v-model="highlighter['person']"
@@ -183,7 +183,7 @@
                 v-on:change="updateHighlighter('place', highlighter['place'])"
                 switch
             >
-              Place
+              Ort
             </b-form-checkbox>
 
             <b-form-checkbox
@@ -210,6 +210,14 @@
                 switch
             >
               Zitat
+            </b-form-checkbox>
+             <b-form-checkbox
+                id="intertext-toggle"
+                v-model="highlighter['intertext']"
+                v-on:change="updateHighlighter('intertext', highlighter['intertext'])"
+                switch
+            >
+              Intertext Fackel
             </b-form-checkbox>
 
           </div>
@@ -269,7 +277,7 @@
 
             </div>
           </div>
-          <div class="toggles">
+          <div class="toggles mx-auto">
             <b-form-checkbox
                 id="pe-toggle"
                 v-model="highlighter['person']"
@@ -293,7 +301,7 @@
                 v-on:change="updateHighlighter('place', highlighter['place'])"
                 switch
             >
-              Place
+              Ort
             </b-form-checkbox>
 
             <b-form-checkbox
@@ -321,7 +329,14 @@
             >
               Zitat
             </b-form-checkbox>
-
+          <b-form-checkbox
+                id="intertext-toggle"
+                v-model="highlighter['intertext']"
+                v-on:change="updateHighlighter('intertext', highlighter['intertext'])"
+                switch
+            >
+              Intertext Fackel
+            </b-form-checkbox>
           </div>
           <div class="body row m-0 overflow-auto">
             <component class="col-9" v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"
@@ -1276,12 +1291,17 @@ export default {
   background: var(--toggele-quote);
 }
 
+.highlighter.fackel-ref {
+  background: var(--toggle-intertext);
+}
+
 .toggles {
   display: grid;
-  width: 100%;
+  width: 80%;
   grid-template-columns: auto auto auto;
   grid-template-rows: auto auto;
-  justify-items: center;
+  justify-items: left;
+  justify-content: space-between;
   margin-bottom: 2rem;
 }
 
@@ -1404,6 +1424,26 @@ export default {
 
 #w-toggle:focus:not(:checked) ~ ::before {
   border-color: var(--toggle-work) !important;
+}
+
+/* toggle intertext */
+#intertext-toggle:focus ~ ::before {
+  border-color: var(--toggle-intertext) !important;
+  box-shadow: 0 0 0 0.2rem rgba(231, 232, 232, 0.25) !important;
+}
+
+#intertext-toggle:checked ~ ::before {
+  border-color: var(--toggle-intertext) !important;
+  background-color: var(--toggle-intertext) !important;
+}
+
+#intertext-toggle:active ~ ::before {
+  background-color: var(--toggle-intertext) !important;
+  border-color: var(--toggle-intertext) !important;
+}
+
+#intertext-toggle:focus:not(:checked) ~ ::before {
+  border-color: var(--toggle-intertext) !important;
 }
 
 .note-hand {

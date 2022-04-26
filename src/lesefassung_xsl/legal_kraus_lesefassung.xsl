@@ -168,7 +168,7 @@
     <xsl:template match="tei:q[@type='spoken']">
         <span class="quote-spoken">
             <xsl:attribute name="v-bind:class">
-                <xsl:text>{ highlighter: highlighter.quote }</xsl:text>
+                <xsl:text>{ highlighter: highlighter.spoken }</xsl:text>
             </xsl:attribute>
             <xsl:apply-templates/>
         </span>
@@ -177,7 +177,7 @@
     <xsl:template match="tei:note[@type = 'intertext' and starts-with(@source, 'https://fackel')]">
         <span class="fackel-ref">
             <xsl:attribute name="v-bind:class">
-                <xsl:text>{ highlighter: highlighter.quote }</xsl:text>
+                <xsl:text>{ highlighter: highlighter.intertext }</xsl:text>
             </xsl:attribute>
             <xsl:apply-templates/>
         </span>
