@@ -36,7 +36,7 @@
         <p>Seitenanzahl: {{ this.facsURLs.length }}</p>
       </div>
       <div class="vl meta3"></div>
-      <p class="meta4">Datum: {{this.docInfo.date}}</p>
+      <p class="meta4">Datum: {{ this.docInfo.date }}</p>
       <div class="meta8">
         <input class="vt" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
         <button type="button" class="btn vt-button" data-search="next" v-on:click="highlightNext()">
@@ -61,8 +61,9 @@
         <router-link class="back" to="/">{{ this.objectTitle }}</router-link>
         <p>Seitenanzahl: {{ this.facsURLs.length }}</p>
       </div>
-      <div class="vl meta3"></div>
-      <p class="meta4">Materialitätstyp: {{this.docInfo.materiality[0]}}</p>
+      <div v-if="stamp===null" class="vl meta3">Stempel: - </div>
+      <div v-if="stamp!==null" class="vl meta3">Stempel: {{ stamp.name }} </div>
+      <p class="meta4">Materialitätstyp: {{ this.docInfo.materiality[0] }}</p>
       <div class="meta5">
         <span v-if="actorsClosed" class="hasActor">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right"
@@ -70,7 +71,7 @@
           <path
               d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
         </svg>
-        Beteiligte: {{ this.docInfo.pers.length }}
+        Beteiligte: {{ this.docInfo.acts.length }}
           </span>
         <div v-if="!actorsClosed">
         <span class="hasActor">
@@ -82,7 +83,7 @@
         Beteiligte:
 
           </span>
-          <p v-for="actor in this.docInfo.pers" v-bind:key="actor.key">{{ actor.value }}</p>
+          <p v-for="actor in this.docInfo.acts" v-bind:key="actor.key">{{ actor.value }}</p>
         </div>
       </div>
       <div class="vl meta7"></div>
@@ -444,7 +445,8 @@ export default {
       docInfo: null,
       simpleMD: false,
       letterMD: false,
-      defaultMD: false
+      defaultMD: false,
+      stamp: null
     }
   },
   computed: {
@@ -501,12 +503,11 @@ export default {
       await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
       let men_id = [];
       //mark law
-      if(q.includes('alex.onb')){
+      if (q.includes('alex.onb')) {
         men_id = document.getElementsByClassName(q);
-      }else if(q.includes("fackel.oeaw.ac.at")){
+      } else if (q.includes("fackel.oeaw.ac.at")) {
         men_id = document.getElementsByClassName(q);
-      }
-      else{
+      } else {
         men_id = document.getElementsByClassName("#" + q);
       }
 
@@ -516,12 +517,11 @@ export default {
         //there is at least one more page
         this.next();
         await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
-        if(q.includes('alex.onb')){
+        if (q.includes('alex.onb')) {
           men_id = document.getElementsByClassName(q);
-        }else if(q.includes("fackel.oeaw.ac.at")){
+        } else if (q.includes("fackel.oeaw.ac.at")) {
           men_id = document.getElementsByClassName(q);
-        }
-        else{
+        } else {
           men_id = document.getElementsByClassName("#" + q);
         }
 
@@ -745,7 +745,7 @@ export default {
      */
     createCommentDiv(event, rs, elem, type) {
       var div = document.createElement('div');
-      div.className = "comment";
+      div.className = "comment position-relative";
       div.style.color = "var(--text-black)";
       div.style.fontSize = "0.8rem";
       div.style.padding = "0 0.2rem 0 0.2rem";
@@ -792,6 +792,8 @@ export default {
 
             textinfo.innerHTML = id.substring(0, id.length - 1) + " " + d.title;
           });
+        } else if (event.pmbId.includes("https://fackel.oeaw.ac.at/")) {
+          textinfo.innerHTML = "<b>|</b>&nbsp;" + event.pmbId;
         }
 
       } else if (event.type === 'quote' || event.type === 'intertext') {
@@ -823,23 +825,24 @@ export default {
       button.style.minWidth = "15px";
       button.style.maxWidth = "15px";
       button.style.marginLeft = "0.2rem";
-      button.onclick = function (){
+      button.onclick = function () {
         div.remove();
       }
 
       div.appendChild(textinfo);
       div.appendChild(button)
 
-      const comment = document.getElementById("comments");
+      //const comment = document.getElementById("comments");
       div.style.position = "absolute";
       div.style.cursor = "pointer";
       //offset from nearest <p> + offset from d-block + offset from body + card offset offset of the comments container
-      div.style.top = elem.offsetTop + elem.parentElement.offsetTop + elem.parentElement.parentElement.offsetTop +elem.parentElement.parentElement.parentElement.offsetTop + comment.offsetTop + "px";
+      //div.style.top = elem.offsetTop + elem.parentElement.offsetTop + elem.parentElement.parentElement.offsetTop +elem.parentElement.parentElement.parentElement.offsetTop + comment.offsetTop + "px";
+      div.style.top = elem.offsetTop + elem.parentElement.offsetTop + "px";
 
       let self = this; //"this" cannot be used in JS functions
 
-      //if a work only refers to a pmb entry, no onclick function is needed
-      if (!(type === 'work' && event.pmbId && event.pmbId.includes('pmb'))) {
+      //if a work only refers to a pmb or fackel entry, no onclick function is needed
+      if (!(type === 'work' && event.pmbId && event.pmbId.includes('pmb') && event.pmbId.includes('fackel'))) {
         textinfo.onclick = function () {
           let routeData = "";
           if (type === 'person') {
@@ -893,6 +896,19 @@ export default {
             //this.pdfFile = this.saveStringToPDF(str);
             this.dom = dom;
             this.teiHeader = this.dom.getElementsByTagName("teiHeader")[0];
+            let msDesc = this.dom.getElementsByTagName("msDesc")[0];
+            let profileDesc = this.dom.getElementsByTagName("profileDesc")[0];
+            console.log(profileDesc)
+            console.log(msDesc)
+            if(profileDesc.innerHTML.includes('handNote')){
+              console.log('has handnote')
+            }
+            if(msDesc.innerHTML.includes('<ab') && msDesc.innerHTML.includes('stamp')){
+              let pmbID = msDesc.getElementsByTagName("stamp")[0].getAttribute('source').substring(1);
+              getPMBObjectWithId(pmbID, null, rs =>{
+                this.stamp = {"id": rs.id, "name": rs.name }
+              });
+            }
             let facs = this.dom.getElementsByTagName("graphic");
             for (let item of facs) {
               if (item.getAttribute("source") === "wienbibliothek") {
@@ -972,7 +988,7 @@ export default {
       let bool = this.showAllAnnotations === "true";
       this.$store.dispatch('updateAllHighlighters', {highlightbool: bool})
     },
-    getDocInfosFromCaseInfo(xmlid){
+    getDocInfosFromCaseInfo(xmlid) {
       this.caseInfo.then(async cd => {
         for (let i = 0; i < cd.cases.length; i++) {
           if (cd.cases[i].id === (this.colXmlId + '.xml')) {
@@ -1064,7 +1080,7 @@ export default {
         };
         this.objectTitle = ARCHErdfQuery(optionsTitle, rs).value[0].hasTitle.object;
         this.xmlFilename = ARCHErdfQuery(optionsFilename, rs).value[0].hasFilename.object;
-        this.pdfFilename = this.xmlFilename.substring(0, this.xmlFilename.length-4) + ".pdf";
+        this.pdfFilename = this.xmlFilename.substring(0, this.xmlFilename.length - 4) + ".pdf";
         let url = ARCHErdfQuery(optionsUrl, rs).value[0].hasIdentifier.object;
         var actors = ARCHErdfQuery(optionsHasActor, rs).value;
         actors.forEach(x => {
@@ -1077,11 +1093,11 @@ export default {
         })
         this.downloadXMLFromUrl(url);
 
-        if(this.objectTitle.includes('Zeitungsartikel') || this.objectTitle.includes('Originalmappe') || this.objectTitle.includes('Aktenvermerk')){
+        if (this.objectTitle.includes('Zeitungsartikel') || this.objectTitle.includes('Originalmappe') || this.objectTitle.includes('Aktenvermerk')) {
           this.simpleMD = true;
-        }else if(this.objectTitle.includes('Brief')){
+        } else if (this.objectTitle.includes('Brief')) {
           this.letterMD = true;
-        }else{
+        } else {
           this.defaultMD = true;
         }
 
@@ -1615,7 +1631,7 @@ mark {
   margin-left: 1rem;
 }
 
-.commentWrap{
+.commentWrap {
   display: flex;
 }
 </style>
