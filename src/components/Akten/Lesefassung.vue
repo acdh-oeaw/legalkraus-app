@@ -56,15 +56,39 @@
       </div>
     </div>
     <div v-if="letterMD" class="meta-data">
-      <p class="meta1">Metadaten Dokument:</p>
-      <div class="meta2">
+      <div class="meta1">
         <router-link class="back" to="/">{{ this.objectTitle }}</router-link>
+      </div>
+      <div class="meta2">
         <p>Seitenanzahl: {{ this.facsURLs.length }}</p>
       </div>
-      <div v-if="stamp===null" class="vl meta3">Stempel: - </div>
-      <div v-if="stamp!==null" class="vl meta3">Stempel: {{ stamp.name }} </div>
+      <div class="meta2-1">
+        <span v-if="handsClosed" class="hasActor">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right"
+             viewBox="0 0 16 16" v-on:click="toggleHands">
+          <path
+              d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
+        </svg>
+        Schreiberhände: {{ this.hands.length }}
+          </span>
+        <div v-if="!handsClosed">
+        <span class="hasActor">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down"
+             viewBox="0 0 16 16" v-on:click="toggleHands">
+  <path
+      d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+</svg>
+        Schreiberhände:
+
+          </span>
+          <p class="m-item" v-for="h in this.hands" v-bind:key="h.id">{{ h.name }}</p>
+        </div>
+      </div>
+      <div class="vl meta3"></div>
+      <div v-if="stamp===null" class="meta5">Stempel: -</div>
+      <div v-if="stamp!==null" class="meta5">Stempel: {{ stamp.name }}</div>
       <p class="meta4">Materialitätstyp: {{ this.docInfo.materiality[0] }}</p>
-      <div class="meta5">
+      <div class="meta6">
         <span v-if="actorsClosed" class="hasActor">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right"
              viewBox="0 0 16 16" v-on:click="toggleActors">
@@ -83,7 +107,82 @@
         Beteiligte:
 
           </span>
-          <p v-for="actor in this.docInfo.acts" v-bind:key="actor.key">{{ actor.value }}</p>
+          <p class="m-item" v-for="actor in this.docInfo.acts" v-bind:key="actor.key">{{ actor.value }}</p>
+        </div>
+      </div>
+      <div class="vl meta7"></div>
+      <div class="meta8">
+        <input class="vt" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
+        <button type="button" class="btn vt-button" data-search="next" v-on:click="highlightNext()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-down-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
+          </svg>
+        </button>
+        <button type="button" class="btn vt-button" data-search="prev" v-on:click="highlightPrev()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-up-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div v-if="defaultMD" class="meta-data">
+      <div class="meta1">
+        <router-link class="back" to="/">{{ this.objectTitle }}</router-link>
+      </div>
+      <div class="meta2">
+        <p>Seitenanzahl: {{ this.facsURLs.length }}</p>
+      </div>
+      <div class="meta2-1">
+        <span v-if="handsClosed" class="hasActor">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right"
+             viewBox="0 0 16 16" v-on:click="toggleHands">
+          <path
+              d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
+        </svg>
+        Schreiberhände: {{ this.hands.length }}
+          </span>
+        <div v-if="!handsClosed">
+        <span class="hasActor">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down"
+             viewBox="0 0 16 16" v-on:click="toggleHands">
+  <path
+      d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+</svg>
+        Schreiberhände:
+
+          </span>
+          <p class="m-item" v-for="h in this.hands" v-bind:key="h.id">{{ h.name }}</p>
+        </div>
+      </div>
+      <div class="vl meta3"></div>
+      <div class="meta5">Datum: {{ this.docInfo.date }} </div>
+      <div v-if="stamp===null" class="meta9">Stempel: -</div>
+      <div v-if="stamp!==null" class="meta9">Stempel: {{ stamp.name }}</div>
+      <p class="meta4">Materialitätstyp: {{ this.docInfo.materiality[0] }}</p>
+      <div class="meta6">
+        <span v-if="actorsClosed" class="hasActor">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right"
+             viewBox="0 0 16 16" v-on:click="toggleActors">
+          <path
+              d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
+        </svg>
+        Beteiligte: {{ this.docInfo.acts.length }}
+          </span>
+        <div v-if="!actorsClosed">
+        <span class="hasActor">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down"
+             viewBox="0 0 16 16" v-on:click="toggleActors">
+  <path
+      d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+</svg>
+        Beteiligte:
+
+          </span>
+          <p class="m-item" v-for="actor in this.docInfo.acts" v-bind:key="actor.key">{{ actor.value }}</p>
         </div>
       </div>
       <div class="vl meta7"></div>
@@ -441,6 +540,7 @@ export default {
       marks: [],
       idxCurrMark: 0,
       actorsClosed: true,
+      handsClosed: true,
       cat: null,
       subcat: null,
       caseInfo: null,
@@ -448,7 +548,8 @@ export default {
       simpleMD: false,
       letterMD: false,
       defaultMD: false,
-      stamp: null
+      stamp: null,
+      hands: []
     }
   },
   computed: {
@@ -480,7 +581,6 @@ export default {
           );
 
           let dbl = await document.querySelector(`.d-block`);
-          console.log(document.getElementsByClassName('d-block'))
           this.$parent.pdfFile = this.$parent.saveStringToPDF(dbl.textContent);
         },
         computed: {
@@ -502,7 +602,6 @@ export default {
   },
   methods: {
     async highlightQueryOnMounted(q) {
-      console.log(q)
       await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
       let men_id = [];
       //mark law
@@ -792,8 +891,8 @@ export default {
           this.caseInfo.then(data => {
             //let c = data.cases.filter(c => c.id.includes(this.colXmlId))[0];
             for (let i = 0; i < data.cases.length; i++) {
-              let d =  data.cases[i].doc_objs.filter(d => d.id.includes(filename))[0];
-              if(d){
+              let d = data.cases[i].doc_objs.filter(d => d.id.includes(filename))[0];
+              if (d) {
                 let id = d.id.substring(3, d.id.length - 4).replaceAll('-', '.').replaceAll('0', '');
                 textinfo.innerHTML = id.substring(0, id.length - 1) + " " + d.title;
                 break;
@@ -847,7 +946,7 @@ export default {
       div.style.cursor = "pointer";
       //offset from nearest <p> + offset from d-block + offset from body + card offset offset of the comments container
 
-       div.style.top = elem.offsetTop + elem.closest(".body").offsetTop + "px";
+      div.style.top = elem.offsetTop + elem.closest(".body").offsetTop + "px";
 
       let self = this; //"this" cannot be used in JS functions
 
@@ -908,15 +1007,19 @@ export default {
             this.teiHeader = this.dom.getElementsByTagName("teiHeader")[0];
             let msDesc = this.dom.getElementsByTagName("msDesc")[0];
             let profileDesc = this.dom.getElementsByTagName("profileDesc")[0];
-            console.log(profileDesc)
-            console.log(msDesc)
-            if(profileDesc.innerHTML.includes('handNote')){
-              console.log('has handnote')
+            if (profileDesc.innerHTML.includes('handNote')) {
+              let hands = ([...profileDesc.getElementsByTagName("handNote")]);
+              hands.forEach(h => {
+                let pmbID = h.getAttribute('scribeRef').substring(1);
+                getPMBObjectWithId(pmbID, null, rs => {
+                  this.hands.push({'id': rs.id, 'name': rs.name})
+                });
+              });
             }
-            if(msDesc.innerHTML.includes('<ab') && msDesc.innerHTML.includes('stamp')){
+            if (msDesc.innerHTML.includes('<ab') && msDesc.innerHTML.includes('stamp')) {
               let pmbID = msDesc.getElementsByTagName("stamp")[0].getAttribute('source').substring(1);
-              getPMBObjectWithId(pmbID, null, rs =>{
-                this.stamp = {"id": rs.id, "name": rs.name }
+              getPMBObjectWithId(pmbID, null, rs => {
+                this.stamp = {"id": rs.id, "name": rs.name}
               });
             }
             let facs = this.dom.getElementsByTagName("graphic");
@@ -939,6 +1042,9 @@ export default {
     },
     toggleActors() {
       this.actorsClosed = !this.actorsClosed;
+    },
+    toggleHands() {
+      this.handsClosed = !this.handsClosed;
     },
     toggleShowBoth() {
       this.removeAllComments();
@@ -1013,7 +1119,6 @@ export default {
                 for (const [key, value] of Object.entries(this.docInfo.orgs)) {
                   this.docInfo.acts.push({'pmbId': key, 'value': value})
                 }
-                console.log(this.docInfo)
                 break;
               }
             }
@@ -1166,6 +1271,7 @@ export default {
   display: grid;
   grid-template-columns: auto 6px auto 6px auto;
   grid-template-rows: auto auto auto;
+  grid-row-gap: 1rem;
   background-color: var(--secondary-gray-dark);
   padding: 4rem;
   text-align: left;
@@ -1176,6 +1282,17 @@ export default {
 .vl {
   border-left: 3px solid var(--primary-red);
   height: 100%;
+}
+
+.back {
+  padding: 0;
+  color: var(--text-black) !important;
+  text-decoration: underline var(--primary-red) 3px;
+  margin-bottom: 0.1rem;
+}
+
+.back:hover {
+  text-decoration: none;
 }
 
 .meta1 {
@@ -1190,15 +1307,10 @@ export default {
   grid-row: 2/3;
 }
 
-.back {
-  padding: 0;
-  color: var(--text-black) !important;
-  text-decoration: underline var(--primary-red) 3px;
-  margin-bottom: 0.1rem;
-}
-
-.back:hover {
-  text-decoration: none;
+.meta2-1 {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row: 3/4;
 }
 
 .meta3 {
@@ -1221,6 +1333,13 @@ export default {
   margin-left: 3rem;
 }
 
+.meta6 {
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row: 3/4;
+  margin-left: 3rem;
+}
+
 
 .meta7 {
   grid-column-start: 4;
@@ -1234,6 +1353,18 @@ export default {
   grid-row: 1/2;
   margin-left: 3rem;
   display: inline-flex;
+}
+
+.meta9 {
+  grid-column-start: 5;
+  grid-column-end: 6;
+  grid-row: 3/4;
+  margin-left: 3rem;
+  display: inline-flex;
+}
+
+.m-item{
+  margin-left: 20px;
 }
 
 .vt {
