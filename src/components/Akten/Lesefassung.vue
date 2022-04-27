@@ -281,7 +281,7 @@
             Download PDF
           </a>
         </div>
-        <div class="text-comment-wrap">
+        <div class="text-comment-wrap  position-relative">
           <div class="card card-full bg-light">
             <div class="header">
               <div class="all-annotations">
@@ -358,7 +358,9 @@
             </div>
 
           </div>
-          <div class="comments" id="comments"></div>
+          <div class="comments" id="comments">
+            
+          </div>
         </div>
       </div>
 
@@ -463,6 +465,7 @@ export default {
         },
         template,
         async mounted() {
+          
           this.$refs['readview'].querySelectorAll("[data-pgnr]").forEach((page) => {
                 page.querySelectorAll(".lb").forEach((lb, idx) => {
                   const ln = idx + 1;
@@ -753,7 +756,8 @@ export default {
       div.style.justifyContent = "flex-start";
 
       let textinfo = document.createElement('p');
-      textinfo.className = "textinfo";
+      
+      textinfo.className = "textinfo m-0";
 
       if (type === 'person') {
         if (rs.profession[0]) {
@@ -830,12 +834,13 @@ export default {
       div.appendChild(textinfo);
       div.appendChild(button)
 
-      const comment = document.getElementById("comments");
+      //const comment = document.getElementById("comments");
       div.style.position = "absolute";
       div.style.cursor = "pointer";
       //offset from nearest <p> + offset from d-block + offset from body + card offset offset of the comments container
-      div.style.top = elem.offsetTop + elem.parentElement.offsetTop + elem.parentElement.parentElement.offsetTop +elem.parentElement.parentElement.parentElement.offsetTop + comment.offsetTop + "px";
-
+      
+       div.style.top = elem.offsetTop + elem.closest(".body").offsetTop + "px";
+      
       let self = this; //"this" cannot be used in JS functions
 
       //if a work only refers to a pmb entry, no onclick function is needed
@@ -1026,6 +1031,7 @@ export default {
 
   },
   mounted() {
+    
     this.caseInfo = this.$store.getters.caseInfo;
     getCollectionOfObject(this.objectId, (rs) => {
       this.colId = rs[0].id;
@@ -1306,7 +1312,7 @@ export default {
 .body {
   text-align: left;
   margin: 0;
-  padding: 1rem;
+  padding: 0 1rem 1rem 1rem;
 }
 
 /*.bi-arrow-right {
