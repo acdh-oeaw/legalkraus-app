@@ -790,11 +790,17 @@ export default {
         } else if (event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus")) {
           let filename = event.pmbId.substring(event.pmbId.lastIndexOf('/') + 1)
           this.caseInfo.then(data => {
-            let c = data.cases.filter(c => c.id.includes(this.colXmlId))[0];
-            let d = c.doc_objs.filter(d => d.id.includes(filename))[0];
-            let id = d.id.substring(3, d.id.length - 4).replaceAll('-', '.').replaceAll('0', '');
+            //let c = data.cases.filter(c => c.id.includes(this.colXmlId))[0];
+            for (let i = 0; i < data.cases.length; i++) {
+              let d =  data.cases[i].doc_objs.filter(d => d.id.includes(filename))[0];
+              if(d){
+                let id = d.id.substring(3, d.id.length - 4).replaceAll('-', '.').replaceAll('0', '');
+                textinfo.innerHTML = id.substring(0, id.length - 1) + " " + d.title;
+                break;
+              }
 
-            textinfo.innerHTML = id.substring(0, id.length - 1) + " " + d.title;
+            }
+
           });
         } else if (event.pmbId.includes("https://fackel.oeaw.ac.at/")) {
           textinfo.innerHTML = "<b>|</b>&nbsp;" + event.pmbId;
