@@ -52,18 +52,17 @@
           </b-dropdown-item>
         </b-dropdown>
       </p>
-<!--      <p class="nav-el">
+      <p class="nav-el">
         <b-dropdown id="dropdown-3" text="Statistik"  variant='none' class="m-md-2">
           <b-dropdown-item>Zeitstrahl</b-dropdown-item>
           <b-dropdown-item><router-link class="dd-item" to="/statistik/fallstatistik">
               Fallstatistik
             </router-link></b-dropdown-item>
-          <b-dropdown-item>Sonstiges</b-dropdown-item>
         </b-dropdown>
-      </p>-->
-      <button type="button" class="btn nav-el rounded-0">
+      </p>
+<!--      <button type="button" class="btn nav-el rounded-0">
         <router-link router-link class="nav-link-ha" :to="'/statistik/fallstatistik'">Statistik</router-link>
-      </button>
+      </button>-->
       <p class="nav-el">
         <b-dropdown id="dropdown-4" :class="{'active':this.itemIsActive('register')}" text="Register" variant="none" class="m-md-2">
           <b-dropdown-item>
