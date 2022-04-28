@@ -486,7 +486,8 @@ export default {
 .reset-button {
   display: flex;
   padding: 0.375rem 0.375rem;
-  margin: 2rem;
+  margin-top: 0;
+  margin-bottom: 2rem;
   height: fit-content;
 }
 </style>

@@ -106,6 +106,12 @@ module.exports.getCollections = async (startPage, callback) => {
     }
 }
 
+/**
+ * Given the xmlId of a resource, the function return the corresponding archeId by making a call over the Arche API
+ * @param xmlId full xmlid, e.g.D_000001-003-000.xml or C_000004.xml
+ * @param callback
+ * @returns the ArcheId of the corresponding xmlID
+ */
 module.exports.getArcheIdFromXmlId = async (xmlId, callback) => {
     let httpRequest = new XMLHttpRequest();
     if(xmlId.includes('C_')){
