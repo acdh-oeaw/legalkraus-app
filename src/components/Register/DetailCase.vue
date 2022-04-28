@@ -31,7 +31,7 @@
 
 <script>
 import {
-  getColArcheIdFromColXmlId,
+  getArcheIdFromXmlId,
   getEntity,
   getObjectsOfCollection,
   getObjectWithId
@@ -62,7 +62,7 @@ export default {
           return;
         }
         this.docsLoading = true;
-        getColArcheIdFromColXmlId(this.case.id, rs => {
+        getArcheIdFromXmlId(this.case.id, rs => {
           this.caseIdArche = rs;
           getObjectsOfCollection(rs, async docs => {
             let currdocs = [];
@@ -121,7 +121,7 @@ export default {
       }
     },
     navToObjects() {
-      getColArcheIdFromColXmlId(this.case.id, rs => {
+      getArcheIdFromXmlId(this.case.id, rs => {
         this.$router.push({name: "overview-objects", params: {id: rs}});
       });
 
@@ -130,7 +130,7 @@ export default {
       let idx = d.identifier.lastIndexOf('/');
       let id = d.identifier.substring(idx + 1);
 
-      getColArcheIdFromColXmlId(id, rs => {
+      getArcheIdFromXmlId(id, rs => {
         this.$router.push({name: "lesefassung", params: {id: rs}});
       });
     }

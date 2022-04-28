@@ -6,6 +6,7 @@
     <xsl:output encoding="UTF-8" media-type="text/html" method="html" version="5.0" indent="yes"/>
     <!-- fragmenting function based on https://wiki.tei-c.org/index.php/Milestone-chunk.xquery -->
     <xsl:variable name="teiHeader" select="//tei:teiHeader"/>
+    <xsl:variable name="facs" select="//tei:facsimile"/>
     <xsl:function name="local:split">
         <xsl:param name="ms1" as="element()"/>
         <xsl:param name="ms2" as="element()"/>
@@ -156,33 +157,33 @@
     </xsl:template>
 
     <xsl:template match="tei:quote">
-        <span class="quote">
+        <entity-span id="{generate-id()}" class="quote {@source}" v-on:click="navigateTo('{@source}', 'quote', $event)">
             <xsl:attribute name="v-bind:class">
                 <xsl:text>{ highlighter: highlighter.quote }</xsl:text>
             </xsl:attribute>
             <xsl:apply-templates/>
-        </span>
+        </entity-span>
     </xsl:template>
 
     <xsl:template match="tei:q[@type='spoken']">
-        <span class="quote-spoken">
+        <entity-span id="{generate-id()}" class="quote-spoken {@source}" v-on:click="navigateTo('{@source}', '{@type}', $event)">
             <xsl:attribute name="v-bind:class">
-                <xsl:text>{ highlighter: highlighter.quote }</xsl:text>
+                <xsl:text>{ highlighter: highlighter.spoken }</xsl:text>
             </xsl:attribute>
             <xsl:apply-templates/>
-        </span>
+        </entity-span>
     </xsl:template>
 
     <xsl:template match="tei:note[@type = 'intertext' and starts-with(@source, 'https://fackel')]">
-        <span class="fackel-ref">
+        <entity-span id="{generate-id()}" class="fackel-ref {@source}" v-on:click="navigateTo('{@source}', '{@type}', $event)">
             <xsl:attribute name="v-bind:class">
-                <xsl:text>{ highlighter: highlighter.quote }</xsl:text>
+                <xsl:text>{ highlighter: highlighter.intertext }</xsl:text>
             </xsl:attribute>
             <xsl:apply-templates/>
-        </span>
+        </entity-span>
     </xsl:template>
 
-    <xsl:template match="tei:note[@hand = '*']">
+    <xsl:template match="tei:note[@hand]">
         <span class="note-hand">
             <xsl:apply-templates/>
         </span>
@@ -194,7 +195,7 @@
         </span>
     </xsl:template>
 
-    <xsl:template match="tei:hi[@rend = 'underlined' and @hand = '*']">
+    <xsl:template match="tei:hi[@rend = 'underlined'][@hand]">
         <span class="hi-hand-underlined">
             <xsl:apply-templates/>
         </span>
@@ -212,7 +213,7 @@
         </span>
     </xsl:template>
 
-    <xsl:template match="tei:add[@hand = '*']">
+    <xsl:template match="tei:add[@hand]">
         <span class="add-hand">
             <xsl:apply-templates/>
         </span>
@@ -224,7 +225,7 @@
         </span>
     </xsl:template>
 
-    <xsl:template match="tei:del[@hand = '*']">
+    <xsl:template match="tei:del[@hand]">
         <span class="del-hand">
             <xsl:apply-templates/>
         </span>
@@ -253,7 +254,13 @@
         <xsl:variable name="seg">
             <xsl:copy-of select="./root()//tei:seg[@type='transposition'][position()=$ptrpos]"/>
         </xsl:variable>
+        <xsl:if test="not(preceding::*[2]/name()= 'metamark')">
+            <xsl:value-of select="'{'"/>
+        </xsl:if>
         <xsl:apply-templates select="$seg"/>
+        <xsl:if test="not(following::*[2]/name()= 'metamark')">
+            <xsl:value-of select="'}'"/>
+        </xsl:if>
     </xsl:template>
     <xsl:template match="tei:seg[@type='transposition']">
         <xsl:if test="not(ancestor::*[1])">
@@ -286,8 +293,16 @@
         </xsl:copy>
     </xsl:template>
     <xsl:template match="tei:rdg">
-        <span class="rdg {if (tei:note[@rend='leftMargin']) then 'marginLeft' else ()}">
+        <xsl:variable name="witid" select="substring-after(@wit,'#')"/>
+        <xsl:variable name="witfacsid">
+            <xsl:value-of select="$teiHeader//tei:witness[@xml:id=$witid]/substring-after(@facs,'#')"/>
+        </xsl:variable>
+        <span class="rdg {if (tei:note[@rend='leftMargin']) then 'marginLeft' else ('mRight')}">
             <xsl:apply-templates/>
+            <xsl:variable name="witnessfacs">
+                <xsl:value-of select="'['||string-join($facs[@xml:id=$witfacsid]//tei:graphic[@source='wienbibliothek']/@url/(''''||string()||''''),',')||']'"/>
+            </xsl:variable>
+            <a id="show-btn" class="d-block witness-link"  v-on:click="setWitness({$witnessfacs});$bvModal.show('bv-modal-witness')">Textzeuge</a>
         </span>
     </xsl:template>
 </xsl:stylesheet>

@@ -3,7 +3,7 @@
     <div class="filter-nav">
       <p class="navigation">Akten-Edition
         <span class="arrow">></span>
-        <router-link router-link class="nav-link" :to="'/' + catLower">
+        <router-link router-link class="nav-link" :to="'/akten-edition/' + catLower">
           {{ this.category }}
         </router-link>
         <span class="arrow">></span>
@@ -109,7 +109,7 @@
 import {getCollections} from "@/services/ARCHEService";
 import Search from "../Search";
 import SearchResultItem from "./SearchResultItem";
-import {getColArcheIdFromColXmlId} from "../../services/ARCHEService";
+import {getArcheIdFromXmlId} from "../../services/ARCHEService";
 
 export default {
   name: "OverviewCollections",
@@ -169,7 +169,7 @@ export default {
       callback(this.cases.slice(offset, offset + ctx.perPage))
     },
     navToObjects: async function (record) {
-      getColArcheIdFromColXmlId(record.id, async id => {
+      getArcheIdFromXmlId(record.id, async id => {
         if (this.currSubCat === this.pR) {
           this.$router.push({name: "privatrecht-objects", params: {id: id}});
         } else if (this.currSubCat === this.sR) {
@@ -430,6 +430,7 @@ main {
   display: flex;
   margin: 2rem;
   font-size: inherit;
+  height: fit-content;
 }
 
 .vtt {
@@ -486,7 +487,8 @@ main {
 .reset-button {
   display: flex;
   padding: 0.375rem 0.375rem;
-  margin: 2rem;
+  margin-bottom: 2rem;
+  margin-top: 0;
 }
 
 .sammlungen {

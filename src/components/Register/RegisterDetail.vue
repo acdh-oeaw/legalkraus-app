@@ -24,7 +24,6 @@
       <div class="docs" v-if="this.cases.length>0">
         <div class="rb">Dokumente:</div>
         <div v-for="d in currentDocs" :key="d.id">
-          <!--          <detail-case v-bind:case="c" v-bind:name="item.title[0]._" v-bind:category="category"></detail-case>-->
           <div class="doc" v-on:click="navToLF(d)">{{ d.title }}</div>
         </div>
         <div class="btns">
@@ -124,24 +123,6 @@
     </div>
     <div v-if="category==='i'" class="detail">
       <div>PMB: <a v-bind:href="item.pmbURL" target="_blank">{{ this.item.orgName }}</a></div>
-      <!--      <div v-if="this.cases.length>0">
-              <div>Erwähnungen:</div>
-              <div class="btns">
-                <svg v-on:click="prev " xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                     class="bi bi-arrow-left-short" viewBox="0 0 16 16">
-                  <path fill-rule="evenodd"
-                        d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
-                </svg>
-                <svg v-on:click="next" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                     class="bi bi-arrow-right-short" viewBox="0 0 16 16">
-                  <path fill-rule="evenodd"
-                        d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
-                </svg>
-              </div>
-              <div v-for="c in currentCases" :key="c.id" class="case">
-                <detail-case v-bind:case="c" v-bind:name="item.orgName" v-bind:category="category"></detail-case>
-              </div>
-            </div>-->
       <div class="cases" v-if="this.cases.length>0">
         <div class="rb">Fälle:</div>
         <div v-for="c in currentCases" :key="c.id">
@@ -167,6 +148,27 @@
           <div class="doc" v-on:click="navToLF(d)">{{ d.title }}</div>
         </div>
         <div class="btns">
+          <svg v-on:click="prevDocs " xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-left-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
+          </svg>
+          <svg v-on:click="nextDocs" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div v-if="category==='f'" class="detail">
+      <div>Die Fackel: <a v-bind:href="item.url" target="_blank">{{ this.item.title }}</a></div>
+      <div class="cases" v-if="this.item.cases.length>0">
+        <div class="rb">Fälle:</div>
+        <div v-for="c in this.item.cases" :key="c.id">
+          <div class="case" v-on:click="navToObjects(c)">{{ c.title }}</div>
+        </div>
+        <div class="btns">
           <svg v-on:click="prevCases " xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                class="bi bi-arrow-left-short" viewBox="0 0 16 16">
             <path fill-rule="evenodd"
@@ -179,13 +181,70 @@
           </svg>
         </div>
       </div>
+      <div class="docs" v-if="this.item.cases.length>0">
+        <div class="rb">Dokumente:</div>
+        <div v-for="d in this.item.docs" :key="d.id">
+          <div class="doc" v-on:click="navToLF(d)">{{ d.title }}</div>
+        </div>
+        <div class="btns">
+          <svg v-on:click="prevDocs " xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-left-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
+          </svg>
+          <svg v-on:click="nextDocs" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div v-if="category==='j'" class="detail">
+      <div>ALEX: <a v-bind:href="item.url" target="_blank">{{ this.item.title }}</a></div>
+      <div class="cases" v-if="this.item.cases.length>0">
+        <div class="rb">Fälle:</div>
+        <div v-for="c in this.item.cases" :key="c.id">
+          <div class="case" v-on:click="navToObjects(c)">{{ c.title }}</div>
+        </div>
+        <div class="btns">
+          <svg v-on:click="prevCases " xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-left-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
+          </svg>
+          <svg v-on:click="nextCases" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
+          </svg>
+        </div>
+      </div>
+      <div class="docs" v-if="this.item.cases.length>0">
+        <div class="rb">Dokumente:</div>
+        <div v-for="d in this.item.docs" :key="d.id">
+          <div class="doc" v-on:click="navToLF(d)">{{ d.title }}</div>
+        </div>
+        <div class="btns">
+          <svg v-on:click="prevDocs " xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-left-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
+          </svg>
+          <svg v-on:click="nextDocs" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
+          </svg>
+        </div>
+      </div>
     </div>
 
   </main>
 </template>
 
 <script>
-import {getColArcheIdFromColXmlId} from "../../services/ARCHEService";
+import {getArcheIdFromXmlId} from "../../services/ARCHEService";
 
 export default {
   name: "RegisterDetail",
@@ -284,7 +343,7 @@ export default {
       });
     },
     navToObjects(c) {
-      getColArcheIdFromColXmlId(c.id, rs => {
+      getArcheIdFromXmlId(c.id, rs => {
         this.$router.push({name: "overview-objects", params: {id: rs}});
       });
 
@@ -293,8 +352,14 @@ export default {
       let idx = d.id.lastIndexOf('/');
       let id = d.id.substring(idx + 1);
 
-      getColArcheIdFromColXmlId(id, rs => {
-        this.$router.push({name: "lesefassung", params: {id: rs}, query: {q: this.item.pmbID}});
+      getArcheIdFromXmlId(id, rs => {
+        if(!(this.category === 'j'|| this.category === 'f')){
+          this.$router.push({name: "lesefassung", params: {id: rs}, query: {q: this.item.pmbID}});
+        }else{
+          //laws do not have pmbIDs
+          this.$router.push({name: "lesefassung", params: {id: rs}, query: {q: this.item.url}});
+        }
+
       });
     }
   },
@@ -302,12 +367,17 @@ export default {
     this.caseInfo = this.$store.getters.caseInfo;
   },
   mounted() {
-    this.setCasesAndDocs();
+    if(this.category !== 'j' && this.category !== 'f'){
+      this.setCasesAndDocs();
+    }
+
   }
   ,
   watch: {
     item() {
-      this.setCasesAndDocs();
+      if(this.category !== 'j' && this.category !== 'f'){
+        this.setCasesAndDocs();
+      }
     }
     ,
     cases() {
@@ -349,6 +419,10 @@ export default {
 .rb {
   font-weight: bold;
   color: var(--primary-red)
+}
+
+div > a{
+  color: #0000EE;
 }
 
 </style>
