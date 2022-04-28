@@ -240,6 +240,7 @@ main {
   border-color: var(--primary-red);
   font-size: 0.775rem;
   padding: 0.2rem 0.4rem;
+  white-space: nowrap;
 }
 
 .beta-badge:hover, .beta-badge:active, .beta-badge:focus {
