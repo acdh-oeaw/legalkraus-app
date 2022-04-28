@@ -29,16 +29,13 @@
       <span style="font-weight: bold">{{ this.objectTitle }}</span>
     </p>
     <div v-if="simpleMD" class="meta-data">
-      <p class="meta1">Metadaten Dokument:</p>
-      <div class="meta2">
-        <router-link class="back" to="/">{{ this.objectTitle }}</router-link>
-      </div>
+      <router-link class="back" to="/">{{ this.objectTitle }}</router-link>
       <div class="meta5">
         <p>Seitenanzahl: {{ this.facsURLs.length }}</p>
       </div>
       <div class="vl meta3"></div>
       <p class="meta4">Datum: {{ this.docInfo.date }}</p>
-      <div class="meta8">
+      <div class="meta12 d-inline-flex">
         <input class="vt" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
         <button type="button" class="btn vt-button" data-search="next" v-on:click="highlightNext()">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -56,14 +53,14 @@
         </button>
       </div>
     </div>
-    <div v-if="letterMD" class="meta-data">
+    <div v-if="letterMD && showMD" class="meta-data">
       <div class="meta1">
         <router-link class="back" to="/">{{ this.objectTitle }}</router-link>
-      </div>
-      <div class="meta2">
         <p>Seitenanzahl: {{ this.facsURLs.length }}</p>
+        <p>Betreff: {{this.noteGrp.subject}}</p>
+        <p>Diktation: {{this.noteGrp.dictation}}</p>
       </div>
-      <div class="meta2-1">
+      <div class="meta11">
         <span v-if="handsClosed" class="hasActor">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right"
              viewBox="0 0 16 16" v-on:click="toggleHands">
@@ -86,10 +83,17 @@
         </div>
       </div>
       <div class="vl meta3"></div>
+      <div class="meta4">
+        <b>Sender</b>
+        <p>Name: {{this.sent.name.name}}</p>
+        <p>Straße: {{this.sent.street}}</p>
+        <p>Ort: {{this.sent.settlement}}</p>
+        <p>Datum: {{this.sent.date}}</p>
+      </div>
       <div v-if="stamp===null" class="meta5">Stempel: -</div>
       <div v-if="stamp!==null" class="meta5">Stempel: {{ stamp.name }}</div>
-      <p class="meta4">Materialitätstyp: {{ this.docInfo.materiality[0] }}</p>
-      <div class="meta6">
+      <p class="meta2">Materialitätstyp: {{ this.docInfo.materiality[0] }}</p>
+      <div class="meta10">
         <span v-if="actorsClosed" class="hasActor">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right"
              viewBox="0 0 16 16" v-on:click="toggleActors">
@@ -129,7 +133,15 @@
           </svg>
         </button>
       </div>
+      <div class="meta12">
+        <b>Empfänger</b>
+        <p>Name: {{this.received.name.name}}</p>
+        <p>Straße: {{this.received.street}}</p>
+        <p>Ort: {{this.received.settlement}}</p>
+        <p>Datum: {{this.received.date}}</p>
+      </div>
     </div>
+    <div v-if="letterMD && !showMD" class="loader"></div>
     <div v-if="defaultMD" class="meta-data">
       <div class="meta1">
         <router-link class="back" to="/">{{ this.objectTitle }}</router-link>
@@ -159,10 +171,9 @@
           <p class="m-item" v-for="h in this.hands" v-bind:key="h.id">{{ h.name }}</p>
         </div>
       </div>
-      <div class="vl meta3"></div>
       <div class="meta5">Datum: {{ this.docInfo.date }}</div>
-      <div v-if="stamp===null" class="meta9">Stempel: -</div>
-      <div v-if="stamp!==null" class="meta9">Stempel: {{ stamp.name }}</div>
+      <div v-if="stamp===null" class="meta12">Stempel: -</div>
+      <div v-if="stamp!==null" class="meta12">Stempel: {{ stamp.name }}</div>
       <p class="meta4">Materialitätstyp: {{ this.docInfo.materiality[0] }}</p>
       <div class="meta6">
         <span v-if="actorsClosed" class="hasActor">
@@ -187,7 +198,7 @@
         </div>
       </div>
       <div class="vl meta7"></div>
-      <div class="meta8">
+      <div class="meta9">
         <input class="vt" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
         <button type="button" class="btn vt-button" data-search="next" v-on:click="highlightNext()">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -598,7 +609,8 @@ export default {
       hands: [],
       sent: {},
       received: {},
-      noteGrp: {}
+      noteGrp: {},
+      showMD: false
     }
   },
   computed: {
@@ -646,7 +658,6 @@ export default {
             this.$emit('childToParent', {pmbId: pmbId, type: type, htmlId: event.target.id});
           },
           setWitness(val) {
-            console.log(val)
             this.$parent.witness = val
           }
         }
@@ -655,7 +666,6 @@ export default {
   },
   methods: {
     witnessImageSize(val) {
-      console.log(val)
       return val.replace('full/full/', 'full/600,/')
     },
     async highlightQueryOnMounted(q) {
@@ -822,7 +832,6 @@ export default {
 
         if (idx > 0) {
           await rdgsLeft[idx - 1].offsetTop > 0;
-          console.log(rdgsLeft[idx - 1].offsetTop)
           const prevBottom = rdgsLeft[idx - 1].offsetTop + rdgsLeft[idx - 1].clientHeight;
 
           if (prevBottom > rdg.offsetTop) {
@@ -1107,19 +1116,6 @@ export default {
             this.xmlFile = this.saveStringToXML(this.xml);
             //this.pdfFile = this.saveStringToPDF(str);
             this.dom = dom;
-            this.teiHeader = this.dom.getElementsByTagName("teiHeader")[0];
-            let msDesc = this.dom.getElementsByTagName("msDesc")[0];
-            let profileDesc = this.dom.getElementsByTagName("profileDesc")[0];
-            let correspDesc = this.dom.getElementsByTagName("correspDesc")[0];
-            console.log(correspDesc)
-            if (profileDesc.innerHTML.includes('handNote')) {
-              let hands = ([...profileDesc.getElementsByTagName("handNote")]);
-              this.hands = await this.loadHands(hands);
-            }
-            if (msDesc.innerHTML.includes('<ab') && msDesc.innerHTML.includes('stamp')) {
-              let pmbID = msDesc.getElementsByTagName("stamp")[0].getAttribute('source').substring(1);
-              this.stamp = await this.loadPMBEntity(pmbID);
-            }
 
             const pbsfacs = Array.from(this.dom.getElementsByTagName("pb")).map(pb => pb.attributes.facs.nodeValue.replace('#', ''));
             pbsfacs.forEach(facsid => {
@@ -1131,7 +1127,6 @@ export default {
             if (furtherWitnesses.length > 0) {
               this.furtherWitnesses = Array.from(furtherWitnesses).map(furtherWitness => furtherWitness.attributes.url.nodeValue)
             }
-            console.log(this.furtherWitnesses)
             let facs = this.dom.getElementsByTagName("graphic");
             for (let item of facs) {
               if (item.getAttribute("source") === "wienbibliothek") {
@@ -1154,7 +1149,10 @@ export default {
       this.actorsClosed = !this.actorsClosed;
     },
     toggleHands() {
-      this.handsClosed = !this.handsClosed;
+      if(this.hands.length > 0){
+        this.handsClosed = !this.handsClosed;
+      }
+
     },
     toggleShowBoth() {
       this.removeAllComments();
@@ -1334,7 +1332,97 @@ export default {
             this.actors.push(rs);
           });
         })
-        this.downloadXMLFromUrl(url);
+        this.downloadXMLFromUrl(url).then(async () => {
+          this.teiHeader = this.dom.getElementsByTagName("teiHeader")[0];
+          let msDesc = this.dom.getElementsByTagName("msDesc")[0];
+          let profileDesc = this.dom.getElementsByTagName("profileDesc")[0];
+          let correspDesc = this.dom.getElementsByTagName("correspDesc")[0];
+          if (profileDesc.innerHTML.includes('handNote')) {
+            let hands = ([...profileDesc.getElementsByTagName("handNote")]);
+            this.hands = await this.loadHands(hands);
+          }
+          if (msDesc.innerHTML.includes('<ab') && msDesc.innerHTML.includes('stamp')) {
+            let pmbID = msDesc.getElementsByTagName("stamp")[0].getAttribute('source').substring(1);
+            this.stamp = await this.loadPMBEntity(pmbID);
+          }
+          if (correspDesc.innerHTML.includes('correspAction')) {
+            let cActions = [...correspDesc.getElementsByTagName("correspAction")];
+            for (const c of cActions) {
+              let t = c.getAttribute('type');
+              if (t === 'sent') {
+                let nameElem = null;
+                if (c.innerHTML.includes('persName')) {
+                  nameElem = c.getElementsByTagName("persName")[0];
+                } else if (c.innerHTML.includes('orgName')) {
+                  nameElem = c.getElementsByTagName("orgName")[0];
+                }
+                if (nameElem !== null) {
+                  let ref = nameElem.getAttribute('ref');
+                  let pmbID = ref.substring(4); //remove leading pmbId
+                  this.sent.name = await this.loadPMBEntity(pmbID);
+
+                }
+
+                if (c.innerHTML.includes('street')) {
+                  let street = c.getElementsByTagName("street")[0];
+                  this.sent.street = street.innerHTML===''? '-':street.innerHTML;
+                }
+
+                if (c.innerHTML.includes('settlement')) {
+                  let set = c.getElementsByTagName("settlement")[0];
+                  this.sent.settlement = set.innerHTML===''? '-':set.innerHTML;
+                }
+
+                if (c.innerHTML.includes('date')) {
+                  let d = c.getElementsByTagName("date")[0];
+                  this.sent.date = d.innerHTML===''? '-':d.innerHTML;
+                }
+              } else if (t === 'received') {
+                let nameElem = null;
+                if (c.innerHTML.includes('persName')) {
+                  nameElem = c.getElementsByTagName("persName")[0];
+                } else if (c.innerHTML.includes('orgName')) {
+                  nameElem = c.getElementsByTagName("orgName")[0];
+                }
+                if (nameElem !== null) {
+                  let ref = nameElem.getAttribute('ref');
+                  let pmbID = ref.substring(4); //remove leading pmbId
+                  this.received.name = await this.loadPMBEntity(pmbID)
+                }
+
+                if (c.innerHTML.includes('street')) {
+                  let street = c.getElementsByTagName("street")[0];
+                  this.received.street = street.innerHTML===''? '-':street.innerHTML;
+                }
+
+                if (c.innerHTML.includes('settlement')) {
+                  let set = c.getElementsByTagName("settlement")[0];
+                  this.received.settlement = set.innerHTML===''? '-':set.innerHTML;
+                }
+
+                if (c.innerHTML.includes('date')) {
+                  let d = c.getElementsByTagName("date")[0];
+                  this.received.date = d.innerHTML===''? '-':d.innerHTML;
+                }
+              }
+            }
+
+          }
+          if (correspDesc.innerHTML.includes('noteGrp')) {
+            let ngrp = correspDesc.getElementsByTagName("noteGrp")[0];
+            let notes = [...ngrp.getElementsByTagName('note')];
+            for (let i = 0; i < notes.length; i++) {
+              let t = notes[i].getAttribute('type');
+              if (t === 'subject') {
+                this.noteGrp.subject = notes[i].innerHTML===''? '-':notes[i].innerHTML;
+              } else if (t === 'dictation') {
+                this.noteGrp.dictation = notes[i].innerHTML===''? '-':notes[i].innerHTML;
+              }
+            }
+          }
+        }).then(()=>{
+          this.showMD = true;
+          console.log("done loading MD")});
 
         if (this.objectTitle.includes('Zeitungsartikel') || this.objectTitle.includes('Originalmappe') || this.objectTitle.includes('Aktenvermerk')) {
           this.simpleMD = true;
@@ -1397,7 +1485,7 @@ export default {
 .meta-data {
   display: grid;
   grid-template-columns: auto 6px auto 6px auto;
-  grid-template-rows: auto auto auto;
+  grid-template-rows: auto auto auto auto;
   grid-row-gap: 1rem;
   background-color: var(--secondary-gray-dark);
   padding: 4rem;
@@ -1437,13 +1525,13 @@ export default {
 .meta2-1 {
   grid-column-start: 1;
   grid-column-end: 2;
-  grid-row: 3/4;
+  grid-row: 4/5;
 }
 
 .meta3 {
   grid-column-start: 2;
   grid-column-end: 3;
-  grid-row: 1/4;
+  grid-row: 1/5;
 }
 
 .meta4 {
@@ -1465,7 +1553,7 @@ export default {
 .meta6 {
   grid-column-start: 3;
   grid-column-end: 4;
-  grid-row: 3/4;
+  grid-row: 4/5;
   margin-left: 2rem;
   margin-right: 2rem;
 }
@@ -1474,13 +1562,13 @@ export default {
 .meta7 {
   grid-column-start: 4;
   grid-column-end: 5;
-  grid-row: 1/4;
+  grid-row: 1/5;
 }
 
 .meta8 {
   grid-column-start: 5;
   grid-column-end: 6;
-  grid-row: 1/2;
+  grid-row: 3/4;
   margin-left: 3rem;
   display: inline-flex;
 }
@@ -1488,9 +1576,30 @@ export default {
 .meta9 {
   grid-column-start: 5;
   grid-column-end: 6;
-  grid-row: 3/4;
+  grid-row: 2/3;
   margin-left: 3rem;
   display: inline-flex;
+}
+
+.meta10 {
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row: 3/4;
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+
+.meta11 {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row: 3/4;
+}
+
+.meta12 {
+  grid-column-start: 5;
+  grid-column-end: 6;
+  grid-row: 1/2;
+  margin-left: 3rem;
 }
 
 .m-item {
@@ -1504,6 +1613,7 @@ export default {
   border: transparent;
   margin-top: 0 !important;
   margin-bottom: 0 !important;
+  margin-left: 0 !important;
 }
 
 .vt-button {
@@ -1968,6 +2078,27 @@ mark {
   padding-left: 4.5rem;
 }
 
+.loader {
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid var(--primary-red);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 2s linear infinite;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 </style>
 
 
