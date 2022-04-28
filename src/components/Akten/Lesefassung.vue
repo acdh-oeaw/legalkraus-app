@@ -353,7 +353,7 @@
             </b-form-checkbox>
           </div>
 
-          <div class="vt-container">
+<!--          <div class="vt-container">
             <input class="vt" type="text" placeholder="Volltextsuche:" v-model="keyword"
                    @keyup="highlight(keyword)"/>
             <button type="button" class="btn vt-button" data-search="next" v-on:click="highlightNext()">
@@ -370,7 +370,7 @@
                       d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"/>
               </svg>
             </button>
-          </div>
+          </div>-->
           <div class="body overflow-auto d-flex flex-row">
             <!-- <div v-if="this.$store.getters.linebreaks" class="w-5 text-right position-relative">
              </div>-->
@@ -1412,21 +1412,24 @@ export default {
   grid-column-start: 3;
   grid-column-end: 4;
   grid-row: 1/2;
-  margin-left: 3rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
 }
 
 .meta5 {
   grid-column-start: 3;
   grid-column-end: 4;
   grid-row: 2/3;
-  margin-left: 3rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
 }
 
 .meta6 {
   grid-column-start: 3;
   grid-column-end: 4;
   grid-row: 3/4;
-  margin-left: 3rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
 }
 
 
@@ -1461,11 +1464,16 @@ export default {
   margin-right: 2rem;
   border-radius: 0.25rem;
   border: transparent;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 .vt-button {
   background-color: white !important;
   margin-right: 0.5rem;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  height: min-content;
 }
 
 .header {
@@ -1842,7 +1850,7 @@ export default {
 }
 
 .marginalie-text.marginRight {
-  border-left: 1.8px solid left;
+  border-left: 1.8px solid;
 }
 
 .marginalie-text.marginLeft, .rdg.marginLeft {
