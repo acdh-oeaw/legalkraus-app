@@ -1239,6 +1239,7 @@ export default {
     }
   },
   created() {
+    this.caseInfo = this.$store.getters.caseInfo;
     this.objectId = this.$route.params.id;
     if (this.$route.params.cat) {
       this.propsSet = true;
@@ -1283,7 +1284,7 @@ export default {
   },
   mounted() {
 
-    this.caseInfo = this.$store.getters.caseInfo;
+
     getCollectionOfObject(this.objectId, (rs) => {
       this.colId = rs[0].id;
       this.colTitle = rs[0].title;
@@ -1357,10 +1358,9 @@ export default {
                   nameElem = c.getElementsByTagName("orgName")[0];
                 }
                 if (nameElem !== null) {
-                  let ref = nameElem.getAttribute('ref');
+                 let ref = nameElem.getAttribute('ref');
                   let pmbID = ref.substring(4); //remove leading pmbId
                   this.sent.name = await this.loadPMBEntity(pmbID);
-
                 }
 
                 if (c.innerHTML.includes('street')) {
