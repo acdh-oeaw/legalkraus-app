@@ -18,7 +18,9 @@
           </datalist>
         </div>
         <Search class="py-2 vt" v-on:searchPerformed="searchPerformed($event)"></Search>
+        <div class="mleft">
         <input class="vt vty" type="number" placeholder="Bis Jahr:" v-model="kwY"/>
+        </div>
         <span class="lbls">
         <div class="lbl" v-for="pers in currPersons" :key="pers.key">{{ pers.value }}
           <svg v-on:click="removePers(pers.key)" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -534,6 +536,8 @@ export default {
   grid-column: 1/2;
   grid-row: 2/3;
   width: fit-content;
+  margin-left: 2rem;
+
 }
 
 .lbl {
@@ -580,5 +584,11 @@ export default {
   margin-top: 0;
   margin-bottom: 2rem;
 }
+.searchPers{
+  margin-left: 2rem;
+}
 
+.mleft{
+  margin-left: 2rem;
+}
 </style>

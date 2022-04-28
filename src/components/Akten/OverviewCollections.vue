@@ -497,6 +497,7 @@ main {
   grid-column: 1/2;
   grid-row: 2/3;
   width: fit-content;
+  margin-left: 2rem !important;
 }
 
 .lbl {
@@ -545,5 +546,9 @@ main {
 
 .sammlungen {
   padding: 0.35rem 0.75rem;
+}
+
+.searchPers{
+  margin-left: 2rem;
 }
 </style>

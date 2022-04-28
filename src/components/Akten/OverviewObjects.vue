@@ -772,5 +772,8 @@ export default {
   height: fit-content;
 }
 
+.searchPers{
+  margin-left:2rem;
+}
 
 </style>
