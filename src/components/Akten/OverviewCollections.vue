@@ -168,8 +168,9 @@ export default {
       const offset = ctx.currentPage === 1 ? 0 : (ctx.currentPage - 1) * ctx.perPage;
       callback(this.cases.slice(offset, offset + ctx.perPage))
     },
-    navToObjects: async function (record) {
-      getArcheIdFromXmlId(record.id, async id => {
+    navToObjects: async function (event) {
+      let id = event.id;
+      if(!id.includes('_')){
         if (this.currSubCat === this.pR) {
           this.$router.push({name: "privatrecht-objects", params: {id: id}});
         } else if (this.currSubCat === this.sR) {
@@ -201,7 +202,45 @@ export default {
         } else if (this.currSubCat === this.nP) {
           this.$router.push({name: "nationalsozialismus-objects", params: {id: id}});
         }
-      });
+      }
+      else{
+        getArcheIdFromXmlId(event.id, rs =>{
+          id = rs;
+          if (this.currSubCat === this.pR) {
+            this.$router.push({name: "privatrecht-objects", params: {id: id}});
+          } else if (this.currSubCat === this.sR) {
+            this.$router.push({name: "strafrecht-objects", params: {id: id}});
+          } else if (this.currSubCat === this.vR) {
+            this.$router.push({name: "verwaltungsrecht-objects", params: {id: id}});
+          } else if (this.currSubCat === this.zR) {
+            this.$router.push({name: "zivilrecht-objects", params: {id: id}});
+          } else if (this.currSubCat === this.fK) {
+            this.$router.push({name: "fackel-objects", params: {id: id}});
+          } else if (this.currSubCat === this.tK) {
+            this.$router.push({name: "theater-objects", params: {id: id}});
+          } else if (this.currSubCat === this.vK) {
+            this.$router.push({name: "verlagswesen-objects", params: {id: id}});
+          } else if (this.currSubCat === this.sK) {
+            this.$router.push({name: "stunde-objects", params: {id: id}});
+          } else if (this.currSubCat === this.mK) {
+            this.$router.push({name: "medienhistorisches-objects", params: {id: id}});
+          } else if (this.currSubCat === this.bK) {
+            this.$router.push({name: "berichtigung-objects", params: {id: id}});
+          } else if (this.currSubCat === this.schK) {
+            this.$router.push({name: "schober-objects", params: {id: id}});
+          } else if (this.currSubCat === this.bbK) {
+            this.$router.push({name: "tageblatt-objects", params: {id: id}});
+          } else if (this.currSubCat === this.sP) {
+            this.$router.push({name: "sozialdemokratie-objects", params: {id: id}});
+          } else if (this.currSubCat === this.cP) {
+            this.$router.push({name: "christlich-national-objects", params: {id: id}});
+          } else if (this.currSubCat === this.nP) {
+            this.$router.push({name: "nationalsozialismus-objects", params: {id: id}});
+          }
+        })
+      }
+
+
     },
     setCurrPageAndCategory() {
       //category

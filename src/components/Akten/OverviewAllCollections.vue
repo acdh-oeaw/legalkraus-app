@@ -45,6 +45,7 @@
         <input class="vt vtt" type="text" placeholder="Fall-Titel:" v-model="kwT"/>
       </div>
     </div>
+    <div v-if="!searchView">
     <b-row>
       <b-col md="3">
         <b-form-select
@@ -138,6 +139,15 @@
         </div>
       </b-col>
     </b-row>
+    </div>
+    <div v-if="searchView">
+      <p>{{ searchResultsCount }} Ergebnisse für "{{ keyword }}"</p>
+      <button type="button" class="btn btn-secondary btn-sm" v-on:click="toggleView">Zurück zur Übersicht</button>
+      <div v-for="item in searchResults" v-bind:key="item.key">
+        <SearchResultItem v-bind:item="item" v-on:nav-to-objects="navToObjects($event)"></SearchResultItem>
+      </div>
+
+    </div>
   </main>
 </template>
 
@@ -145,13 +155,15 @@
 //import {getCollections} from "@/services/ARCHEService";
 import Tree from "../Statistiken/Tree";
 import {getArcheIdFromXmlId} from "../../services/ARCHEService";
-//import Search from "../Search";
+import Search from "../Search";
+import SearchResultItem from "./SearchResultItem";
 
 export default {
   name: "OverviewAllCollections",
   components: {
-    //Search: Search,
-    Tree
+    Search: Search,
+    Tree,
+    SearchResultItem: SearchResultItem
   },
   data: function () {
     return {
@@ -207,6 +219,10 @@ export default {
       currOrgs: [],
       currPersons: [],
       cases: [],
+      searchView: false,
+      searchResults: [],
+      searchResultsCount: Number,
+      keyword: String,
     };
   },
   methods: {
@@ -269,10 +285,15 @@ export default {
       this.$store.dispatch("setNoOfCollections", items.length);
       callback(items.slice(offset, offset + ctx.perPage));
     },
-    navToObjects: function (item) {
-      getArcheIdFromXmlId(item.id, rs => {
-        this.$router.push({name: "overview-objects", params: {id: rs}});
-      })
+    navToObjects(item) {
+      if(item.id.includes('_')){
+        getArcheIdFromXmlId(item.id, rs => {
+          this.$router.push({name: "overview-objects", params: {id: rs}});
+        })
+      }else{
+        this.$router.push({name: "overview-objects", params: {id: item.id}});
+      }
+
     },
     getIdFromUrl(url) {
       let idx = url.lastIndexOf("/");
@@ -337,7 +358,20 @@ export default {
           this.currOrgs = this.currOrgs.filter(o => o.key !== key);
         }
       }
-    }
+    },
+    async searchPerformed(event) {
+      if (event.keyword === "") {
+        this.searchView = false;
+        return;
+      }
+      this.searchView = true;
+      this.searchResults = event.searchResults;
+      this.searchResultsCount = event.searchResults.length;
+      this.keyword = event.keyword;
+    },
+  toggleView() {
+    this.searchView = !this.searchView;
+  }
   },
   mounted() {
     if (this.$route.query.filter) {
@@ -536,7 +570,7 @@ export default {
   display: flex;
   grid-row: 1/2;
   grid-column: 3/4;
-  padding: 0;
+  padding: 0 !important;
   margin-left: 0;
 }
 

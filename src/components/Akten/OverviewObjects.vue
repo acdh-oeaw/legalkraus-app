@@ -24,7 +24,7 @@
             <option v-for="pers in this.allPersons" :key="pers.key" :value="pers.value">{{ pers.value }}</option>
           </datalist>
         </div>
-        <Search class="py-2 vt" v-on:searchPerformed="searchPerformed($event)"></Search>
+        <Search class="py-2 vt" v-bind:col-id="colId" v-on:searchPerformed="searchPerformed($event)"></Search>
         <span class="lbls">
         <div class="lbl" v-for="pers in currPersons" :key="pers.key">{{ pers.value }}
           <svg v-on:click="removePers(pers.key)" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -55,7 +55,8 @@
         <div class="loader"></div>
       </div>
 
-      <p v-else> Dieser Fall hat {{ this.objects.length }} Dokumente. </p>
+      <p v-if="!loading && this.objects.length ===1"> Dieser Fall hat {{ this.objects.length }} Dokument. </p>
+      <p v-if="!loading && this.objects.length !==1"> Dieser Fall hat {{ this.objects.length }} Dokumente. </p>
 
       <div v-if="searchView">
         <b-col>
@@ -95,7 +96,7 @@
           </div>
         </div>
       </div>
-      <div v-if="searchView" class="card-deck">
+<!--      <div v-if="searchView" class="card-deck">
         <div class="card" v-for="val in searchResults" v-bind:key="val.title" v-on:click="navToLesefassung(val)">
           <h4 class="card-title"> {{ val.title }}</h4>
           <p> {{ val.id }}</p>
@@ -105,8 +106,15 @@
             <p v-html="kwic" class="text-left"></p>
           </b-row>
         </div>
+      </div>-->
+      <div v-if="searchView" class="list-items">
+        <div v-for="item in searchResults" v-bind:key="item.key">
+          <SearchResultItem v-bind:item="item" v-on:nav-to-objects="navToObjects($event)"></SearchResultItem>
+        </div>
+        </div>
+
       </div>
-    </div>
+
   </main>
 </template>
 
@@ -116,13 +124,15 @@
 import {getObjectsOfCollection, getObjectWithId} from "@/services/ARCHEService";
 import {ARCHErdfQuery} from "arche-api/src";
 import Search from "../Search";
-import {getEntity} from "../../services/ARCHEService";
+import {getArcheIdFromXmlId, getEntity} from "../../services/ARCHEService";
 import fallbackImage from '@/assets/noimage.svg';
+import SearchResultItem from "./SearchResultItem";
 
 export default {
   name: "OverviewObjects",
   components: {
-    Search: Search
+    Search: Search,
+    SearchResultItem
   },
   data: function () {
     return {
@@ -364,6 +374,82 @@ export default {
       this.filterAll();
 
     },
+    navToObjects: async function (event) {
+      let id = event.id;
+      if(!id.includes('_')){
+        if (this.currSubCat === this.pR) {
+          this.$router.push({name: "privatrecht-objects", params: {id: id}});
+        } else if (this.currSubCat === this.sR) {
+          this.$router.push({name: "strafrecht-objects", params: {id: id}});
+        } else if (this.currSubCat === this.vR) {
+          this.$router.push({name: "verwaltungsrecht-objects", params: {id: id}});
+        } else if (this.currSubCat === this.zR) {
+          this.$router.push({name: "zivilrecht-objects", params: {id: id}});
+        } else if (this.currSubCat === this.fK) {
+          this.$router.push({name: "fackel-objects", params: {id: id}});
+        } else if (this.currSubCat === this.tK) {
+          this.$router.push({name: "theater-objects", params: {id: id}});
+        } else if (this.currSubCat === this.vK) {
+          this.$router.push({name: "verlagswesen-objects", params: {id: id}});
+        } else if (this.currSubCat === this.sK) {
+          this.$router.push({name: "stunde-objects", params: {id: id}});
+        } else if (this.currSubCat === this.mK) {
+          this.$router.push({name: "medienhistorisches-objects", params: {id: id}});
+        } else if (this.currSubCat === this.bK) {
+          this.$router.push({name: "berichtigung-objects", params: {id: id}});
+        } else if (this.currSubCat === this.schK) {
+          this.$router.push({name: "schober-objects", params: {id: id}});
+        } else if (this.currSubCat === this.bbK) {
+          this.$router.push({name: "tageblatt-objects", params: {id: id}});
+        } else if (this.currSubCat === this.sP) {
+          this.$router.push({name: "sozialdemokratie-objects", params: {id: id}});
+        } else if (this.currSubCat === this.cP) {
+          this.$router.push({name: "christlich-national-objects", params: {id: id}});
+        } else if (this.currSubCat === this.nP) {
+          this.$router.push({name: "nationalsozialismus-objects", params: {id: id}});
+        }else{
+          this.$router.push({name: "overview-objects", params: {id: id}});
+        }
+      }
+      else{
+        getArcheIdFromXmlId(event.id, rs =>{
+          id = rs;
+          if (this.currSubCat === this.pR) {
+            this.$router.push({name: "privatrecht-objects", params: {id: id}});
+          } else if (this.currSubCat === this.sR) {
+            this.$router.push({name: "strafrecht-objects", params: {id: id}});
+          } else if (this.currSubCat === this.vR) {
+            this.$router.push({name: "verwaltungsrecht-objects", params: {id: id}});
+          } else if (this.currSubCat === this.zR) {
+            this.$router.push({name: "zivilrecht-objects", params: {id: id}});
+          } else if (this.currSubCat === this.fK) {
+            this.$router.push({name: "fackel-objects", params: {id: id}});
+          } else if (this.currSubCat === this.tK) {
+            this.$router.push({name: "theater-objects", params: {id: id}});
+          } else if (this.currSubCat === this.vK) {
+            this.$router.push({name: "verlagswesen-objects", params: {id: id}});
+          } else if (this.currSubCat === this.sK) {
+            this.$router.push({name: "stunde-objects", params: {id: id}});
+          } else if (this.currSubCat === this.mK) {
+            this.$router.push({name: "medienhistorisches-objects", params: {id: id}});
+          } else if (this.currSubCat === this.bK) {
+            this.$router.push({name: "berichtigung-objects", params: {id: id}});
+          } else if (this.currSubCat === this.schK) {
+            this.$router.push({name: "schober-objects", params: {id: id}});
+          } else if (this.currSubCat === this.bbK) {
+            this.$router.push({name: "tageblatt-objects", params: {id: id}});
+          } else if (this.currSubCat === this.sP) {
+            this.$router.push({name: "sozialdemokratie-objects", params: {id: id}});
+          } else if (this.currSubCat === this.cP) {
+            this.$router.push({name: "christlich-national-objects", params: {id: id}});
+          } else if (this.currSubCat === this.nP) {
+            this.$router.push({name: "nationalsozialismus-objects", params: {id: id}});
+          }else{
+            this.$router.push({name: "overview-objects", params: {id: id}});
+          }
+        })
+      }
+    },
   },
   created() {
     this.colId = this.$route.params.id;
@@ -540,6 +626,13 @@ export default {
   grid-template-columns: repeat(2, max-content);
   grid-row-gap: 2rem;
   grid-column-gap: 6rem;
+}
+
+.list-items{
+  margin-left: 2rem;
+  margin-right: 2rem;
+  padding-left: 2rem;
+  width: 100%;
 }
 
 .case-info {

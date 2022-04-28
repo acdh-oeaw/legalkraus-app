@@ -114,17 +114,17 @@ module.exports.getCollections = async (startPage, callback) => {
  */
 module.exports.getArcheIdFromXmlId = async (xmlId, callback) => {
     let httpRequest = new XMLHttpRequest();
-    if(xmlId.includes('C_')){
-        xmlId = xmlId.substring(0, xmlId.length-4);
+    if (xmlId.includes('C_')) {
+        xmlId = xmlId.substring(0, xmlId.length - 4);
     }
-    httpRequest.onload = function(){
+    httpRequest.onload = function () {
         let url = httpRequest.responseURL;
         //remove /metadata
-        let urlShort = url.substring(0, url.length-9);
+        let urlShort = url.substring(0, url.length - 9);
         let idx = urlShort.lastIndexOf('/');
-        callback(urlShort.substring(idx+1));
+        callback(urlShort.substring(idx + 1));
     };
-    httpRequest.open('GET', 'https://id.acdh.oeaw.ac.at/legalkraus/'+xmlId, true)
+    httpRequest.open('GET', 'https://id.acdh.oeaw.ac.at/legalkraus/' + xmlId, true)
     httpRequest.setRequestHeader('Accept', 'application/ld+json')
     httpRequest.send()
 }
@@ -181,7 +181,7 @@ module.exports.getObjectsOfCollection = async (resourceId, callback) => {
                 let title = ARCHErdfQuery(optionsTitle, rs);
                 let identifier = ARCHErdfQuery(optionsIdentifier, rs);
                 let actors = ARCHErdfQuery(optionsActor, rs);
-                let places = ARCHErdfQuery(optionsSpatialCoverage,rs);
+                let places = ARCHErdfQuery(optionsSpatialCoverage, rs);
 
                 result.push({
                     url: childResources.value[i].isPartOf.subject,
@@ -266,7 +266,7 @@ module.exports.getCollectionOfObject = async (resourceId, callback) => {
                     title: t,
                     size: docs,
                     id: colId,
-                    xmlId: identifier.value[1].hasIdentifier.object.substring(identifier.value[1].hasIdentifier.object.lastIndexOf('/')+1)
+                    xmlId: identifier.value[1].hasIdentifier.object.substring(identifier.value[1].hasIdentifier.object.lastIndexOf('/') + 1)
                 });
                 return callback(result);
             });
@@ -338,6 +338,7 @@ module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback)
         })
 
     } else if (colId) {
+        console.log('col')
         //searches in all resources that are part of the collection with colId
         fetch(url + new URLSearchParams({
             "property[0]": "BINARY",
@@ -351,12 +352,13 @@ module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback)
         }), {
             headers: {'Accept': 'application/json'}
         }).then(response => response.json()).then(data => {
+            data.type = 'col';
             return callback(data);
         })
     } else {
         console.log('all')
         //searches in all collections
-        const url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/search?sql=SELECT id  FROM      full_text_search      JOIN (          SELECT (get_relatives(id, ?, 9999, 0)).id          FROM identifiers          WHERE ids = ?      ) t USING (id)  WHERE websearch_to_tsquery('simple', ?) @@ segments&sqlParam[]=https://vocabs.acdh.oeaw.ac.at/schema%23isPartOf&sqlParam[]=https://arche-dev.acdh-dev.oeaw.ac.at/api/17722&format=application/json&sqlParam[]=" + searchTerm + "&readMode=ids&limit=25&ftsQuery=" + searchTerm;
+        const url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/search?sql=SELECT id FROM full_text_search JOIN (SELECT (get_relatives(id, ?, 9999, 0)).id FROM identifiers WHERE ids = ?) t USING (id)  WHERE websearch_to_tsquery('simple', ?) @@ segments&sqlParam[]=https://vocabs.acdh.oeaw.ac.at/schema%23isPartOf&sqlParam[]=https://arche-dev.acdh-dev.oeaw.ac.at/api/17722&format=application/json&sqlParam[]=" + searchTerm + "&readMode=ids&limit=25&ftsQuery=" + searchTerm;
         fetch(url).then(rs => rs.json()).then(data => {
             return callback(data);
         });
@@ -382,7 +384,7 @@ module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback)
 
 module.exports.downloadCaseInfo = async () => {
     try {
-       // const url = "https://id.acdh.oeaw.ac.at/legalkraus/cases-index.json";
+        // const url = "https://id.acdh.oeaw.ac.at/legalkraus/cases-index.json";
         const url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/17726";
         const resp = await fetch(url);
         return await resp.json();
