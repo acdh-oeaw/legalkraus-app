@@ -9,7 +9,7 @@
       <span class="arrow">></span>
       <router-link router-link class="nav-link"
                    :to="'/akten-edition/' + this.cat + '/'+ this.subcat +'/collections'">
-        {{ this.$route.params.subcat }}
+        {{ this.showSubcat }}
       </router-link>
       <span class="arrow">></span>
       <router-link router-link class="nav-link"
@@ -160,7 +160,7 @@
         </div>
       </div>
       <div class="vl meta3"></div>
-      <div class="meta5">Datum: {{ this.docInfo.date }} </div>
+      <div class="meta5">Datum: {{ this.docInfo.date }}</div>
       <div v-if="stamp===null" class="meta9">Stempel: -</div>
       <div v-if="stamp!==null" class="meta9">Stempel: {{ stamp.name }}</div>
       <p class="meta4">Materialitätstyp: {{ this.docInfo.materiality[0] }}</p>
@@ -220,7 +220,9 @@
       <div id="card-left-medium" class="card-left" v-if="this.showLF && this.showFacs">
         <div class="facs">
           <button class="format btn btn-light mb-2 btn-red">Facsimile</button>
-          <button class="btn btn-light mb-2" v-if="this.furtherWitnesses.length > 0" v-on:click="$bvModal.show('bv-modal-further-witnesses')">Weitere Textzeugen</button>
+          <button class="btn btn-light mb-2" v-if="this.furtherWitnesses.length > 0"
+                  v-on:click="$bvModal.show('bv-modal-further-witnesses')">Weitere Textzeugen
+          </button>
         </div>
 
         <div class="card card-fixed border-0 bg-light">
@@ -238,7 +240,9 @@
       <div id="card-left-large" class="view-full-width-left" v-if="!this.showLF && this.showFacs">
         <div class="facs-full-width">
           <button class="format btn btn-light btn-red">Facsimile</button>
-          <button class="btn btn-light mb-2" v-if="this.furtherWitnesses.length > 0" v-on:click="$bvModal.show('bv-modal-further-witnesses')">Weitere Textzeugen</button>
+          <button class="btn btn-light mb-2" v-if="this.furtherWitnesses.length > 0"
+                  v-on:click="$bvModal.show('bv-modal-further-witnesses')">Weitere Textzeugen
+          </button>
         </div>
         <div class="card card-full">
           <img class="embedded-img" :src="getCurrentFacs()" alt="facsimile">
@@ -343,7 +347,7 @@
             >
               Zitat
             </b-form-checkbox>
-             <b-form-checkbox
+            <b-form-checkbox
                 id="intertext-toggle"
                 v-model="highlighter['intertext']"
                 v-on:change="updateHighlighter('intertext', highlighter['intertext'])"
@@ -353,24 +357,24 @@
             </b-form-checkbox>
           </div>
 
-<!--          <div class="vt-container">
-            <input class="vt" type="text" placeholder="Volltextsuche:" v-model="keyword"
-                   @keyup="highlight(keyword)"/>
-            <button type="button" class="btn vt-button" data-search="next" v-on:click="highlightNext()">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                   class="bi bi-arrow-down-short" viewBox="0 0 16 16">
-                <path fill-rule="evenodd"
-                      d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
-              </svg>
-            </button>
-            <button type="button" class="btn vt-button" data-search="prev" v-on:click="highlightPrev()">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                   class="bi bi-arrow-up-short" viewBox="0 0 16 16">
-                <path fill-rule="evenodd"
-                      d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"/>
-              </svg>
-            </button>
-          </div>-->
+          <!--          <div class="vt-container">
+                      <input class="vt" type="text" placeholder="Volltextsuche:" v-model="keyword"
+                             @keyup="highlight(keyword)"/>
+                      <button type="button" class="btn vt-button" data-search="next" v-on:click="highlightNext()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-arrow-down-short" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd"
+                                d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
+                        </svg>
+                      </button>
+                      <button type="button" class="btn vt-button" data-search="prev" v-on:click="highlightPrev()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-arrow-up-short" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd"
+                                d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"/>
+                        </svg>
+                      </button>
+                    </div>-->
           <div class="body overflow-auto d-flex flex-row">
             <!-- <div v-if="this.$store.getters.linebreaks" class="w-5 text-right position-relative">
              </div>-->
@@ -409,7 +413,7 @@
 
               </div>
             </div>
-          <div class="toggles mx-auto">
+            <div class="toggles mx-auto">
               <b-form-checkbox
                   id="pe-toggle"
                   v-model="highlighter['person']"
@@ -433,7 +437,7 @@
                   v-on:change="updateHighlighter('place', highlighter['place'])"
                   switch
               >
-              Ort
+                Ort
               </b-form-checkbox>
 
               <b-form-checkbox
@@ -461,14 +465,14 @@
               >
                 Zitat
               </b-form-checkbox>
-          <b-form-checkbox
-                id="intertext-toggle"
-                v-model="highlighter['intertext']"
-                v-on:change="updateHighlighter('intertext', highlighter['intertext'])"
-                switch
-            >
-              Intertext Fackel
-            </b-form-checkbox>
+              <b-form-checkbox
+                  id="intertext-toggle"
+                  v-model="highlighter['intertext']"
+                  v-on:change="updateHighlighter('intertext', highlighter['intertext'])"
+                  switch
+              >
+                Intertext Fackel
+              </b-form-checkbox>
             </div>
 
             <div class="body row m-0 overflow-auto">
@@ -504,26 +508,26 @@
               d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
       </svg>
     </div>
- <b-modal id="bv-modal-witness" size="xl"  hide-footer>
-    <template #modal-title>
-      Textzeuge
-    </template>
-    <div class="d-block text-center">
-      <div :key="`w${idx}`" v-for="(imgurl,idx) in this.witness">
-      <img :src="witnessImageSize(imgurl)"/>
+    <b-modal id="bv-modal-witness" size="xl" hide-footer>
+      <template #modal-title>
+        Textzeuge
+      </template>
+      <div class="d-block text-center">
+        <div :key="`w${idx}`" v-for="(imgurl,idx) in this.witness">
+          <img :src="witnessImageSize(imgurl)"/>
+        </div>
       </div>
-    </div>
-  </b-modal>
-  <b-modal id="bv-modal-further-witnesses" size="xl"  hide-footer>
-    <template #modal-title>
-      Weitere Textzeugen
-    </template>
-    <div class="d-block text-center">
-      <div :key="`w${idx}`" v-for="(imgurl,idx) in this.furtherWitnesses">
-      <img :src="witnessImageSize(imgurl)"/>
+    </b-modal>
+    <b-modal id="bv-modal-further-witnesses" size="xl" hide-footer>
+      <template #modal-title>
+        Weitere Textzeugen
+      </template>
+      <div class="d-block text-center">
+        <div :key="`w${idx}`" v-for="(imgurl,idx) in this.furtherWitnesses">
+          <img :src="witnessImageSize(imgurl)"/>
+        </div>
       </div>
-    </div>
-  </b-modal>
+    </b-modal>
   </div>
 </template>
 
@@ -581,16 +585,20 @@ export default {
       handsClosed: true,
       cat: null,
       subcat: null,
+      showSubcat: null,
       caseInfo: null,
       witness: [],
-      dataLoaded:false,
-      furtherWitnesses:[],
+      dataLoaded: false,
+      furtherWitnesses: [],
       docInfo: null,
       simpleMD: false,
       letterMD: false,
       defaultMD: false,
       stamp: null,
-      hands: []
+      hands: [],
+      sent: {},
+      received: {},
+      noteGrp: {}
     }
   },
   computed: {
@@ -640,7 +648,7 @@ export default {
           setWitness(val) {
             console.log(val)
             this.$parent.witness = val
-            }
+          }
         }
       }
     }
@@ -649,7 +657,7 @@ export default {
     witnessImageSize(val) {
       console.log(val)
       return val.replace('full/full/', 'full/600,/')
-  },
+    },
     async highlightQueryOnMounted(q) {
       await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
       let men_id = [];
@@ -808,28 +816,28 @@ export default {
     },
     async alignRdgs() {
       await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
-          const rdgsLeft = document.querySelectorAll(".rdg.marginLeft");
-          const rdgsRight = document.querySelectorAll(".rdg.mRight");
-          rdgsLeft.forEach(async (rdg,idx) => {
+      const rdgsLeft = document.querySelectorAll(".rdg.marginLeft");
+      const rdgsRight = document.querySelectorAll(".rdg.mRight");
+      rdgsLeft.forEach(async (rdg, idx) => {
 
-            if (idx > 0) {
-              await rdgsLeft[idx-1].offsetTop > 0;
-              console.log(rdgsLeft[idx-1].offsetTop)
-               const prevBottom = rdgsLeft[idx-1].offsetTop + rdgsLeft[idx-1].clientHeight;
+        if (idx > 0) {
+          await rdgsLeft[idx - 1].offsetTop > 0;
+          console.log(rdgsLeft[idx - 1].offsetTop)
+          const prevBottom = rdgsLeft[idx - 1].offsetTop + rdgsLeft[idx - 1].clientHeight;
 
-            if ( prevBottom > rdg.offsetTop) {
-              rdg.style.top = `${prevBottom + 10}px`;
-            }
-            }
-          })
-           rdgsRight.forEach(async (rdg,idx) => {
-            if (idx > 0) {
-               const prevBottom = rdgsRight[idx-1].offsetTop + rdgsRight[idx-1].clientHeight;
-            if ( prevBottom > rdg.offsetTop) {
-              rdg.style.top = `${prevBottom + 10}px`;
-            }
-            }
-          })
+          if (prevBottom > rdg.offsetTop) {
+            rdg.style.top = `${prevBottom + 10}px`;
+          }
+        }
+      })
+      rdgsRight.forEach(async (rdg, idx) => {
+        if (idx > 0) {
+          const prevBottom = rdgsRight[idx - 1].offsetTop + rdgsRight[idx - 1].clientHeight;
+          if (prevBottom > rdg.offsetTop) {
+            rdg.style.top = `${prevBottom + 10}px`;
+          }
+        }
+      })
     },
     childMounted() {
       if (this.keyword) {
@@ -1071,10 +1079,29 @@ export default {
     removeAllComments() {
       document.querySelectorAll('.comment').forEach(e => e.remove());
     },
-    downloadXMLFromUrl(url) {
+    async loadHands(hands) {
+      let tmp = [];
+      for (const h of hands) {
+        let pmbID = h.getAttribute('scribeRef').substring(1);
+        await getPMBObjectWithId(pmbID, null, rs => {
+          tmp.push({'id': rs.id, 'name': rs.name})
+        });
+      }
+      return tmp;
+    },
+    async loadPMBEntity(pmbID) {
+      let tmp = [];
+      await getPMBObjectWithId(pmbID, null, rs => {
+        tmp.push({'id': rs.id, 'name': rs.name})
+      });
+
+      return tmp[0];
+    },
+
+    async downloadXMLFromUrl(url) {
       return fetch(url)
           .then(response => response.text())
-          .then(str => {
+          .then(async str => {
             let dom = new window.DOMParser().parseFromString(str, "text/xml");
             this.xml = str;
             this.xmlFile = this.saveStringToXML(this.xml);
@@ -1083,33 +1110,29 @@ export default {
             this.teiHeader = this.dom.getElementsByTagName("teiHeader")[0];
             let msDesc = this.dom.getElementsByTagName("msDesc")[0];
             let profileDesc = this.dom.getElementsByTagName("profileDesc")[0];
+            let correspDesc = this.dom.getElementsByTagName("correspDesc")[0];
+            console.log(correspDesc)
             if (profileDesc.innerHTML.includes('handNote')) {
               let hands = ([...profileDesc.getElementsByTagName("handNote")]);
-              hands.forEach(h => {
-                let pmbID = h.getAttribute('scribeRef').substring(1);
-                getPMBObjectWithId(pmbID, null, rs => {
-                  this.hands.push({'id': rs.id, 'name': rs.name})
-                });
-              });
+              this.hands = await this.loadHands(hands);
             }
             if (msDesc.innerHTML.includes('<ab') && msDesc.innerHTML.includes('stamp')) {
               let pmbID = msDesc.getElementsByTagName("stamp")[0].getAttribute('source').substring(1);
-              getPMBObjectWithId(pmbID, null, rs => {
-                this.stamp = {"id": rs.id, "name": rs.name}
-              });
+              this.stamp = await this.loadPMBEntity(pmbID);
             }
-            const pbsfacs = Array.from(this.dom.getElementsByTagName("pb")).map(pb => pb.attributes.facs.nodeValue.replace('#',''));
+
+            const pbsfacs = Array.from(this.dom.getElementsByTagName("pb")).map(pb => pb.attributes.facs.nodeValue.replace('#', ''));
             pbsfacs.forEach(facsid => {
               let facsUrl = this.dom.querySelectorAll(`[*|id='${facsid}'] graphic[source='wienbibliothek']`)[0].attributes.url.nodeValue
               this.facsURLs.push(facsUrl)
             })
-           this.dataLoaded = true;
-           const furtherWitnesses = this.dom.querySelectorAll("facsimile[ana='further-witnesses'] graphic[source='wienbibliothek']")
+            this.dataLoaded = true;
+            const furtherWitnesses = this.dom.querySelectorAll("facsimile[ana='further-witnesses'] graphic[source='wienbibliothek']")
             if (furtherWitnesses.length > 0) {
-               this.furtherWitnesses = Array.from(furtherWitnesses).map(furtherWitness => furtherWitness.attributes.url.nodeValue)
+              this.furtherWitnesses = Array.from(furtherWitnesses).map(furtherWitness => furtherWitness.attributes.url.nodeValue)
             }
             console.log(this.furtherWitnesses)
-           let facs = this.dom.getElementsByTagName("graphic");
+            let facs = this.dom.getElementsByTagName("graphic");
             for (let item of facs) {
               if (item.getAttribute("source") === "wienbibliothek") {
                 this.facsURLs.push(item.getAttribute("url"));
@@ -1225,22 +1248,37 @@ export default {
     if (this.$route.params.searchTermContext) {
       this.keyword = this.$route.params.searchTermContext;
     }
-    if (this.$route.params.subcat === "Die Fackel") {
-      this.$route.params.subcat = "Fackel"
+    if (this.$route.params.subcat && this.$route.params.subcat === "Die Fackel") {
+      this.$route.params.subcat = "Fackel";
+      this.showSubcat = 'Fackel'
+    } else if (this.$route.params.subcat && this.$route.params.subcat.includes("Christlich")) {
+      this.showSubcat = "Christlich-Sozial"
+    } else if (this.$route.params.subcat && this.$route.params.subcat.includes("Tageblatt")) {
+      this.showSubcat = "Berliner Tageblatt"
+    } else if (this.$route.params.subcat && this.$route.params.subcat.includes("Verlag")) {
+      this.showSubcat = "Verlage"
+    } else {
+      this.showSubcat = this.$route.params.subcat;
     }
 
-    this.cat = this.$route.params.cat.toLowerCase();
+    this.cat = this.$route.params.cat ? this.$route.params.cat.toLowerCase() : null;
 
-    if (this.$route.params.subcat.toLowerCase() === "berichtigung (ausgang)") {
-      this.subcat = 'berichtigung'
-    } else if (this.$route.params.subcat.toLowerCase().includes('tageblatt')) {
-      this.subcat = "berliner-tageblatt";
-    } else if (this.$route.params.subcat.toLowerCase().includes('stunde')) {
-      this.subcat = "die-stunde";
-    } else if (this.$route.params.subcat.toLowerCase().includes('schober')) {
-      this.subcat = "schober";
-    } else {
-      this.subcat = this.$route.params.subcat.toLowerCase();
+    if (this.$route.params.subcat) {
+      if (this.$route.params.subcat.toLowerCase() === "berichtigung (ausgang)") {
+        this.subcat = 'berichtigung'
+      } else if (this.$route.params.subcat.toLowerCase().includes('tageblatt')) {
+        this.subcat = "berliner-tageblatt";
+      } else if (this.$route.params.subcat.toLowerCase().includes('stunde')) {
+        this.subcat = "die-stunde";
+      } else if (this.$route.params.subcat.toLowerCase().includes('schober')) {
+        this.subcat = "schober";
+      } else if (this.$route.params.subcat.toLowerCase().includes('verlag')) {
+        this.subcat = "verlage";
+      } else if (this.$route.params.subcat.toLowerCase().includes('christlich')) {
+        this.subcat = "christlich-sozial";
+      } else {
+        this.subcat = this.$route.params.subcat.toLowerCase();
+      }
     }
 
 
@@ -1455,7 +1493,7 @@ export default {
   display: inline-flex;
 }
 
-.m-item{
+.m-item {
   margin-left: 20px;
 }
 
@@ -1856,11 +1894,11 @@ export default {
 .marginalie-text.marginLeft, .rdg.marginLeft {
   padding-top: 0.2rem;
   padding-right: 2px;
-  text-align:right;
+  text-align: right;
   position: absolute;
   font-size: 80%;
-  left:-1rem;
-  width:6rem;
+  left: -1rem;
+  width: 6rem;
 }
 
 .marginalie-text.marginRight, .rdg {
@@ -1871,7 +1909,7 @@ export default {
 }
 
 .rdg {
-  width:10rem;
+  width: 10rem;
   background: var(--comment-brown);
 }
 
@@ -1920,14 +1958,14 @@ mark {
 }
 
 .witness-link {
-  color:var(--primary-red-dark);
-  text-decoration:underline;
-  cursor:pointer;
+  color: var(--primary-red-dark);
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 /*** additional padding if left marginal exists ***/
 .addPadding {
-  padding-left:4.5rem;
+  padding-left: 4.5rem;
 }
 
 </style>

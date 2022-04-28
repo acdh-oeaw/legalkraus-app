@@ -8,7 +8,7 @@
         </router-link>
         <span class="arrow">></span>
         <router-link router-link class="nav-link" :to="'/akten-edition/' + catLower + '/'+ subCatLower +'/collections'">
-          {{ this.subCategory }}
+          {{ this.showSubCat }}
         </router-link>
         <span class="arrow">></span>
         <span style="font-weight: bold">{{ this.caseTitle }}</span>
@@ -152,6 +152,7 @@ export default {
       category: String,
       catLower: String,
       subCatLower: String,
+      showSubCat: null,
       categorySet: true,
       caseInfo: null,
       allPersons: [],
@@ -169,10 +170,10 @@ export default {
       zR: 'Zivilrecht',
       fK: 'Die Fackel',
       tK: 'Theater',
-      vK: 'Verlagswesen',
+      vK: 'Verlage',
       mK: 'Medienhistorisches',
       bK: 'Berichtigung (Ausgang)',
-      bbK: 'Berliner Tageblatt, Kerr, Wolff',
+      bbK: 'Berliner Tageblatt',
       sK: 'Die Stunde, Békessy',
       schK: 'Schober, 15. Juli 1927',
       sP: 'Sozialdemokratie',
@@ -254,12 +255,14 @@ export default {
         this.subCategory = this.tK;
       } else if (this.path.toString().includes('verlage')) {
         this.subCategory = this.vK;
+        this.showSubCat = 'Verlage';
       } else if (this.path.toString().includes('stunde')) {
         this.subCategory = this.sK;
       } else if (this.path.toString().includes('schober')) {
         this.subCategory = this.schK;
       } else if (this.path.toString().includes('tageblatt')) {
         this.subCategory = this.bbK;
+        this.showSubCat = 'Berliner Tageblatt';
       }else if (this.path.toString().includes('medienhistorisches')) {
         this.subCategory = this.mK;
       }else if (this.path.toString().includes('berichtigung')) {
@@ -268,6 +271,7 @@ export default {
         this.subCategory = this.sP;
       } else if (this.path.toString().includes('christlich-sozial')) {
         this.subCategory = this.cP;
+        this.showSubCat = 'Christlich-Sozial';
       } else if (this.path.toString().includes('nationalsozialismus')) {
         this.subCategory = this.nP;
       }
@@ -282,6 +286,10 @@ export default {
         this.subCatLower = 'tageblatt';
       } else {
         this.subCatLower = this.subCategory.toString().toLowerCase();
+      }
+
+      if(this.showSubCat === null){
+        this.showSubCat = this.currSubCat;
       }
 
     },

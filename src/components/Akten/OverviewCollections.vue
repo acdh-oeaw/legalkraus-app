@@ -7,7 +7,7 @@
           {{ this.category }}
         </router-link>
         <span class="arrow">></span>
-        <span style="font-weight: bold">{{ this.currSubCat }}</span>
+        <span style="font-weight: bold">{{ this.showSubCat }}</span>
       </p>
       <div class="filters">
         <div class="searchPers">
@@ -138,6 +138,7 @@ export default {
       kwY: null,
       path: String,
       currSubCat: String,
+      showSubCat: null,
       category: String,
       catLower: String,
       cases: [],
@@ -273,12 +274,14 @@ export default {
         this.currSubCat = this.tK;
       } else if (this.path.toString().includes('verlage')) {
         this.currSubCat = this.vK;
+        this.showSubCat = 'Verlage';
       } else if (this.path.toString().includes('stunde')) {
         this.currSubCat = this.sK;
       } else if (this.path.toString().includes('schober')) {
         this.currSubCat = this.schK;
       } else if (this.path.toString().includes('tageblatt')) {
         this.currSubCat = this.bbK;
+        this.showSubCat = 'Berliner Tageblatt';
       } else if (this.path.toString().includes('medienhistorisches')) {
         this.currSubCat = this.mK;
       } else if (this.path.toString().includes('berichtigung')) {
@@ -287,8 +290,13 @@ export default {
         this.currSubCat = this.sP;
       } else if (this.path.toString().includes('christlich-sozial')) {
         this.currSubCat = this.cP;
+        this.showSubCat = 'Christlich-Sozial'
       } else if (this.path.toString().includes('nationalsozialismus')) {
         this.currSubCat = this.nP;
+      }
+
+      if(this.showSubCat === null){
+        this.showSubCat = this.currSubCat;
       }
     },
     async searchPerformed(event) {
