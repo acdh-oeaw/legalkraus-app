@@ -52,8 +52,8 @@
                @keyup="filterAll()"/>
       </div>
     </div>
-    <div class="sammlungen">{{ this.$store.getters.noOfCollections }} Sammlungen</div>
     <div v-if="!searchView" class="card">
+      <b-row>
       <b-pagination
           page-class="custompaging"
           prev-class="custompagingarrows"
@@ -66,6 +66,8 @@
           :per-page="perPage"
           aria-controls="col-table"
       ></b-pagination>
+      <div class="sammlungen ml-3">{{ this.$store.getters.noOfCollections }} Sammlungen</div>
+      </b-row>
       <b-table id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
                :current-page="currentPage" :per-page="perPage"
                :busy.sync="isBusy" :fields="[
@@ -158,7 +160,7 @@ export default {
       sK: 'Die Stunde, Békessy',
       schK: 'Schober, 15. Juli 1927',
       sP: 'Sozialdemokratie',
-      cP: 'Christlich-National',
+      cP: 'Christlich-sozial',
       nP: 'Nationalsozialismus'
 
     }
@@ -184,7 +186,7 @@ export default {
         } else if (this.currSubCat === this.tK) {
           this.$router.push({name: "theater-objects", params: {id: id}});
         } else if (this.currSubCat === this.vK) {
-          this.$router.push({name: "verlagswesen-objects", params: {id: id}});
+          this.$router.push({name: "verlage-objects", params: {id: id}});
         } else if (this.currSubCat === this.sK) {
           this.$router.push({name: "stunde-objects", params: {id: id}});
         } else if (this.currSubCat === this.mK) {
@@ -198,7 +200,7 @@ export default {
         } else if (this.currSubCat === this.sP) {
           this.$router.push({name: "sozialdemokratie-objects", params: {id: id}});
         } else if (this.currSubCat === this.cP) {
-          this.$router.push({name: "christlich-national-objects", params: {id: id}});
+          this.$router.push({name: "christlich-sozial-objects", params: {id: id}});
         } else if (this.currSubCat === this.nP) {
           this.$router.push({name: "nationalsozialismus-objects", params: {id: id}});
         }
@@ -219,7 +221,7 @@ export default {
           } else if (this.currSubCat === this.tK) {
             this.$router.push({name: "theater-objects", params: {id: id}});
           } else if (this.currSubCat === this.vK) {
-            this.$router.push({name: "verlagswesen-objects", params: {id: id}});
+            this.$router.push({name: "verlage-objects", params: {id: id}});
           } else if (this.currSubCat === this.sK) {
             this.$router.push({name: "stunde-objects", params: {id: id}});
           } else if (this.currSubCat === this.mK) {
@@ -233,7 +235,7 @@ export default {
           } else if (this.currSubCat === this.sP) {
             this.$router.push({name: "sozialdemokratie-objects", params: {id: id}});
           } else if (this.currSubCat === this.cP) {
-            this.$router.push({name: "christlich-national-objects", params: {id: id}});
+            this.$router.push({name: "christlich-sozial-objects", params: {id: id}});
           } else if (this.currSubCat === this.nP) {
             this.$router.push({name: "nationalsozialismus-objects", params: {id: id}});
           }
@@ -266,7 +268,7 @@ export default {
         this.currSubCat = this.fK;
       } else if (this.path.toString().includes('theater')) {
         this.currSubCat = this.tK;
-      } else if (this.path.toString().includes('verlagswesen')) {
+      } else if (this.path.toString().includes('verlage')) {
         this.currSubCat = this.vK;
       } else if (this.path.toString().includes('stunde')) {
         this.currSubCat = this.sK;
@@ -280,7 +282,7 @@ export default {
         this.currSubCat = this.bK;
       } else if (this.path.toString().includes('sozialdemokratie')) {
         this.currSubCat = this.sP;
-      } else if (this.path.toString().includes('christlich-national')) {
+      } else if (this.path.toString().includes('christlich-sozial')) {
         this.currSubCat = this.cP;
       } else if (this.path.toString().includes('nationalsozialismus')) {
         this.currSubCat = this.nP;
@@ -531,6 +533,6 @@ main {
 }
 
 .sammlungen {
-  padding: 1rem;
+  padding: 0.35rem 0.75rem;
 }
 </style>

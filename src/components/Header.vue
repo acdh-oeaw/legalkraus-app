@@ -6,7 +6,11 @@
         <p class="logo">Karl Kraus</p>
       </router-link>
     </div>
-
+    <div>
+      <b-button pill class="btn-sm mt-2 ml-n5 beta-badge" variant="outline-primary">
+        Beta Version <b-icon icon="info" aria-hidden="true"></b-icon>
+      </b-button>
+    </div>
     <div class="navigation">
       <p class="nav-el">
         <b-dropdown  id="dropdown-1" :class="{'active':this.itemIsActive('projekt')}" text="Projekt" variant='none' class="m-md-2">
@@ -229,6 +233,19 @@ main {
   padding: 0;
   color: var(--text-black);
   text-decoration: none;
+}
+
+.beta-badge {
+  color: var(--primary-red);
+  border-color: var(--primary-red);
+  font-size: 0.775rem;
+  padding: 0.2rem 0.4rem;
+}
+
+.beta-badge:hover, .beta-badge:active, .beta-badge:focus {
+  background-color: var(--primary-red) !important;
+  border-color: var(--primary-red) !important;
+  color: white;
 }
 
 @media screen and (max-width: 600px) {

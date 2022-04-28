@@ -176,7 +176,7 @@ export default {
       sK: 'Die Stunde, Békessy',
       schK: 'Schober, 15. Juli 1927',
       sP: 'Sozialdemokratie',
-      cP: 'Christlich-National',
+      cP: 'Christlich-sozial',
       nP: 'Nationalsozialismus'
     }
   },
@@ -252,7 +252,7 @@ export default {
         this.subCategory = this.fK;
       } else if (this.path.toString().includes('theater')) {
         this.subCategory = this.tK;
-      } else if (this.path.toString().includes('verlagswesen')) {
+      } else if (this.path.toString().includes('verlage')) {
         this.subCategory = this.vK;
       } else if (this.path.toString().includes('stunde')) {
         this.subCategory = this.sK;
@@ -266,7 +266,7 @@ export default {
         this.subCategory = this.bK;
       } else if (this.path.toString().includes('sozialdemokratie')) {
         this.subCategory = this.sP;
-      } else if (this.path.toString().includes('christlich-national')) {
+      } else if (this.path.toString().includes('christlich-sozial')) {
         this.subCategory = this.cP;
       } else if (this.path.toString().includes('nationalsozialismus')) {
         this.subCategory = this.nP;
@@ -279,7 +279,7 @@ export default {
       } else if (this.subCategory === this.schK) {
         this.subCatLower = 'schober';
       } else if (this.subCategory === this.bbK) {
-        this.subCatLower = 'berliner-tageblatt';
+        this.subCatLower = 'tageblatt';
       } else {
         this.subCatLower = this.subCategory.toString().toLowerCase();
       }
@@ -390,7 +390,7 @@ export default {
         } else if (this.currSubCat === this.tK) {
           this.$router.push({name: "theater-objects", params: {id: id}});
         } else if (this.currSubCat === this.vK) {
-          this.$router.push({name: "verlagswesen-objects", params: {id: id}});
+          this.$router.push({name: "verlage-objects", params: {id: id}});
         } else if (this.currSubCat === this.sK) {
           this.$router.push({name: "stunde-objects", params: {id: id}});
         } else if (this.currSubCat === this.mK) {
@@ -404,7 +404,7 @@ export default {
         } else if (this.currSubCat === this.sP) {
           this.$router.push({name: "sozialdemokratie-objects", params: {id: id}});
         } else if (this.currSubCat === this.cP) {
-          this.$router.push({name: "christlich-national-objects", params: {id: id}});
+          this.$router.push({name: "christlich-sozial-objects", params: {id: id}});
         } else if (this.currSubCat === this.nP) {
           this.$router.push({name: "nationalsozialismus-objects", params: {id: id}});
         }else{
@@ -427,7 +427,7 @@ export default {
           } else if (this.currSubCat === this.tK) {
             this.$router.push({name: "theater-objects", params: {id: id}});
           } else if (this.currSubCat === this.vK) {
-            this.$router.push({name: "verlagswesen-objects", params: {id: id}});
+            this.$router.push({name: "verlage-objects", params: {id: id}});
           } else if (this.currSubCat === this.sK) {
             this.$router.push({name: "stunde-objects", params: {id: id}});
           } else if (this.currSubCat === this.mK) {
@@ -441,7 +441,7 @@ export default {
           } else if (this.currSubCat === this.sP) {
             this.$router.push({name: "sozialdemokratie-objects", params: {id: id}});
           } else if (this.currSubCat === this.cP) {
-            this.$router.push({name: "christlich-national-objects", params: {id: id}});
+            this.$router.push({name: "christlich-sozial-objects", params: {id: id}});
           } else if (this.currSubCat === this.nP) {
             this.$router.push({name: "nationalsozialismus-objects", params: {id: id}});
           }else{

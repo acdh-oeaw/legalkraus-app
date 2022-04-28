@@ -6,7 +6,7 @@
         <router-link class="nav-link" to="/akten-edition/politik/sozialdemokratie/collections">Sozialdemokratie</router-link>
       </button>
       <button type="button" class="item">
-        <router-link class="nav-link" to="/akten-edition/politik/christlich-national/collections">Christlich-National</router-link>
+        <router-link class="nav-link" to="/akten-edition/politik/christlich-sozial/collections">Christlich-Sozial</router-link>
       </button>
       <button type="button" class="item">
         <router-link class="nav-link" to="/akten-edition/politik/nationalsozialismus/collections">Nationalsozialismus</router-link>

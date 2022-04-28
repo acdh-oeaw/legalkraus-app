@@ -9,7 +9,7 @@
         <router-link class="nav-link" to="/akten-edition/kultur/theater/collections">Theater</router-link>
       </button>
       <button type="button" class="item">
-        <router-link class="nav-link" to="/akten-edition/kultur/verlagswesen/collections">Verlagswesen</router-link>
+        <router-link class="nav-link" to="/akten-edition/kultur/verlage/collections">Verlage</router-link>
       </button>
       <button type="button" class="item">
         <router-link class="nav-link" to="/akten-edition/kultur/medienhistorisches/collections">Medienhistorisches</router-link>
@@ -22,7 +22,7 @@
       </button>
 
       <button v-if="showPolemiken" type="button" class="item-s">
-        <router-link class="nav-link" to="/akten-edition/kultur/berliner-tageblatt/collections">Berliner Tageblatt, Kerr, Wolff</router-link>
+        <router-link class="nav-link" to="/akten-edition/kultur/berliner-tageblatt/collections">Berliner Tageblatt</router-link>
       </button>
       <button v-if="showPolemiken" type="button" class="item-s">
         <router-link class="nav-link" to="/akten-edition/kultur/die-stunde/collections">Die Stunde, Békessy</router-link>
