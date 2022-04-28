@@ -52,6 +52,7 @@
                @keyup="filterAll()"/>
       </div>
     </div>
+     <Introtext class="my-5 text-justify w-75 mx-auto"/>
     <div v-if="!searchView" class="card">
       <b-row>
       <b-pagination
@@ -111,13 +112,15 @@
 import {getCollections} from "@/services/ARCHEService";
 import Search from "../Search";
 import SearchResultItem from "./SearchResultItem";
+import Introtext from "./Introtext.vue";
 import {getArcheIdFromXmlId} from "../../services/ARCHEService";
 
 export default {
   name: "OverviewCollections",
   components: {
     Search: Search,
-    SearchResultItem: SearchResultItem
+    SearchResultItem: SearchResultItem,
+    Introtext: Introtext,
   },
   data: function () {
     return {
