@@ -18,8 +18,7 @@
           </datalist>
         </div>
         <Search class="py-2 vt" v-on:searchPerformed="searchPerformed($event)"></Search>
-        <input class="vt vty" type="number" placeholder="Bis Jahr:" v-model="kwY"
-               @keyup="filterAll()"/>
+        <input class="vt vty" type="number" placeholder="Bis Jahr:" v-model="kwY"/>
         <span class="lbls">
         <div class="lbl" v-for="pers in currPersons" :key="pers.key">{{ pers.value }}
           <svg v-on:click="removePers(pers.key)" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -43,8 +42,7 @@
           </button>
         </div>
 
-        <input class="vt vtt" type="text" placeholder="Fall-Titel:" v-model="kwT"
-               @keyup="filterAll()"/>
+        <input class="vt vtt" type="text" placeholder="Fall-Titel:" v-model="kwT"/>
       </div>
     </div>
     <b-row>
@@ -122,7 +120,7 @@
                 label: 'Anzahl Dokumente',
               },
             ]"
-              :items="currCases"
+              :items="getArcheCollections" @row-clicked="navToObjects"
           >
             <template #table-busy>
               <div class="text-center my-2">
@@ -146,6 +144,7 @@
 <script>
 //import {getCollections} from "@/services/ARCHEService";
 import Tree from "../Statistiken/Tree";
+import {getArcheIdFromXmlId} from "../../services/ARCHEService";
 //import Search from "../Search";
 
 export default {
@@ -208,7 +207,6 @@ export default {
       currOrgs: [],
       currPersons: [],
       cases: [],
-      currCases: []
     };
   },
   methods: {
@@ -238,58 +236,8 @@ export default {
           );
         }
       }
-      this.$store.dispatch("setNoOfCollections", items.length);
-      callback(items.slice(offset, offset + ctx.perPage));
-    },
-    navToObjects: function (url) {
-      let id = this.getIdFromUrl(url);
-
-      this.$router.push({name: "recht-objects", params: {id: id}});
-    },
-    getIdFromUrl(url) {
-      let idx = url.lastIndexOf("/");
-      return url.substring(idx + 1);
-    },
-    tableSortCompare(a, b, key) {
-      if (key === 'id') {
-        let aInt = parseInt(a[key].substring(3, a[key].length - 4));
-        let bInt = parseInt(b[key].substring(3, b[key].length - 4));
-        return aInt - bInt;
-      }
-
-    },
-    setCurrPers(kwP) {
-      //get key of person and add person to this.currPersons
-      for (var key in this.allPersons) {
-        if (this.allPersons[key].value === kwP) {
-          //check if person is already in this.currPersons
-          if (!this.currPersons.filter(p => p.key === this.allPersons[key].key).length > 0) {
-            //remove leading '#' from key
-            this.currPersons.push({'key': this.allPersons[key].key.substring(1), 'value': this.allPersons[key].value});
-          }
-        }
-      }
-
-      this.filterAll();
-
-    },
-    setCurrOrgs(kwO) {
-      //get key of person and add person to this.currPersons
-      for (var key in this.allOrgs) {
-        if (this.allOrgs[key].value === kwO) {
-          //check if person is already in this.currPersons
-          if (!this.currOrgs.filter(o => o.key === this.allOrgs[key].key).length > 0) {
-            //remove leading '#' from key
-            this.currOrgs.push({'key': this.allOrgs[key].key.substring(1), 'value': this.allOrgs[key].value});
-          }
-        }
-      }
-      this.filterAll();
-    },
-    filterAll() {
-      //extract cases that contain all persons in this.currPerson and all orgs in this.currOrgs and match title and year
       let temp = [];
-      this.cases.forEach(c => {
+      items.forEach(c => {
         let containsAll = true;
         this.currPersons.forEach(p => {
           if (!c.men_pers[p.key]) {
@@ -315,9 +263,52 @@ export default {
           temp.push(c)
         }
       });
-      this.currCases = temp;
+      items = temp;
       this.kwP = null;
       this.kwO = null
+      this.$store.dispatch("setNoOfCollections", items.length);
+      callback(items.slice(offset, offset + ctx.perPage));
+    },
+    navToObjects: function (item) {
+      getArcheIdFromXmlId(item.id, rs => {
+        this.$router.push({name: "overview-objects", params: {id: rs}});
+      })
+    },
+    getIdFromUrl(url) {
+      let idx = url.lastIndexOf("/");
+      return url.substring(idx + 1);
+    },
+    tableSortCompare(a, b, key) {
+      if (key === 'id') {
+        let aInt = parseInt(a[key].substring(3, a[key].length - 4));
+        let bInt = parseInt(b[key].substring(3, b[key].length - 4));
+        return aInt - bInt;
+      }
+
+    },
+    setCurrPers(kwP) {
+      //get key of person and add person to this.currPersons
+      for (var key in this.allPersons) {
+        if (this.allPersons[key].value === kwP) {
+          //check if person is already in this.currPersons
+          if (!this.currPersons.filter(p => p.key === this.allPersons[key].key).length > 0) {
+            //remove leading '#' from key
+            this.currPersons.push({'key': this.allPersons[key].key.substring(1), 'value': this.allPersons[key].value});
+          }
+        }
+      }
+    },
+    setCurrOrgs(kwO) {
+      //get key of person and add person to this.currPersons
+      for (var key in this.allOrgs) {
+        if (this.allOrgs[key].value === kwO) {
+          //check if person is already in this.currPersons
+          if (!this.currOrgs.filter(o => o.key === this.allOrgs[key].key).length > 0) {
+            //remove leading '#' from key
+            this.currOrgs.push({'key': this.allOrgs[key].key.substring(1), 'value': this.allOrgs[key].value});
+          }
+        }
+      }
     },
     resetFilter() {
       this.currOrgs = [];
@@ -326,7 +317,12 @@ export default {
       this.kwO = null;
       this.kwY = null;
       this.kwT = null;
-      this.currCases = this.cases;
+      this.filterParams = false;
+      this.selected = null;
+      this.filter = null;
+      this.filterTitle = null;
+      this.filterParams = null;
+      this.$router.replace({'query': null});
     },
     removePers(key) {
       for (let i = 0; i < this.currPersons.length; i++) {
@@ -334,8 +330,6 @@ export default {
           this.currPersons = this.currPersons.filter(p => p.key !== key);
         }
       }
-      this.filterAll();
-
     },
     removeOrg(key) {
       for (let i = 0; i < this.currOrgs.length; i++) {
@@ -343,7 +337,6 @@ export default {
           this.currOrgs = this.currOrgs.filter(o => o.key !== key);
         }
       }
-      this.filterAll();
     }
   },
   mounted() {
@@ -353,6 +346,20 @@ export default {
       this.filterParams = filterkey.split("-");
       this.filterTitle = this.filterParams[1].includes(":") ? this.filterParams[1].split(":")[1] : this.filterParams[1];
       this.selected = this.filterTitle;
+    }
+  },
+  watch: {
+    kwT() {
+      this.$refs.coltable.refresh();
+    },
+    currPersons() {
+      this.$refs.coltable.refresh();
+    },
+    currOrgs() {
+      this.$refs.coltable.refresh();
+    },
+    kwY() {
+      this.$refs.coltable.refresh();
     }
   },
   created() {
@@ -372,7 +379,6 @@ export default {
     );
     this.$store.getters.caseInfo.then(cD => {
       this.cases = cD.cases;
-      this.currCases = cD.cases;
       for (var name in cD.persons) {
         let p = {};
         p.key = name;
@@ -517,6 +523,7 @@ export default {
   display: grid;
   grid-template-columns: repeat(3, minmax(5rem, auto));
   grid-template-rows: auto auto auto;
+  grid-row-gap: 2rem;
 }
 
 .reset-filter {
