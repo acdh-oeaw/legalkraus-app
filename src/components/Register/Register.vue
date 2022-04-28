@@ -262,6 +262,129 @@
             </template>
           </b-table>
         </div>
+        <div v-if="categoryShort==='f' && !noItems" class="card">
+          <b-pagination
+              page-class="custompaging"
+              prev-class="custompagingarrows"
+              next-class="custompagingarrows"
+              first-class="custompagingarrows"
+              last-class="custompagingarrows"
+              class="custom-pagination"
+              v-model="currentPage"
+              :total-rows="this.currentItems.bibl.length"
+              :per-page="perPage"
+              aria-controls="col-table"
+          ></b-pagination>
+          <b-table id="col-table" :small="'small'" :sort-by="'title'" :sort-compare="tableSortCompare"
+                   :no-border-collapse="true" :borderless="'borderless'"
+                   :current-page="currentPage" :per-page="perPage"
+                   :busy.sync="isBusy" :fields="[
+            {
+              key: 'title',
+              label: 'Titel',
+              sortable: true
+            },
+            {
+              key: 'num',
+              label: 'Nummer'
+            },
+          ]" :items="this.currentItems.bibl" @row-clicked="openDetails">
+            <template #table-busy>
+              <div class="text-center my-2">
+                <b-spinner type="grow" class="align-middle"></b-spinner>
+                <strong>Loading...</strong>
+              </div>
+            </template>
+            <template #cell(title)="data">
+              <div>{{ data.value[0]._ }}</div>
+            </template>
+            <template #cell(num)="data">
+              <div v-if="data.value">Fackel &nbsp; {{ data.value[0]._ }}/{{ data.value[1]._ }}</div>
+            </template>
+          </b-table>
+          <b-table v-if="categoryShort==='p'" id="col-table" :small="'small'" :no-border-collapse="true"
+                   :borderless="'borderless'"
+                   :current-page="currentPage" :per-page="perPage"
+                   :busy.sync="isBusy" :fields="[
+            {
+              key: 'persName',
+              label: 'Name'
+            },
+            {
+              key: 'occupation',
+              label: 'Beruf'
+            },
+            {
+              key: 'birth',
+              label: 'geboren'
+            },
+            {
+              key: 'death',
+              label: 'gestorben'
+            },
+          ]" :items="this.currentItems.person">
+            <template #table-busy>
+              <div class="text-center my-2">
+                <b-spinner type="grow" class="align-middle"></b-spinner>
+                <strong>Loading...</strong>
+              </div>
+            </template>
+            <template #cell(persName)="data">
+              <div v-if="data.value && data.value[0] && data.value[0].surname && data.value[0].forename">
+                {{ data.value[0].surname[0].toUpperCase() }}, {{ data.value[0].forename[0] }}
+              </div>
+            </template>
+            <template #cell(occupation)="data">
+              <div v-if="data.value">{{ data.value[0]._ }}</div>
+            </template>
+            <template #cell(birth)="data">
+              <div v-if="data.value && data.value[0] && data.value[0].settlement && data.value[0].date">
+                {{ data.value[0].settlement[0].placeName[0]._ }}, {{ data.value[0].date[0]._ }}
+              </div> <!-- {{data.value[0].settlement[0].placeName[0]._}}, {{data.value[0].date[0]._}}-->
+            </template>
+            <template #cell(death)="data">
+              <div v-if="data.value && data.value[0] && data.value[0].settlement && data.value[0].date">
+                {{ data.value[0].settlement[0].placeName[0]._ }}, {{ data.value[0].date[0]._ }}
+              </div>
+            </template>
+          </b-table>
+        </div>
+        <div v-if="categoryShort==='j' && !noItems" class="card">
+          <b-pagination
+              page-class="custompaging"
+              prev-class="custompagingarrows"
+              next-class="custompagingarrows"
+              first-class="custompagingarrows"
+              last-class="custompagingarrows"
+              class="custom-pagination"
+              v-model="currentPage"
+              :total-rows="this.currentItems.bibl.length"
+              :per-page="perPage"
+              aria-controls="col-table"
+          ></b-pagination>
+          <b-table id="col-table" :small="'small'" :sort-by="'title'" :sort-compare="tableSortCompare"
+                   :no-border-collapse="true" :borderless="'borderless'"
+                   :current-page="currentPage" :per-page="perPage"
+                   :busy.sync="isBusy" :fields="[
+            {
+              key: 'title',
+              label: 'Titel',
+              sortable: true
+            },
+
+          ]" :items="this.currentItems.bibl" @row-clicked="openDetails">
+            <template #table-busy>
+              <div class="text-center my-2">
+                <b-spinner type="grow" class="align-middle"></b-spinner>
+                <strong>Loading...</strong>
+              </div>
+            </template>
+            <template #cell(title)="data">
+              <div>{{ data.value[0]._ }}</div>
+            </template>
+          </b-table>
+
+        </div>
       </div>
       <register-detail v-if="showDetails" v-bind:item="details" v-bind:category="categoryShort" class="details card">
         {{ details }}
@@ -294,7 +417,8 @@ export default {
       keyword: null,
       abc: ["Kein Filter", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "Sonderzeichen"],
       query: null,
-      noItems: false
+      noItems: false,
+      caseInfo: null
     }
   },
 
@@ -375,14 +499,29 @@ export default {
           break;
         case "f":
           url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/27724";
-          //todo: noch nicht erstellt
+          fetch(url)
+              .then(response => response.text())
+              .then(str => {
+                parseString(str, function (err, rs) {
+                  self.currentItems = rs.TEI.text[0].body[0].listBibl[0];
+                  self.allItems = JSON.parse(JSON.stringify(rs.TEI.text[0].body[0].listBibl[0]));
+                });
+              })
+              .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
           break;
         case "j":
           url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/27725";
-          //todo: noch nicht erstellt
+          fetch(url)
+              .then(response => response.text())
+              .then(str => {
+                parseString(str, function (err, rs) {
+                  self.currentItems = rs.TEI.text[0].body[0].listBibl[0];
+                  self.allItems = JSON.parse(JSON.stringify(rs.TEI.text[0].body[0].listBibl[0]));
+                });
+              })
+              .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
           break;
       }
-
 
     },
     processPerson(record) {
@@ -565,8 +704,112 @@ export default {
       }
       return w;
     },
+    processFackel(record){
+      let f = {
+        "title": "-",
+        "author": "-",
+        "url": "-",
+        "date": "-",
+        "biblScope": "-"
+      };
+
+      if (record.title) {
+        f.title = record.title[0] ? record.title[0]._ : '-'
+      }
+
+      if (record.date) {
+        f.date = record.date[0] ? record.date[0]._ : '-'
+      }
+
+      if (record.author) {
+        f.author = record.author[0] ? record.author[0]._ : '-'
+      }
+
+      if (record.biblScope) {
+        f.biblScope = record.biblScope[0] ? record.biblScope[0]._ : '-'
+      }
+
+      if(record.$.corresp){
+        f.url = record.$.corresp;
+      }
+
+      if(record.ref){
+        let refCases = [];
+        let refDocs = [];
+
+        record.ref.forEach(r =>{
+          let xmlId = r._.substring(record.ref[0]._.lastIndexOf('|')+1);
+          let caseId = parseInt(xmlId.replace("D_","").substring(0,6).replace('0',''));
+          this.caseInfo.then(cd =>{
+            cd.cases.forEach(c => {
+              let cid = parseInt(c.id.replace("C_",'').substring(0, c.id.length-4));
+              if(cid === caseId){
+                refCases.push(c);
+                for (let i = 0; i < c.doc_objs.length; i++) {
+                  if(c.doc_objs[i].id === xmlId){
+                    refDocs.push(c.doc_objs[i]);
+                    break;
+                  }
+                }
+              }
+            });
+          })
+        });
+        f.docs = refDocs;
+        f.cases = refCases;
+      }
+      return f;
+    },
+    processLaw(record){
+      let l = {
+        "title": "-",
+        "url": "-",
+        "date": "-",
+      };
+
+      if (record.title) {
+        l.title = record.title[0] ? record.title[0]._ : '-'
+      }
+
+      if(record.$.corresp){
+        l.url = record.$.corresp;
+      }
+
+      if (record.date) {
+        l.date = record.date[0] ? record.date[0]._ : '-'
+      }
+
+      if (record.biblScope) {
+        l.biblScope = record.biblScope[0] ? record.biblScope[0]._ : '-'
+      }
+
+      if(record.ref){
+        let refCases = [];
+        let refDocs = [];
+        record.ref.forEach(r =>{
+          let caseId = parseInt(r.$.target.replace("D_","").substring(0,6).replace('0',''));
+          this.caseInfo.then(cd =>{
+            cd.cases.forEach(c => {
+              let cid = parseInt(c.id.replace("C_",'').substring(0, c.id.length-4));
+              if(cid === caseId){
+                refCases.push(c);
+                for (let i = 0; i < c.doc_objs.length; i++) {
+                  if(c.doc_objs[i].id === r.$.target){
+                    refDocs.push(c.doc_objs[i]);
+                    break;
+                  }
+                }
+              }
+            });
+          })
+        });
+        l.docs = refDocs;
+        l.cases = refCases;
+      }
+
+      return l;
+    },
     async openDetails(record) {
-      console.log(record)
       let item;
       if (this.categoryShort === 'p') {
         item = this.processPerson(record);
@@ -579,6 +822,11 @@ export default {
       }
       if (this.categoryShort === 'w') {
         item = await this.processWork(record);
+      }if (this.categoryShort === 'f'){
+        item = this.processFackel(record);
+      }
+      if (this.categoryShort === 'j'){
+        item = this.processLaw(record);
       }
       this.details = item;
       this.showDetails = true;
@@ -641,6 +889,12 @@ export default {
           this.currentItems.org = this.allItems.org.filter(i =>
               i.orgName[0].startsWith(l));
         }
+      }else if (this.categoryShort === 'j'){
+        this.currentItems.bibl = this.allItems.bibl.filter(j =>
+            j.title[1]._.startsWith(l));
+      }else if (this.categoryShort === 'f'){
+        this.currentItems.bibl = this.allItems.bibl.filter(j =>
+            j.title[0]._.startsWith(l));
       }
 
     },
@@ -679,6 +933,21 @@ export default {
         if (this.currentItems.place.length === 0) {
           this.noItems = true;
         }
+      }else if (this.categoryShort === 'j') {
+        this.currentItems.bibl = this.allItems.bibl.filter(j =>
+            (j.title[0]._.toUpperCase().includes(kw) ||
+                (j.title[1]._.toUpperCase().includes(kw))));
+        if (this.currentItems.place.length === 0) {
+          this.noItems = true;
+        }
+      }
+      else if (this.categoryShort === 'f') {
+        this.currentItems.bibl = this.allItems.bibl.filter(j =>
+            (j.title[0]._.toUpperCase().includes(kw) ||
+                (j.num[0]._.toUpperCase().includes(kw)) || (j.num[1]._.toUpperCase().includes(kw))));
+        if (this.currentItems.place.length === 0) {
+          this.noItems = true;
+        }
       }
 
     },
@@ -708,12 +977,13 @@ export default {
   },
   created() {
     this.setCategory();
-    if (this.$route.query !== null) {
+    if (this.$route.query) {
       this.query = this.$route.query;
     }
 
   },
   async mounted() {
+    this.caseInfo = this.$store.getters.caseInfo;
     this.downloadRegistry();
 
   },
@@ -726,7 +996,7 @@ export default {
       this.keyword = null;
     },
     async allItems() {
-      if (this.query !== null) {
+      if (this.query) {
         this.filterPmbId(this.query.pmbId);
 
       }

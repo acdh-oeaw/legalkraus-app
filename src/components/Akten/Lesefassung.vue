@@ -28,22 +28,75 @@
       <span class="arrow">></span>
       <span style="font-weight: bold">{{ this.objectTitle }}</span>
     </p>
-    <div class="meta-data">
-      <p class="meta1">Metadaten Fall:</p>
+    <div v-if="simpleMD" class="meta-data">
+      <p class="meta1">Metadaten Dokument:</p>
       <div class="meta2">
-        <router-link class="back" to="/">{{ this.colTitle }}</router-link>
-        <p>Anzahl Dokumente: {{ this.colSize }}</p>
+        <router-link class="back" to="/">{{ this.objectTitle }}</router-link>
+      </div>
+      <div class="meta5">
+        <p>Seitenanzahl: {{ this.facsURLs.length }}</p>
       </div>
       <div class="vl meta3"></div>
-      <p class="meta4">Datum: (coming soon)</p>
-      <div class="meta5">
+      <p class="meta4">Datum: {{ this.docInfo.date }}</p>
+      <div class="meta8">
+        <input class="vt" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
+        <button type="button" class="btn vt-button" data-search="next" v-on:click="highlightNext()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-down-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
+          </svg>
+        </button>
+        <button type="button" class="btn vt-button" data-search="prev" v-on:click="highlightPrev()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-up-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div v-if="letterMD" class="meta-data">
+      <div class="meta1">
+        <router-link class="back" to="/">{{ this.objectTitle }}</router-link>
+      </div>
+      <div class="meta2">
+        <p>Seitenanzahl: {{ this.facsURLs.length }}</p>
+      </div>
+      <div class="meta2-1">
+        <span v-if="handsClosed" class="hasActor">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right"
+             viewBox="0 0 16 16" v-on:click="toggleHands">
+          <path
+              d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
+        </svg>
+        Schreiberhände: {{ this.hands.length }}
+          </span>
+        <div v-if="!handsClosed">
+        <span class="hasActor">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down"
+             viewBox="0 0 16 16" v-on:click="toggleHands">
+  <path
+      d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+</svg>
+        Schreiberhände:
+
+          </span>
+          <p class="m-item" v-for="h in this.hands" v-bind:key="h.id">{{ h.name }}</p>
+        </div>
+      </div>
+      <div class="vl meta3"></div>
+      <div v-if="stamp===null" class="meta5">Stempel: -</div>
+      <div v-if="stamp!==null" class="meta5">Stempel: {{ stamp.name }}</div>
+      <p class="meta4">Materialitätstyp: {{ this.docInfo.materiality[0] }}</p>
+      <div class="meta6">
         <span v-if="actorsClosed" class="hasActor">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right"
              viewBox="0 0 16 16" v-on:click="toggleActors">
           <path
               d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
         </svg>
-        Beteiligte: {{ actors.length }}
+        Beteiligte: {{ this.docInfo.acts.length }}
           </span>
         <div v-if="!actorsClosed">
         <span class="hasActor">
@@ -55,7 +108,82 @@
         Beteiligte:
 
           </span>
-          <p v-for="actor in actors" v-bind:key="actor.identifier">{{ actor.title }}</p>
+          <p class="m-item" v-for="actor in this.docInfo.acts" v-bind:key="actor.key">{{ actor.value }}</p>
+        </div>
+      </div>
+      <div class="vl meta7"></div>
+      <div class="meta8">
+        <input class="vt" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
+        <button type="button" class="btn vt-button" data-search="next" v-on:click="highlightNext()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-down-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
+          </svg>
+        </button>
+        <button type="button" class="btn vt-button" data-search="prev" v-on:click="highlightPrev()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+               class="bi bi-arrow-up-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div v-if="defaultMD" class="meta-data">
+      <div class="meta1">
+        <router-link class="back" to="/">{{ this.objectTitle }}</router-link>
+      </div>
+      <div class="meta2">
+        <p>Seitenanzahl: {{ this.facsURLs.length }}</p>
+      </div>
+      <div class="meta2-1">
+        <span v-if="handsClosed" class="hasActor">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right"
+             viewBox="0 0 16 16" v-on:click="toggleHands">
+          <path
+              d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
+        </svg>
+        Schreiberhände: {{ this.hands.length }}
+          </span>
+        <div v-if="!handsClosed">
+        <span class="hasActor">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down"
+             viewBox="0 0 16 16" v-on:click="toggleHands">
+  <path
+      d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+</svg>
+        Schreiberhände:
+
+          </span>
+          <p class="m-item" v-for="h in this.hands" v-bind:key="h.id">{{ h.name }}</p>
+        </div>
+      </div>
+      <div class="vl meta3"></div>
+      <div class="meta5">Datum: {{ this.docInfo.date }} </div>
+      <div v-if="stamp===null" class="meta9">Stempel: -</div>
+      <div v-if="stamp!==null" class="meta9">Stempel: {{ stamp.name }}</div>
+      <p class="meta4">Materialitätstyp: {{ this.docInfo.materiality[0] }}</p>
+      <div class="meta6">
+        <span v-if="actorsClosed" class="hasActor">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right"
+             viewBox="0 0 16 16" v-on:click="toggleActors">
+          <path
+              d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
+        </svg>
+        Beteiligte: {{ this.docInfo.acts.length }}
+          </span>
+        <div v-if="!actorsClosed">
+        <span class="hasActor">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down"
+             viewBox="0 0 16 16" v-on:click="toggleActors">
+  <path
+      d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+</svg>
+        Beteiligte:
+
+          </span>
+          <p class="m-item" v-for="actor in this.docInfo.acts" v-bind:key="actor.key">{{ actor.value }}</p>
         </div>
       </div>
       <div class="vl meta7"></div>
@@ -83,7 +211,7 @@
         <div class="facs">
           <button class="format btn btn-light">Facsimile</button>
         </div>
-         
+
         <div class="card card-fixed-small">
           <img class="embedded-img-small" :src="getCurrentFacs()" alt="facsimile">
         </div>
@@ -94,7 +222,7 @@
           <button class="format btn btn-light mb-2 btn-red">Facsimile</button>
           <button class="btn btn-light mb-2" v-if="this.furtherWitnesses.length > 0" v-on:click="$bvModal.show('bv-modal-further-witnesses')">Weitere Textzeugen</button>
         </div>
-        
+
         <div class="card card-fixed border-0 bg-light">
           <div class="header">
             <svg v-on:click="toggleLF()" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -135,11 +263,11 @@
         <div class="formats mb-2">
           <button class="format btn btn-light btn-red">Lesefassung</button>
           <a class="format btn btn-light" role="button" :href="xmlFile"
-             :download="filename">
+             :download="xmlFilename">
             Download XML
           </a>
           <a class="format btn btn-light" role="button" :href="pdfFile"
-             :download="filename">
+             :download="pdfFilename">
             Download PDF
           </a>
         </div>
@@ -224,7 +352,7 @@
               Intertext Fackel
             </b-form-checkbox>
           </div>
-         
+
           <div class="vt-container">
             <input class="vt" type="text" placeholder="Volltextsuche:" v-model="keyword"
                    @keyup="highlight(keyword)"/>
@@ -257,81 +385,82 @@
         <div class="formats-full-width">
           <button class="format btn btn-light btn-red">Lesefassung</button>
           <a class="format btn btn-light" role="button" :href="xmlFile"
-             :download="filename">
+             :download="xmlFilename">
             Download XML
           </a>
           <a class="format btn btn-light" role="button" :href="pdfFile"
-             :download="filename">
+             :download="pdfFilename">
             Download PDF
           </a>
         </div>
-        <div class="card card-full bg-light">
-          <div class="header">
-            <div class="all-annotations">
+        <div class="text-comment-wrap  position-relative">
+          <div class="card card-full bg-light">
+            <div class="header">
+              <div class="all-annotations">
+                <b-form-checkbox
+                    v-model="showAllAnnotations"
+                    value="true"
+                    unchecked-value="false"
+                    v-on:change="updateAllHighlighters()"
+                    switch
+                    size="lg"
+                >Alle Annotationen
+                </b-form-checkbox>
+
+              </div>
+            </div>
+          <div class="toggles mx-auto">
               <b-form-checkbox
-                  v-model="showAllAnnotations"
-                  value="true"
-                  unchecked-value="false"
-                  v-on:change="updateAllHighlighters()"
+                  id="pe-toggle"
+                  v-model="highlighter['person']"
+                  v-on:change="updateHighlighter('person', highlighter['person'])"
                   switch
-                  size="lg"
-              >Alle Annotationen
+              >
+                Personen
+              </b-form-checkbox>
+              <b-form-checkbox
+                  id="i-toggle"
+                  v-model="highlighter['institution']"
+                  v-on:change="updateHighlighter('institution', highlighter['institution'])"
+                  switch
+              >
+                Institution
               </b-form-checkbox>
 
-            </div>
-          </div>
-          <div class="toggles mx-auto">
-            <b-form-checkbox
-                id="pe-toggle"
-                v-model="highlighter['person']"
-                v-on:change="updateHighlighter('person', highlighter['person'])"
-                switch
-            >
-              Personen
-            </b-form-checkbox>
-            <b-form-checkbox
-                id="i-toggle"
-                v-model="highlighter['institution']"
-                v-on:change="updateHighlighter('institution', highlighter['institution'])"
-                switch
-            >
-              Institution
-            </b-form-checkbox>
-
-            <b-form-checkbox
-                id="pl-toggle"
-                v-model="highlighter['place']"
-                v-on:change="updateHighlighter('place', highlighter['place'])"
-                switch
-            >
+              <b-form-checkbox
+                  id="pl-toggle"
+                  v-model="highlighter['place']"
+                  v-on:change="updateHighlighter('place', highlighter['place'])"
+                  switch
+              >
               Ort
-            </b-form-checkbox>
+              </b-form-checkbox>
 
-            <b-form-checkbox
-                id="l-toggle"
-                v-model="highlighter['law']"
-                v-on:change="updateHighlighter('law', highlighter['law'])"
-                switch
-            >
-              jur. Texte
-            </b-form-checkbox>
-            <b-form-checkbox
-                id="w-toggle"
-                v-model="highlighter['work']"
-                v-on:change="updateHighlighter('work', highlighter['work'])"
-                switch
-            >
-              Werke
-            </b-form-checkbox>
+              <b-form-checkbox
+                  id="l-toggle"
+                  v-model="highlighter['law']"
+                  v-on:change="updateHighlighter('law', highlighter['law'])"
+                  switch
+              >
+                jur. Texte
+              </b-form-checkbox>
+              <b-form-checkbox
+                  id="w-toggle"
+                  v-model="highlighter['work']"
+                  v-on:change="updateHighlighter('work', highlighter['work'])"
+                  switch
+              >
+                Werke
+              </b-form-checkbox>
 
-            <b-form-checkbox
-                id="q-toggle"
-                v-model="highlighter['quote']"
-                v-on:change="updateHighlighter('quote', highlighter['quote'])"
-                switch
-            >
-              Zitat
-            </b-form-checkbox>
+              <b-form-checkbox
+                  id="q-toggle"
+                  v-model="highlighter['quote']"
+                  v-on:change="updateHighlighter('quote', highlighter['quote'])"
+                  switch
+              >
+                Zitat
+              </b-form-checkbox>
           <b-form-checkbox
                 id="intertext-toggle"
                 v-model="highlighter['intertext']"
@@ -340,12 +469,16 @@
             >
               Intertext Fackel
             </b-form-checkbox>
+            </div>
+
+            <div class="body row m-0 overflow-auto">
+              <component class="col-9" v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"
+                         v-on:child-mounted="childMounted"/>
+            </div>
+
           </div>
-          
-          <div class="body row m-0 overflow-auto">
-            <component class="col-9" v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"
-                       v-on:child-mounted="childMounted"/>
-            <div class="col-3 position-relative" id="comments"></div>
+          <div class="comments" id="comments">
+
           </div>
         </div>
       </div>
@@ -396,7 +529,7 @@
 
 <script>
 import {
-  getColArcheIdFromColXmlId,
+  getArcheIdFromXmlId,
   getCollectionOfObject,
   getEntity,
   getObjectWithId,
@@ -405,7 +538,6 @@ import {
 import {getObjectWithId as getPMBObjectWithId} from "../../services/PMBService";
 import {ARCHErdfQuery} from "arche-api/src";
 import EntitySpan from "./EntitySpan";
-import Search from "../Search";
 import {jsPDF} from "jspdf";
 import {mapGetters} from 'vuex';
 import * as Mark from "mark.js/dist/mark.min.js"
@@ -414,7 +546,6 @@ import * as Mark from "mark.js/dist/mark.min.js"
 export default {
   components: {
     EntitySpan: EntitySpan,
-    Search: Search
   },
   name: "Lesefassung",
   data: function () {
@@ -434,7 +565,8 @@ export default {
       pdfFile: String,
       dom: Object,
       teiHeader: Object,
-      filename: String,
+      xmlFilename: String,
+      pdfFilename: String,
       facsURLs: [],
       i: 0,
       transformedHTML: null,
@@ -446,12 +578,19 @@ export default {
       marks: [],
       idxCurrMark: 0,
       actorsClosed: true,
+      handsClosed: true,
       cat: null,
       subcat: null,
       caseInfo: null,
       witness: [],
       dataLoaded:false,
-      furtherWitnesses:[]
+      furtherWitnesses:[],
+      docInfo: null,
+      simpleMD: false,
+      letterMD: false,
+      defaultMD: false,
+      stamp: null,
+      hands: []
     }
   },
   computed: {
@@ -469,17 +608,21 @@ export default {
           };
         },
         template,
-        mounted() {
+        async mounted() {
+
           this.$refs['readview'].querySelectorAll("[data-pgnr]").forEach((page) => {
-            page.querySelectorAll(".lb").forEach((lb,idx) => {
-              const ln = idx + 1;
-              if (ln % 5 === 0) {
-                lb.setAttribute('data-lbnr', idx + 1);
+                page.querySelectorAll(".lb").forEach((lb, idx) => {
+                  const ln = idx + 1;
+                  if (ln % 5 === 0) {
+                    lb.setAttribute('data-lbnr', idx + 1);
+                  }
+                });
+                this.$parent.childMounted();
               }
-            });
-            this.$parent.childMounted();
-          }
-          )
+          );
+
+          let dbl = await document.querySelector(`.d-block`);
+          this.$parent.pdfFile = this.$parent.saveStringToPDF(dbl.textContent);
         },
         computed: {
           ...mapGetters({
@@ -487,12 +630,11 @@ export default {
             highlighter: 'highlighter'
           }),
           currentFacsUrl() {
-              return this.$parent.getCurrentFacs();
+            return this.$parent.getCurrentFacs();
           },
         },
         methods: {
           navigateTo(pmbId, type, event) {
-            console.log(event)
             this.$emit('childToParent', {pmbId: pmbId, type: type, htmlId: event.target.id});
           },
           setWitness(val) {
@@ -510,20 +652,35 @@ export default {
   },
     async highlightQueryOnMounted(q) {
       await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
-      let men_id = document.getElementsByClassName("#" + q);
+      let men_id = [];
+      //mark law
+      if (q.includes('alex.onb')) {
+        men_id = document.getElementsByClassName(q);
+      } else if (q.includes("fackel.oeaw.ac.at")) {
+        men_id = document.getElementsByClassName(q);
+      } else {
+        men_id = document.getElementsByClassName("#" + q);
+      }
+
 
       //if class not found: go to next page until found
       while (men_id.length === 0 && this.facsURLs.length > this.selectedPage) {
         //there is at least one more page
         this.next();
         await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
-        men_id = document.getElementsByClassName("#" + q);
+        if (q.includes('alex.onb')) {
+          men_id = document.getElementsByClassName(q);
+        } else if (q.includes("fackel.oeaw.ac.at")) {
+          men_id = document.getElementsByClassName(q);
+        } else {
+          men_id = document.getElementsByClassName("#" + q);
+        }
 
       }
       //found next mark; reset idxCurrMark
       this.idxCurrMark = 0;
       let page = men_id[0].closest('[data-pgnr]').dataset.pgnr;
-      while(this.selectedPage < page){
+      while (this.selectedPage < page) {
         this.next();
       }
       men_id.item(0).classList.add("current-mark");
@@ -645,7 +802,7 @@ export default {
 
     },
     changePage(event) {
-      
+
       this.$store.dispatch('setSelectedPage', parseInt(event.target.value))
       this.alignRdgs();
     },
@@ -654,12 +811,12 @@ export default {
           const rdgsLeft = document.querySelectorAll(".rdg.marginLeft");
           const rdgsRight = document.querySelectorAll(".rdg.mRight");
           rdgsLeft.forEach(async (rdg,idx) => {
-      
+
             if (idx > 0) {
               await rdgsLeft[idx-1].offsetTop > 0;
               console.log(rdgsLeft[idx-1].offsetTop)
                const prevBottom = rdgsLeft[idx-1].offsetTop + rdgsLeft[idx-1].clientHeight;
-               
+
             if ( prevBottom > rdg.offsetTop) {
               rdg.style.top = `${prevBottom + 10}px`;
             }
@@ -678,13 +835,13 @@ export default {
       if (this.keyword) {
         this.highlightOnMounted(this.keyword);
       }
-      if(this.$route.query.q){
+      if (this.$route.query.q) {
         this.highlightQueryOnMounted(this.$route.query.q);
       }
     },
     async childToParent(event) {
       //comment should only be generated if annotations for this type are highlighted
-      if(!this.highlighter[event.type]){
+      if (!this.highlighter[event.type]) {
         return;
       }
       this.toggleFacs(); //hide facsimile, switch to text-only view
@@ -692,7 +849,7 @@ export default {
       let elem = document.getElementById(event.htmlId);
       const comments = document.querySelectorAll('.comment');
 
-      const comment = document.getElementById("comments");
+      const commentBox = document.getElementById("comments");
 
       //work does not refer to a pmb entry
       if (event.type === 'work' && this.highlighter.work) {
@@ -700,15 +857,35 @@ export default {
         //in case of an inline collision (due to nested elements, the comment is placed directly beneath the other comment)
         comments.forEach(e => {
           const eBCR = e.getBoundingClientRect();
-          if(eBCR.top === commentDiv.style.top){
+          if (eBCR.top === commentDiv.style.top) {
             commentDiv.style.top = commentDiv.style.top + eBCR.height;
           }
         })
-        comment.appendChild(commentDiv);
+        commentBox.appendChild(commentDiv);
 
         //in case of a normal collision, the old comment is removed
         comments.forEach(e => {
-          if(this.hasCollision(e, commentDiv)){
+          if (this.hasCollision(e, commentDiv)) {
+            e.remove();
+          }
+        })
+        return;
+      }
+
+      if (event.type === 'quote' || event.type === 'intertext') {
+        let commentDiv = this.createCommentDiv(event, null, elem, event.type);
+        //in case of an inline collision (due to nested elements, the comment is placed directly beneath the other comment)
+        comments.forEach(e => {
+          const eBCR = e.getBoundingClientRect();
+          if (eBCR.top === commentDiv.style.top) {
+            commentDiv.style.top = commentDiv.style.top + eBCR.height;
+          }
+        })
+        commentBox.appendChild(commentDiv);
+
+        //in case of a normal collision, the old comment is removed
+        comments.forEach(e => {
+          if (this.hasCollision(e, commentDiv)) {
             e.remove();
           }
         })
@@ -718,98 +895,161 @@ export default {
       getPMBObjectWithId(event.pmbId, event.type, (rs) => {
         let commentDiv = this.createCommentDiv(event, rs, elem, event.type);
         //in case of an inline collision (due to nested elements, the comment is placed directly beneath the other comment)
-         const curcomments = document.querySelectorAll('.comment');
+        const curcomments = document.querySelectorAll('.comment');
         curcomments.forEach(e => {
           const eBCR = e.getBoundingClientRect();
-          if(e.style.top === commentDiv.style.top){
-            commentDiv.style.top = `${parseInt(commentDiv.style.top.replace('px',''),10) + eBCR.height}px`
+          if (e.style.top === commentDiv.style.top) {
+            commentDiv.style.top = `${parseInt(commentDiv.style.top.replace('px', ''), 10) + eBCR.height}px`
           }
         })
 
-        comment.appendChild(commentDiv);
+        commentBox.appendChild(commentDiv);
 
         //in case of a normal collision, the old comment is removed
         comments.forEach(e => {
-          if(this.hasCollision(e, commentDiv)){
+          if (this.hasCollision(e, commentDiv)) {
             e.remove();
           }
         })
       });
     },
+    /**
+     * Creates a comment containing text next to the element clicked (elem)
+     * @param event is the triggered event, containing pmbId, htmlId and type
+     * @param rs contains informations form PMB
+     * @param elem is the element that was clicked
+     * @param type is the rs-type of the element that was clicked
+     * @returns {HTMLDivElement}
+     */
     createCommentDiv(event, rs, elem, type) {
       var div = document.createElement('div');
-      div.className = "comment";
+      div.className = "comment position-relative";
       div.style.color = "var(--text-black)";
-      div.style.backgroundColor = "var(--comment-brown)";
       div.style.fontSize = "0.8rem";
       div.style.padding = "0 0.2rem 0 0.2rem";
       div.style.display = "flex";
       div.style.justifyContent = "flex-start";
 
+      let textinfo = document.createElement('p');
+
+      textinfo.className = "textinfo m-0";
+
       if (type === 'person') {
-        if(rs.profession[0]){
-          div.innerHTML = rs.name + ", " + rs.first_name + ", <br> " +  rs.profession[0].name;
-        }else{
-          div.innerHTML = rs.name + ", " + rs.first_name;
+        if (rs.profession[0]) {
+          // div.innerHTML = "<b>|</b>&nbsp;" + rs.name + ", " + rs.first_name + ", <br> " + rs.profession[0].name;
+          textinfo.innerHTML = "<b>|</b>&nbsp;" + rs.name + ", " + rs.first_name + ", <br> " + rs.profession[0].name;
+        } else {
+          textinfo.innerHTML = "<b>|</b>&nbsp;" + rs.name + ", " + rs.first_name;
         }
 
       } else if (type === 'place') {
-        if(rs.kind.name !== undefined){
-          div.innerHTML = rs.name + ", " + rs.kind.name;
-        }else{
-          div.innerHTML = rs.name;
+        if (rs.kind.name !== undefined) {
+          textinfo.innerHTML = "<b>|</b>&nbsp;" + rs.name + ", " + rs.kind.name;
+        } else {
+          textinfo.innerHTML = "<b>|</b>&nbsp;" + rs.name;
         }
 
       } else if (type === 'institution') {
-        div.innerHTML = rs.name;
-        if(rs.kind && rs.kind.name){
-          div.innerHTML = rs.name + ', ' + rs.kind.name;
+        textinfo.innerHTML = "<b>|</b>&nbsp;" + rs.name;
+        if (rs.kind && rs.kind.name) {
+          textinfo.innerHTML = "<b>|</b>&nbsp;" + rs.name + ', ' + rs.kind.name;
         }
       } else if (type === 'work') {
-        if(event.pmbId === '' || event.pmbId === null){
-          div.innerHTML = 'nicht erfasst'
-        }else if(event.pmbId.includes('pmb')){
-          getPMBObjectWithId(event.pmbId, 'work', rs=>{
+        if (event.pmbId === '' || event.pmbId === null) {
+          textinfo.innerHTML = "<b>|</b>&nbsp;" + 'nicht erfasst'
+        } else if (event.pmbId.includes('pmb')) {
+          getPMBObjectWithId(event.pmbId, 'work', rs => {
             let url = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + rs.id + "/detail"
-            div.innerHTML="PMB: " + "<a href='"+url+"' target='_blank'>"+ rs.name + "</a>";
+            textinfo.innerHTML = "<b>|</b>&nbsp;" + "PMB: " + "<a href='" + url + "' target='_blank'>" + rs.name + "</a>";
           });
-        }else if(event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus")){
-          let filename = event.pmbId.substring(event.pmbId.lastIndexOf('/')+1)
+        } else if (event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus")) {
+          let filename = event.pmbId.substring(event.pmbId.lastIndexOf('/') + 1)
+          this.caseInfo.then(data => {
+            //let c = data.cases.filter(c => c.id.includes(this.colXmlId))[0];
+            for (let i = 0; i < data.cases.length; i++) {
+              let d = data.cases[i].doc_objs.filter(d => d.id.includes(filename))[0];
+              if (d) {
+                let id = d.id.substring(3, d.id.length - 4).replaceAll('-', '.').replaceAll('0', '');
+                textinfo.innerHTML = id.substring(0, id.length - 1) + " " + d.title;
+                break;
+              }
+
+            }
+
+          });
+        } else if (event.pmbId.includes("https://fackel.oeaw.ac.at/")) {
+          textinfo.innerHTML = "<b>|</b>&nbsp;" + event.pmbId;
+        }
+
+      } else if (event.type === 'quote' || event.type === 'intertext') {
+        if (event.pmbId === '' || event.pmbId === null) {
+          textinfo.innerHTML = "<b>|</b>&nbsp;" + 'nicht erfasst'
+        } else if (event.pmbId.includes('#')) {
+          getPMBObjectWithId(event.pmbId.substring(1), 'quote', rs => {
+            let url = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + rs.id + "/detail"
+            textinfo.innerHTML = "<b>|</b>&nbsp;" + "PMB: " + "<a href='" + url + "' target='_blank'>" + rs.name + "</a>";
+          });
+        } else if (event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus") || event.pmbId.includes("https://legalkraus.acdh.oeaw.ac.at/id/")) {
+          let filename = event.pmbId.substring(event.pmbId.lastIndexOf('/') + 1)
           this.caseInfo.then(data => {
             let c = data.cases.filter(c => c.id.includes(this.colXmlId))[0];
             let d = c.doc_objs.filter(d => d.id.includes(filename))[0];
-            let id = d.id.substring(3, d.id.length-4).replaceAll('-','.').replaceAll('0','');
+            let id = d.id.substring(3, d.id.length - 4).replaceAll('-', '.').replaceAll('0', '');
 
-            div.innerHTML = id.substring(0, id.length-1) + " "+ d.title;
+            textinfo.innerHTML = "<b>|</b>&nbsp;" + id.substring(0, id.length - 1) + " " + d.title;
           });
         }
-
       }
 
+      //close button for comment
+      let button = document.createElement('div');
+      button.innerHTML = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-x-circle\" viewBox=\"0 0 16 16\">\n" +
+          "  <path d=\"M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z\"/>\n" +
+          "  <path d=\"M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z\"/>\n" +
+          "</svg>";
+      button.style.minWidth = "15px";
+      button.style.maxWidth = "15px";
+      button.style.marginLeft = "0.2rem";
+      button.onclick = function () {
+        div.remove();
+      }
+
+      div.appendChild(textinfo);
+      div.appendChild(button)
+
+      //const comment = document.getElementById("comments");
       div.style.position = "absolute";
       div.style.cursor = "pointer";
-      div.style.top = elem.offsetTop + "px";
+      //offset from nearest <p> + offset from d-block + offset from body + card offset offset of the comments container
+
+      div.style.top = elem.offsetTop + elem.closest(".body").offsetTop + "px";
 
       let self = this; //"this" cannot be used in JS functions
 
-      //if a work only refers to a pmb entry, no onclick function is needed
-      if(!(type === 'work' && event.pmbId && event.pmbId.includes('pmb'))){
-        div.onclick = function () {
+      //if a work only refers to a pmb or fackel entry, no onclick function is needed
+      if (!(type === 'work' && event.pmbId && event.pmbId.includes('pmb') && event.pmbId.includes('fackel'))) {
+        textinfo.onclick = function () {
           let routeData = "";
           if (type === 'person') {
-            routeData = self.$router.resolve({name: "pReg", query: {pmbId: event.pmbId} });
+            routeData = self.$router.resolve({name: "pReg", query: {pmbId: event.pmbId}});
           } else if (type === 'place') {
-            routeData = self.$router.resolve({name: "oReg", query: {pmbId: event.pmbId} });
+            routeData = self.$router.resolve({name: "oReg", query: {pmbId: event.pmbId}});
           } else if (type === 'institution') {
-            routeData = self.$router.resolve({name: "iReg", query: {pmbId: event.pmbId} });
+            routeData = self.$router.resolve({name: "iReg", query: {pmbId: event.pmbId}});
           } else if (type === 'work') {
             let idx = event.pmbId.lastIndexOf('/');
-            let xmlId = event.pmbId.substring(idx +1) + '.xml';
-            getColArcheIdFromColXmlId(xmlId, rs => {
-              routeData = self.$router.resolve({name: "lesefassung", params: {id: rs} });
+            let xmlId = event.pmbId.substring(idx + 1) + '.xml';
+            getArcheIdFromXmlId(xmlId, rs => {
+              routeData = self.$router.resolve({name: "lesefassung", params: {id: rs}});
               window.open(routeData.href, '_blank');
             });
-
+          } else if (type === 'quote' || type === 'intertext') {
+            let idx = event.pmbId.lastIndexOf('/');
+            let xmlId = event.pmbId.substring(idx + 1);
+            getArcheIdFromXmlId(xmlId, rs => {
+              routeData = self.$router.resolve({name: "lesefassung", params: {id: rs}});
+              window.open(routeData.href, '_blank');
+            });
           }
 
           window.open(routeData.href, '_blank');
@@ -838,10 +1078,26 @@ export default {
             let dom = new window.DOMParser().parseFromString(str, "text/xml");
             this.xml = str;
             this.xmlFile = this.saveStringToXML(this.xml);
-            this.pdfFile = this.saveStringToPDF(str);
+            //this.pdfFile = this.saveStringToPDF(str);
             this.dom = dom;
             this.teiHeader = this.dom.getElementsByTagName("teiHeader")[0];
-            
+            let msDesc = this.dom.getElementsByTagName("msDesc")[0];
+            let profileDesc = this.dom.getElementsByTagName("profileDesc")[0];
+            if (profileDesc.innerHTML.includes('handNote')) {
+              let hands = ([...profileDesc.getElementsByTagName("handNote")]);
+              hands.forEach(h => {
+                let pmbID = h.getAttribute('scribeRef').substring(1);
+                getPMBObjectWithId(pmbID, null, rs => {
+                  this.hands.push({'id': rs.id, 'name': rs.name})
+                });
+              });
+            }
+            if (msDesc.innerHTML.includes('<ab') && msDesc.innerHTML.includes('stamp')) {
+              let pmbID = msDesc.getElementsByTagName("stamp")[0].getAttribute('source').substring(1);
+              getPMBObjectWithId(pmbID, null, rs => {
+                this.stamp = {"id": rs.id, "name": rs.name}
+              });
+            }
             const pbsfacs = Array.from(this.dom.getElementsByTagName("pb")).map(pb => pb.attributes.facs.nodeValue.replace('#',''));
             pbsfacs.forEach(facsid => {
               let facsUrl = this.dom.querySelectorAll(`[*|id='${facsid}'] graphic[source='wienbibliothek']`)[0].attributes.url.nodeValue
@@ -853,13 +1109,12 @@ export default {
                this.furtherWitnesses = Array.from(furtherWitnesses).map(furtherWitness => furtherWitness.attributes.url.nodeValue)
             }
             console.log(this.furtherWitnesses)
-           /*  let facs = this.dom.getElementsByTagName("graphic");
-           for (let item of facs) {
+           let facs = this.dom.getElementsByTagName("graphic");
+            for (let item of facs) {
               if (item.getAttribute("source") === "wienbibliothek") {
                 this.facsURLs.push(item.getAttribute("url"));
               }
-            }*/
-            
+            }
 
           })
           .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
@@ -874,6 +1129,9 @@ export default {
     },
     toggleActors() {
       this.actorsClosed = !this.actorsClosed;
+    },
+    toggleHands() {
+      this.handsClosed = !this.handsClosed;
     },
     toggleShowBoth() {
       this.removeAllComments();
@@ -934,6 +1192,29 @@ export default {
     updateAllHighlighters() {
       let bool = this.showAllAnnotations === "true";
       this.$store.dispatch('updateAllHighlighters', {highlightbool: bool})
+    },
+    getDocInfosFromCaseInfo(xmlid) {
+      this.caseInfo.then(async cd => {
+        for (let i = 0; i < cd.cases.length; i++) {
+          if (cd.cases[i].id === (this.colXmlId + '.xml')) {
+            let c = cd.cases[i];
+            for (let j = 0; j < c.doc_objs.length; j++) {
+              if (c.doc_objs[j].id === xmlid) {
+                this.docInfo = c.doc_objs[j];
+                this.docInfo.acts = [];
+                for (const [key, value] of Object.entries(this.docInfo.persons)) {
+                  this.docInfo.acts.push({'pmbId': key, 'value': value})
+                }
+                for (const [key, value] of Object.entries(this.docInfo.orgs)) {
+                  this.docInfo.acts.push({'pmbId': key, 'value': value})
+                }
+                break;
+              }
+            }
+            break;
+          }
+        }
+      });
     }
   },
   created() {
@@ -950,21 +1231,22 @@ export default {
 
     this.cat = this.$route.params.cat.toLowerCase();
 
-    if(this.$route.params.subcat.toLowerCase() === "berichtigung (ausgang)"){
+    if (this.$route.params.subcat.toLowerCase() === "berichtigung (ausgang)") {
       this.subcat = 'berichtigung'
-    } else if(this.$route.params.subcat.toLowerCase().includes('tageblatt')){
+    } else if (this.$route.params.subcat.toLowerCase().includes('tageblatt')) {
       this.subcat = "berliner-tageblatt";
-    } else if(this.$route.params.subcat.toLowerCase().includes('stunde')){
+    } else if (this.$route.params.subcat.toLowerCase().includes('stunde')) {
       this.subcat = "die-stunde";
-    } else if(this.$route.params.subcat.toLowerCase().includes('schober')){
+    } else if (this.$route.params.subcat.toLowerCase().includes('schober')) {
       this.subcat = "schober";
-    }else{
+    } else {
       this.subcat = this.$route.params.subcat.toLowerCase();
     }
 
 
   },
   mounted() {
+
     this.caseInfo = this.$store.getters.caseInfo;
     getCollectionOfObject(this.objectId, (rs) => {
       this.colId = rs[0].id;
@@ -972,54 +1254,65 @@ export default {
       this.colSize = rs[0].size;
       this.colUrl = rs[0].url;
       this.colXmlId = rs[0].xmlId;
-    });
-    getObjectWithId(this.objectId, (rs) => {
-      const optionsFilename = {
-        "subject": null,
-        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasFilename",
-        "object": null,
-        "expiry": 14
-      };
 
-      const optionsTitle = {
-        "subject": null,
-        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle",
-        "object": null,
-        "expiry": 14
-      };
+      getObjectWithId(this.objectId, (rs) => {
+        const optionsFilename = {
+          "subject": null,
+          "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasFilename",
+          "object": null,
+          "expiry": 14
+        };
 
-      const optionsUrl = {
-        "subject": null,
-        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier",
-        "object": null,
-        "expiry": 14
-      };
+        const optionsTitle = {
+          "subject": null,
+          "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle",
+          "object": null,
+          "expiry": 14
+        };
 
-      const optionsHasActor = {
-        "subject": null,
-        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasActor",
-        "object": null,
-        "expiry": 14
-      };
-      this.objectTitle = ARCHErdfQuery(optionsTitle, rs).value[0].hasTitle.object;
-      this.filename = ARCHErdfQuery(optionsFilename, rs).value[0].hasFilename.object;
-      let url = ARCHErdfQuery(optionsUrl, rs).value[0].hasIdentifier.object;
-      var actors = ARCHErdfQuery(optionsHasActor, rs).value;
-      actors.forEach(x => {
-        let idLong = x.hasActor.object;
-        let idx = idLong.lastIndexOf('/');
-        let id = idLong.substring(idx + 1);
-        getEntity(id, rs => {
-          this.actors.push(rs);
+        const optionsUrl = {
+          "subject": null,
+          "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier",
+          "object": null,
+          "expiry": 14
+        };
+
+        const optionsHasActor = {
+          "subject": null,
+          "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasActor",
+          "object": null,
+          "expiry": 14
+        };
+        this.objectTitle = ARCHErdfQuery(optionsTitle, rs).value[0].hasTitle.object;
+        this.xmlFilename = ARCHErdfQuery(optionsFilename, rs).value[0].hasFilename.object;
+        this.pdfFilename = this.xmlFilename.substring(0, this.xmlFilename.length - 4) + ".pdf";
+        let url = ARCHErdfQuery(optionsUrl, rs).value[0].hasIdentifier.object;
+        var actors = ARCHErdfQuery(optionsHasActor, rs).value;
+        actors.forEach(x => {
+          let idLong = x.hasActor.object;
+          let idx = idLong.lastIndexOf('/');
+          let id = idLong.substring(idx + 1);
+          getEntity(id, rs => {
+            this.actors.push(rs);
+          });
+        })
+        this.downloadXMLFromUrl(url);
+
+        if (this.objectTitle.includes('Zeitungsartikel') || this.objectTitle.includes('Originalmappe') || this.objectTitle.includes('Aktenvermerk')) {
+          this.simpleMD = true;
+        } else if (this.objectTitle.includes('Brief')) {
+          this.letterMD = true;
+        } else {
+          this.defaultMD = true;
+        }
+
+        this.getDocInfosFromCaseInfo(this.xmlFilename);
+        getTransformedHtmlResource(this.objectId, (data) => {
+          this.pages = data;
         });
-      })
-      this.downloadXMLFromUrl(url);
-
-      getTransformedHtmlResource(this.objectId, (data) => {
-        this.pages = data;
-
       });
     });
+
 
   }
 }
@@ -1067,6 +1360,7 @@ export default {
   display: grid;
   grid-template-columns: auto 6px auto 6px auto;
   grid-template-rows: auto auto auto;
+  grid-row-gap: 1rem;
   background-color: var(--secondary-gray-dark);
   padding: 4rem;
   text-align: left;
@@ -1077,6 +1371,17 @@ export default {
 .vl {
   border-left: 3px solid var(--primary-red);
   height: 100%;
+}
+
+.back {
+  padding: 0;
+  color: var(--text-black) !important;
+  text-decoration: underline var(--primary-red) 3px;
+  margin-bottom: 0.1rem;
+}
+
+.back:hover {
+  text-decoration: none;
 }
 
 .meta1 {
@@ -1091,15 +1396,10 @@ export default {
   grid-row: 2/3;
 }
 
-.back {
-  padding: 0;
-  color: var(--text-black) !important;
-  text-decoration: underline var(--primary-red) 3px;
-  margin-bottom: 0.1rem;
-}
-
-.back:hover {
-  text-decoration: none;
+.meta2-1 {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row: 3/4;
 }
 
 .meta3 {
@@ -1122,6 +1422,13 @@ export default {
   margin-left: 3rem;
 }
 
+.meta6 {
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row: 3/4;
+  margin-left: 3rem;
+}
+
 
 .meta7 {
   grid-column-start: 4;
@@ -1135,6 +1442,18 @@ export default {
   grid-row: 1/2;
   margin-left: 3rem;
   display: inline-flex;
+}
+
+.meta9 {
+  grid-column-start: 5;
+  grid-column-end: 6;
+  grid-row: 3/4;
+  margin-left: 3rem;
+  display: inline-flex;
+}
+
+.m-item{
+  margin-left: 20px;
 }
 
 .vt {
@@ -1234,7 +1553,7 @@ export default {
 .body {
   text-align: left;
   margin: 0;
-  padding: 1rem;
+  padding: 0 1rem 1rem 1rem;
 }
 
 /*.bi-arrow-right {
@@ -1292,7 +1611,7 @@ export default {
   width: 95%;
 }
 
-.person, .work, .institution, .place {
+.person, .work, .institution, .place, .quote, .quote-spoken {
   cursor: pointer;
 }
 
@@ -1575,8 +1894,21 @@ mark {
 
 .comment {
   max-width: 100%;
-  width: 100%;
   word-break: break-all;
+  text-align: left;
+}
+
+.text-comment-wrap {
+  display: flex;
+}
+
+.comments {
+  width: 30%;
+  margin-left: 1rem;
+}
+
+.commentWrap {
+  display: flex;
 }
 
 .witness-link {

@@ -29,7 +29,7 @@
               Lizenzen
           </b-dropdown-item>
           <b-dropdown-item class="dd-item" to="/projekt/dokumentation">
-              Technische Dokumentsation
+              Technische Dokumentation
           </b-dropdown-item>
         </b-dropdown>
       </p>
@@ -58,9 +58,11 @@
           <b-dropdown-item><router-link class="dd-item" to="/statistik/fallstatistik">
               Fallstatistik
             </router-link></b-dropdown-item>
-          <b-dropdown-item>Sonstiges</b-dropdown-item>
         </b-dropdown>
       </p>
+<!--      <button type="button" class="btn nav-el rounded-0">
+        <router-link router-link class="nav-link-ha" :to="'/statistik/fallstatistik'">Statistik</router-link>
+      </button>-->
       <p class="nav-el">
         <b-dropdown id="dropdown-4" :class="{'active':this.itemIsActive('register')}" text="Register" variant="none" class="m-md-2">
           <b-dropdown-item>

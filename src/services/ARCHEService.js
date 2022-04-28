@@ -106,7 +106,7 @@ module.exports.getCollections = async (startPage, callback) => {
     }
 }
 
-module.exports.getColArcheIdFromColXmlId = async (xmlId, callback) => {
+module.exports.getArcheIdFromXmlId = async (xmlId, callback) => {
     let httpRequest = new XMLHttpRequest();
     if(xmlId.includes('C_')){
         xmlId = xmlId.substring(0, xmlId.length-4);
@@ -294,7 +294,7 @@ module.exports.getAllResources = async (startPage, callback) => {
 
 module.exports.getTransformedHtmlResource = async (objectId, callback) => {
     try {
-        const url = `https://service4tei.acdh-dev.oeaw.ac.at/tei2html.xql?tei=https://arche-dev.acdh-dev.oeaw.ac.at/api/${objectId}&xsl=https://raw.githubusercontent.com/acdh-oeaw/legalkraus-app/development/src/lesefassung_xsl/legal_kraus_lesefassung.xsl`;
+        const url = `https://service4tei.acdh-dev.oeaw.ac.at/tei2html.xql?tei=https://arche-dev.acdh-dev.oeaw.ac.at/api/${objectId}&xsl=https://raw.githubusercontent.com/acdh-oeaw/legalkraus-app/dev-comments-meta-data/src/lesefassung_xsl/legal_kraus_lesefassung.xsl`;
         const resp = await fetch(url);
         const data = await resp.text();
         return callback(data);
@@ -376,7 +376,8 @@ module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback)
 
 module.exports.downloadCaseInfo = async () => {
     try {
-        const url = "https://id.acdh.oeaw.ac.at/legalkraus/cases-index.json";
+       // const url = "https://id.acdh.oeaw.ac.at/legalkraus/cases-index.json";
+        const url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/17726";
         const resp = await fetch(url);
         return await resp.json();
     } catch (error) {

@@ -25,6 +25,7 @@ import Lizenzen from "../components/Projekt/Lizenzen";
 import Dokumentation from "../components/Projekt/Dokumentation";
 import Register from "../components/Register/Register";
 import Stats from "../components/Statistiken/Stats";
+import OverviewHandschriftliches from "../components/Akten/OverviewHandschriftliches";
 
 
 Vue.use(Router)
@@ -77,7 +78,7 @@ export default new Router({
 
         {path: '/objects/:id', name:'overview-objects', component: OverviewObjects},
 
-        {path: '/akten-edition/handschriftliches', component: OverviewObjects}, //todo: create page that loads objects with tag handschriftlich
+        {path: '/akten-edition/handschriftliches', component: OverviewHandschriftliches},
         {path: '/akten-edition/alle-akten', component: OverviewAllCollections},
         {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung},
 
