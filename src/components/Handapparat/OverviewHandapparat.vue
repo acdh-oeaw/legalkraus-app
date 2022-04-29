@@ -1,8 +1,6 @@
 <template>
   <main>
     <p class="navigation">Handapparat <span class="arrow">></span></p>
-
-
     <div class="grid-container">
       <button type="button" class="item">
         <router-link class="nav-link" to="/handapparat/boehm">Böhm Edition</router-link>
@@ -18,8 +16,14 @@
 </template>
 
 <script>
+
 export default {
-  name: "OverviewRecht"
+  name: "OverviewHandapparat",
+  data() {
+    return{
+     
+    }
+  }
 }
 </script>
 

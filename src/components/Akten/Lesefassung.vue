@@ -69,7 +69,7 @@
         </svg>
         Schreiberhände: {{ this.hands.length }}
           </span>
-        <div v-if="!handsClosed">
+        <div v-show="!handsClosed">
         <span class="hasActor">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down"
              viewBox="0 0 16 16" v-on:click="toggleHands">
@@ -79,19 +79,21 @@
         Schreiberhände:
 
           </span>
-          <p class="m-item" v-for="h in this.hands" v-bind:key="h.id">{{ h.name }}</p>
+          <MDHelper v-for="hand in this.hands" :key="hand" :id="hand"/>
+          <!--<p class="m-item" v-for="h in this.hands" v-bind:key="h.id">{{ h.name }}</p>-->
         </div>
       </div>
       <div class="vl meta3"></div>
       <div class="meta4">
         <b>Sender</b>
-        <p>Name: {{ this.sent.name.name }}</p>
+        <p>Name: <MDHelper v-if="this.sent.name.includes('#pmb')" :id="this.sent.name.substring(4)"/><span v-else>{this.sent.name}}</span></p>
         <p>Straße: {{ this.sent.street }}</p>
         <p>Ort: {{ this.sent.settlement }}</p>
         <p>Datum: {{ this.sent.date }}</p>
       </div>
       <div v-if="stamp===null" class="meta5">Stempel: -</div>
-      <div v-if="stamp!==null" class="meta5">Stempel: {{ stamp.name }}</div>
+      <div v-if="stamp!==null" class="meta5">Stempel: <MDHelper :id="this.stamp"/></div>
+      
       <p class="meta2">Materialitätstyp: {{ this.docInfo.materiality[0] }}</p>
       <div class="meta10">
         <span v-if="actorsClosed" class="hasActor">
@@ -135,7 +137,7 @@
       </div>
       <div class="meta12">
         <b>Empfänger</b>
-        <p>Name: {{ this.received.name.name }}</p>
+        <p>Name: <MDHelper v-if="this.received.name.includes('#pmb')" :id="this.received.name.substring(4)"/><span v-else>{{this.received.name}}</span></p>
         <p>Straße: {{ this.received.street }}</p>
         <p>Ort: {{ this.received.settlement }}</p>
         <p>Datum: {{ this.received.date }}</p>
@@ -173,7 +175,7 @@
       </div>
       <div class="meta5">Datum: {{ this.docInfo.date }}</div>
       <div v-if="stamp===null" class="meta12">Stempel: -</div>
-      <div v-if="stamp!==null" class="meta12">Stempel: {{ stamp.name }}</div>
+      <div v-if="stamp!==null" class="meta12">Stempel: <MDHelper :id="this.stamp"/></div>
       <p class="meta4">Materialitätstyp: {{ this.docInfo.materiality[0] }}</p>
       <div class="meta6">
         <span v-if="actorsClosed" class="hasActor">
@@ -280,10 +282,6 @@
           <a class="format btn btn-light" role="button" :href="xmlFile"
              :download="xmlFilename">
             Download XML
-          </a>
-          <a class="format btn btn-light" role="button" :href="pdfFile"
-             :download="pdfFilename">
-            Download PDF
           </a>
         </div>
         <div class="card card-fixed border-0 bg-light">
@@ -402,10 +400,6 @@
           <a class="format btn btn-light" role="button" :href="xmlFile"
              :download="xmlFilename">
             Download XML
-          </a>
-          <a class="format btn btn-light" role="button" :href="pdfFile"
-             :download="pdfFilename">
-            Download PDF
           </a>
         </div>
         <div class="text-comment-wrap  position-relative">
@@ -548,21 +542,22 @@ import {
   getCollectionOfObject,
   getEntity,
   getObjectWithId,
-  getPmbEntityViaArche,
   getTransformedHtmlResource
 } from "../../services/ARCHEService";
 import {getObjectWithId as getPMBObjectWithId} from "../../services/PMBService";
 import {ARCHErdfQuery} from "arche-api/src";
 import EntitySpan from "./EntitySpan";
-import {jsPDF} from "jspdf";
 import {mapGetters} from 'vuex';
 import * as Mark from "mark.js/dist/mark.min.js"
+import MDHelper from "../Helpers/MdHelper.vue";
 
 
 export default {
   components: {
     EntitySpan: EntitySpan,
+    MDHelper: MDHelper  
   },
+
   name: "Lesefassung",
   data: function () {
     return {
@@ -578,11 +573,9 @@ export default {
       downloadLink: String,
       xml: String,
       xmlFile: String,
-      pdfFile: String,
       dom: Object,
       teiHeader: Object,
       xmlFilename: String,
-      pdfFilename: String,
       facsURLs: [],
       i: 0,
       transformedHTML: null,
@@ -612,7 +605,6 @@ export default {
       received: {},
       noteGrp: {},
       showMD: false,
-      promises: []
     }
   },
   computed: {
@@ -621,7 +613,6 @@ export default {
       highlighter: 'highlighter'
     }),
     dynComponent() {
-
       const template = this.pages;
       return {
         data() {
@@ -629,6 +620,7 @@ export default {
             content: ''
           };
         },
+        name:'SubView',
         template,
         async mounted() {
 
@@ -642,9 +634,6 @@ export default {
                 this.$parent.childMounted();
               }
           );
-
-          let dbl = await document.querySelector(`.d-block`);
-          this.$parent.pdfFile = this.$parent.saveStringToPDF(dbl.textContent);
         },
         computed: {
           ...mapGetters({
@@ -1090,20 +1079,7 @@ export default {
     removeAllComments() {
       document.querySelectorAll('.comment').forEach(e => e.remove());
     },
-    async loadHands(hands) {
-      let tmp = [];
-      for (const h of hands) {
-        let pmbID = h.getAttribute('scribeRef').substring(1);
-        /*await getPMBObjectWithId(pmbID, null, rs => {
-          tmp.push({'id': rs.id, 'name': rs.name})
-        });*/
-        await getPmbEntityViaArche(pmbID, rs => {
-          let name = rs[Object.keys(rs)[0]]['https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'][0].value;
-          tmp.push({'name': name})
-        })
-      }
-      return tmp;
-    },
+    
     async loadPMBEntity(pmbID) {
       let tmp = [];
       await getPMBObjectWithId(pmbID, null, rs => {
@@ -1120,7 +1096,6 @@ export default {
             let dom = new window.DOMParser().parseFromString(str, "text/xml");
             this.xml = str;
             this.xmlFile = this.saveStringToXML(this.xml);
-            //this.pdfFile = this.saveStringToPDF(str);
             this.dom = dom;
 
             const pbsfacs = Array.from(this.dom.getElementsByTagName("pb")).map(pb => pb.attributes.facs.nodeValue.replace('#', ''));
@@ -1133,12 +1108,7 @@ export default {
             if (furtherWitnesses.length > 0) {
               this.furtherWitnesses = Array.from(furtherWitnesses).map(furtherWitness => furtherWitness.attributes.url.nodeValue)
             }
-            let facs = this.dom.getElementsByTagName("graphic");
-            for (let item of facs) {
-              if (item.getAttribute("source") === "wienbibliothek") {
-                this.facsURLs.push(item.getAttribute("url"));
-              }
-            }
+            
 
           })
           .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
@@ -1175,25 +1145,6 @@ export default {
       return textFile;
 
     },
-    saveStringToPDF(data) {
-      var line = 25 // Line height to start text at
-      var lineHeight = 5
-      var leftMargin = 20
-      var wrapWidth = 180
-
-      const pdf = new jsPDF();
-      pdf.setFontSize(10);
-
-      var splitText = pdf.splitTextToSize(data, wrapWidth)
-      for (var i = 0, length = splitText.length; i < length; i++) {
-
-        pdf.text(splitText[i], leftMargin, line)
-        line = lineHeight + line
-      }
-
-      var blob = new Blob([pdf.output('blob')], {type: 'application/pdf'});
-      return window.URL.createObjectURL(blob)
-    },
     getCurrentFacs() {
       return this.facsURLs[this.selectedPage - 1];
     },
@@ -1221,7 +1172,6 @@ export default {
       this.$store.dispatch('updateAllHighlighters', {highlightbool: bool})
     },
     async getDocInfosFromCaseInfo(xmlid) {
-      console.log(xmlid)
       await this.caseInfo.then(async cd => {
         for (let i = 0; i < cd.cases.length; i++) {
           if (cd.cases[i].id === (this.colXmlId + '.xml')) {
@@ -1230,7 +1180,6 @@ export default {
               if (c.doc_objs[j].id === xmlid) {
                 this.docInfo = c.doc_objs[j];
                 this.docInfo.acts = [];
-                console.log(this.docInfo)
                 for (const [key, value] of Object.entries(this.docInfo.persons)) {
                   this.docInfo.acts.push({'pmbId': key, 'value': value})
                 }
@@ -1244,25 +1193,23 @@ export default {
           }
         }
       });
-      console.log(this.docInfo)
     },
-    async setSentOrReceived(c) {
+    async setSentOrReceived(c,type) {
       let nameElem = null;
       let tmp = {};
-
       if (c.innerHTML.includes('street')) {
         let street = c.getElementsByTagName("street")[0];
-        tmp.street = street.innerHTML === '' ? '-' : street.innerHTML;
+        this[type].street = street.innerHTML === '' ? '-' : street.innerHTML;
       }
 
       if (c.innerHTML.includes('settlement')) {
         let set = c.getElementsByTagName("settlement")[0];
-        tmp.settlement = set.innerHTML === '' ? '-' : set.innerHTML;
+        this[type].settlement = set.innerHTML === '' ? '-' : set.innerHTML;
       }
 
       if (c.innerHTML.includes('date')) {
         let d = c.getElementsByTagName("date")[0];
-        tmp.date = d.innerHTML === '' ? '-' : d.innerHTML;
+        this[type].date = d.innerHTML === '' ? '-' : d.innerHTML;
       }
       if (c.innerHTML.includes('persName')) {
         nameElem = c.getElementsByTagName("persName")[0];
@@ -1270,21 +1217,19 @@ export default {
         nameElem = c.getElementsByTagName("orgName")[0];
       }
       if (nameElem !== null) {
-        this.sent.name = '-';
+        
+        
         if (nameElem.innerHTML !== '') {
-          tmp.name = nameElem.innerHTML;
-          return tmp;
+          this[type].name = nameElem.innerHTML;
+          
         } else {
           let ref = nameElem.getAttribute('ref');
-          let id = ref.substring(4);
-          await getPmbEntityViaArche(id, rs => {
-            tmp.name = rs[Object.keys(rs)[0]]['https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'][0].value;
-            return tmp;
-          })
+          this[type].name = ref;
+          
         }
 
       }
-
+      return tmp
     }
   },
   created() {
@@ -1332,7 +1277,8 @@ export default {
 
   },
   mounted() {
-
+    
+    this.$store.dispatch('setSelectedPage',1)
 
     getCollectionOfObject(this.objectId, (rs) => {
       this.colId = rs[0].id;
@@ -1371,7 +1317,6 @@ export default {
         };
         this.objectTitle = ARCHErdfQuery(optionsTitle, rs).value[0].hasTitle.object;
         this.xmlFilename = ARCHErdfQuery(optionsFilename, rs).value[0].hasFilename.object;
-        this.pdfFilename = this.xmlFilename.substring(0, this.xmlFilename.length - 4) + ".pdf";
         let url = ARCHErdfQuery(optionsUrl, rs).value[0].hasIdentifier.object;
         var actors = ARCHErdfQuery(optionsHasActor, rs).value;
         actors.forEach(x => {
@@ -1391,26 +1336,22 @@ export default {
           let correspDesc = this.dom.getElementsByTagName("correspDesc")[0];
           if (profileDesc.innerHTML.includes('handNote')) {
             let hands = ([...profileDesc.getElementsByTagName("handNote")]);
-            this.hands = this.loadHands(hands);
-            this.promises.push(this.hands);
+            for (const h of hands) {
+              this.hands.push(h.getAttribute('scribeRef').substring(1));
+            }
           }
           if (msDesc.innerHTML.includes('<ab') && msDesc.innerHTML.includes('stamp')) {
             let pmbID = msDesc.getElementsByTagName("stamp")[0].getAttribute('source').substring(1);
-            this.stamp = this.loadPMBEntity(pmbID);
-            this.promises.push(this.stamp);
+            this.stamp = pmbID;
           }
           if (correspDesc && correspDesc.innerHTML.includes('correspAction')) {
             let cActions = [...correspDesc.getElementsByTagName("correspAction")];
             for (const c of cActions) {
               let t = c.getAttribute('type');
               if (t === 'sent') {
-
-                this.sent = this.setSentOrReceived(c);
-                this.promises.push(this.sent);
-
+                this.setSentOrReceived(c,'sent');
               } else if (t === 'received') {
-                this.received = this.setSentOrReceived(c);
-                this.promises.push(this.received);
+               this.setSentOrReceived(c,'received');
               }
             }
 
@@ -1428,12 +1369,7 @@ export default {
             }
           }
         }).then(() => {
-          Promise.all(this.promises).then(rs =>{
-            console.log(rs);
             this.showMD = true;
-            console.log("done loading MD")
-          })
-
         });
 
         if (this.objectTitle.includes('Zeitungsartikel') || this.objectTitle.includes('Originalmappe') || this.objectTitle.includes('Aktenvermerk')) {
@@ -1443,7 +1379,6 @@ export default {
         } else {
           this.defaultMD = true;
         }
-
 
         getTransformedHtmlResource(this.objectId, (data) => {
           this.pages = data;

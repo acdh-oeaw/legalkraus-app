@@ -16,6 +16,8 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import OverviewHandapparat from "../components/Handapparat/OverviewHandapparat";
 import BoehmEdition from "../components/Handapparat/BoehmEdition";
+import Beitraege from "../components/Handapparat/Beitraege";
+import OskarSamek from "../components/Handapparat/OskarSamek";
 import Projektinformationen from "../components/Projekt/Projektinformationen";
 import Editionsrichtlinien from "../components/Projekt/Editionsrichtlinien";
 import Projektteam from "../components/Projekt/Projektteam";
@@ -84,6 +86,8 @@ export default new Router({
 
         {path: '/handapparat', component: OverviewHandapparat},
         {path: '/handapparat/boehm', component: BoehmEdition},
+        {path: '/handapparat/beitraege', component: Beitraege},
+        {path: '/handapparat/oskar-samek', component: OskarSamek},
         {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung, props: {
                 header: true,
                 content: true
