@@ -4,7 +4,7 @@
       <div class="left">
         <p class="b">Rechtsakten Karl Kraus</p>
         <p>Online Edition</p>
-        <p>HerausgeberInnen: Johannes Knüchel, Isabel Langkabel (Ludwig Boltzmann Institute for Digital History) und Katharina Prager (Wienbibliothek Rathaus). Mitarbeit: Ingo Börner, Vanessa hannesschläger, Andrea Ortner und Laura Untner (Austrian Centre for Digital Humanities and Cultural Heritage: ACDH-CH). Wien 2022.</p>
+        <p>HerausgeberInnen: Johannes Knüchel, Isabel Langkabel (Ludwig Boltzmann Institute for Digital History) und Katharina Prager (Wienbibliothek Rathaus). Mitarbeit: Ingo Börner, Vanessa Hannesschläger, Andrea Ortner und Laura Untner (Austrian Centre for Digital Humanities and Cultural Heritage: ACDH-CH). Wien 2022.</p>
       </div>
       <div class="middle">
         <p class="b">Ludwig-Boltzmann-Institut für Digital History </p>
