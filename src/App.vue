@@ -27,7 +27,6 @@ export default {
     data.then(dt=>{
       this.$store.dispatch('setCases', dt.cases);
       processCaseInfo(dt);
-      console.log("nowher")
       this.$store.dispatch('setAppDataStatus',true)
     })  
   }
