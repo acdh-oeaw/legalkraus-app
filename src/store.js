@@ -27,7 +27,8 @@ export default new Vuex.Store({
         topConceptsCases:{},
         vocabReady:false,
         groupedCases: {},
-        cases: null
+        cases: null,
+        appDataReady: false
         
     },
 
@@ -79,6 +80,9 @@ export default new Vuex.Store({
         },
         cases: state => {
             return state.cases
+        },
+        appDataReady: state => {
+            return state.appDataReady
         }
     },
 
@@ -150,6 +154,9 @@ export default new Vuex.Store({
         },
         MUTATE_CASES: (state, cases) => {
             Vue.set(state, 'cases', cases);
+        },
+        MUTATE_APPDATA_STATUS: (state, appdatastatus) => {
+            state.appDataReady = appdatastatus;
         }
     },
 
@@ -207,6 +214,9 @@ export default new Vuex.Store({
         },
         setCases: (context, cases) => {
             context.commit('MUTATE_CASES', cases);
+        },
+        setAppDataStatus: (context, appdatastatus) => {
+            context.commit('MUTATE_APPDATA_STATUS', appdatastatus);
         }
     }
 });

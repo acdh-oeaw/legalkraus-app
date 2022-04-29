@@ -1,5 +1,6 @@
 <template>
   <div class="main" v-if="this.dataLoaded">
+
     <Search class="py-2" v-bind:col-id="colId" v-bind:rs-id="objectId"></Search>
     <p v-if="propsSet" class="navigation">Akten-Edition
       <span class="arrow">></span>
@@ -617,7 +618,8 @@ export default {
   computed: {
     ...mapGetters({
       selectedPage: 'selectedPage',
-      highlighter: 'highlighter'
+      highlighter: 'highlighter',
+      appDataReady: 'appDataReady'
     }),
     dynComponent() {
 
@@ -1288,8 +1290,9 @@ export default {
 
 
   },
-  mounted() {
-
+  async mounted() {
+    await this.appDataReady;
+    
 
     getCollectionOfObject(this.objectId, (rs) => {
       this.colId = rs[0].id;
