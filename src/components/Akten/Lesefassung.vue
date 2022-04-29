@@ -1334,6 +1334,9 @@ export default {
           });
         })
         this.downloadXMLFromUrl(url).then(async () => {
+          this.getDocInfosFromCaseInfo(this.xmlFilename).then(()=>{
+
+          });
           this.teiHeader = this.dom.getElementsByTagName("teiHeader")[0];
           let msDesc = this.dom.getElementsByTagName("msDesc")[0];
           let profileDesc = this.dom.getElementsByTagName("profileDesc")[0];
@@ -1358,9 +1361,9 @@ export default {
                   nameElem = c.getElementsByTagName("orgName")[0];
                 }
                 if (nameElem !== null) {
-                 let ref = nameElem.getAttribute('ref');
-                  let pmbID = ref.substring(4); //remove leading pmbId
-                  this.sent.name = await this.loadPMBEntity(pmbID);
+                 //let ref = nameElem.getAttribute('ref');
+                  //let pmbID = ref.substring(4); //remove leading pmbId
+                  this.sent.name = nameElem.innerHTML===''? '-' : nameElem.innerHTML;
                 }
 
                 if (c.innerHTML.includes('street')) {
@@ -1385,9 +1388,7 @@ export default {
                   nameElem = c.getElementsByTagName("orgName")[0];
                 }
                 if (nameElem !== null) {
-                  let ref = nameElem.getAttribute('ref');
-                  let pmbID = ref.substring(4); //remove leading pmbId
-                  this.received.name = await this.loadPMBEntity(pmbID)
+                  this.received.name = nameElem.innerHTML===''? '-':nameElem.innerHTML;
                 }
 
                 if (c.innerHTML.includes('street')) {
@@ -1432,7 +1433,7 @@ export default {
           this.defaultMD = true;
         }
 
-        this.getDocInfosFromCaseInfo(this.xmlFilename);
+
         getTransformedHtmlResource(this.objectId, (data) => {
           this.pages = data;
         });
