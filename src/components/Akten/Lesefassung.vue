@@ -1126,7 +1126,7 @@ export default {
               let facsUrl = this.dom.querySelectorAll(`[*|id='${facsid}'] graphic[source='wienbibliothek']`)[0].attributes.url.nodeValue
               this.facsURLs.push(facsUrl)
             })
-            this.dataLoaded = true;
+           
             const furtherWitnesses = this.dom.querySelectorAll("facsimile[ana='further-witnesses'] graphic[source='wienbibliothek']")
             if (furtherWitnesses.length > 0) {
               this.furtherWitnesses = Array.from(furtherWitnesses).map(furtherWitness => furtherWitness.attributes.url.nodeValue)
@@ -1219,11 +1219,11 @@ export default {
       this.$store.dispatch('updateAllHighlighters', {highlightbool: bool})
     },
     getDocInfosFromCaseInfo(xmlid) {
-      console.log(xmlid)
-      this.caseInfo.then(async cd => {
-        for (let i = 0; i < cd.cases.length; i++) {
-          if (cd.cases[i].id === (this.colXmlId + '.xml')) {
-            let c = cd.cases[i];
+      
+      //this.caseInfo.then(cd => {
+        for (let i = 0; i < this.$store.getters.cases.length; i++) {
+          if (this.$store.getters.cases[i].id === (this.colXmlId + '.xml')) {
+            let c = this.$store.getters.cases[i];
             for (let j = 0; j < c.doc_objs.length; j++) {
               if (c.doc_objs[j].id === xmlid) {
                 this.docInfo = c.doc_objs[j];
@@ -1240,7 +1240,8 @@ export default {
             break;
           }
         }
-      });
+      //});
+      console.log(this.docInfo)
     }
   },
   created() {
@@ -1352,7 +1353,7 @@ export default {
             let pmbID = msDesc.getElementsByTagName("stamp")[0].getAttribute('source').substring(1);
             this.stamp = await this.loadPMBEntity(pmbID);
           }
-          if (correspDesc.innerHTML.includes('correspAction')) {
+          if (correspDesc && correspDesc.innerHTML.includes('correspAction')) {
             let cActions = [...correspDesc.getElementsByTagName("correspAction")];
             for (const c of cActions) {
               let t = c.getAttribute('type');
@@ -1431,7 +1432,7 @@ export default {
             }
 
           }
-          if (correspDesc.innerHTML.includes('noteGrp')) {
+          if (correspDesc && correspDesc.innerHTML.includes('noteGrp')) {
             let ngrp = correspDesc.getElementsByTagName("noteGrp")[0];
             let notes = [...ngrp.getElementsByTagName('note')];
             for (let i = 0; i < notes.length; i++) {
@@ -1444,6 +1445,8 @@ export default {
             }
           }
         }).then(()=>{
+          
+          this.dataLoaded = true;
           this.showMD = true;
           console.log("done loading MD")});
 
