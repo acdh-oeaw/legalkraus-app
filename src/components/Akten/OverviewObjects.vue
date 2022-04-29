@@ -274,40 +274,43 @@ export default {
       return (e.target.src = `${fallbackImage}`);
     },
     navToLesefassung: function (val) {
-      let id = this.getIdFromUrl(val.url);
-      if (this.categorySet) {
-        if (this.searchView) {
-          let text = new DOMParser().parseFromString(val.kwic[0], "text/html")
-            .documentElement.textContent;
-          //remove multiple whitespaces
-          let contextNoMultSpace = text.replace(/\s\s+/g, " ").substring(0, 20);
-          this.$router.push({
-            name: "lesefassung",
-            params: {
-              id: id,
-              cat: this.category,
-              subcat: this.subCategory,
-              case: this.caseTitle,
-              searchTermContext: contextNoMultSpace,
-            },
-          });
+      getArcheIdFromXmlId(val.id, rs =>{
+        let id = rs;
+        if (this.categorySet) {
+          if (this.searchView) {
+            let text = new DOMParser().parseFromString(val.kwic[0], "text/html")
+                .documentElement.textContent;
+            //remove multiple whitespaces
+            let contextNoMultSpace = text.replace(/\s\s+/g, " ").substring(0, 20);
+            this.$router.push({
+              name: "lesefassung",
+              params: {
+                id: id,
+                cat: this.category,
+                subcat: this.subCategory,
+                case: this.caseTitle,
+                searchTermContext: contextNoMultSpace,
+              },
+            });
+          } else {
+            this.$router.push({
+              name: "lesefassung",
+              params: {
+                id: id,
+                cat: this.category,
+                subcat: this.subCategory,
+                case: this.caseTitle,
+              },
+            });
+          }
         } else {
           this.$router.push({
             name: "lesefassung",
-            params: {
-              id: id,
-              cat: this.category,
-              subcat: this.subCategory,
-              case: this.caseTitle,
-            },
+            params: { id: id, case: this.caseTitle },
           });
         }
-      } else {
-        this.$router.push({
-          name: "lesefassung",
-          params: { id: id, case: this.caseTitle },
-        });
-      }
+      });
+
     },
     fixFacsSize(url) {
       return url.replace("full/full/", "full/304,/");
