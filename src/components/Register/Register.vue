@@ -9,8 +9,10 @@
       <div class="abc">
         <p class="l" :id="l" v-for="l in abc" :key="l" v-on:click="filterLetter(l)">{{ l }}</p>
       </div>
+      <div class="c">
       <input class="vt" type="text" placeholder="Volltextsuche:" v-model="keyword"
              @keyup="filterKeyword(keyword)"/>
+      </div>
     </div>
     <div v-if="noItems" class="message">KEIN TREFFER</div>
     <div class="wrapper">
@@ -994,6 +996,7 @@ export default {
       this.showDetails = false;
       this.noItems = false;
       this.keyword = null;
+      this.currentPage = 1;
     },
     async allItems() {
       if (this.query) {
@@ -1059,8 +1062,13 @@ export default {
   margin: 2rem;
 }
 
+.c{
+  display: flex;
+  justify-content: center;
+  margin: 1rem;
+}
+
 .message {
   margin: 5rem;
-
 }
 </style>
