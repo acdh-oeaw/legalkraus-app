@@ -547,7 +547,8 @@ import {
   getArcheIdFromXmlId,
   getCollectionOfObject,
   getEntity,
-  getObjectWithId, getPmbEntityViaArche,
+  getObjectWithId,
+  getPmbEntityViaArche,
   getTransformedHtmlResource
 } from "../../services/ARCHEService";
 import {getObjectWithId as getPMBObjectWithId} from "../../services/PMBService";
@@ -1218,6 +1219,7 @@ export default {
       this.$store.dispatch('updateAllHighlighters', {highlightbool: bool})
     },
     getDocInfosFromCaseInfo(xmlid) {
+      console.log(xmlid)
       this.caseInfo.then(async cd => {
         for (let i = 0; i < cd.cases.length; i++) {
           if (cd.cases[i].id === (this.colXmlId + '.xml')) {
@@ -1362,16 +1364,15 @@ export default {
                   nameElem = c.getElementsByTagName("orgName")[0];
                 }
                 if (nameElem !== null) {
-                  console.log(nameElem)
+                  this.sent.name = '-';
                   if(nameElem.innerHTML!==''){
                     this.sent.name = nameElem.innerHTML;
                   }else{
                     let ref = nameElem.getAttribute('ref');
                     let id = ref.substring(4);
                     await getPmbEntityViaArche(id, rs => {
-                      console.log(rs);
-                      var result = rs[Object.keys(rs)[0]];
-                      console.log(result)
+                      this.sent.name = rs[Object.keys(rs)[0]]['https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'][0].value;
+                      console.log(this.sent.name)
                     })
                   }
 
@@ -1399,7 +1400,17 @@ export default {
                   nameElem = c.getElementsByTagName("orgName")[0];
                 }
                 if (nameElem !== null) {
-                  this.received.name = nameElem.innerHTML===''? '-':nameElem.innerHTML;
+                  this.received.name = '-'
+                  if(nameElem.innerHTML!==''){
+                    this.received.name = nameElem.innerHTML;
+                  }else{
+                    let ref = nameElem.getAttribute('ref');
+                    let id = ref.substring(4);
+                    await getPmbEntityViaArche(id, rs => {
+                      this.received.name = rs[Object.keys(rs)[0]]['https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'][0].value;
+                      console.log(this.received.name)
+                    })
+                  }
                 }
 
                 if (c.innerHTML.includes('street')) {
