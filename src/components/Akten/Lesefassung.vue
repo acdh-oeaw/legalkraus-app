@@ -58,8 +58,8 @@
       <div class="meta1">
         <router-link class="back" to="/">{{ this.objectTitle }}</router-link>
         <p>Seitenanzahl: {{ this.facsURLs.length }}</p>
-        <p>Betreff: {{this.noteGrp.subject}}</p>
-        <p>Diktation: {{this.noteGrp.dictation}}</p>
+        <p>Betreff: {{ this.noteGrp.subject }}</p>
+        <p>Diktation: {{ this.noteGrp.dictation }}</p>
       </div>
       <div class="meta11">
         <span v-if="handsClosed" class="hasActor">
@@ -86,10 +86,10 @@
       <div class="vl meta3"></div>
       <div class="meta4">
         <b>Sender</b>
-        <p>Name: {{this.sent.name.name}}</p>
-        <p>Straße: {{this.sent.street}}</p>
-        <p>Ort: {{this.sent.settlement}}</p>
-        <p>Datum: {{this.sent.date}}</p>
+        <p>Name: {{ this.sent.name.name }}</p>
+        <p>Straße: {{ this.sent.street }}</p>
+        <p>Ort: {{ this.sent.settlement }}</p>
+        <p>Datum: {{ this.sent.date }}</p>
       </div>
       <div v-if="stamp===null" class="meta5">Stempel: -</div>
       <div v-if="stamp!==null" class="meta5">Stempel: {{ stamp.name }}</div>
@@ -136,10 +136,10 @@
       </div>
       <div class="meta12">
         <b>Empfänger</b>
-        <p>Name: {{this.received.name.name}}</p>
-        <p>Straße: {{this.received.street}}</p>
-        <p>Ort: {{this.received.settlement}}</p>
-        <p>Datum: {{this.received.date}}</p>
+        <p>Name: {{ this.received.name.name }}</p>
+        <p>Straße: {{ this.received.street }}</p>
+        <p>Ort: {{ this.received.settlement }}</p>
+        <p>Datum: {{ this.received.date }}</p>
       </div>
     </div>
     <div v-if="letterMD && !showMD" class="loader"></div>
@@ -1098,7 +1098,7 @@ export default {
         /*await getPMBObjectWithId(pmbID, null, rs => {
           tmp.push({'id': rs.id, 'name': rs.name})
         });*/
-        await getPmbEntityViaArche(pmbID, rs =>{
+        await getPmbEntityViaArche(pmbID, rs => {
           console.log(rs);
         })
       }
@@ -1128,7 +1128,7 @@ export default {
               let facsUrl = this.dom.querySelectorAll(`[*|id='${facsid}'] graphic[source='wienbibliothek']`)[0].attributes.url.nodeValue
               this.facsURLs.push(facsUrl)
             })
-           
+
             const furtherWitnesses = this.dom.querySelectorAll("facsimile[ana='further-witnesses'] graphic[source='wienbibliothek']")
             if (furtherWitnesses.length > 0) {
               this.furtherWitnesses = Array.from(furtherWitnesses).map(furtherWitness => furtherWitness.attributes.url.nodeValue)
@@ -1155,7 +1155,7 @@ export default {
       this.actorsClosed = !this.actorsClosed;
     },
     toggleHands() {
-      if(this.hands.length > 0){
+      if (this.hands.length > 0) {
         this.handsClosed = !this.handsClosed;
       }
 
@@ -1221,29 +1221,68 @@ export default {
       this.$store.dispatch('updateAllHighlighters', {highlightbool: bool})
     },
     getDocInfosFromCaseInfo(xmlid) {
-      
+
       //this.caseInfo.then(cd => {
-        for (let i = 0; i < this.$store.getters.cases.length; i++) {
-          if (this.$store.getters.cases[i].id === (this.colXmlId + '.xml')) {
-            let c = this.$store.getters.cases[i];
-            for (let j = 0; j < c.doc_objs.length; j++) {
-              if (c.doc_objs[j].id === xmlid) {
-                this.docInfo = c.doc_objs[j];
-                this.docInfo.acts = [];
-                for (const [key, value] of Object.entries(this.docInfo.persons)) {
-                  this.docInfo.acts.push({'pmbId': key, 'value': value})
-                }
-                for (const [key, value] of Object.entries(this.docInfo.orgs)) {
-                  this.docInfo.acts.push({'pmbId': key, 'value': value})
-                }
-                break;
+      for (let i = 0; i < this.$store.getters.cases.length; i++) {
+        if (this.$store.getters.cases[i].id === (this.colXmlId + '.xml')) {
+          let c = this.$store.getters.cases[i];
+          for (let j = 0; j < c.doc_objs.length; j++) {
+            if (c.doc_objs[j].id === xmlid) {
+              this.docInfo = c.doc_objs[j];
+              this.docInfo.acts = [];
+              for (const [key, value] of Object.entries(this.docInfo.persons)) {
+                this.docInfo.acts.push({'pmbId': key, 'value': value})
               }
+              for (const [key, value] of Object.entries(this.docInfo.orgs)) {
+                this.docInfo.acts.push({'pmbId': key, 'value': value})
+              }
+              break;
             }
-            break;
           }
+          break;
         }
+      }
       //});
       console.log(this.docInfo)
+    },
+    async getSentOrReceivedInfo(c) {
+      let tmp = {};
+      if (c.innerHTML.includes('street')) {
+        let street = c.getElementsByTagName("street")[0];
+        tmp.street = street.innerHTML === '' ? '-' : street.innerHTML;
+      }
+
+      if (c.innerHTML.includes('settlement')) {
+        let set = c.getElementsByTagName("settlement")[0];
+        tmp.settlement = set.innerHTML === '' ? '-' : set.innerHTML;
+      }
+
+      if (c.innerHTML.includes('date')) {
+        let d = c.getElementsByTagName("date")[0];
+        tmp.date = d.innerHTML === '' ? '-' : d.innerHTML;
+      }
+
+      let nameElem = null;
+      if (c.innerHTML.includes('persName')) {
+        nameElem = c.getElementsByTagName("persName")[0];
+      } else if (c.innerHTML.includes('orgName')) {
+        nameElem = c.getElementsByTagName("orgName")[0];
+      }
+      if (nameElem !== null) {
+        tmp.name = '-';
+        if (nameElem.innerHTML !== '') {
+          tmp.name = nameElem.innerHTML;
+          return tmp;
+        } else {
+          let ref = nameElem.getAttribute('ref');
+          let id = ref.substring(4);
+          await getPmbEntityViaArche(id, rs => {
+            tmp.name = rs[Object.keys(rs)[0]]['https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'][0].value;
+            console.log(tmp.name);
+            return tmp;
+          })
+        }
+      }
     }
   },
   created() {
@@ -1342,6 +1381,7 @@ export default {
             this.actors.push(rs);
           });
         })
+        let promises = [];
         this.downloadXMLFromUrl(url).then(async () => {
           this.getDocInfosFromCaseInfo(this.xmlFilename);
           this.teiHeader = this.dom.getElementsByTagName("teiHeader")[0];
@@ -1350,87 +1390,24 @@ export default {
           let correspDesc = this.dom.getElementsByTagName("correspDesc")[0];
           if (profileDesc.innerHTML.includes('handNote')) {
             let hands = ([...profileDesc.getElementsByTagName("handNote")]);
-            this.hands = await this.loadHands(hands);
+            this.hands = this.loadHands(hands);
+            promises.push(this.hands);
           }
           if (msDesc.innerHTML.includes('<ab') && msDesc.innerHTML.includes('stamp')) {
             let pmbID = msDesc.getElementsByTagName("stamp")[0].getAttribute('source').substring(1);
-            this.stamp = await this.loadPMBEntity(pmbID);
+            this.stamp = this.loadPMBEntity(pmbID);
+            promises.push(this.stamp);
           }
           if (correspDesc && correspDesc.innerHTML.includes('correspAction')) {
             let cActions = [...correspDesc.getElementsByTagName("correspAction")];
             for (const c of cActions) {
               let t = c.getAttribute('type');
               if (t === 'sent') {
-                let nameElem = null;
-                if (c.innerHTML.includes('persName')) {
-                  nameElem = c.getElementsByTagName("persName")[0];
-                } else if (c.innerHTML.includes('orgName')) {
-                  nameElem = c.getElementsByTagName("orgName")[0];
-                }
-                if (nameElem !== null) {
-                  this.sent.name = '-';
-                  if(nameElem.innerHTML!==''){
-                    this.sent.name = nameElem.innerHTML;
-                  }else{
-                    let ref = nameElem.getAttribute('ref');
-                    let id = ref.substring(4);
-                    await getPmbEntityViaArche(id, rs => {
-                      this.sent.name = rs[Object.keys(rs)[0]]['https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'][0].value;
-                      console.log(this.sent.name)
-                    })
-                  }
-
-                }
-
-                if (c.innerHTML.includes('street')) {
-                  let street = c.getElementsByTagName("street")[0];
-                  this.sent.street = street.innerHTML===''? '-':street.innerHTML;
-                }
-
-                if (c.innerHTML.includes('settlement')) {
-                  let set = c.getElementsByTagName("settlement")[0];
-                  this.sent.settlement = set.innerHTML===''? '-':set.innerHTML;
-                }
-
-                if (c.innerHTML.includes('date')) {
-                  let d = c.getElementsByTagName("date")[0];
-                  this.sent.date = d.innerHTML===''? '-':d.innerHTML;
-                }
+                this.sent = this.getSentOrReceivedInfo(c);
+                promises.push(this.sent);
               } else if (t === 'received') {
-                let nameElem = null;
-                if (c.innerHTML.includes('persName')) {
-                  nameElem = c.getElementsByTagName("persName")[0];
-                } else if (c.innerHTML.includes('orgName')) {
-                  nameElem = c.getElementsByTagName("orgName")[0];
-                }
-                if (nameElem !== null) {
-                  this.received.name = '-'
-                  if(nameElem.innerHTML!==''){
-                    this.received.name = nameElem.innerHTML;
-                  }else{
-                    let ref = nameElem.getAttribute('ref');
-                    let id = ref.substring(4);
-                    await getPmbEntityViaArche(id, rs => {
-                      this.received.name = rs[Object.keys(rs)[0]]['https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'][0].value;
-                      console.log(this.received.name)
-                    })
-                  }
-                }
-
-                if (c.innerHTML.includes('street')) {
-                  let street = c.getElementsByTagName("street")[0];
-                  this.received.street = street.innerHTML===''? '-':street.innerHTML;
-                }
-
-                if (c.innerHTML.includes('settlement')) {
-                  let set = c.getElementsByTagName("settlement")[0];
-                  this.received.settlement = set.innerHTML===''? '-':set.innerHTML;
-                }
-
-                if (c.innerHTML.includes('date')) {
-                  let d = c.getElementsByTagName("date")[0];
-                  this.received.date = d.innerHTML===''? '-':d.innerHTML;
-                }
+                this.received = this.getSentOrReceivedInfo(c);
+                promises.push(this.received);
               }
             }
 
@@ -1441,17 +1418,19 @@ export default {
             for (let i = 0; i < notes.length; i++) {
               let t = notes[i].getAttribute('type');
               if (t === 'subject') {
-                this.noteGrp.subject = notes[i].innerHTML===''? '-':notes[i].innerHTML;
+                this.noteGrp.subject = notes[i].innerHTML === '' ? '-' : notes[i].innerHTML;
               } else if (t === 'dictation') {
-                this.noteGrp.dictation = notes[i].innerHTML===''? '-':notes[i].innerHTML;
+                this.noteGrp.dictation = notes[i].innerHTML === '' ? '-' : notes[i].innerHTML;
               }
             }
           }
-        }).then(()=>{
-          
-          this.dataLoaded = true;
-          this.showMD = true;
-          console.log("done loading MD")});
+        }).then(() => {
+          Promise.all(promises).then(() => {
+            this.dataLoaded = true;
+            this.showMD = true;
+            console.log("done loading MD")
+          })
+        });
 
         if (this.objectTitle.includes('Zeitungsartikel') || this.objectTitle.includes('Originalmappe') || this.objectTitle.includes('Aktenvermerk')) {
           this.simpleMD = true;
