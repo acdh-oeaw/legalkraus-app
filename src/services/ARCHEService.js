@@ -393,4 +393,14 @@ module.exports.downloadCaseInfo = async () => {
     }
 }
 
+module.exports.getPmbEntityViaArche = async(pmbId, callback) =>{
+    console.log(pmbId)
+    let url = "https://id.acdh.oeaw.ac.at/pmb/" + pmbId;
+    fetch(url, {
+        headers: {'Accept': 'application/json'}
+    }).then(response => response.json()).then(data => {
+        return callback(data);
+    })
+}
+
 

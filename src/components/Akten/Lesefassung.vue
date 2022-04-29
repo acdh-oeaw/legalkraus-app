@@ -36,7 +36,7 @@
       <div class="vl meta3"></div>
       <p class="meta4">Datum: {{ this.docInfo.date }}</p>
       <div class="meta12 d-inline-flex">
-        <input class="vt" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
+        <input class="vt c" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
         <button type="button" class="btn vt-button" data-search="next" v-on:click="highlightNext()">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                class="bi bi-arrow-down-short" viewBox="0 0 16 16">
@@ -547,7 +547,7 @@ import {
   getArcheIdFromXmlId,
   getCollectionOfObject,
   getEntity,
-  getObjectWithId,
+  getObjectWithId, getPmbEntityViaArche,
   getTransformedHtmlResource
 } from "../../services/ARCHEService";
 import {getObjectWithId as getPMBObjectWithId} from "../../services/PMBService";
@@ -1092,9 +1092,12 @@ export default {
       let tmp = [];
       for (const h of hands) {
         let pmbID = h.getAttribute('scribeRef').substring(1);
-        await getPMBObjectWithId(pmbID, null, rs => {
+        /*await getPMBObjectWithId(pmbID, null, rs => {
           tmp.push({'id': rs.id, 'name': rs.name})
-        });
+        });*/
+        await getPmbEntityViaArche(pmbID, rs =>{
+          console.log(rs);
+        })
       }
       return tmp;
     },
@@ -1334,9 +1337,7 @@ export default {
           });
         })
         this.downloadXMLFromUrl(url).then(async () => {
-          this.getDocInfosFromCaseInfo(this.xmlFilename).then(()=>{
-
-          });
+          this.getDocInfosFromCaseInfo(this.xmlFilename);
           this.teiHeader = this.dom.getElementsByTagName("teiHeader")[0];
           let msDesc = this.dom.getElementsByTagName("msDesc")[0];
           let profileDesc = this.dom.getElementsByTagName("profileDesc")[0];
@@ -1361,9 +1362,19 @@ export default {
                   nameElem = c.getElementsByTagName("orgName")[0];
                 }
                 if (nameElem !== null) {
-                 //let ref = nameElem.getAttribute('ref');
-                  //let pmbID = ref.substring(4); //remove leading pmbId
-                  this.sent.name = nameElem.innerHTML===''? '-' : nameElem.innerHTML;
+                  console.log(nameElem)
+                  if(nameElem.innerHTML!==''){
+                    this.sent.name = nameElem.innerHTML;
+                  }else{
+                    let ref = nameElem.getAttribute('ref');
+                    let id = ref.substring(4);
+                    await getPmbEntityViaArche(id, rs => {
+                      console.log(rs);
+                      var result = rs[Object.keys(rs)[0]];
+                      console.log(result)
+                    })
+                  }
+
                 }
 
                 if (c.innerHTML.includes('street')) {
