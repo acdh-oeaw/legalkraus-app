@@ -4,7 +4,7 @@
       <router-link router-link class="nav-link" :to="'/handapparat'">
         Handapparat
       </router-link>
-      <span class="arrow">></span>
+      <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
       Böhm-Edition
     </p>
     <div class="container">

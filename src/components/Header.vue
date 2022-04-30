@@ -7,9 +7,12 @@
       </router-link>
     </div>
     <div>
-      <b-button pill class="btn-sm mt-2 ml-n5 beta-badge" variant="outline-primary">
+      <b-button @click="showBetaVersionModal" pill class="btn-sm mt-2 ml-n5 beta-badge" variant="outline-primary">
         Beta Version <b-icon icon="info" aria-hidden="true"></b-icon>
       </b-button>
+      <b-modal hide-footer :content-class="'rounded-0 opensans'" id="modal-betaversion" title="Beta Version">
+        <div v-html="modalcontent"/>
+      </b-modal>
     </div>
     <div class="navigation">
       <p class="nav-el">
@@ -111,11 +114,25 @@
 <script>
 export default {
   name: "Header",
+  data() {
+    return {
+      modalcontent:null
+    }
+  },
   methods: {
     itemIsActive(val) {
       console.log(this.$route.path.includes(val))
       return this.$route.path.includes(val)
-    }
+    },
+     showBetaVersionModal() {
+       fetch('https://raw.githubusercontent.com/wiki/acdh-oeaw/legalkraus-app/Beta-Version.md', {cache: "no-store"}).then(response => response.text())
+  .then(data => fetch('https://api.github.com/markdown',{cache: "no-store", method:'POST', body: JSON.stringify({'mode': 'markdown', 'text': data})})
+  .then(response => response.text()).then(data => {this.modalcontent = data;this.$root.$emit('bv::show::modal', 'modal-betaversion', '#btnShow')}))
+      
+    },
+  },
+  created() {
+    
   }
 }
 </script>
@@ -256,4 +273,6 @@ main {
     margin: auto;
   }
 }
+
+
 </style>

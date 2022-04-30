@@ -1,5 +1,5 @@
 <template>
-  <b-container class="mt-3">
+  <b-container class="mt-3 no-grid-col-container">
     <h2>Projektinformation</h2>
     <b-row>
       <b-col cols="7">
@@ -153,10 +153,6 @@ main {
 
 .card {
   font-size: smaller;
-}
-
-.container {
-  grid-template-columns: unset;
 }
 
 .left {

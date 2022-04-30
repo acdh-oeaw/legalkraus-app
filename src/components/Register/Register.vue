@@ -3,7 +3,7 @@
 
     <div class="filter-nav">
       <p class="navigation">Register
-        <span class="arrow">></span>
+        <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
         <span style="font-weight: bold">{{ this.category }}</span>
       </p>
       <div class="abc">

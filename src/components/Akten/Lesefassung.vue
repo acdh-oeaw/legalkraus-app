@@ -2,30 +2,30 @@
   <div class="main" v-if="this.dataLoaded && this.docInfo">
     <Search class="py-2" v-bind:col-id="colId" v-bind:rs-id="objectId"></Search>
     <p v-if="propsSet" class="navigation">Akten-Edition
-      <span class="arrow">></span>
+      <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
       <router-link router-link class="nav-link" :to="'/akten-edition/' + this.cat">
         {{ this.$route.params.cat }}
       </router-link>
-      <span class="arrow">></span>
+      <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
       <router-link router-link class="nav-link"
                    :to="'/akten-edition/' + this.cat + '/'+ this.subcat +'/collections'">
         {{ this.showSubcat }}
       </router-link>
-      <span class="arrow">></span>
+      <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
       <router-link router-link class="nav-link"
                    :to="'/akten-edition/' + this.cat + '/'+ this.subcat +'/objects/'+ this.colId">
         {{ this.colTitle }}
       </router-link>
-      <span class="arrow">></span>
+      <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
       <span style="font-weight: bold">{{ this.objectTitle }}</span>
     </p>
     <p v-if="!propsSet" class="navigation">Akten-Edition
-      <span class="arrow">></span>
+      <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
       <router-link router-link class="nav-link"
                    :to="'/objects/'+ this.colId">
         {{ this.colTitle }}
       </router-link>
-      <span class="arrow">></span>
+      <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
       <span style="font-weight: bold">{{ this.objectTitle }}</span>
     </p>
     <div v-if="simpleMD" class="meta-data">
@@ -86,7 +86,7 @@
       <div class="vl meta3"></div>
       <div class="meta4">
         <b>Sender</b>
-        <p>Name: <MDHelper v-if="this.sent.name.includes('#pmb')" :id="this.sent.name.substring(4)"/><span v-else>{this.sent.name}}</span></p>
+        <p>Name: <MDHelper v-if="this.sent.name.includes('#pmb')" :id="this.sent.name.substring(4)"/><span v-else>{{this.sent.name}}</span></p>
         <p>Straße: {{ this.sent.street }}</p>
         <p>Ort: {{ this.sent.settlement }}</p>
         <p>Datum: {{ this.sent.date }}</p>

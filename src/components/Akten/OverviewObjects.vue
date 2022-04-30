@@ -3,7 +3,7 @@
     <div class="filter-nav">
       <p v-if="categorySet" class="navigation">
         Akten-Edition
-        <span class="arrow">></span>
+        <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
         <router-link
           router-link
           class="nav-link"
@@ -11,7 +11,7 @@
         >
           {{ this.category }}
         </router-link>
-        <span class="arrow">></span>
+        <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
         <router-link
           router-link
           class="nav-link"
@@ -21,12 +21,12 @@
         >
           {{ this.showSubCat }}
         </router-link>
-        <span class="arrow">></span>
+        <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
         <span style="font-weight: bold">{{ this.caseTitle }}</span>
       </p>
       <p v-if="!categorySet" class="navigation">
         Akten-Edition
-        <span class="arrow">></span>
+        <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
         <span style="font-weight: bold">{{ this.caseTitle }}</span>
       </p>
       <div class="filters">
@@ -385,6 +385,7 @@ export default {
         this.showSubCat = this.currSubCat;
       }
     },
+    
     async searchPerformed(event) {
       if (event.keyword === "") {
         this.searchView = false;

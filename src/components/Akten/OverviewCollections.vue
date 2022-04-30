@@ -2,11 +2,11 @@
   <main>
     <div class="filter-nav">
       <p class="navigation">Akten-Edition
-        <span class="arrow">></span>
+        <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
         <router-link router-link class="nav-link" :to="'/akten-edition/' + catLower">
           {{ this.category }}
         </router-link>
-        <span class="arrow">></span>
+        <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
         <span style="font-weight: bold">{{ this.showSubCat }}</span>
       </p>
       <div class="filters">
@@ -62,6 +62,8 @@
           first-class="custompagingarrows"
           last-class="custompagingarrows"
           class="custom-pagination"
+          :no-provider-sorting="true"
+          :no-provider-paging="true"
           v-model="currentPage"
           :total-rows="this.$store.getters.noOfCollections"
           :per-page="perPage"
@@ -69,20 +71,24 @@
       ></b-pagination>
       <div class="sammlungen ml-3">{{ this.$store.getters.noOfCollections }} Sammlungen</div>
       </b-row>
-      <b-table id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
-               :current-page="currentPage" :per-page="perPage"
-               :busy.sync="isBusy" :fields="[
+      <b-table :thead-class="'semi-bold'" id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
+               :current-page="currentPage" :per-page="perPage" :sort-by="'id'"
+               :busy.sync="isBusy"
+                :sort-compare="tableSortCompare" :fields="[
             {
               key: 'id',
-              label: 'Aktennummer'
+              label: 'Aktennummer',
+              sortable: true
             },
            {
               key: 'title',
-              label: 'Titel'
+              label: 'Titel',
+              sortable: true
             },
             {
               key: 'size',
-              label: 'Anzahl Dokumente'
+              label: 'Anzahl Dokumente',
+              sortable: true
             },
           ]" :items="currCases" @row-clicked="navToObjects">
         <template #table-busy>
@@ -246,6 +252,15 @@ export default {
         })
       }
 
+
+    },
+    tableSortCompare(a, b, key) {
+     
+      if (key === 'size') {
+        let aInt = a.docs.length;
+        let bInt = b.docs.length;
+        return aInt - bInt;
+      }
 
     },
     setCurrPageAndCategory() {
@@ -440,7 +455,6 @@ export default {
         this.collections = result;
       });
     }
-    console.log(this.cases)
 
   }
 }
