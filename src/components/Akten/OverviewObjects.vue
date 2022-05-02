@@ -99,19 +99,16 @@
         </div>-->
 
     <div class="case-info">
-      <h3>Dokumente des Falles "{{ this.caseTitle }}"</h3>
+      <p class="font-weight-bold">{{ this.caseTitle }}</p>
       <div v-if="loading">
         <p>Dokumente werden geladen.</p>
         <div class="loader"></div>
       </div>
-      <IntrotextCollection class="w-75 mx-auto my-2 text-justify" v-if="this.caseData" :colid="this.numericColId" />
-      <p v-if="!loading && this.caseData.doc_objs.length === 1">
-        Dieser Fall hat {{ this.caseData.doc_objs.length }} Dokument.
-      </p>
-      <p v-if="!loading && this.caseData.doc_objs.length !== 1">
-        Dieser Fall hat {{ this.caseData.doc_objs.length }} Dokumente.
-      </p>
-
+      <b-button class="item"  v-if="!loading && this.caseData.doc_objs.length === 1" v-b-toggle.collapse-1-summary>{{ this.caseData.doc_objs.length }} Dokument: Zusammenfassung</b-button>
+      <b-button class="item"  v-if="!loading && this.caseData.doc_objs.length !== 1" v-b-toggle.collapse-1-summary>{{ this.caseData.doc_objs.length }} Dokumente: Zusammenfassung</b-button>
+       <b-collapse id="collapse-1-summary" class="mt-2 my-2">
+        <IntrotextCollection class="mx-auto" v-if="this.caseData" :colid="this.numericColId" />
+       </b-collapse>
       <div v-if="searchView">
         <b-col>
           <h5>Suchergebnisse zu "{{ this.keyword }}":</h5>
@@ -1018,4 +1015,17 @@ export default {
 .searchPers {
   margin-left: 2rem;
 }
+
+.item {
+  background-color: var(--primary-red) !important;
+  color: var(--text-white);
+  border-radius: 0.25rem;
+  border: transparent;
+  padding: 0.5rem;
+}
+
+.item:hover, .item:active {
+  background-color: var(--primary-red-dark)!important;;
+}
+
 </style>

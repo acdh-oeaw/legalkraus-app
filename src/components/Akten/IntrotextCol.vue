@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="text-left maxwdth-75">
     <p>{{collectionDescription}}</p>
   </div>
 </template>
@@ -18,3 +18,8 @@ export default {
   },
 };
 </script>
+<style>
+.maxwdth-75 {
+  max-width:75%;
+}
+</style>
