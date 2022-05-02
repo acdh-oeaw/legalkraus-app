@@ -4,7 +4,7 @@
     <b-row>
       <b-col>
         <div class="metainfo">
-          <b-form @submit="performFullTextSearch()">
+          <b-form @submit="performFullTextSearch()" @submit.prevent >
             <b-form-input size="sm" placeholder="Volltextsuche" :type="'search'" v-model="searchTerm"></b-form-input>
           </b-form>
         </div>
@@ -56,13 +56,14 @@ export default {
   methods: {
     async processSearchResults(data) {
       this.searchResults = [];
-      if (this.colId) {
+     /* if (this.colId) {
         //search in a specific collection
         for (const [key, value] of Object.entries(data)) {
           if (Object.prototype.hasOwnProperty.call(value, "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle")) {
             const id = key.replace("https://arche-dev.acdh-dev.oeaw.ac.at/api/", "");
 
             this.searchResults.push({
+              "type": 'searchIn1Col',
               "id": id,
               "url": key,
               "title": value["https://vocabs.acdh.oeaw.ac.at/schema#hasTitle"][0].value,
@@ -83,6 +84,7 @@ export default {
           if (id && id !== "") {
             await getCollectionOfObject(id, rs => {
               this.searchResults.push({
+                "type": 'searchInAllCol',
                 "id": id,
                 "url": key,
                 "collection": rs[0].title,
@@ -97,7 +99,32 @@ export default {
         }
         this.searchResultsCount = this.searchResults.length;
         this.$emit('searchPerformed', {searchResults: this.searchResults, keyword: this.searchTerm});
+      }*/
+
+      //keine Unterschiedliche Darstellung von Suche in allen collections bzw nur in einer
+      //search in all collections
+
+      for (const [key, value] of Object.entries(data)) {
+        const id = key.replace("https://arche-dev.acdh-dev.oeaw.ac.at/api/", "");
+
+        if (id && id !== "") {
+          await getCollectionOfObject(id, rs => {
+            this.searchResults.push({
+              "type": 'searchInAllCol',
+              "id": id,
+              "url": key,
+              "collection": rs[0].title,
+              "collectionId": rs[0].id,
+              "title": value["https://vocabs.acdh.oeaw.ac.at/schema#hasTitle"][0].value,
+              "kwic": value["search://fts"].map(kwic => kwic.value.replace('\n', '')),
+              "searchTerm": this.searchTerm
+            })
+          });
+        }
+
       }
+      this.searchResultsCount = this.searchResults.length;
+      this.$emit('searchPerformed', {searchResults: this.searchResults, keyword: this.searchTerm});
       this.loading = false;
     },
     performFullTextSearch() {
@@ -118,7 +145,6 @@ export default {
   display: grid;
   justify-content: space-between;
   grid-template-columns: auto auto auto auto auto;
-  margin-left: 2rem;
 }
 
 .loader {

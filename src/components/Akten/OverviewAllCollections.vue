@@ -1,8 +1,9 @@
 <template>
   <main v-if="this.$store.getters.vocabReady">
+    
     <div class="filter-nav">
       <p class="navigation">
-        Akten-Edition <span class="arrow">></span> Alle Akten
+        Akten-Edition <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon> Alle Akten
       </p>
       <div class="filters">
         <div class="searchPers">
@@ -18,7 +19,9 @@
           </datalist>
         </div>
         <Search class="py-2 vt" v-on:searchPerformed="searchPerformed($event)"></Search>
+        <div class="mleft">
         <input class="vt vty" type="number" placeholder="Bis Jahr:" v-model="kwY"/>
+        </div>
         <span class="lbls">
         <div class="lbl" v-for="pers in currPersons" :key="pers.key">{{ pers.value }}
           <svg v-on:click="removePers(pers.key)" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -45,99 +48,114 @@
         <input class="vt vtt" type="text" placeholder="Fall-Titel:" v-model="kwT"/>
       </div>
     </div>
-    <b-row>
-      <b-col md="3">
-        <b-form-select
-            class="ml-2 mb-3"
-            size="sm"
-            v-model="selected"
-            :options="selectOptions"
-        ></b-form-select>
+    <div v-if="!searchView">
+    <b-container class="mt-5 no-grid-col-container">
+      <b-row>
+        <b-col md="3">
+          <b-form-select
+              size="sm"
+              v-model="selected"
+              :options="selectOptions"
+          ></b-form-select>
 
-        <div v-if="this.selected && this.selected.toString()">
-          <Tree :key="`tr${item.title}${_self.selected.toString()}`"
-                v-for="item in this.selectOptions.slice(1,6).filter(option=>option.text === _self.selected.toString())"
-                :title="item.text"
-                class="tree filter"
-                :isFilter="true"
-                :filterprop="'keyword'"
-                :tree-data="{
-            children: [_self.$store.getters.getConceptWithCases(item.text)],
-          }"
-          />
-          <Tree :key="`tr${item.title}${_self.selected.toString()}`"
-                v-for="item in this.selectOptions.slice(6,9).filter(option=>option.text === _self.selected)"
-                :title="''"
-                class="tree filter"
-                :isFilter="true"
-                :filterprop="item.filterprop"
-                :tree-data="{
-            children: [_self.$store.getters.getGroupedCases(item.text)]
-          }"
-          />
-        </div>
-      </b-col>
-      <b-col md="9">
-        <div class="card">
-          <div class="row align-items-center">
-            <b-pagination
-                page-class="custompaging"
-                prev-class="custompagingarrows"
-                next-class="custompagingarrows"
-                first-class="custompagingarrows"
-                last-class="custompagingarrows"
-                class="custom-pagination col-md-4 mb-0"
-                v-model="currentPage"
-                :total-rows="this.$store.getters.noOfCollections"
-                :per-page="perPage"
-                aria-controls="col-table"
-            ></b-pagination>
-            <div class="col-md-4">{{ this.$store.getters.noOfCollections }} Sammlungen</div>
+          <div v-if="this.selected && this.selected.toString()">
+            <Tree :key="`tr${item.title}${_self.selected.toString()}`"
+                  v-for="item in this.selectOptions.slice(1,6).filter(option=>option.text === _self.selected.toString())"
+                  :title="item.text"
+                  class="tree filter"
+                  :isFilter="true"
+                  :filterprop="'keyword'"
+                  :tree-data="{
+              children: [_self.$store.getters.getConceptWithCases(item.text)],
+            }"
+            />
+            <Tree :key="`tr${item.title}${_self.selected.toString()}`"
+                  v-for="item in this.selectOptions.slice(6,9).filter(option=>option.text === _self.selected)"
+                  :title="''"
+                  class="tree filter"
+                  :isFilter="true"
+                  :filterprop="item.filterprop"
+                  :tree-data="{
+              children: [_self.$store.getters.getGroupedCases(item.text)]
+            }"
+            />
           </div>
-          <b-table
-              ref="coltable"
-              id="col-table"
-              :small="'small'"
-              :no-border-collapse="true"
-              :borderless="'borderless'"
-              :current-page="currentPage"
-              :per-page="perPage"
-              :busy.sync="isBusy"
-              :sort-by="'id'"
-              :sort-compare="tableSortCompare"
-              :fields="[
-                 {
-              key: 'id',
-              label: 'Aktennummer',
-              sortable: true
-            },
-              {
-                key: 'title',
-                label: 'Titel',
+        </b-col>
+        <b-col md="9">
+        
+            <div class="row align-items-center">
+              <b-pagination
+                  page-class="custompaging"
+                  prev-class="custompagingarrows"
+                  next-class="custompagingarrows"
+                  first-class="custompagingarrows"
+                  last-class="custompagingarrows"
+                  class="custom-pagination col-md-4 mb-0"
+                  v-model="currentPage"
+                  :total-rows="this.$store.getters.noOfCollections"
+                  :per-page="perPage"
+                  aria-controls="col-table"
+              ></b-pagination>
+              <div class="col-md-4">{{ this.$store.getters.noOfCollections }} Sammlungen</div>
+            </div>
+            <b-table
+                ref="coltable"
+                id="col-table"
+                :small="'small'"
+                :thead-class="'semi-bold'"
+                :no-border-collapse="true"
+                :borderless="'borderless'"
+                :current-page="currentPage"
+                :per-page="perPage"
+                :busy.sync="isBusy"
+                :no-provider-sorting="true"
+                :no-provider-paging="true"
+                :sort-by="'id'"
+                :sort-compare="tableSortCompare"
+                :fields="[
+                    {
+                key: 'id',
+                label: 'Aktennummer',
+                sortable: true
               },
-              {
-                key: 'size',
-                label: 'Anzahl Dokumente',
-              },
-            ]"
-              :items="getArcheCollections" @row-clicked="navToObjects"
-          >
-            <template #table-busy>
-              <div class="text-center my-2">
-                <b-spinner type="grow" class="align-middle"></b-spinner>
-                <strong>Loading...</strong>
-              </div>
-            </template>
-            <template #cell(size)="data">
-              {{ data.item.docs.length }}
-            </template>
-            <template #cell(id)="data">
-              {{ parseInt(data.item.id.substring(3, data.item.id.length - 4)) }}
-            </template>
-          </b-table>
-        </div>
-      </b-col>
-    </b-row>
+                {
+                  key: 'title',
+                  label: 'Titel',
+                  sortable: true
+                },
+                {
+                  key: 'size',
+                  label: 'Anzahl Dokumente',
+                  sortable: true
+                },
+              ]"
+                :items="getArcheCollections" @row-clicked="navToObjects"
+            >
+              <template #table-busy>
+                <div class="text-center my-2">
+                  <b-spinner type="grow" class="align-middle"></b-spinner>
+                  <strong>Loading...</strong>
+                </div>
+              </template>
+              <template #cell(size)="data">
+                {{ data.item.docs.length }}
+              </template>
+              <template #cell(id)="data">
+                {{ parseInt(data.item.id.substring(3, data.item.id.length - 4)) }}
+              </template>
+            </b-table>
+        </b-col>
+      </b-row>
+    </b-container>
+    </div>
+    <div v-if="searchView">
+      <p>{{ searchResultsCount }} Ergebnisse für "{{ keyword }}"</p>
+      <button type="button" class="btn btn-secondary btn-sm" v-on:click="toggleView">Zurück zur Übersicht</button>
+      <div v-for="item in searchResults" v-bind:key="item.key">
+        <SearchResultItem v-bind:item="item" v-on:nav-to-objects="navToObjects($event)"></SearchResultItem>
+      </div>
+
+    </div>
   </main>
 </template>
 
@@ -145,13 +163,15 @@
 //import {getCollections} from "@/services/ARCHEService";
 import Tree from "../Statistiken/Tree";
 import {getArcheIdFromXmlId} from "../../services/ARCHEService";
-//import Search from "../Search";
+import Search from "../Search";
+import SearchResultItem from "./SearchResultItem";
 
 export default {
   name: "OverviewAllCollections",
   components: {
-    //Search: Search,
-    Tree
+    Search: Search,
+    Tree,
+    SearchResultItem: SearchResultItem
   },
   data: function () {
     return {
@@ -207,12 +227,16 @@ export default {
       currOrgs: [],
       currPersons: [],
       cases: [],
+      searchView: false,
+      searchResults: [],
+      searchResultsCount: Number,
+      keyword: String,
     };
   },
   methods: {
-    getArcheCollections(ctx, callback) {
-      const offset =
-          ctx.currentPage === 1 ? 0 : (ctx.currentPage - 1) * ctx.perPage;
+    getArcheCollections() {
+      /*const offset =
+          ctx.currentPage === 1 ? 0 : (ctx.currentPage - 1) * ctx.perPage;*/
       let items = this.$store.getters.cases;
       if (this.filterParams) {
         const filterprop = this.filterParams[0];
@@ -267,21 +291,28 @@ export default {
       this.kwP = null;
       this.kwO = null
       this.$store.dispatch("setNoOfCollections", items.length);
-      callback(items.slice(offset, offset + ctx.perPage));
+      return items;
+      //callback(items.slice(offset, offset + ctx.perPage));
     },
-    navToObjects: function (item) {
-      getArcheIdFromXmlId(item.id, rs => {
-        this.$router.push({name: "overview-objects", params: {id: rs}});
-      })
+    navToObjects(item) {
+      if(item.id.includes('_')){
+        getArcheIdFromXmlId(item.id, rs => {
+          this.$router.push({name: "overview-objects", params: {id: rs}});
+        })
+      }else{
+        this.$router.push({name: "overview-objects", params: {id: item.id}});
+      }
+
     },
     getIdFromUrl(url) {
       let idx = url.lastIndexOf("/");
       return url.substring(idx + 1);
     },
     tableSortCompare(a, b, key) {
-      if (key === 'id') {
-        let aInt = parseInt(a[key].substring(3, a[key].length - 4));
-        let bInt = parseInt(b[key].substring(3, b[key].length - 4));
+     
+      if (key === 'size') {
+        let aInt = a.docs.length;
+        let bInt = b.docs.length;
         return aInt - bInt;
       }
 
@@ -337,7 +368,20 @@ export default {
           this.currOrgs = this.currOrgs.filter(o => o.key !== key);
         }
       }
-    }
+    },
+    async searchPerformed(event) {
+      if (event.keyword === "") {
+        this.searchView = false;
+        return;
+      }
+      this.searchView = true;
+      this.searchResults = event.searchResults;
+      this.searchResultsCount = event.searchResults.length;
+      this.keyword = event.keyword;
+    },
+  toggleView() {
+    this.searchView = !this.searchView;
+  }
   },
   mounted() {
     if (this.$route.query.filter) {
@@ -500,6 +544,8 @@ export default {
   grid-column: 1/2;
   grid-row: 2/3;
   width: fit-content;
+  margin-left: 2rem;
+
 }
 
 .lbl {
@@ -536,7 +582,7 @@ export default {
   display: flex;
   grid-row: 1/2;
   grid-column: 3/4;
-  padding: 0;
+  padding: 0 !important;
   margin-left: 0;
 }
 
@@ -546,5 +592,11 @@ export default {
   margin-top: 0;
   margin-bottom: 2rem;
 }
+.searchPers{
+  margin-left: 2rem;
+}
 
+.mleft{
+  margin-left: 2rem;
+}
 </style>

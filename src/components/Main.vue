@@ -1,77 +1,198 @@
 <template>
   <main>
-    <div class="grid-item-1"></div>
-    <div class="grid-item-2">
-      <img class="slider" src="../assets/slider1.png" alt="slider-1">
-    </div>
-    <div class="grid-item-3"></div>
-    <div class="grid-item-4">Text</div>
-    <div class="grid-item-5"></div>
-    <div class="grid-item-6">Text</div>
-    <div class="grid-item-7">Mögliche Einstiege</div>
-    <div class="grid-item-8">
-      <figure>
-        <figcaption>Titel</figcaption>
-        <img class="einstieg" src="../assets/einstieg1.png" alt="slider-1">
-        <figcaption>Text Text Text</figcaption>
-      </figure>
-      <figure>
-        <figcaption>Titel</figcaption>
-        <img class="einstieg" src="../assets/einstieg1.png" alt="slider-1">
-        <figcaption>Text Text Text</figcaption>
-      </figure>
-      <figure>
-        <figcaption>Titel</figcaption>
-        <img class="einstieg" src="../assets/einstieg1.png" alt="slider-1">
-        <figcaption>Text Text Text</figcaption>
-      </figure>
-      <figure>
-        <figcaption>Titel</figcaption>
-        <img class="einstieg" src="../assets/einstieg1.png" alt="slider-1">
-        <figcaption>Text Text Text</figcaption>
-      </figure>
-      <figure>
-        <figcaption>Titel</figcaption>
-        <img class="einstieg" src="../assets/einstieg1.png" alt="slider-1">
-        <figcaption>Text Text Text</figcaption>
-      </figure>
-      <hr class="horizontal">
-    </div>
-    <div class="grid-item-9">
-      <div class="vo-title">
-        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="var(--primary-red)"
-             class="bi bi-arrow-right"
-             viewBox="0 0 16 16">
-          <path fill-rule="evenodd"
-                d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-        </svg>
-        <p>700 Vorlesungen von Karl Kraus</p>
-      </div>
-      <p>Text</p>
-      <div class="vo-url">
-        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="var(--primary-red)" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
-          <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
-        </svg>
-        <a class="url" href="https://www.kraus.wienbibliothek.at/der-vorleser" target="_blank">https://www.kraus.wienbibliothek.at/der-vorleser</a>
-      </div>
-    </div>
+    <b-container class="no-grid-col-container">
+      
+           <b-jumbotron class="p-0">
+          <b-carousel
+            id="carousel"
+            v-model="slide"
+            :interval="4000"
+            controls
+            img-width="1024"
+            img-height="380"
+            style="text-shadow: 1px 1px 2px #333;"
+            @sliding-start="onSlideStart"
+            @sliding-end="onSlideEnd"
+          >
+             <!-- Text slides with image -->
+            <b-carousel-slide
+              caption=""
+              text=""
+            ><template #img>
+              
+              
+                <img 
+                
+                  class="d-block  img-fluid w-75 mx-auto"
+                  width="1024"
+                  height="380"
+                  src="/slider1.png"
+                  alt="image slot"
+                >
+              </template></b-carousel-slide>
+<!--
+            <!- - Slides with custom text - ->
+            <b-carousel-slide img-src="https://picsum.photos/1024/480/?image=54">
+              <h1>Hello world!</h1>
+            </b-carousel-slide>
 
+            <!- - Slides with image only - ->
+            <b-carousel-slide img-src="https://picsum.photos/1024/480/?image=58"></b-carousel-slide>
+
+            <!- - Slides with img slot - ->
+            <!- - Note the classes .d-block and .img-fluid to prevent browser default image alignment - ->
+            <b-carousel-slide>
+              <template #img>
+                <img
+                  class="d-block img-fluid w-100"
+                  width="1024"
+                  height="480"
+                  src="https://picsum.photos/1024/480/?image=55"
+                  alt="image slot"
+                >
+              </template>
+            </b-carousel-slide>
+
+            <!- - Slide with blank fluid image to maintain slide aspect ratio - ->
+            <b-carousel-slide caption="Blank Image" img-blank img-alt="Blank image">
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eros felis, tincidunt
+                a tincidunt eget, convallis vel est. Ut pellentesque ut lacus vel interdum.
+              </p>
+            </b-carousel-slide> -->
+          </b-carousel>
+          <b-row class="mx-0"><div class="primary-dark text-right jumbotron-text-left semibold pt-3 pb-2 pr-2">Oskar Samek</div><div class="jumbotron-right-left pt-3 pb-2 pl-2"> <small>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</small></div></b-row>
+           </b-jumbotron>
+      <b-row>
+        <b-col>
+            <router-link to="/handapparat/oskar-samek">
+              <figure>
+                <figcaption>Oskar Samek</figcaption>
+                <img class="einstieg" src="../assets/einstieg1.png" alt="slider-1">
+                <figcaption></figcaption>
+              </figure>
+            </router-link>
+        </b-col>
+        <b-col>
+            <router-link to="/statistik/fallstatistik">
+              <figure>
+                <figcaption>Fallstatistik</figcaption>
+                <img class="einstieg" src="../assets/einstieg1.png" alt="slider-1">
+                <figcaption></figcaption>
+              </figure>
+            </router-link>
+        </b-col>
+            <b-col>
+            <router-link to="/handapparat/beitraege">
+              <figure>
+                <figcaption>Beiträge</figcaption>
+                <img class="einstieg" src="../assets/einstieg1.png" alt="slider-1">
+                <figcaption></figcaption>
+              </figure>
+            </router-link>
+        </b-col>
+        <b-col>
+            <router-link to="/akten-edition/kultur/verlage/collections">
+              <figure>
+                <figcaption>Verlage</figcaption>
+                <img class="einstieg" src="../assets/einstieg1.png" alt="slider-1">
+                <figcaption></figcaption>
+              </figure>
+            </router-link>
+        </b-col>
+        <b-col>
+            <router-link to="/akten-edition/politik/sozialdemokratie/collections">
+              <figure>
+                <figcaption>Sozialdemokratie</figcaption>
+                <img class="einstieg" src="../assets/einstieg1.png" alt="slider-1">
+                <figcaption></figcaption>
+              </figure>
+            </router-link>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col>
+          <hr class="horizontal"/>
+          <div>
+            <div class="vo-title">
+              <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="var(--primary-red)"
+                  class="bi bi-arrow-right"
+                  viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                      d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+              </svg>
+              <p>700 Vorlesungen von Karl Kraus</p>
+            </div>
+            <p>Text</p>
+            <div class="vo-url">
+              <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="var(--primary-red)" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+              </svg>
+              <a class="url" href="https://www.kraus.wienbibliothek.at/der-vorleser" target="_blank">https://www.kraus.wienbibliothek.at/der-vorleser</a>
+            </div>
+          </div>
+        </b-col>
+      </b-row>
+    </b-container>
   </main>
 </template>
 
 <script>
 export default {
-  name: "Main"
-}
+  name: "Main",
+};
 </script>
 
 <style scoped>
-main {
+
+.jumbotron {
+  background: var(--primary-red);
+  border-radius: 0;
+  position: relative;
+  color:white;
+}
+
+.jumbotron-text-left {
+  width:40.3% !important;
+}
+
+.jumbotron-right-left {
+  width:47% !important;
+}
+
+.jumbotron::before {
+  top:0;
+  right:0;
+  content: "";
+  background: var(--primary-red-dark);
+  position:absolute;
+  width:20rem;
+  height:5rem;
+}
+
+
+
+#carousel, .carousel-item {
+  background:transparent !important;
+}
+
+.primary-dark {
+  background: var(--primary-red-dark);
+}
+
+
+/*main {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-template-rows: 7rem auto auto auto auto auto;
   font-family: "Open Sans", sans-serif !important;
+}*/
+
+.slidergrid {
+   display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: 7rem auto auto auto auto auto;
 }
 
 .grid-item-1 {
@@ -145,15 +266,17 @@ main {
   padding-top: 1rem;
 }
 
-.vo-title, .vo-url {
+.vo-title,
+.vo-url {
   display: inline-flex;
 }
 
-.bi-arrow-right, .bi-box-arrow-right {
+.bi-arrow-right,
+.bi-box-arrow-right {
   margin-right: 0.7rem;
 }
 
-.url{
-  color: var(--primary-red)
+.url {
+  color: var(--primary-red);
 }
 </style>

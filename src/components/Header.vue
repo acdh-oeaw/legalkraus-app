@@ -6,7 +6,14 @@
         <p class="logo">Karl Kraus</p>
       </router-link>
     </div>
-
+    <div>
+      <b-button @click="showBetaVersionModal" pill class="btn-sm mt-2 ml-n5 beta-badge" variant="outline-primary">
+        Beta Version <b-icon icon="info" aria-hidden="true"></b-icon>
+      </b-button>
+      <b-modal hide-footer :content-class="'rounded-0 opensans'" id="modal-betaversion" title="Beta Version">
+        <div v-html="modalcontent"/>
+      </b-modal>
+    </div>
     <div class="navigation">
       <p class="nav-el">
         <b-dropdown  id="dropdown-1" :class="{'active':this.itemIsActive('projekt')}" text="Projekt" variant='none' class="m-md-2">
@@ -107,11 +114,25 @@
 <script>
 export default {
   name: "Header",
+  data() {
+    return {
+      modalcontent:null
+    }
+  },
   methods: {
     itemIsActive(val) {
       console.log(this.$route.path.includes(val))
       return this.$route.path.includes(val)
-    }
+    },
+     showBetaVersionModal() {
+       fetch('https://raw.githubusercontent.com/wiki/acdh-oeaw/legalkraus-app/Beta-Version.md', {cache: "no-store"}).then(response => response.text())
+  .then(data => fetch('https://api.github.com/markdown',{cache: "no-store", method:'POST', body: JSON.stringify({'mode': 'markdown', 'text': data})})
+  .then(response => response.text()).then(data => {this.modalcontent = data;this.$root.$emit('bv::show::modal', 'modal-betaversion', '#btnShow')}))
+      
+    },
+  },
+  created() {
+    
   }
 }
 </script>
@@ -231,6 +252,20 @@ main {
   text-decoration: none;
 }
 
+.beta-badge {
+  color: var(--primary-red);
+  border-color: var(--primary-red);
+  font-size: 0.775rem;
+  padding: 0.2rem 0.4rem;
+  white-space: nowrap;
+}
+
+.beta-badge:hover, .beta-badge:active, .beta-badge:focus {
+  background-color: var(--primary-red) !important;
+  border-color: var(--primary-red) !important;
+  color: white;
+}
+
 @media screen and (max-width: 600px) {
   .title {
     text-align: center;
@@ -238,4 +273,6 @@ main {
     margin: auto;
   }
 }
+
+
 </style>

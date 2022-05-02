@@ -1,12 +1,12 @@
 <template>
   <main>
-    <p class="navigation">Akten-Edition <span class="arrow">></span> <span style="font-weight: bold">Politik</span></p>
+    <p class="navigation">Akten-Edition <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon> <span style="font-weight: bold">Politik</span></p>
     <div class="grid-container">
       <button type="button" class="item">
         <router-link class="nav-link" to="/akten-edition/politik/sozialdemokratie/collections">Sozialdemokratie</router-link>
       </button>
       <button type="button" class="item">
-        <router-link class="nav-link" to="/akten-edition/politik/christlich-national/collections">Christlich-National</router-link>
+        <router-link class="nav-link" to="/akten-edition/politik/christlich-sozial/collections">Christlich-Sozial</router-link>
       </button>
       <button type="button" class="item">
         <router-link class="nav-link" to="/akten-edition/politik/nationalsozialismus/collections">Nationalsozialismus</router-link>

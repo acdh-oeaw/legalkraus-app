@@ -34,7 +34,6 @@
         Dokument: {{ item.title }}
       </div>
     </div>
-
     <div v-if="showTitle && showKwic">
       <div v-on:click="navToLFWithKeyword">
         <div class="kwic elem" v-for="(kwic, i) in item.kwic" :key="`kw${i}`">
@@ -42,6 +41,7 @@
         </div>
       </div>
     </div>
+
   </main>
 </template>
 
@@ -63,7 +63,7 @@ export default {
       this.showKwic = !this.showKwic;
     },
     navToObjects() {
-      this.$emit("nav-to-objects", {url: this.item.collectionId})
+      this.$emit("nav-to-objects", {id: this.item.collectionId})
     },
     navToLF() {
       this.$router.push({

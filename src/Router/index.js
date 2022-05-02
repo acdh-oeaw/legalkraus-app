@@ -15,7 +15,9 @@ import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import OverviewHandapparat from "../components/Handapparat/OverviewHandapparat";
-import BoehmEdition from "../components/Handapparat/BoehmEdition";
+//import BoehmEdition from "../components/Handapparat/BoehmEdition";
+import Beitraege from "../components/Handapparat/Beitraege";
+import OskarSamek from "../components/Handapparat/OskarSamek";
 import Projektinformationen from "../components/Projekt/Projektinformationen";
 import Editionsrichtlinien from "../components/Projekt/Editionsrichtlinien";
 import Projektteam from "../components/Projekt/Projektteam";
@@ -35,7 +37,10 @@ Vue.use(IconsPlugin)
 
 export default new Router({
     mode: 'history',
-	base: process.env.BASE_URL,
+    base: process.env.BASE_URL,
+    scrollBehavior() {
+        window.scrollTo(0, 0)
+      },    
     routes: [
         {path: '/test', component: Test},
         {path: '/', name: 'home', component: Main},
@@ -50,30 +55,30 @@ export default new Router({
         {path: '/akten-edition/recht/zivilrecht/objects/:id', name: 'zivilrecht-objects', component: OverviewObjects},
 
         {path: '/akten-edition/politik', component: OverviewPolitik},
-        {path: '/akten-edition/politik/sozialdemokratie/collections', component: OverviewCollections},
+        {path: '/akten-edition/politik/sozialdemokratie/collections', name: 'sozialdemokratie-collections', component: OverviewCollections},
         {path: '/akten-edition/politik/sozialdemokratie/objects/:id', name: 'sozialdemokratie-objects', component: OverviewObjects},
-        {path: '/akten-edition/politik/christlich-national/collections', component: OverviewCollections},
-        {path: '/akten-edition/politik/christlich-national/objects/:id', name: 'christlich-national-objects', component: OverviewObjects},
-        {path: '/akten-edition/politik/nationalsozialismus/collections', component: OverviewCollections},
+        {path: '/akten-edition/politik/christlich-sozial/collections', name: 'christlich-sozial-collections', component: OverviewCollections},
+        {path: '/akten-edition/politik/christlich-sozial/objects/:id', name: 'christlich-sozial-objects', component: OverviewObjects},
+        {path: '/akten-edition/politik/nationalsozialismus/collections', name: 'nationalsozialismus-collections', component: OverviewCollections},
         {path: '/akten-edition/politik/nationalsozialismus/objects/:id', name: 'nationalsozialismus-objects', component: OverviewObjects},
        // {path: '/politik/objects/:id', name: 'politik-objects', component: OverviewObjects},
 
         {path: '/akten-edition/kultur', component: OverviewKultur},
-        {path: '/akten-edition/kultur/fackel/collections', component: OverviewCollections},
+        {path: '/akten-edition/kultur/fackel/collections', name: 'fackel-collections', component: OverviewCollections},
         {path: '/akten-edition/kultur/fackel/objects/:id', name: 'fackel-objects', component: OverviewObjects},
-        {path: '/akten-edition/kultur/theater/collections', component: OverviewCollections},
+        {path: '/akten-edition/kultur/theater/collections', name: 'theater-collections', component: OverviewCollections},
         {path: '/akten-edition/kultur/theater/objects/:id', name: 'theater-objects', component: OverviewObjects},
-        {path: '/akten-edition/kultur/verlagswesen/collections', component: OverviewCollections},
-        {path: '/akten-edition/kultur/verlagswesen/objects/:id', name: 'verlagswesen-objects', component: OverviewObjects},
-        {path: '/akten-edition/kultur/medienhistorisches/collections', component: OverviewCollections},
+        {path: '/akten-edition/kultur/verlage/collections', name: 'verlage-collections', component: OverviewCollections},
+        {path: '/akten-edition/kultur/verlage/objects/:id', name: 'verlage-objects', component: OverviewObjects},
+        {path: '/akten-edition/kultur/medienhistorisches/collections', name: 'medienhistorisches-collections', component: OverviewCollections},
         {path: '/akten-edition/kultur/medienhistorisches/objects/:id', name: 'medienhistorisches-objects', component: OverviewObjects},
-        {path: '/akten-edition/kultur/berichtigung/collections', component: OverviewCollections},
+        {path: '/akten-edition/kultur/berichtigung/collections', name: 'berichtigung-collections', component: OverviewCollections},
         {path: '/akten-edition/kultur/berichtigung/objects/:id', name: 'berichtigung-objects', component: OverviewObjects},
-        {path: '/akten-edition/kultur/schober/collections', component: OverviewCollections},
+        {path: '/akten-edition/kultur/schober/collections', name: 'schober-collections', component: OverviewCollections},
         {path: '/akten-edition/kultur/schober/objects/:id', name: 'schober-objects', component: OverviewObjects},
-        {path: '/akten-edition/kultur/die-stunde/collections', component: OverviewCollections},
+        {path: '/akten-edition/kultur/die-stunde/collections', name: 'stunde-collections', component: OverviewCollections},
         {path: '/akten-edition/kultur/die-stunde/objects/:id', name: 'stunde-objects', component: OverviewObjects},
-        {path: '/akten-edition/kultur/berliner-tageblatt/collections', component: OverviewCollections},
+        {path: '/akten-edition/kultur/berliner-tageblatt/collections', name: 'tageblatt-collections', component: OverviewCollections},
         {path: '/akten-edition/kultur/berliner-tageblatt/objects/:id', name: 'tageblatt-objects', component: OverviewObjects},
 
         {path: '/objects/:id', name:'overview-objects', component: OverviewObjects},
@@ -83,7 +88,9 @@ export default new Router({
         {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung},
 
         {path: '/handapparat', component: OverviewHandapparat},
-        {path: '/handapparat/boehm', component: BoehmEdition},
+        //{path: '/handapparat/boehm', component: BoehmEdition},
+        {path: '/handapparat/beitraege', component: Beitraege},
+        {path: '/handapparat/oskar-samek', component: OskarSamek},
         {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung, props: {
                 header: true,
                 content: true

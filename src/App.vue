@@ -27,7 +27,7 @@ export default {
     data.then(dt=>{
       this.$store.dispatch('setCases', dt.cases);
       processCaseInfo(dt);
-      console.log(dt)
+      this.$store.dispatch('setAppDataStatus',true)
     })  
   }
 };

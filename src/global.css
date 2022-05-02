@@ -35,3 +35,23 @@
 
     font-family: var(--open-sans-regular);
 }
+
+.semibold {
+    font-weight:600;
+}
+
+.breadcrumbarrow {
+    color: var(--primary-red-dark)
+}
+
+.opensans {
+    font-family: var(--open-sans-regular);
+}
+
+.no-grid-col-container {
+    grid-template-columns: unset;
+}
+
+.whitespace-break-spaces {
+    white-space: break-spaces;
+}

@@ -1,101 +1,184 @@
 <template>
   <main>
     <div class="filter-nav">
-      <p v-if="categorySet" class="navigation">Akten-Edition
-        <span class="arrow">></span>
-        <router-link router-link class="nav-link" :to="'/akten-edition/' + catLower">
+      <p v-if="categorySet" class="navigation">
+        Akten-Edition
+        <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
+        <router-link
+          router-link
+          class="nav-link"
+          :to="'/akten-edition/' + catLower"
+        >
           {{ this.category }}
         </router-link>
-        <span class="arrow">></span>
-        <router-link router-link class="nav-link" :to="'/akten-edition/' + catLower + '/'+ subCatLower +'/collections'">
-          {{ this.subCategory }}
+        <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
+        <router-link
+          router-link
+          class="nav-link"
+          :to="
+            '/akten-edition/' + catLower + '/' + subCatLower + '/collections'
+          "
+        >
+          {{ this.showSubCat }}
         </router-link>
-        <span class="arrow">></span>
+        <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
         <span style="font-weight: bold">{{ this.caseTitle }}</span>
       </p>
-      <p v-if="!categorySet" class="navigation">Akten-Edition
-        <span class="arrow">></span>
+      <p v-if="!categorySet" class="navigation">
+        Akten-Edition
+        <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
         <span style="font-weight: bold">{{ this.caseTitle }}</span>
       </p>
       <div class="filters">
         <div class="searchPers">
-          <input class="vt vtp" placeholder="Person:" list="persons" v-model="kwP" @keyup.enter="setCurrPers(kwP)"/>
+          <input
+            class="vt vtp"
+            placeholder="Person:"
+            list="persons"
+            v-model="kwP"
+            @keyup.enter="setCurrPers(kwP)"
+          />
           <datalist id="persons">
-            <option v-for="pers in this.allPersons" :key="pers.key" :value="pers.value">{{ pers.value }}</option>
+            <option
+              v-for="pers in this.allPersons"
+              :key="pers.key"
+              :value="pers.value"
+            >
+              {{ pers.value }}
+            </option>
           </datalist>
         </div>
-        <Search class="py-2 vt" v-on:searchPerformed="searchPerformed($event)"></Search>
+        <Search
+          class="py-2 vt"
+          v-bind:col-id="colId"
+          v-on:searchPerformed="searchPerformed($event)"
+        ></Search>
         <span class="lbls">
-        <div class="lbl" v-for="pers in currPersons" :key="pers.key">{{ pers.value }}
-          <svg v-on:click="removePers(pers.key)" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-               fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
-  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-  <path
-      d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-</svg></div>
-      </span>
+          <div class="lbl" v-for="pers in currPersons" :key="pers.key">
+            {{ pers.value }}
+            <svg
+              v-on:click="removePers(pers.key)"
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-x-circle"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+              />
+              <path
+                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+              />
+            </svg>
+          </div>
+        </span>
 
         <div class="reset-filter">
-          <button type="button" class="btn btn-secondary btn-sm reset-button" v-on:click="resetFilter">Filter
-            zurücksetzen
+          <button
+            type="button"
+            class="btn btn-secondary btn-sm reset-button"
+            v-on:click="resetFilter"
+          >
+            Filter zurücksetzen
           </button>
         </div>
 
-        <input class="vt vtt" type="text" placeholder="Dokument-Titel:" v-model="kwT"
-               @keyup="filterAll()"/>
+        <input
+          class="vt vtt"
+          type="text"
+          placeholder="Dokument-Titel:"
+          v-model="kwT"
+          @keyup="filterAll()"
+        />
       </div>
     </div>
     <!--   <div class="search-wrapper">
           <Search class="py-2" v-bind:col-id="colId" v-on:searchPerformed="searchPerformed($event)"></Search>
         </div>-->
+
     <div class="case-info">
-      <h3> Dokumente des Falles "{{ this.caseTitle }}"</h3>
+      <h3>Dokumente des Falles "{{ this.caseTitle }}"</h3>
       <div v-if="loading">
-        <p> Dokumente werden geladen. </p>
+        <p>Dokumente werden geladen.</p>
         <div class="loader"></div>
       </div>
-
-      <p v-else> Dieser Fall hat {{ this.objects.length }} Dokumente. </p>
+      <IntrotextCollection class="w-75 mx-auto my-2 text-justify" v-if="this.caseData" :colid="this.numericColId" />
+      <p v-if="!loading && this.caseData.doc_objs.length === 1">
+        Dieser Fall hat {{ this.caseData.doc_objs.length }} Dokument.
+      </p>
+      <p v-if="!loading && this.caseData.doc_objs.length !== 1">
+        Dieser Fall hat {{ this.caseData.doc_objs.length }} Dokumente.
+      </p>
 
       <div v-if="searchView">
         <b-col>
-          <h5> Suchergebnisse zu "{{ this.keyword }}":</h5>
+          <h5>Suchergebnisse zu "{{ this.keyword }}":</h5>
           <div v-if="searchResultsCount === 0">Keine Ergebnisse</div>
-          <div v-else-if="searchResultsCount === 1">{{ searchResults.length }} Ergebnis</div>
-          <div v-else-if="searchResultsCount >= 1">{{ searchResultsCount }} Ergebnisse</div>
-          <button type="button" class="btn btn-secondary btn-sm" v-on:click="toggleView">Zurück zur Fallansicht</button>
+          <div v-else-if="searchResultsCount === 1">
+            {{ searchResults.length }} Ergebnis
+          </div>
+          <div v-else-if="searchResultsCount >= 1">
+            {{ searchResultsCount }} Ergebnisse
+          </div>
+          <button
+            type="button"
+            class="btn btn-secondary btn-sm"
+            v-on:click="toggleView"
+          >
+            Zurück zur Fallansicht
+          </button>
         </b-col>
       </div>
     </div>
     <div class="cards-wrapper">
-      <div v-if="!searchView" class="card-deck">
-        <div class="card" v-for="val in currObjects" v-bind:key="val.title">
+      <div v-if="!searchView && this.caseData" class="card-deck">
+        <div class="card" v-for="val in this.caseData.doc_objs" v-bind:key="val.title">
           <div v-if="val.facs === '' || val.facs === 'no facs'">
             <p>Kein Bild vorhanden</p>
           </div>
-          <img v-else class="embedded-img" :src="fixFacsSize(val.facs)"
-               @error="fallbackImage" alt="facsimile"
-               v-on:click="navToLesefassung(val)">
+          <img
+            v-else
+            class="embedded-img"
+            :src="fixFacsSize(val.facs)"
+            @error="fallbackImage"
+            alt="facsimile"
+            v-on:click="navToLesefassung(val)"
+          />
           <div class="case-data scroll">
-            <h6 class="card-title" v-on:click="navToLesefassung(val)"><b>{{ val.title }}</b></h6>
-            <span v-if="val.actors.length > 0">
-              <p> <b>Beteiligte:</b> </p>
-            <div class="pmb-link" v-for="a in val.actorObjs" :key="a.identifier" v-on:click="navToPMBActor($event, a)"><!--   v-on:click="navToPMB($event, a)"-->
-                {{ a.name }}
+            <h6 class="card-title" v-on:click="navToLesefassung(val)">
+              <b>{{ val.title }}</b>
+            </h6>
+            <span v-if="Object.keys(val.persons).length > 0">
+              <p><b>Beteiligte:</b></p>
+              <div
+                class="pmb-link"
+                v-for="(name,pmbid) in val.persons"
+                :key="pmbid"
+                v-on:click="navToPMBActor($event, pmbid)"
+              >
+                <!--   v-on:click="navToPMB($event, a)"-->
+                {{ name }}
               </div>
             </span>
-            <div v-if="val.actors.length === 0">Beteiligte: -</div>
-            <span v-if="val.places.length > 0">
-              <p class="p-s"> Orte:</p>
-              <div class="pmb-link" v-for="pl in val.placeObjs" :key="pl.identifier"
-                   v-on:click="navToPMBPlace($event, pl)">
-                {{ pl.name }}</div>
+            <div v-else>Beteiligte: -</div>
+            <span v-if="Object.keys(val.places).length > 0">
+              <p class="p-s">Orte:</p>
+              <div
+                class="pmb-link"
+                v-for="(name,pmbid) in val.places"
+                :key="pmbid"
+                v-on:click="navToPMBPlace($event, pmbid)"
+              >
+                {{ name }}
+              </div>
             </span>
-            <div v-if="val.places.length === 0">Orte: -</div>
+            <div v-else>Orte: -</div>
           </div>
         </div>
       </div>
-      <div v-if="searchView" class="card-deck">
+      <!--      <div v-if="searchView" class="card-deck">
         <div class="card" v-for="val in searchResults" v-bind:key="val.title" v-on:click="navToLesefassung(val)">
           <h4 class="card-title"> {{ val.title }}</h4>
           <p> {{ val.id }}</p>
@@ -105,24 +188,34 @@
             <p v-html="kwic" class="text-left"></p>
           </b-row>
         </div>
+      </div>-->
+      <div v-if="searchView" class="list-items">
+        <div v-for="item in searchResults" v-bind:key="item.key">
+          <SearchResultItem
+            v-bind:item="item"
+            v-on:nav-to-objects="navToObjects($event)"
+          ></SearchResultItem>
+        </div>
       </div>
     </div>
   </main>
 </template>
 
 <script>
-
-
-import {getObjectsOfCollection, getObjectWithId} from "@/services/ARCHEService";
-import {ARCHErdfQuery} from "arche-api/src";
+import { getObjectWithId } from "@/services/ARCHEService";
+import { ARCHErdfQuery } from "arche-api/src";
 import Search from "../Search";
-import {getEntity} from "../../services/ARCHEService";
-import fallbackImage from '@/assets/noimage.svg';
+import { getArcheIdFromXmlId } from "../../services/ARCHEService";
+import fallbackImage from "@/assets/noimage.svg";
+import SearchResultItem from "./SearchResultItem";
+import IntrotextCollection from "./IntrotextCol.vue";
 
 export default {
   name: "OverviewObjects",
   components: {
-    Search: Search
+    Search: Search,
+    SearchResultItem,
+    IntrotextCollection,
   },
   data: function () {
     return {
@@ -142,6 +235,7 @@ export default {
       category: String,
       catLower: String,
       subCatLower: String,
+      showSubCat: null,
       categorySet: true,
       caseInfo: null,
       allPersons: [],
@@ -150,78 +244,88 @@ export default {
       kwT: null,
       kwP: [],
 
-      r: 'Recht',
-      k: 'Kultur',
-      p: 'Politik',
-      pR: 'Privatrecht',
-      sR: 'Strafrecht',
-      vR: 'Verwaltungsrecht',
-      zR: 'Zivilrecht',
-      fK: 'Die Fackel',
-      tK: 'Theater',
-      vK: 'Verlagswesen',
-      mK: 'Medienhistorisches',
-      bK: 'Berichtigung (Ausgang)',
-      bbK: 'Berliner Tageblatt, Kerr, Wolff',
-      sK: 'Die Stunde, Békessy',
-      schK: 'Schober, 15. Juli 1927',
-      sP: 'Sozialdemokratie',
-      cP: 'Christlich-National',
-      nP: 'Nationalsozialismus'
-    }
+      r: "Recht",
+      k: "Kultur",
+      p: "Politik",
+      pR: "Privatrecht",
+      sR: "Strafrecht",
+      vR: "Verwaltungsrecht",
+      zR: "Zivilrecht",
+      fK: "Die Fackel",
+      tK: "Theater",
+      vK: "Verlage",
+      mK: "Medienhistorisches",
+      bK: "Berichtigung (Ausgang)",
+      bbK: "Berliner Tageblatt",
+      sK: "Die Stunde, Békessy",
+      schK: "Schober, 15. Juli 1927",
+      sP: "Sozialdemokratie",
+      cP: "Christlich-sozial",
+      nP: "Nationalsozialismus",
+    };
+  },
+  computed: {
+    numericColId() {
+      return parseInt(this.xmlIdCase.replace(/(^C_|\.xml$)/mg,""));
+    },
   },
   methods: {
-    fallbackImage: function(e) {
-      return e.target.src = `${fallbackImage}`
+    fallbackImage: function (e) {
+      return (e.target.src = `${fallbackImage}`);
     },
     navToLesefassung: function (val) {
-      let id = this.getIdFromUrl(val.url)
-      if (this.categorySet) {
-        if (this.searchView) {
-          let text = new DOMParser()
-              .parseFromString(val.kwic[0], "text/html")
-              .documentElement.textContent;
-          //remove multiple whitespaces
-          let contextNoMultSpace = text.replace(/\s\s+/g, ' ').substring(0, 20);
-          this.$router.push({
-            name: "lesefassung",
-            params: {
-              id: id,
-              cat: this.category,
-              subcat: this.subCategory,
-              case: this.caseTitle,
-              searchTermContext: contextNoMultSpace
-            }
-          });
+      getArcheIdFromXmlId(val.id, rs =>{
+        let id = rs;
+        if (this.categorySet) {
+          if (this.searchView) {
+            let text = new DOMParser().parseFromString(val.kwic[0], "text/html")
+                .documentElement.textContent;
+            //remove multiple whitespaces
+            let contextNoMultSpace = text.replace(/\s\s+/g, " ").substring(0, 20);
+            this.$router.push({
+              name: "lesefassung",
+              params: {
+                id: id,
+                cat: this.category,
+                subcat: this.subCategory,
+                case: this.caseTitle,
+                searchTermContext: contextNoMultSpace,
+              },
+            });
+          } else {
+            this.$router.push({
+              name: "lesefassung",
+              params: {
+                id: id,
+                cat: this.category,
+                subcat: this.subCategory,
+                case: this.caseTitle,
+              },
+            });
+          }
         } else {
           this.$router.push({
             name: "lesefassung",
-            params: {id: id, cat: this.category, subcat: this.subCategory, case: this.caseTitle}
+            params: { id: id, case: this.caseTitle },
           });
         }
-      } else {
-        this.$router.push({
-          name: "lesefassung",
-          params: {id: id, case: this.caseTitle}
-        });
-      }
-
+      });
 
     },
     fixFacsSize(url) {
-      return url.replace('full/full/', 'full/304,/')
+      return url.replace("full/full/", "full/304,/");
     },
     getIdFromUrl(url) {
-      let idx = url.lastIndexOf('/');
+      let idx = url.lastIndexOf("/");
       return url.substring(idx + 1);
     },
     setCurrPageAndCategory() {
       //category
-      if (this.path.toString().includes('recht')) {
+      if (this.path.toString().includes("recht")) {
         this.category = this.r;
-      } else if (this.path.toString().includes('kultur')) {
+      } else if (this.path.toString().includes("kultur")) {
         this.category = this.k;
-      } else if (this.path.toString().includes('politik')) {
+      } else if (this.path.toString().includes("politik")) {
         this.category = this.p;
       } else {
         //directly accessed overview objects
@@ -230,51 +334,58 @@ export default {
 
       this.catLower = this.category.toString().toLowerCase();
       //currPage
-      if (this.path.toString().includes('privatrecht')) {
+      if (this.path.toString().includes("privatrecht")) {
         this.subCategory = this.pR;
-      } else if (this.path.toString().includes('strafrecht')) {
+      } else if (this.path.toString().includes("strafrecht")) {
         this.subCategory = this.sR;
-      } else if (this.path.toString().includes('verwaltungsrecht')) {
+      } else if (this.path.toString().includes("verwaltungsrecht")) {
         this.subCategory = this.vR;
-      } else if (this.path.toString().includes('zivilrecht')) {
+      } else if (this.path.toString().includes("zivilrecht")) {
         this.subCategory = this.zR;
-      } else if (this.path.toString().includes('fackel')) {
+      } else if (this.path.toString().includes("fackel")) {
         this.subCategory = this.fK;
-      } else if (this.path.toString().includes('theater')) {
+      } else if (this.path.toString().includes("theater")) {
         this.subCategory = this.tK;
-      } else if (this.path.toString().includes('verlagswesen')) {
+      } else if (this.path.toString().includes("verlage")) {
         this.subCategory = this.vK;
-      } else if (this.path.toString().includes('stunde')) {
+        this.showSubCat = "Verlage";
+      } else if (this.path.toString().includes("stunde")) {
         this.subCategory = this.sK;
-      } else if (this.path.toString().includes('schober')) {
+      } else if (this.path.toString().includes("schober")) {
         this.subCategory = this.schK;
-      } else if (this.path.toString().includes('tageblatt')) {
+      } else if (this.path.toString().includes("tageblatt")) {
         this.subCategory = this.bbK;
-      }else if (this.path.toString().includes('medienhistorisches')) {
+        this.showSubCat = "Berliner Tageblatt";
+      } else if (this.path.toString().includes("medienhistorisches")) {
         this.subCategory = this.mK;
-      }else if (this.path.toString().includes('berichtigung')) {
+      } else if (this.path.toString().includes("berichtigung")) {
         this.subCategory = this.bK;
-      } else if (this.path.toString().includes('sozialdemokratie')) {
+      } else if (this.path.toString().includes("sozialdemokratie")) {
         this.subCategory = this.sP;
-      } else if (this.path.toString().includes('christlich-national')) {
+      } else if (this.path.toString().includes("christlich-sozial")) {
         this.subCategory = this.cP;
-      } else if (this.path.toString().includes('nationalsozialismus')) {
+        this.showSubCat = "Christlich-Sozial";
+      } else if (this.path.toString().includes("nationalsozialismus")) {
         this.subCategory = this.nP;
       }
 
       if (this.subCategory === this.fK) {
-        this.subCatLower = 'fackel';
+        this.subCatLower = "fackel";
       } else if (this.subCategory === this.sK) {
-        this.subCatLower = 'die-stunde';
+        this.subCatLower = "die-stunde";
       } else if (this.subCategory === this.schK) {
-        this.subCatLower = 'schober';
+        this.subCatLower = "schober";
       } else if (this.subCategory === this.bbK) {
-        this.subCatLower = 'berliner-tageblatt';
+        this.subCatLower = "tageblatt";
       } else {
         this.subCatLower = this.subCategory.toString().toLowerCase();
       }
 
+      if (this.showSubCat === null) {
+        this.showSubCat = this.currSubCat;
+      }
     },
+    
     async searchPerformed(event) {
       if (event.keyword === "") {
         this.searchView = false;
@@ -288,66 +399,76 @@ export default {
     toggleView() {
       this.searchView = false;
     },
-    navToPMBActor(event, a) {
-      let url = 'https://pmb.acdh.oeaw.ac.at/apis/entities/entity/person/' + a.id + '/detail'
-      window.open(url, '_blank').focus();
+    navToPMBActor(event, pmbid) {
+      let url =
+        "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/person/" +
+        pmbid.replace('pmb','') +
+        "/detail";
+      window.open(url, "_blank").focus();
     },
-    navToPMBPlace(event, pl) {
-      let url = 'https://pmb.acdh.oeaw.ac.at/apis/entities/entity/place/' + pl.id + '/detail';
-      window.open(url, '_blank').focus();
+    navToPMBPlace(event, pmbid) {
+      let url =
+        "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/place/" +
+        pmbid.replace('pmb','') +
+        "/detail";
+      window.open(url, "_blank").focus();
     },
     setCurrPers(kwP) {
       //get key of person and add person to this.currPersons
       for (var key in this.allPersons) {
         if (this.allPersons[key].value === kwP) {
           //check if person is already in this.currPersons
-          if (!this.currPersons.filter(p => p.key === this.allPersons[key].key).length > 0) {
+          if (
+            !this.currPersons.filter((p) => p.key === this.allPersons[key].key)
+              .length > 0
+          ) {
             //remove leading '#' from key
-            this.currPersons.push({'key': this.allPersons[key].key.substring(1), 'value': this.allPersons[key].value});
+            this.currPersons.push({
+              key: this.allPersons[key].key.substring(1),
+              value: this.allPersons[key].value,
+            });
           }
         }
       }
 
       this.filterAll();
-
     },
     filterAll() {
       //extract objects that contain all persons in this.currPerson and match title
       let temp = [];
       //possible bottleneck
-      this.objects.forEach(o => {
+      this.objects.forEach((o) => {
         let containsAll = true;
 
         //check if all p in currPersons are in o.actors
-        this.currPersons.forEach(p => {
+        this.currPersons.forEach((p) => {
           //Kraus is not mentioned in the actors of case-info.json, since he is part of every case
           if (!p.value.includes("Kraus")) {
             let match = false;
-            o.actorObjs.forEach(o => {
-              if(o.name === p.value){
+            o.actorObjs.forEach((o) => {
+              if (o.name === p.value) {
                 match = true;
               }
             });
-            if(match === false){
+            if (match === false) {
               containsAll = false;
             }
           }
         });
 
-
         if (this.kwT) {
-          if (!(o.title.toUpperCase().includes(this.kwT.toUpperCase()))) {
+          if (!o.title.toUpperCase().includes(this.kwT.toUpperCase())) {
             containsAll = false;
           }
         }
 
         if (containsAll === true) {
-          temp.push(o)
+          temp.push(o);
         }
       });
       this.currObjects = temp;
       this.kwP = null;
-      this.kwO = null
+      this.kwO = null;
     },
     resetFilter() {
       this.currPersons = [];
@@ -358,11 +479,136 @@ export default {
     removePers(key) {
       for (let i = 0; i < this.currPersons.length; i++) {
         if (this.currPersons[i].key === key) {
-          this.currPersons = this.currPersons.filter(p => p.key !== key);
+          this.currPersons = this.currPersons.filter((p) => p.key !== key);
         }
       }
       this.filterAll();
-
+    },
+    navToObjects: async function (event) {
+      let id = event.id;
+      if (!id.includes("_")) {
+        if (this.currSubCat === this.pR) {
+          this.$router.push({
+            name: "privatrecht-objects",
+            params: { id: id },
+          });
+        } else if (this.currSubCat === this.sR) {
+          this.$router.push({ name: "strafrecht-objects", params: { id: id } });
+        } else if (this.currSubCat === this.vR) {
+          this.$router.push({
+            name: "verwaltungsrecht-objects",
+            params: { id: id },
+          });
+        } else if (this.currSubCat === this.zR) {
+          this.$router.push({ name: "zivilrecht-objects", params: { id: id } });
+        } else if (this.currSubCat === this.fK) {
+          this.$router.push({ name: "fackel-objects", params: { id: id } });
+        } else if (this.currSubCat === this.tK) {
+          this.$router.push({ name: "theater-objects", params: { id: id } });
+        } else if (this.currSubCat === this.vK) {
+          this.$router.push({ name: "verlage-objects", params: { id: id } });
+        } else if (this.currSubCat === this.sK) {
+          this.$router.push({ name: "stunde-objects", params: { id: id } });
+        } else if (this.currSubCat === this.mK) {
+          this.$router.push({
+            name: "medienhistorisches-objects",
+            params: { id: id },
+          });
+        } else if (this.currSubCat === this.bK) {
+          this.$router.push({
+            name: "berichtigung-objects",
+            params: { id: id },
+          });
+        } else if (this.currSubCat === this.schK) {
+          this.$router.push({ name: "schober-objects", params: { id: id } });
+        } else if (this.currSubCat === this.bbK) {
+          this.$router.push({ name: "tageblatt-objects", params: { id: id } });
+        } else if (this.currSubCat === this.sP) {
+          this.$router.push({
+            name: "sozialdemokratie-objects",
+            params: { id: id },
+          });
+        } else if (this.currSubCat === this.cP) {
+          this.$router.push({
+            name: "christlich-sozial-objects",
+            params: { id: id },
+          });
+        } else if (this.currSubCat === this.nP) {
+          this.$router.push({
+            name: "nationalsozialismus-objects",
+            params: { id: id },
+          });
+        } else {
+          this.$router.push({ name: "overview-objects", params: { id: id } });
+        }
+      } else {
+        getArcheIdFromXmlId(event.id, (rs) => {
+          id = rs;
+          if (this.currSubCat === this.pR) {
+            this.$router.push({
+              name: "privatrecht-objects",
+              params: { id: id },
+            });
+          } else if (this.currSubCat === this.sR) {
+            this.$router.push({
+              name: "strafrecht-objects",
+              params: { id: id },
+            });
+          } else if (this.currSubCat === this.vR) {
+            this.$router.push({
+              name: "verwaltungsrecht-objects",
+              params: { id: id },
+            });
+          } else if (this.currSubCat === this.zR) {
+            this.$router.push({
+              name: "zivilrecht-objects",
+              params: { id: id },
+            });
+          } else if (this.currSubCat === this.fK) {
+            this.$router.push({ name: "fackel-objects", params: { id: id } });
+          } else if (this.currSubCat === this.tK) {
+            this.$router.push({ name: "theater-objects", params: { id: id } });
+          } else if (this.currSubCat === this.vK) {
+            this.$router.push({ name: "verlage-objects", params: { id: id } });
+          } else if (this.currSubCat === this.sK) {
+            this.$router.push({ name: "stunde-objects", params: { id: id } });
+          } else if (this.currSubCat === this.mK) {
+            this.$router.push({
+              name: "medienhistorisches-objects",
+              params: { id: id },
+            });
+          } else if (this.currSubCat === this.bK) {
+            this.$router.push({
+              name: "berichtigung-objects",
+              params: { id: id },
+            });
+          } else if (this.currSubCat === this.schK) {
+            this.$router.push({ name: "schober-objects", params: { id: id } });
+          } else if (this.currSubCat === this.bbK) {
+            this.$router.push({
+              name: "tageblatt-objects",
+              params: { id: id },
+            });
+          } else if (this.currSubCat === this.sP) {
+            this.$router.push({
+              name: "sozialdemokratie-objects",
+              params: { id: id },
+            });
+          } else if (this.currSubCat === this.cP) {
+            this.$router.push({
+              name: "christlich-sozial-objects",
+              params: { id: id },
+            });
+          } else if (this.currSubCat === this.nP) {
+            this.$router.push({
+              name: "nationalsozialismus-objects",
+              params: { id: id },
+            });
+          } else {
+            this.$router.push({ name: "overview-objects", params: { id: id } });
+          }
+        });
+      }
     },
   },
   created() {
@@ -371,56 +617,57 @@ export default {
     this.setCurrPageAndCategory();
     this.caseInfo = this.$store.getters.caseInfo;
     if (isNaN(parseInt(this.colId)) || this.colId === -1) {
-      this.$router.push({name: "home"});
+      this.$router.push({ name: "home" });
       //todo: go to "home" when id-parameter is empty
     }
     getObjectWithId(this.colId, (result) => {
       // query:
       const optionsTitle = {
-        "subject": null,
-        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle",
-        "object": null,
-        "expiry": 14
+        subject: null,
+        predicate: "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle",
+        object: null,
+        expiry: 14,
       };
 
       const optionsXmlId = {
-        "subject": null,
-        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier",
-        "object": null,
-        "expiry": 14
+        subject: null,
+        predicate: "https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier",
+        object: null,
+        expiry: 14,
       };
 
       const optionsSize = {
-        "subject": null,
-        "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#hasNumberOfItems",
-        "object": null,
-        "expiry": 14
+        subject: null,
+        predicate: "https://vocabs.acdh.oeaw.ac.at/schema#hasNumberOfItems",
+        object: null,
+        expiry: 14,
       };
 
-      this.caseTitle = ARCHErdfQuery(optionsTitle, result).value[0].hasTitle.object;
-      let xmlId = ARCHErdfQuery(optionsXmlId, result).value[1].hasIdentifier.object;
-      let documents = ARCHErdfQuery(optionsSize, result).value[0].hasNumberOfItems.object;
+      this.caseTitle = ARCHErdfQuery(
+        optionsTitle,
+        result
+      ).value[0].hasTitle.object;
+      let xmlId = ARCHErdfQuery(optionsXmlId, result).value[1].hasIdentifier
+        .object;
+      let documents = ARCHErdfQuery(optionsSize, result).value[0]
+        .hasNumberOfItems.object;
 
-      let idx1 = documents.lastIndexOf('^');
+      let idx1 = documents.lastIndexOf("^");
       this.numberDocuments = documents.substring(0, idx1 - 1);
 
-      let idx2 = xmlId.lastIndexOf('/');
-      this.xmlIdCase = xmlId.substring(idx2 + 1) + '.xml';
+      let idx2 = xmlId.lastIndexOf("/");
+      this.xmlIdCase = xmlId.substring(idx2 + 1) + ".xml";
 
-      this.caseInfo.then(data => {
-        const cases = data.cases;
-        cases.forEach(c => {
-          if (c.id === this.xmlIdCase)
-            this.caseData = c;
-        });
+      this.caseInfo.then((data) => {
+        this.caseData = data.cases.filter((cs) => cs.id === this.xmlIdCase)[0];
         for (var name in this.caseData.men_pers) {
           let p = {};
           p.key = name;
           p.value = this.caseData.men_pers[name];
           this.allPersons.push(p);
         }
-
-        getObjectsOfCollection(this.colId, async (result) => {
+        this.loading = false;
+        /*getObjectsOfCollection(this.colId, async (result) => {
           let objs = result.filter(r => !r.identifier.includes('C_'));
           objs.sort(function(a,b){
             let aId = a.identifier.substring(a.identifier.lastIndexOf('/') + 1);
@@ -429,10 +676,10 @@ export default {
             let bIdNum = parseInt(bId.replace("D_","").replaceAll('-',''));
 
             return aIdNum - bIdNum;
-          });
+          });*/
 
-          //get facs preview, actors, places
-          for (const o of objs) {
+        //get facs preview, actors, places
+        /*for (const o of objs) {
             //extract xml id
             let id = o.identifier.substring(o.identifier.lastIndexOf('/') + 1);
 
@@ -483,14 +730,11 @@ export default {
           }
           this.objects = objs;
           this.currObjects = objs;
-        });
-
+        });*/
       });
-
     });
-
   },
-}
+};
 </script>
 
 <style scoped>
@@ -542,6 +786,13 @@ export default {
   grid-column-gap: 6rem;
 }
 
+.list-items {
+  margin-left: 2rem;
+  margin-right: 2rem;
+  padding-left: 2rem;
+  width: 100%;
+}
+
 .case-info {
   margin: 2rem;
 }
@@ -549,6 +800,10 @@ export default {
 .p-s {
   padding-top: 2rem;
   font-weight: bold;
+}
+
+.pmb-link {
+  cursor:pointer
 }
 
 .pmb-link:hover {
@@ -571,7 +826,7 @@ export default {
 }
 
 .arrow {
-  color: #C85545;
+  color: #c85545;
 }
 
 .nav-link {
@@ -582,7 +837,7 @@ export default {
 }
 
 .nav-link:hover {
-  color: #C85545;
+  color: #c85545;
 }
 
 .loader {
@@ -625,7 +880,6 @@ export default {
   height: fit-content;
 }
 
-
 .lbl {
   background-color: var(--primary-red);
   color: var(--text-white);
@@ -634,7 +888,6 @@ export default {
   padding: 0.1rem 0.3rem;
   margin-left: 0.5rem;
   margin-bottom: 0.5rem;
-
 }
 
 .lbls {
@@ -671,5 +924,7 @@ export default {
   height: fit-content;
 }
 
-
+.searchPers {
+  margin-left: 2rem;
+}
 </style>

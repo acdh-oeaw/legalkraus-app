@@ -2,7 +2,7 @@
   <main>
     <div class="filter-nav">
       <p class="navigation">Akten-Edition
-        <span class="arrow">></span>
+        <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
         <span style="font-weight: bold">Handschriftliches</span>
       </p>
       <div class="filters">
@@ -84,7 +84,7 @@
       </svg>
 
       <span>
-          Seite {{ this.idxD / step }} von {{ Math.ceil(this.filteredObjs.length / this.step) }}
+          Seite {{ currPage }} von {{ Math.ceil(this.filteredObjs.length / this.step) }}
     </span>
 
       <svg v-on:click="nextDocs()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
@@ -124,6 +124,7 @@ export default {
       currentDocObjs: [],
       idxD: 10,
       step: 10,
+      currPage: 1
     }
   },
   methods: {
@@ -216,17 +217,27 @@ export default {
       this.filterAll();
     },
     nextDocs() {
-      if ((this.idxD + this.step) < this.docObjs.length) {
+      if ((this.idxD + this.step) < this.filteredObjs.length) {
         //more than 10 cases left
-        this.currentDocObjs = this.docObjs.slice(this.idxD, this.idxD + this.step);
+        this.currentDocObjs = this.filteredObjs.slice(this.idxD, this.idxD + this.step);
         this.idxD += this.step;
+        this.currPage++;
+      }else{
+        this.currentDocObjs = this.filteredObjs.slice(this.idxD);
+        this.idxD = this.filteredObjs.length-1;
+        this.currPage++;
       }
     },
     prevDocs() {
       if ((this.idxD - this.step) > 0) {
         //more than 10 cases left
         this.idxD -= this.step;
-        this.currentDocObjs = this.docObjs.slice(this.idxD - this.step, this.idxD);
+        this.currentDocObjs = this.filteredObjs.slice(this.idxD - this.step, this.idxD);
+        this.currPage--;
+      }else{
+        this.currentDocObjs = this.filteredObjs.slice(0, this.idxD);
+        this.idxD = 1;
+        this.currPage--;
       }
     },
     fixFacsSize(url) {

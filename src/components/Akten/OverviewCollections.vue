@@ -2,12 +2,12 @@
   <main>
     <div class="filter-nav">
       <p class="navigation">Akten-Edition
-        <span class="arrow">></span>
+        <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
         <router-link router-link class="nav-link" :to="'/akten-edition/' + catLower">
           {{ this.category }}
         </router-link>
-        <span class="arrow">></span>
-        <span style="font-weight: bold">{{ this.currSubCat }}</span>
+        <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
+        <span style="font-weight: bold">{{ this.showSubCat }}</span>
       </p>
       <div class="filters">
         <div class="searchPers">
@@ -52,8 +52,9 @@
                @keyup="filterAll()"/>
       </div>
     </div>
-    <div class="sammlungen">{{ this.$store.getters.noOfCollections }} Sammlungen</div>
+     <Introtext class="my-5 text-justify w-75 mx-auto"/>
     <div v-if="!searchView" class="card">
+      <b-row>
       <b-pagination
           page-class="custompaging"
           prev-class="custompagingarrows"
@@ -61,25 +62,33 @@
           first-class="custompagingarrows"
           last-class="custompagingarrows"
           class="custom-pagination"
+          :no-provider-sorting="true"
+          :no-provider-paging="true"
           v-model="currentPage"
           :total-rows="this.$store.getters.noOfCollections"
           :per-page="perPage"
           aria-controls="col-table"
       ></b-pagination>
-      <b-table id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
-               :current-page="currentPage" :per-page="perPage"
-               :busy.sync="isBusy" :fields="[
+      <div class="sammlungen ml-3">{{ this.$store.getters.noOfCollections }} Sammlungen</div>
+      </b-row>
+      <b-table :thead-class="'semi-bold'" id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
+               :current-page="currentPage" :per-page="perPage" :sort-by="'id'"
+               :busy.sync="isBusy"
+                :sort-compare="tableSortCompare" :fields="[
             {
               key: 'id',
-              label: 'Aktennummer'
+              label: 'Aktennummer',
+              sortable: true
             },
            {
               key: 'title',
-              label: 'Titel'
+              label: 'Titel',
+              sortable: true
             },
             {
               key: 'size',
-              label: 'Anzahl Dokumente'
+              label: 'Anzahl Dokumente',
+              sortable: true
             },
           ]" :items="currCases" @row-clicked="navToObjects">
         <template #table-busy>
@@ -109,13 +118,15 @@
 import {getCollections} from "@/services/ARCHEService";
 import Search from "../Search";
 import SearchResultItem from "./SearchResultItem";
+import Introtext from "./Introtext.vue";
 import {getArcheIdFromXmlId} from "../../services/ARCHEService";
 
 export default {
   name: "OverviewCollections",
   components: {
     Search: Search,
-    SearchResultItem: SearchResultItem
+    SearchResultItem: SearchResultItem,
+    Introtext: Introtext,
   },
   data: function () {
     return {
@@ -133,6 +144,7 @@ export default {
       kwY: null,
       path: String,
       currSubCat: String,
+      showSubCat: null,
       category: String,
       catLower: String,
       cases: [],
@@ -158,7 +170,7 @@ export default {
       sK: 'Die Stunde, Békessy',
       schK: 'Schober, 15. Juli 1927',
       sP: 'Sozialdemokratie',
-      cP: 'Christlich-National',
+      cP: 'Christlich-sozial',
       nP: 'Nationalsozialismus'
 
     }
@@ -168,8 +180,9 @@ export default {
       const offset = ctx.currentPage === 1 ? 0 : (ctx.currentPage - 1) * ctx.perPage;
       callback(this.cases.slice(offset, offset + ctx.perPage))
     },
-    navToObjects: async function (record) {
-      getArcheIdFromXmlId(record.id, async id => {
+    navToObjects: async function (event) {
+      let id = event.id;
+      if(!id.includes('_')){
         if (this.currSubCat === this.pR) {
           this.$router.push({name: "privatrecht-objects", params: {id: id}});
         } else if (this.currSubCat === this.sR) {
@@ -183,7 +196,7 @@ export default {
         } else if (this.currSubCat === this.tK) {
           this.$router.push({name: "theater-objects", params: {id: id}});
         } else if (this.currSubCat === this.vK) {
-          this.$router.push({name: "verlagswesen-objects", params: {id: id}});
+          this.$router.push({name: "verlage-objects", params: {id: id}});
         } else if (this.currSubCat === this.sK) {
           this.$router.push({name: "stunde-objects", params: {id: id}});
         } else if (this.currSubCat === this.mK) {
@@ -197,11 +210,58 @@ export default {
         } else if (this.currSubCat === this.sP) {
           this.$router.push({name: "sozialdemokratie-objects", params: {id: id}});
         } else if (this.currSubCat === this.cP) {
-          this.$router.push({name: "christlich-national-objects", params: {id: id}});
+          this.$router.push({name: "christlich-sozial-objects", params: {id: id}});
         } else if (this.currSubCat === this.nP) {
           this.$router.push({name: "nationalsozialismus-objects", params: {id: id}});
         }
-      });
+      }
+      else{
+        getArcheIdFromXmlId(event.id, rs =>{
+          id = rs;
+          if (this.currSubCat === this.pR) {
+            this.$router.push({name: "privatrecht-objects", params: {id: id}});
+          } else if (this.currSubCat === this.sR) {
+            this.$router.push({name: "strafrecht-objects", params: {id: id}});
+          } else if (this.currSubCat === this.vR) {
+            this.$router.push({name: "verwaltungsrecht-objects", params: {id: id}});
+          } else if (this.currSubCat === this.zR) {
+            this.$router.push({name: "zivilrecht-objects", params: {id: id}});
+          } else if (this.currSubCat === this.fK) {
+            this.$router.push({name: "fackel-objects", params: {id: id}});
+          } else if (this.currSubCat === this.tK) {
+            this.$router.push({name: "theater-objects", params: {id: id}});
+          } else if (this.currSubCat === this.vK) {
+            this.$router.push({name: "verlage-objects", params: {id: id}});
+          } else if (this.currSubCat === this.sK) {
+            this.$router.push({name: "stunde-objects", params: {id: id}});
+          } else if (this.currSubCat === this.mK) {
+            this.$router.push({name: "medienhistorisches-objects", params: {id: id}});
+          } else if (this.currSubCat === this.bK) {
+            this.$router.push({name: "berichtigung-objects", params: {id: id}});
+          } else if (this.currSubCat === this.schK) {
+            this.$router.push({name: "schober-objects", params: {id: id}});
+          } else if (this.currSubCat === this.bbK) {
+            this.$router.push({name: "tageblatt-objects", params: {id: id}});
+          } else if (this.currSubCat === this.sP) {
+            this.$router.push({name: "sozialdemokratie-objects", params: {id: id}});
+          } else if (this.currSubCat === this.cP) {
+            this.$router.push({name: "christlich-sozial-objects", params: {id: id}});
+          } else if (this.currSubCat === this.nP) {
+            this.$router.push({name: "nationalsozialismus-objects", params: {id: id}});
+          }
+        })
+      }
+
+
+    },
+    tableSortCompare(a, b, key) {
+     
+      if (key === 'size') {
+        let aInt = a.docs.length;
+        let bInt = b.docs.length;
+        return aInt - bInt;
+      }
+
     },
     setCurrPageAndCategory() {
       //category
@@ -227,24 +287,31 @@ export default {
         this.currSubCat = this.fK;
       } else if (this.path.toString().includes('theater')) {
         this.currSubCat = this.tK;
-      } else if (this.path.toString().includes('verlagswesen')) {
+      } else if (this.path.toString().includes('verlage')) {
         this.currSubCat = this.vK;
+        this.showSubCat = 'Verlage';
       } else if (this.path.toString().includes('stunde')) {
         this.currSubCat = this.sK;
       } else if (this.path.toString().includes('schober')) {
         this.currSubCat = this.schK;
       } else if (this.path.toString().includes('tageblatt')) {
         this.currSubCat = this.bbK;
+        this.showSubCat = 'Berliner Tageblatt';
       } else if (this.path.toString().includes('medienhistorisches')) {
         this.currSubCat = this.mK;
       } else if (this.path.toString().includes('berichtigung')) {
         this.currSubCat = this.bK;
       } else if (this.path.toString().includes('sozialdemokratie')) {
         this.currSubCat = this.sP;
-      } else if (this.path.toString().includes('christlich-national')) {
+      } else if (this.path.toString().includes('christlich-sozial')) {
         this.currSubCat = this.cP;
+        this.showSubCat = 'Christlich-Sozial'
       } else if (this.path.toString().includes('nationalsozialismus')) {
         this.currSubCat = this.nP;
+      }
+
+      if(this.showSubCat === null){
+        this.showSubCat = this.currSubCat;
       }
     },
     async searchPerformed(event) {
@@ -388,7 +455,6 @@ export default {
         this.collections = result;
       });
     }
-    console.log(this.cases)
 
   }
 }
@@ -445,6 +511,7 @@ main {
   grid-column: 1/2;
   grid-row: 2/3;
   width: fit-content;
+  margin-left: 2rem !important;
 }
 
 .lbl {
@@ -492,6 +559,10 @@ main {
 }
 
 .sammlungen {
-  padding: 1rem;
+  padding: 0.35rem 0.75rem;
+}
+
+.searchPers{
+  margin-left: 2rem;
 }
 </style>
