@@ -6,13 +6,13 @@
         <span class="semibold">Handschriftliches</span>
       </p>
       <div class="filters">
-        <div class="searchPers">
+        <!--<div class="searchPers">
           <input class="vt vtp" placeholder="Person:" list="persons" v-model="kwP" @keyup.enter="setCurrPers(kwP)"/>
           <datalist id="persons">
             <option v-for="pers in this.allPersons" :key="pers.key" :value="pers.value">{{ pers.value }}</option>
           </datalist>
-        </div>
-        <div class="searchMat">
+        </div>-->
+        <div class="searchMat ml-5">
           <input class="vt vtm" placeholder="Material:" list="mats" v-model="kwM" @keyup.enter="setCurrMat(kwM)"/>
           <datalist id="mats">
             <option v-for="m in this.matTypeStrings" :key="m" :value="m">{{ m }}</option>
@@ -35,12 +35,6 @@
       d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
 </svg></div>
       </span>
-
-        <div class="reset-filter">
-          <button type="button" class="btn btn-secondary btn-sm reset-button" v-on:click="resetFilter">Filter
-            zurücksetzen
-          </button>
-        </div>
 
         <input class="vt vtt" type="text" placeholder="Dokument-Titel:" v-model="kwT"
                @keyup="filterAll()"/>
@@ -73,21 +67,7 @@
                v-on:click="navToLesefassung(val)">
           <div class="case-data scroll">
             <h6 class="card-title" v-on:click="navToLesefassung(val)"><b>{{ val.title }}</b></h6>
-            <div style="padding-bottom: 1rem"> Typ: {{ val.materiality[0] }}</div>
-            <span v-if="val.pers.length > 0">
-              <p> <b>Beteiligte:</b> </p>
-            <div class="pmb-link" v-for="a in val.pers" :key="a.pmbId" v-on:click="navToPMBActor($event, a)"><!--   v-on:click="navToPMB($event, a)"-->
-                {{ a.value }}
-              </div>
-            </span>
-            <div v-if="val.pers.length === 0">Beteiligte: -</div>
-            <span v-if="val.pls.length > 0">
-              <p class="p-s"> Orte:</p>
-              <div class="pmb-link" v-for="pl in val.pls" :key="pl.pmbId"
-                   v-on:click="navToPMBPlace($event, pl)">
-                {{ pl.value }}</div>
-            </span>
-            <div v-if="val.places.length === 0">Orte: -</div>
+            <div style="padding-bottom: 1rem"> {{ val.materiality[0] }}</div>
           </div>
         </div>
       </div>
@@ -515,7 +495,7 @@ export default {
 
 .filters {
   display: grid;
-  grid-template-columns: repeat(4, minmax(5rem, auto));
+  grid-template-columns: 20% 20%;
   grid-template-rows: auto auto;
 }
 
