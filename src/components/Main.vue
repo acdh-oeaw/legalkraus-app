@@ -26,7 +26,7 @@
                   class="d-block  img-fluid w-75 mx-auto"
                   width="1024"
                   height="380"
-                  src="/slider1.png"
+                  :src="`${publicPath}slider1.png`"
                   alt="image slot"
                 >
               </template></b-carousel-slide>
@@ -141,6 +141,11 @@
 <script>
 export default {
   name: "Main",
+  data () {
+  return {
+    publicPath: process.env.BASE_URL
+  }
+}
 };
 </script>
 

@@ -6,7 +6,7 @@
       <a
         target="_blank"
         rel="noopener noreferrer"
-        href="/jochen_barte_beitrag.pdf"
+        :href="`${publicPath}jochen_barte_beitrag.pdf`"
         >„Der größte Schuft im ganzen Land“ – Karl Kraus’ juristischer und
         publizistischer Kampf gegen Alfred Kerr</a
       >
@@ -15,7 +15,7 @@
       Gerhard Kohl, <a
         target="_blank"
         rel="noopener noreferrer"
-        href="/gerhard_kohl_beitrag.pdf"
+        :href="`${publicPath}gerhard_kohl_beitrag.pdf`"
         >Erwartungen der (österreichischen) rechtshistorischen
       Forschung an das Projekt „Intertextualität in den Rechtsakten von Karl
       Kraus“</a>
@@ -24,7 +24,7 @@
       Martin Anton Müller, <a
         target="_blank"
         rel="noopener noreferrer"
-        href="/martin_anton_mueller_beitrag.pdf"
+       :href="`${publicPath}martin_anton_mueller_beitrag.pdf`"
         >Ein wild gewordenes Telefonbuch im digitalen
       Zeitalter</a>
     </p>
@@ -32,7 +32,7 @@
       Bernhard Oberreither, <a
         target="_blank"
         rel="noopener noreferrer"
-        href="/bernhard_oberreither_beitrag.pdf"
+        :href="`${publicPath}bernhard_oberreither_beitrag.pdf`"
         >Ungesetz‘ und ‚primum vivere‘: Der Fall des
       Rechtsstaats in der Dritten Walpurgisnacht</a>
     </p>
@@ -40,7 +40,7 @@
       Sigurd Paul Scheichl, <a
         target="_blank"
         rel="noopener noreferrer"
-        href="/sigurd_paul_scheichl_beitrag.pdf"
+        :href="`${publicPath}sigurd_paul_scheichl_beitrag.pdf`"
         >Prozesse als Bestandteile des Werks von Karl Kraus –
       Prozessakten als Quelle zu seinem Wirken. Am Beispiel des Prozesses Pisk
       gegen Kraus (1929–1931)</a>
@@ -49,7 +49,7 @@
       Bernhard Sebl, <a
         target="_blank"
         rel="noopener noreferrer"
-        href="/bernhard_sebl_beitrag.pdf"
+        :href="`${publicPath}bernhard_sebl_beitrag.pdf`"
         >Begriffs- und Quelleneinordnung der Handakten von Oskar
       Samek</a>
     </p>
@@ -57,7 +57,7 @@
       Frühe Prozesse: <a
         target="_blank"
         rel="noopener noreferrer"
-        href="/fruehe_prozesse.pdf"
+        :href="`${publicPath}fruehe_prozesse.pdf`"
         >Übersicht zu den frühen Prozessen von Karl Kraus
       (1899–1921), erstellt für Karl Kraus Online von Katharina Prager</a>
     </p>
@@ -67,12 +67,12 @@
       <a
         target="_blank"
         rel="noopener noreferrer"
-        href="/interview_krieghofer_final.m4a"
+        :href="`${publicPath}interview_krieghofer_final.m4a`"
         >Die Rechtsakten im Kontext des Karl Kraus-Archivs</a
       > <a
         target="_blank"
         rel="noopener noreferrer"
-        href="/gerald_krieghofer_transkription.pdf"
+        :href="`${publicPath}gerald_krieghofer_transkription.pdf`"
         >(Transkription)</a
       >
     </p>
@@ -81,12 +81,12 @@
       <a
         target="_blank"
         rel="noopener noreferrer"
-        href="/interview_reuss_final.m4a"
+        :href="`${publicPath}interview_reuss_final.m4a`"
         >Karl Kraus’ Fackel und die Rechtsakten in den Jahren 1933/1934</a
       > <a
         target="_blank"
         rel="noopener noreferrer"
-        href="/roland_reuss_transkription.pdf"
+        :href="`${publicPath}roland_reuss_transkription.pdf`"
         >(Transkription)</a
       >
     </p>
@@ -95,12 +95,12 @@
       <a
         target="_blank"
         rel="noopener noreferrer"
-        href="/interview_stockhammer_final.mp3"
+        :href="`${publicPath}interview_stockhammer_final.mp3`"
         >Die Rechtsakten aus juristischer Perspektive</a
       > <a
         target="_blank"
         rel="noopener noreferrer"
-        href="/harald_stockhammer_transkription.pdf"
+        :href="`${publicPath}harald_stockhammer_transkription.pdf`"
         >(Transkription)</a
       >
     </p>
@@ -111,3 +111,13 @@ a {
   color: var(--primary-red);
 }
 </style>
+<script>
+export default {
+  name: "Beitraege",
+  data () {
+  return {
+    publicPath: process.env.BASE_URL
+  }
+}
+};
+</script>
