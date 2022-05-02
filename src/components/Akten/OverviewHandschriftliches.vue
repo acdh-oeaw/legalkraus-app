@@ -46,6 +46,22 @@
                @keyup="filterAll()"/>
       </div>
     </div>
+    <div class="w-100 mt-5">
+      <svg v-on:click="prevDocs()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+           class="bi bi-arrow-left text-bottom" viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+              d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+      </svg>
+      <span>
+          Seite {{ currPage }} von {{ Math.ceil(this.filteredObjs.length / this.step) }}
+    </span>
+
+      <svg v-on:click="nextDocs()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+           class="bi bi-arrow-right text-bottom" viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+              d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+      </svg>
+    </div>
     <div class="cards-wrapper">
       <div class="card-deck">
         <div class="card" v-for="val in currentDocObjs " v-bind:key="val.id">
@@ -216,7 +232,7 @@ export default {
       }
       this.filterAll();
     },
-    nextDocs() {
+    /*nextDocs() {
       if ((this.idxD + this.step) < this.filteredObjs.length) {
         //more than 10 cases left
         this.currentDocObjs = this.filteredObjs.slice(this.idxD, this.idxD + this.step);
@@ -227,8 +243,31 @@ export default {
         this.idxD = this.filteredObjs.length-1;
         this.currPage++;
       }
+    },*/
+    nextDocs() {
+      if (this.currPage * this.step < this.filteredObjs.length) {
+        
+        this.currentDocObjs = this.filteredObjs.slice(this.currPage * this.step, this.currPage * this.step + this.step);
+        this.currPage++;
+      }
+      },
+      prevDocs() {
+      if (this.currPage > 1) {
+        this.currPage--;
+        this.currentDocObjs = this.filteredObjs.slice(this.currPage * this.step - this.step, this.currPage * this.step - this.step + this.step);
+      /*if ((this.idxD - this.step) > 0) {
+        //more than 10 cases left
+        this.idxD -= this.step;
+        this.currentDocObjs = this.filteredObjs.slice(this.idxD - this.step, this.idxD);
+        this.currPage--;
+      }else{
+        this.currentDocObjs = this.filteredObjs.slice(0, this.idxD);
+        this.idxD = 1;
+        this.currPage--;
+      }*/
+      }
     },
-    prevDocs() {
+    /*prevDocs() {
       if ((this.idxD - this.step) > 0) {
         //more than 10 cases left
         this.idxD -= this.step;
@@ -239,7 +278,7 @@ export default {
         this.idxD = 1;
         this.currPage--;
       }
-    },
+    },*/
     fixFacsSize(url) {
       return url.replace('full/full/', 'full/304,/')
     },

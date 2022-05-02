@@ -132,9 +132,26 @@
         </b-col>
       </div>
     </div>
+    <div class="w-100 mt-5">
+      <svg v-on:click="prevDocs()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+           class="bi bi-arrow-left text-bottom" viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+              d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+      </svg>
+
+      <span>
+          Seite {{ currPage }} von {{ Math.ceil(this.filteredObjs.length / this.step) }}
+    </span>
+
+      <svg v-on:click="nextDocs()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+           class="bi bi-arrow-right text-bottom" viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+              d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+      </svg>
+    </div>
     <div class="cards-wrapper">
-      <div v-if="!searchView && this.caseData" class="card-deck">
-        <div class="card" v-for="val in this.caseData.doc_objs" v-bind:key="val.title">
+      <div class="card-deck">
+        <div class="card" v-for="(val,idx) in  this.currentDocObjs" v-bind:key="val.title + idx">
           <div v-if="val.facs === '' || val.facs === 'no facs'">
             <p>Kein Bild vorhanden</p>
           </div>
@@ -198,6 +215,23 @@
         </div>
       </div>
     </div>
+    <div class="w-100 mt-5">
+      <svg v-on:click="prevDocs()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+           class="bi bi-arrow-left text-bottom" viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+              d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+      </svg>
+
+      <span>
+          Seite {{ currPage }} von {{ Math.ceil(this.filteredObjs.length / this.step) }}
+    </span>
+
+      <svg v-on:click="nextDocs()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+           class="bi bi-arrow-right text-bottom" viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+              d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+      </svg>
+    </div>
   </main>
 </template>
 
@@ -222,7 +256,7 @@ export default {
       colId: -1,
       objects: [],
       searchResults: [],
-      searchResultsCount: 0,
+      searchResultsCount: Number,
       keyword: String,
       caseTitle: String,
       numberDocuments: Number,
@@ -243,6 +277,11 @@ export default {
       currObjects: [],
       kwT: null,
       kwP: [],
+      idxD: 10,
+      step: 10,
+      currentDocObjs: [],
+      filteredObjs: [],
+      currPage: 1,
 
       r: "Recht",
       k: "Kultur",
@@ -311,6 +350,44 @@ export default {
         }
       });
 
+    },
+    nextDocs() {
+      if (this.currPage * this.step < this.filteredObjs.length) {
+        
+        this.currentDocObjs = this.filteredObjs.slice(this.currPage * this.step, this.currPage * this.step + this.step);
+        this.currPage++;
+      }
+      //this.currPage  < this.filteredObjs.length; 
+      //console.log("y")
+      
+      /*if ((this.idxD + this.step) < this.filteredObjs.length) {
+        //more than 10 cases left
+        this.currPage++;
+        this.currentDocObjs = this.filteredObjs.slice(this.idxD, this.idxD + this.step);
+        this.idxD += this.step;
+        this.currPage++;
+      }else{
+        this.currentDocObjs = this.filteredObjs.slice(this.idxD);
+        this.idxD = this.filteredObjs.length-1;
+        this.currPage++;
+      }
+      console.log(this.filteredObjs)*/
+    },
+    prevDocs() {
+      if (this.currPage > 1) {
+        this.currPage--;
+        this.currentDocObjs = this.filteredObjs.slice(this.currPage * this.step - this.step, this.currPage * this.step - this.step + this.step);
+      /*if ((this.idxD - this.step) > 0) {
+        //more than 10 cases left
+        this.idxD -= this.step;
+        this.currentDocObjs = this.filteredObjs.slice(this.idxD - this.step, this.idxD);
+        this.currPage--;
+      }else{
+        this.currentDocObjs = this.filteredObjs.slice(0, this.idxD);
+        this.idxD = 1;
+        this.currPage--;
+      }*/
+      }
     },
     fixFacsSize(url) {
       return url.replace("full/full/", "full/304,/");
@@ -424,7 +501,7 @@ export default {
           ) {
             //remove leading '#' from key
             this.currPersons.push({
-              key: this.allPersons[key].key.substring(1),
+              key: this.allPersons[key].key,
               value: this.allPersons[key].value,
             });
           }
@@ -436,15 +513,14 @@ export default {
     filterAll() {
       //extract objects that contain all persons in this.currPerson and match title
       let temp = [];
-      //possible bottleneck
-      this.objects.forEach((o) => {
+      //possible bottlenecks
+      this.caseData.doc_objs.forEach((o) => {
         let containsAll = true;
-
         //check if all p in currPersons are in o.actors
         this.currPersons.forEach((p) => {
           //Kraus is not mentioned in the actors of case-info.json, since he is part of every case
           if (!p.value.includes("Kraus")) {
-            let match = false;
+           /* let match = false;
             o.actorObjs.forEach((o) => {
               if (o.name === p.value) {
                 match = true;
@@ -452,21 +528,27 @@ export default {
             });
             if (match === false) {
               containsAll = false;
-            }
+            }*/
+            if (!o.persons[p.key]) {
+            containsAll = false;
+          }
           }
         });
 
         if (this.kwT) {
-          if (!o.title.toUpperCase().includes(this.kwT.toUpperCase())) {
+          if (!(o.title.toUpperCase().includes(this.kwT.toUpperCase()))) {
             containsAll = false;
           }
         }
-
+        console.log(o)
+        console.log(containsAll);
         if (containsAll === true) {
           temp.push(o);
         }
       });
-      this.currObjects = temp;
+      //this.currObjects = temp;
+      this.filteredObjs = temp;
+  
       this.kwP = null;
       this.kwO = null;
     },
@@ -474,6 +556,7 @@ export default {
       this.currPersons = [];
       this.kwO = null;
       this.kwT = null;
+      this.filteredObjs = JSON.parse(JSON.stringify(this.docObjs));
       //this.currCases = this.cases;
     },
     removePers(key) {
@@ -731,9 +814,17 @@ export default {
           this.objects = objs;
           this.currObjects = objs;
         });*/
+        this.filteredObjs = JSON.parse(JSON.stringify(this.caseData.doc_objs)); //deep copy
+        //this.filteredObjs = this.caseData.doc_objs;
       });
     });
   },
+  watch: {
+    filteredObjs() {
+      console.log("watcher")
+      this.currentDocObjs = this.filteredObjs.slice(0, this.idxD);
+    },
+  }
 };
 </script>
 

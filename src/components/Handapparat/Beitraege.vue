@@ -33,7 +33,7 @@
         target="_blank"
         rel="noopener noreferrer"
         :href="`${publicPath}bernhard_oberreither_beitrag.pdf`"
-        >Ungesetz‘ und ‚primum vivere‘: Der Fall des
+        >‚Ungesetz‘ und ‚primum vivere‘: Der Fall des
       Rechtsstaats in der Dritten Walpurgisnacht</a>
     </p>
     <p>
