@@ -4,7 +4,7 @@
     <div class="filter-nav">
       <p class="navigation">Register
         <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
-        <span style="font-weight: bold">{{ this.category }}</span>
+        <span class="semibold">{{ this.category }}</span>
       </p>
       <div class="abc">
         <p class="l" :id="l" v-for="l in abc" :key="l" v-on:click="filterLetter(l)">{{ l }}</p>

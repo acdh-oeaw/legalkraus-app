@@ -7,7 +7,7 @@
           {{ this.category }}
         </router-link>
         <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
-        <span style="font-weight: bold">{{ this.showSubCat }}</span>
+        <span class="semibold">{{ this.showSubCat }}</span>
       </p>
       <div class="filters">
         <div class="searchPers">
@@ -305,7 +305,7 @@ export default {
         this.currSubCat = this.sP;
       } else if (this.path.toString().includes('christlich-sozial')) {
         this.currSubCat = this.cP;
-        this.showSubCat = 'Christlich-Sozial'
+        this.showSubCat = 'Christlichsozial'
       } else if (this.path.toString().includes('nationalsozialismus')) {
         this.currSubCat = this.nP;
       }

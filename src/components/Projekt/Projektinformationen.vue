@@ -115,7 +115,7 @@
               >Karl Kraus: Rechtsakten der Kanzlei Oskar Samek.
               Wissenschaftliche Edition</b
             ><p>
-            [Zitationsempfehlung:
+            Zitierempfehlung:
             <i
               >Karl Kraus: Rechtsakten der Kanzlei Oskar Samek.
               Wissenschaftliche Edition,</i
@@ -127,7 +127,7 @@
               target="_blank"
               rel="noopener noreferrer"
               >https://www.kraus.wienbibliothek.at</a
-            >.]</p>
+            >.</p>
           </b-card-text>
         </b-card>
       </b-col>

@@ -17,7 +17,7 @@
         {{ this.colTitle }}
       </router-link>
       <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
-      <span style="font-weight: bold">{{ this.objectTitle }}</span>
+      <span  class="semibold">{{ this.objectTitle }}</span>
     </p>
     <p v-if="!propsSet" class="navigation">Akten-Edition
       <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
@@ -26,7 +26,7 @@
         {{ this.colTitle }}
       </router-link>
       <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
-      <span style="font-weight: bold">{{ this.objectTitle }}</span>
+      <span  class="semibold">{{ this.objectTitle }}</span>
     </p>
     <div v-if="simpleMD" class="meta-data">
       <router-link class="back" to="/">{{ this.objectTitle }}</router-link>
@@ -1245,7 +1245,7 @@ export default {
       this.$route.params.subcat = "Fackel";
       this.showSubcat = 'Fackel'
     } else if (this.$route.params.subcat && this.$route.params.subcat.includes("Christlich")) {
-      this.showSubcat = "Christlich-Sozial"
+      this.showSubcat = "Christlichsozial"
     } else if (this.$route.params.subcat && this.$route.params.subcat.includes("Tageblatt")) {
       this.showSubcat = "Berliner Tageblatt"
     } else if (this.$route.params.subcat && this.$route.params.subcat.includes("Verlag")) {

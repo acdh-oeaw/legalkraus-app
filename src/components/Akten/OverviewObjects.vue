@@ -22,12 +22,12 @@
           {{ this.showSubCat }}
         </router-link>
         <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
-        <span style="font-weight: bold">{{ this.caseTitle }}</span>
+        <span class="semibold">{{ this.caseTitle }}</span>
       </p>
       <p v-if="!categorySet" class="navigation">
         Akten-Edition
         <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
-        <span style="font-weight: bold">{{ this.caseTitle }}</span>
+        <span  class="semibold">{{ this.caseTitle }}</span>
       </p>
       <div class="filters">
         <div class="searchPers">
@@ -441,7 +441,7 @@ export default {
         this.subCategory = this.sP;
       } else if (this.path.toString().includes("christlich-sozial")) {
         this.subCategory = this.cP;
-        this.showSubCat = "Christlich-Sozial";
+        this.showSubCat = "Christlichsozial";
       } else if (this.path.toString().includes("nationalsozialismus")) {
         this.subCategory = this.nP;
       }

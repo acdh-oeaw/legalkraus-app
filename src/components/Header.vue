@@ -3,7 +3,7 @@
     <div class="title">
       <router-link class="nav-link" to="/">
         <p class="logo">RECHTSAKTEN</p>
-        <p class="logo">Karl Kraus</p>
+        <p class="logo mt-n2">Karl Kraus</p>
       </router-link>
     </div>
     <div>
@@ -45,11 +45,11 @@
           <b-dropdown-item class="dd-item"  to="/akten-edition/kultur"> 
               Kultur
           </b-dropdown-item>
-          <b-dropdown-item class="dd-item" to="/akten-edition/recht"> 
-              Recht
-          </b-dropdown-item>
           <b-dropdown-item class="dd-item" to="/akten-edition/politik">
               Politik
+          </b-dropdown-item>
+           <b-dropdown-item class="dd-item" to="/akten-edition/recht"> 
+              Recht
           </b-dropdown-item>
           <b-dropdown-item class="dd-item" to="/akten-edition/handschriftliches">
               Handschriftliches
@@ -60,16 +60,13 @@
         </b-dropdown>
       </p>
       <p class="nav-el">
-        <b-dropdown id="dropdown-3" text="Statistik"  variant='none' class="m-md-2">
+        <b-dropdown id="dropdown-3" text="Visualisierungen"  variant='none' class="m-md-2">
           <b-dropdown-item>Zeitstrahl</b-dropdown-item>
-          <b-dropdown-item><router-link class="dd-item" to="/statistik/fallstatistik">
+          <b-dropdown-item><router-link class="dd-item" to="/visualisierungen/fallstatistik">
               Fallstatistik
             </router-link></b-dropdown-item>
         </b-dropdown>
       </p>
-<!--      <button type="button" class="btn nav-el rounded-0">
-        <router-link router-link class="nav-link-ha" :to="'/statistik/fallstatistik'">Statistik</router-link>
-      </button>-->
       <p class="nav-el">
         <b-dropdown id="dropdown-4" :class="{'active':this.itemIsActive('register')}" text="Register" variant="none" class="m-md-2">
           <b-dropdown-item>
@@ -99,7 +96,7 @@
           </b-dropdown-item>
           <b-dropdown-item>
             <router-link class="dd-item" to="/register/fackel">
-              Fackel Texte
+              Fackel
             </router-link>
           </b-dropdown-item>
         </b-dropdown>
