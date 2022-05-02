@@ -87,8 +87,13 @@ main {
 .item-s > .nav-link{
   color: var(--text-black);
 }
-.nav-link {
+
+.nav-link,.nav-link:hover {
   color: var(--text-white);
+}
+
+.item:hover {
+  background-color:var(--primary-red-dark)
 }
 
 .nav-link:link {

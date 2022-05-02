@@ -71,7 +71,7 @@
       ></b-pagination>
       <div class="sammlungen ml-3">{{ this.$store.getters.noOfCollections }} Sammlungen</div>
       </b-row>
-      <b-table :thead-class="'semi-bold'" id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
+      <b-table :tbody-tr-class="'navrow'" :thead-class="'semi-bold'" id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
                :current-page="currentPage" :per-page="perPage" :sort-by="'id'"
                :busy.sync="isBusy"
                 :sort-compare="tableSortCompare" :fields="[

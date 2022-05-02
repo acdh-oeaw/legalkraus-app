@@ -7,7 +7,7 @@
       </router-link>
     </div>
     <div>
-      <b-button @click="showBetaVersionModal" pill class="btn-sm mt-2 ml-n5 beta-badge" variant="outline-primary">
+      <b-button @click="showBetaVersionModal" pill class="btn-sm mt-2 ml-n3 beta-badge" variant="outline-primary">
         Beta Version <b-icon icon="info" aria-hidden="true"></b-icon>
       </b-button>
       <b-modal hide-footer :content-class="'rounded-0 opensans'" id="modal-betaversion" title="Beta Version">

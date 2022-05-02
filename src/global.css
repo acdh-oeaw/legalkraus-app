@@ -55,3 +55,7 @@
 .whitespace-break-spaces {
     white-space: break-spaces;
 }
+
+.navrow {
+    cursor:pointer;
+}

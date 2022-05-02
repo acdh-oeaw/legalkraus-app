@@ -59,6 +59,14 @@ export default {
   color: var(--text-white);
 }
 
+.nav-link,.nav-link:hover {
+  color: var(--text-white);
+}
+
+.item:hover {
+  background-color:var(--primary-red-dark)
+}
+
 .nav-link:link {
   text-decoration: none;
 }
