@@ -7,5 +7,5 @@ module.exports = {
         entry: 'src/main.js',
         title: 'Rechtsakten Karl Kraus',
       },
-    }  
+    },  
   }

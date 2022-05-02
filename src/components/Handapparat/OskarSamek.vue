@@ -1,10 +1,16 @@
 <template>
   <div class="text-left w-75 mx-auto my-2">
     <h1 class="mb-3">Oskar Samek</h1>
-    <p>Gerlinde Kainz, Oskar Samek und das Haus in der Reindorfgasse 18</p>
+    <p>Gerlinde Kainz, <a target="_blank"
+        rel="noopener noreferrer"
+        href="/gerlinde_kainz_beitrag.pdf">Oskar Samek und das Haus in der Reindorfgasse 18</a></p>
     <p>
-      Transkription eines Interviews mit Oskar Samek (6. August 1957, Audiodatei
-      des Interviews, Österreichische Mediathek)
+      <a target="_blank"
+        rel="noopener noreferrer"
+        href="/interview_oskar_samek.pdf">Transkription eines Interviews mit Oskar Samek</a> (6. August 1957, <a target="_blank"
+        rel="noopener noreferrer"
+        href="https://www.mediathek.at/atom/08F3ACAF-13C-00238-00000CD4-08F2C29F">Audiodatei
+      des Interviews</a>, Österreichische Mediathek)
     </p>
   </div>
 </template>

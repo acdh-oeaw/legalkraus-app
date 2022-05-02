@@ -18,7 +18,7 @@
         <router-link class="nav-link" to="/akten-edition/kultur/berichtigung/collections">Literarische Berichtigungen</router-link>
       </button>
       <button type="button" class="item" v-on:click="togglePolemiken">
-        Die Großen Polemiken
+        Die großen Polemiken
       </button>
 
       <button v-if="showPolemiken" type="button" class="item-s">

@@ -2,9 +2,9 @@
   <main>
     <p class="navigation">Handapparat <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon></p>
     <div class="grid-container">
-      <button type="button" class="item">
+      <!--<button type="button" class="item">
         <router-link class="nav-link" to="/handapparat/boehm">Böhm Edition</router-link>
-      </button>
+      </button>-->
       <button type="button" class="item">
         <router-link class="nav-link" to="/handapparat/beitraege">Beiträge</router-link>
       </button>
