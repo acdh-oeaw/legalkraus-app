@@ -19,3 +19,13 @@ a {
   color: var(--primary-red);
 }
 </style>
+<script>
+export default {
+  name: "OskarSamek",
+  data () {
+  return {
+    publicPath: process.env.BASE_URL
+  }
+}
+};
+</script>
