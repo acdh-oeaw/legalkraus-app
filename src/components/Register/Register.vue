@@ -124,7 +124,7 @@
               :per-page="perPage"
               aria-controls="col-table"
           ></b-pagination>
-          <b-table id="col-table" :small="'small'" sort-by="persName" :sort-compare="tableSortCompare"
+          <b-table id="col-table" :tbody-tr-class="rowClass" ref="personTable" :small="'small'" sort-by="persName" :sort-compare="tableSortCompare"
                    :no-border-collapse="true" :borderless="'borderless'"
                    :current-page="currentPage" :per-page="perPage"
                    :busy.sync="isBusy" :fields="[
@@ -431,6 +431,12 @@ export default {
   },
 
   methods: {
+    rowClass(item, type) {
+      if (this.$route.query && this.$route.query.pmbId) {
+        console.log(type)
+       if (item['$']['xml:id'] === this.$route.query.pmbId.substring(1)) return "highlighted-row"   
+      }
+    },
     setCategory() {
       const p = this.$route.path.toString();
       if (p.includes("register/personen")) {
@@ -973,15 +979,21 @@ export default {
       }
 
     },
-    filterPmbId(pmbId) {
+    async filterPmbId(pmbId) {
+      await this.$refs['personTable'];
+      console.log(this.$refs.personTable)
+
       this.noItems = false;
       //pmbId = pmbId.substring(4); //slice the leading '#pmb'
       pmbId = pmbId.substring(1); //slice the leading '#'
 
       if (pmbId) {
         if (this.categoryShort === 'p') {
+          const rowposition = this.$refs.personTable.sortedItems.findIndex(p => p['$']['xml:id'] === pmbId);
+          this.currentPage = Math.ceil(rowposition / this.perPage)
+
           //this.currentItems.person = this.allItems.person.filter(p => (p.idno[0]._.includes(pmbId)));
-          this.currentItems.person = this.allItems.person.filter(p => p['$']['xml:id'] === pmbId);
+          //this.currentItems.person = this.allItems.person.filter(p => p['$']['xml:id'] === pmbId);
           /*console.log(pmbId);
           console.log(this.allItems)
           console.log(this.currentItems.person)*/
@@ -1100,6 +1112,10 @@ export default {
 
 </style>
 <style>
+.highlighted-row {
+  font-weight:bold;
+}
+
 .title-column {
   max-width:300px;
   min-width:300px;

@@ -1,21 +1,37 @@
 <template>
   <main>
-    <div class="text">
-      <div class="left">
-        <p class="b">Rechtsakten Karl Kraus</p>
-        <p>Online Edition</p>
-        <p>HerausgeberInnen: Johannes Knüchel, Isabel Langkabel (Ludwig Boltzmann Institute for Digital History) und Katharina Prager (Wienbibliothek Rathaus). Mitarbeit: Ingo Börner, Vanessa Hannesschläger, Andrea Ortner und Laura Untner (Austrian Centre for Digital Humanities and Cultural Heritage: ACDH-CH). Wien 2022.</p>
+    <div class=" text text-left">
+      <div>
+        <p class="b mb-0">
+        Karl Kraus: Rechtsakten der Kanzlei Oskar Samek. Wissenschaftliche
+        Edition
+      </p>
+      <p>
+        Zitierempfehlung:
+        <i
+          >Karl Kraus: Rechtsakten der Kanzlei Oskar Samek. Wissenschaftliche
+          Edition,</i
+        >
+        hg. v. Johannes Knüchel und Isabel Langkabel unter Mitarbeit von Laura
+        Untner, Andrea Ortner, Ingo Börner und Vanessa Hannesschläger (Wien
+        2022),<br /><a
+          href="https://www.kraus.wienbibliothek.at"
+          target="_blank"
+          rel="noopener noreferrer"
+          >https://www.kraus.wienbibliothek.at</a
+        >.
+      </p>
       </div>
       <div class="middle">
-        <p class="b">Ludwig-Boltzmann-Institut für Digital History </p>
-        <p>Hofburg <br>
-          1010 Wien </p>
-        <p>TelNr: 1234/1234567890 <br>
-          Email: kraus@stan.com</p>
+        <p class="b">Kontakt</p>
+        <p>Projektleitung: Katharina Prager<br/>
+          <a class="r b" href="mailto:katharina.prager@wien.gv.at">katharina.prager@wien.gv.at</a><br/>
+          Wienbibliothek im Rathaus<br/>
+        1082 Wien,Rathaus, Stiege 8, Hochpaterre, Zi 104W</p>
+
       </div>
       <div class="right">
         <div class="contact-info">
-          <p class="b">Kontakt</p>
           <p class="b">Impressum</p>
         </div>
         <p class="b r">HELPDESK</p>

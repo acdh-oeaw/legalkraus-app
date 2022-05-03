@@ -88,7 +88,9 @@
               </p>
             </b-carousel-slide> -->
           </b-carousel>
-          <b-row class="mx-0"><div class="primary-dark text-right jumbotron-text-left semibold pt-3 pb-2 pr-2">Oskar Samek</div><div class="jumbotron-right-left pt-3 pb-2 pl-2"> <small>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</small></div></b-row>
+          <b-row class="mx-0">
+            <div class="primary-dark text-right jumbotron-text-left semibold pt-3 pb-5 pr-2"></div><!--<div class="jumbotron-right-left pt-3 pb-2 pl-2"> <small>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</small></div>-->
+            </b-row>
            </b-jumbotron>
            <b-row class="mx-0 my-5">
              <h4 class="font-weight-bold">Mögliche Einstiege</h4>
