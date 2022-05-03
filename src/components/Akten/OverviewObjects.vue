@@ -1025,7 +1025,7 @@ export default {
 }
 
 .item:hover, .item:active {
-  background-color: var(--primary-red-dark)!important;;
+  background-color: var(--primary-red-dark)!important;
 }
 
 </style>

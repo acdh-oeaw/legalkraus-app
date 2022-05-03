@@ -98,7 +98,7 @@
             <router-link to="/handapparat/oskar-samek">
               <figure class="mx-auto">
                 <figcaption class="semibold text-left mb-1">Oskar Samek</figcaption>
-                <img class="einstieg" src="../assets/einstieg1.png" alt="slider-1">
+                <img class="einstieg" src="../assets/samek.png" alt="slider-1">
                 <figcaption></figcaption>
               </figure>
             </router-link>
@@ -107,7 +107,7 @@
             <router-link to="/visualisierungen/fallstatistik">
               <figure class="mx-auto">
                 <figcaption class="semibold text-left mb-1">Fallstatistik</figcaption>
-                <img class="einstieg" src="../assets/einstieg1.png" alt="slider-1">
+                <img class="einstieg" src="../assets/fallstatistik.png" alt="slider-1">
                 <figcaption></figcaption>
               </figure>
             </router-link>
@@ -116,7 +116,7 @@
             <router-link to="/handapparat/beitraege">
               <figure class="mx-auto">
                 <figcaption class="semibold text-left mb-1">Beiträge</figcaption>
-                <img class="einstieg" src="../assets/einstieg1.png" alt="slider-1">
+                <img class="einstieg" src="../assets/beitraege.png" alt="slider-1">
                 <figcaption></figcaption>
               </figure>
             </router-link>
@@ -125,7 +125,7 @@
             <router-link to="/akten-edition/kultur/verlage/collections">
               <figure class="mx-auto">
                 <figcaption class="semibold text-left mb-1">Verlage</figcaption>
-                <img class="einstieg" src="../assets/einstieg1.png" alt="slider-1">
+                <img class="einstieg" src="../assets/verlage.png" alt="slider-1">
                 <figcaption></figcaption>
               </figure>
             </router-link>
@@ -134,7 +134,7 @@
             <router-link to="/akten-edition/politik/sozialdemokratie/collections">
               <figure class="mx-auto">
                 <figcaption class="semibold text-left mb-1">Sozialdemokratie</figcaption>
-                <img class="einstieg" src="../assets/einstieg1.png" alt="slider-1">
+                <img class="einstieg" src="../assets/sozialdemokratie.png" alt="slider-1">
                 <figcaption></figcaption>
               </figure>
             </router-link>
@@ -203,6 +203,9 @@ export default {
   height:5rem;
 }
 
+img {
+   background: var(--primary-red-dark);
+}
 
 
 #carousel, .carousel-item {
