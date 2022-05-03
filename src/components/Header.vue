@@ -16,7 +16,7 @@
     </div>
     <div class="navigation">
       <p class="nav-el">
-        <b-dropdown  id="dropdown-1" :class="{'active':this.itemIsActive('projekt')}" text="Projekt" variant='none' class="m-md-2">
+        <b-dropdown id="dropdown-1" :class="{'active':this.itemIsActive('projekt')}" text="Projekt" variant='none' class="m-md-2">
           <b-dropdown-item class="dd-item" to="/projekt/projektinformationen">
               Projektinformation
           </b-dropdown-item>
@@ -61,43 +61,31 @@
       </p>
       <p class="nav-el">
         <b-dropdown id="dropdown-3" text="Visualisierungen"  variant='none' class="m-md-2">
-          <b-dropdown-item>Zeitstrahl</b-dropdown-item>
-          <b-dropdown-item><router-link class="dd-item" to="/visualisierungen/fallstatistik">
+          <!--<b-dropdown-item>Zeitstrahl</b-dropdown-item>-->
+          <b-dropdown-item class="dd-item" to="/visualisierungen/fallstatistik">
               Fallstatistik
-            </router-link></b-dropdown-item>
+          </b-dropdown-item>
         </b-dropdown>
       </p>
       <p class="nav-el">
         <b-dropdown id="dropdown-4" :class="{'active':this.itemIsActive('register')}" text="Register" variant="none" class="m-md-2">
-          <b-dropdown-item>
-            <router-link class="dd-item" to="/register/personen">
+          <b-dropdown-item class="dd-item" to="/register/personen">
               Personen
-            </router-link>
           </b-dropdown-item>
-          <b-dropdown-item>
-            <router-link class="dd-item" to="/register/orte">
+          <b-dropdown-item class="dd-item" to="/register/orte">
               Orte
-            </router-link>
           </b-dropdown-item>
-          <b-dropdown-item>
-            <router-link class="dd-item" to="/register/institutionen">
+          <b-dropdown-item class="dd-item" to="/register/institutionen">
               Institutionen
-            </router-link>
           </b-dropdown-item>
-          <b-dropdown-item>
-            <router-link class="dd-item" to="/register/werke">
+          <b-dropdown-item class="dd-item" to="/register/werke">
               Werke
-            </router-link>
           </b-dropdown-item>
-          <b-dropdown-item>
-            <router-link class="dd-item" to="/register/juristische-texte">
+          <b-dropdown-item class="dd-item" to="/register/juristische-texte"> 
               Juristische Texte
-            </router-link>
           </b-dropdown-item>
-          <b-dropdown-item>
-            <router-link class="dd-item" to="/register/fackel">
+          <b-dropdown-item class="dd-item" to="/register/fackel">
               Fackel
-            </router-link>
           </b-dropdown-item>
         </b-dropdown>
       </p>
@@ -149,6 +137,19 @@ export default {
 
 .btn:focus, .btn.focus {
   box-shadow: none !important
+}
+
+.navigation .dropdown-menu  {
+  background-color:var(--primary-red);
+  border-radius:0;
+}
+
+.navigation .dropdown-menu .dropdown-item {
+  color:white;
+}
+
+.navigation .dropdown-menu .dropdown-item:hover {
+  background-color: var(--primary-red-dark);
 }
 
 
@@ -261,6 +262,11 @@ main {
   background-color: var(--primary-red) !important;
   border-color: var(--primary-red) !important;
   color: white;
+}
+
+.dropdown-menu {
+border-radius:0;
+background-color: var(--primary-red);
 }
 
 @media screen and (max-width: 600px) {

@@ -30,7 +30,7 @@
               :per-page="perPage"
               aria-controls="col-table"
           ></b-pagination>
-          <b-table id="col-table" :small="'small'" :sort-by="'title'" :sort-compare="tableSortCompare"
+          <b-table :tbody-tr-class="rowClass" ref="workTable" id="col-table" :small="'small'" :sort-by="'title'" :sort-compare="tableSortCompare"
                    :no-border-collapse="true" :borderless="'borderless'"
                    :current-page="currentPage" :per-page="perPage"
                    :busy.sync="isBusy" :fields="[
@@ -180,7 +180,7 @@
               :per-page="perPage"
               aria-controls="col-table"
           ></b-pagination>
-          <b-table id="col-table" :small="'small'" :sort-by="'placeName'" :sort-compare="tableSortCompare"
+          <b-table :tbody-tr-class="rowClass" id="col-table" ref="placeTable" :small="'small'" :sort-by="'placeName'" :sort-compare="tableSortCompare"
                    :no-border-collapse="true" :borderless="'borderless'"
                    :current-page="currentPage" :per-page="perPage"
                    :busy.sync="isBusy" :fields="[
@@ -228,7 +228,7 @@
               :per-page="perPage"
               aria-controls="col-table"
           ></b-pagination>
-          <b-table id="col-table" :small="'small'" :sort-by="'orgName'" :sort-compare="tableSortCompare"
+          <b-table :tbody-tr-class="rowClass" id="col-table" ref="instTable" :small="'small'" :sort-by="'orgName'" :sort-compare="tableSortCompare"
                    :no-border-collapse="true" :borderless="'borderless'"
                    :current-page="currentPage" :per-page="perPage"
                    :busy.sync="isBusy" :fields="[
@@ -265,6 +265,7 @@
           </b-table>
         </div>
         <div v-if="categoryShort==='f' && !noItems" class="card">
+          {{this.currentItems}}
           <b-pagination
               page-class="custompaging"
               prev-class="custompagingarrows"
@@ -366,7 +367,7 @@
               last-class="custompagingarrows"
               class="custom-pagination"
               v-model="currentPage"
-              :total-rows="this.currentItems.bibl.length"
+              :total-rows="this.currentItems.item.length"
               :per-page="perPage"
               aria-controls="col-table"
           ></b-pagination>
@@ -380,7 +381,7 @@
               sortable: true
             },
 
-          ]" :items="this.currentItems.bibl" @row-clicked="openDetails">
+          ]" :items="this.currentItems.item" @row-clicked="openDetails">
             <template #table-busy>
               <div class="text-center my-2">
                 <b-spinner type="grow" class="align-middle"></b-spinner>
@@ -530,7 +531,7 @@ export default {
               .then(str => {
                 parseString(str, function (err, rs) {
                   self.currentItems = rs.TEI.text[0].body[0].listBibl[0];
-                  self.allItems = JSON.parse(JSON.stringify(rs.TEI.text[0].body[0].listBibl[0]));
+                  self.allItems = JSON.parse(JSON.stringify(rs.TEI.text[0].body[0].listBibl[0]))
                 });
               })
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
@@ -918,7 +919,7 @@ export default {
               i.orgName[0].startsWith(l));
         }
       }else if (this.categoryShort === 'j'){
-        this.currentItems.bibl = this.allItems.bibl.filter(j =>
+        this.currentItems.item = this.allItems.item.filter(j =>
             j.title[1]._.startsWith(l));
       }else if (this.categoryShort === 'f'){
         this.currentItems.bibl = this.allItems.bibl.filter(j =>
@@ -962,7 +963,7 @@ export default {
           this.noItems = true;
         }
       }else if (this.categoryShort === 'j') {
-        this.currentItems.bibl = this.allItems.bibl.filter(j =>
+        this.currentItems.item = this.allItems.item.filter(j =>
             (j.title[0]._.toUpperCase().includes(kw) ||
                 (j.title[1]._.toUpperCase().includes(kw))));
         if (this.currentItems.place.length === 0) {
@@ -980,8 +981,6 @@ export default {
 
     },
     async filterPmbId(pmbId) {
-      await this.$refs['personTable'];
-      console.log(this.$refs.personTable)
 
       this.noItems = false;
       //pmbId = pmbId.substring(4); //slice the leading '#pmb'
@@ -989,8 +988,11 @@ export default {
 
       if (pmbId) {
         if (this.categoryShort === 'p') {
+          await this.$refs['personTable'];
           const rowposition = this.$refs.personTable.sortedItems.findIndex(p => p['$']['xml:id'] === pmbId);
           this.currentPage = Math.ceil(rowposition / this.perPage)
+          await document.querySelectorAll(".highlighted-row");
+          document.querySelectorAll(".highlighted-row")[0].scrollIntoView();
 
           //this.currentItems.person = this.allItems.person.filter(p => (p.idno[0]._.includes(pmbId)));
           //this.currentItems.person = this.allItems.person.filter(p => p['$']['xml:id'] === pmbId);
@@ -1001,13 +1003,30 @@ export default {
             this.noItems = true;
           }
         } else if (this.categoryShort === 'i') {
-          this.currentItems.org = this.allItems.org.filter(o => (o.$['xml:id'].includes(pmbId)));
+          await this.$refs['instTable'];
+          const rowposition = this.$refs.instTable.sortedItems.findIndex(p => p['$']['xml:id'] === pmbId);
+          this.currentPage = Math.ceil(rowposition / this.perPage)
+          await document.querySelectorAll(".highlighted-row");
+          document.querySelectorAll(".highlighted-row")[0].scrollIntoView();
           if (this.currentItems.org.length === 0) {
             this.noItems = true;
           }
         } else if (this.categoryShort === 'o') {
-          this.currentItems.place = this.allItems.place.filter(o => (o.$['xml:id'].includes(pmbId)));
+          await this.$refs['placeTable'];
+          const rowposition = this.$refs.placeTable.sortedItems.findIndex(o => o['$']['xml:id'] === pmbId);
+          this.currentPage = Math.ceil(rowposition / this.perPage);
+          await document.querySelectorAll(".highlighted-row");
+          document.querySelectorAll(".highlighted-row")[0].scrollIntoView();
           if (this.currentItems.place.length === 0) {
+            this.noItems = true;
+          }
+        } else if (this.categoryShort === 'w') {
+          await this.$refs['workTable'];
+          const rowposition = this.$refs.workTable.sortedItems.findIndex(o => o['$']['xml:id'] === pmbId);
+          this.currentPage = Math.ceil(rowposition / this.perPage);
+          await document.querySelectorAll(".highlighted-row");
+          document.querySelectorAll(".highlighted-row")[0].scrollIntoView();
+          if (this.currentItems.work.length === 0) {
             this.noItems = true;
           }
         }
@@ -1036,7 +1055,7 @@ export default {
       this.currentPage = 1;
     },
     async allItems() {
-      if (this.query) {
+      if (this.query && this.query.pmbId) {
         this.filterPmbId(this.query.pmbId);
 
       }

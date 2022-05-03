@@ -6,7 +6,7 @@ module.exports.getObjectWithId = async (resourceId, type, callback) => {
     }
     let url = "";
     if (type === 'place') {
-        url = "https://pmb.acdh.oeaw.ac.at/apis/api/entities/place/" + resourceId + "&limit=1";
+        url = "https://pmb.acdh.oeaw.ac.at/apis/api/entities/place/?id=" + resourceId + "&limit=1";
     } else {
         url = `https://pmb.acdh.oeaw.ac.at/entity/${resourceId}/?format=json`;
     }
