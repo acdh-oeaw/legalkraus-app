@@ -1,54 +1,57 @@
 <template>
-<main>
-  <div class="left">
-    <h2>Lizenzen</h2>
-    <p class="text">
-      Hammock stumptown locavore literally esse brunch twee cardigan, salvia brooklyn organic nisi. Knausgaard commodo schlitz aute marfa austin. Hoodie celiac fixie laborum you probably haven't heard of them coloring book distillery. Mixtape id twee wolf farm-to-table, etsy truffaut seitan neutra. Magna cillum street art church-key cronut sed, pug tbh. Cloud bread squid ut XOXO, fashion axe drinking vinegar aesthetic organic af typewriter vaporware bespoke locavore you probably haven't heard of them. Kickstarter officia enim, incididunt VHS authentic schlitz meditation tote bag cupidatat bespoke.
-      Retro affogato kickstarter, post-ironic copper mug adaptogen thundercats fanny pack 90's kinfolk. Culpa non ut intelligentsia leggings artisan pork belly gluten-free vinyl qui. Try-hard enim pork belly locavore single-origin coffee. Typewriter vape cardigan sint chia veniam cred tempor dolore. Velit vexillologist fanny pack fam.
-    </p>
-  </div>
-  <div class="right">
-    <div class="card text">
-      <h2>Übersicht</h2>
-      Hammock stumptown locavore literally esse brunch twee cardigan, salvia brooklyn organic nisi. Knausgaard commodo schlitz aute marfa austin. Hoodie celiac fixie laborum you probably haven't heard of them coloring book distillery. Mixtape id twee wolf farm-to-table, etsy truffaut seitan neutra. Magna cillum street art church-key cronut sed,
-    </div>
-  </div>
-</main>
+  <b-container class="mt-3">
+    <h1 class="font-weight-bold text-left">Lizenzen</h1>
+    <b-row>
+      <b-col cols="7">
+        <div class="text-left">
+        </div>
+      </b-col>
+      <b-col cols="5">
+          <Zitierempfehlung/>
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
+import Zitierempfehlung from "./Zitierempfehlung";
+
 export default {
-  name: "Lizenzen"
-}
+  name: "Lizenzen",
+  components: {Zitierempfehlung}
+};
 </script>
 
 <style scoped>
 main {
   display: grid;
   grid-template-columns: auto auto;
-  margin:auto;
+  margin: auto;
   grid-column-gap: 10rem;
   margin-left: 5rem;
   margin-right: 5rem;
 }
 
-.left{
+.card {
+  font-size: smaller;
+}
+
+.container {
+  grid-template-columns: unset;
+}
+
+.left {
   grid-column: 1/2;
 }
 
-.right{
+.right {
   grid-column: 2/3;
 }
-
-.card{
-  width:35rem;
-}
-
-.text{
+.text {
   text-align: left;
 }
 
-h2{
+h2 {
   text-align: left;
 }
 </style>

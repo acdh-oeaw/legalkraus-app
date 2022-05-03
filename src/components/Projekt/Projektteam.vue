@@ -1,6 +1,6 @@
 <template>
   <b-container class="mt-3">
-    <h2>Projektteam</h2>
+    <h1 class="font-weight-bold text-left">Projektteam</h1>
     <b-row>
       <b-col cols="7">
         <div class="text-left">
@@ -69,29 +69,7 @@
         </div>
       </b-col>
       <b-col cols="5">
-        <b-card>
-          <b-card-text class="text-left">
-            <b
-              >Karl Kraus: Rechtsakten der Kanzlei Oskar Samek.
-              Wissenschaftliche Edition</b
-            >
-            <p>
-              Zitierempfehlung:
-              <i
-                >Karl Kraus: Rechtsakten der Kanzlei Oskar Samek.
-                Wissenschaftliche Edition,</i
-              >
-              hg. v. Johannes Knüchel und Isabel Langkabel unter Mitarbeit von
-              Laura Untner, Andrea Ortner, Ingo Börner und Vanessa
-              Hannesschläger (Wien 2022),<br /><a
-                href="https://www.kraus.wienbibliothek.at"
-                target="_blank"
-                rel="noopener noreferrer"
-                >https://www.kraus.wienbibliothek.at</a
-              >.
-            </p>
-          </b-card-text>
-        </b-card>
+        <Zitierempfehlung/>
       </b-col>
     </b-row>
   </b-container>
@@ -99,7 +77,7 @@
 
 <script>
 export default {
-  name: "Projektinformationen",
+  name: "Projektteam",
 };
 </script>
 
@@ -136,3 +114,11 @@ h2 {
   text-align: left;
 }
 </style>
+<script>
+import Zitierempfehlung from "./Zitierempfehlung";
+
+export default {
+  name: "Projektteam",
+  components: {Zitierempfehlung}
+};
+</script>

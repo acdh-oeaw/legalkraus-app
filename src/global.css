@@ -1,5 +1,5 @@
 /*import font families*/
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap');
 
@@ -11,6 +11,7 @@
     --secondary-gray-dark: #C6C2BC;
     --secondary-gray-meta: #E0DED5;
     --secondary-gray-light: #f0f0f0;
+    --cite-card-gray:#eeedeb;
 
     --handapparat-normal: #565149;
     --handapparat-hover: #7E766B;
@@ -58,5 +59,9 @@
 
 .cursor-pointer {
     cursor: pointer;
+}
+
+h1 {
+    font-size:1.5rem;
 }
 
