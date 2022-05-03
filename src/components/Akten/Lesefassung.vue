@@ -969,6 +969,7 @@ export default {
           getPMBObjectWithId(event.pmbId, 'work', rs => {
             let url = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + rs.id + "/detail"
             textinfo.innerHTML = "<b>|</b>&nbsp;" + "PMB: " + "<a href='" + url + "' target='_blank'>" + rs.name + "</a>";
+            textinfo.onclick = "#";
           });
         } else if (event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus")) {
           let filename = event.pmbId.substring(event.pmbId.lastIndexOf('/') + 1)
@@ -996,6 +997,7 @@ export default {
           getPMBObjectWithId(event.pmbId.substring(1), 'quote', rs => {
             let url = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + rs.id + "/detail"
             textinfo.innerHTML = "<b>|</b>&nbsp;" + "PMB: " + "<a href='" + url + "' target='_blank'>" + rs.name + "</a>";
+            textinfo.onclick = "#";
           });
         } else if (event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus") || event.pmbId.includes("https://legalkraus.acdh.oeaw.ac.at/id/")) {
           let filename = event.pmbId.substring(event.pmbId.lastIndexOf('/') + 1)

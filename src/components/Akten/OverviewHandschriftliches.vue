@@ -66,7 +66,7 @@
                @error="fallbackImage" alt="facsimile"
                v-on:click="navToLesefassung(val)">
           <div class="case-data scroll">
-            <h6 class="card-title" v-on:click="navToLesefassung(val)"><b>{{ val.title }}</b></h6>
+            <h6 class="card-title cursor-pointer" v-on:click="navToLesefassung(val)"><b>{{ val.title }}</b></h6>
             <div style="padding-bottom: 1rem"> {{ val.materiality[0] }}</div>
           </div>
         </div>

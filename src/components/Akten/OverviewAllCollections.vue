@@ -99,7 +99,7 @@
               <div class="col-md-4">{{ this.$store.getters.noOfCollections }} Sammlungen</div>
             </div>
             <b-table
-                :tbody-tr-class="'navrow'"
+                :tbody-tr-class="'cursor-pointer'"
                 ref="coltable"
                 id="col-table"
                 :small="'small'"

@@ -161,7 +161,7 @@
             v-on:click="navToLesefassung(val)"
           />
           <div class="case-data scroll">
-            <h6 class="card-title" v-on:click="navToLesefassung(val)">
+            <h6 class="card-title cursor-pointer" v-on:click="navToLesefassung(val)">
               <b>{{ val.title }}</b>
             </h6>
             <span v-if="Object.keys(val.persons).length > 0">

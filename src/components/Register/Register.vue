@@ -975,11 +975,16 @@ export default {
     },
     filterPmbId(pmbId) {
       this.noItems = false;
-      pmbId = pmbId.substring(4); //slice the leading '#pmb'
+      //pmbId = pmbId.substring(4); //slice the leading '#pmb'
+      pmbId = pmbId.substring(1); //slice the leading '#'
 
       if (pmbId) {
         if (this.categoryShort === 'p') {
-          this.currentItems.person = this.allItems.person.filter(p => (p.idno[0]._.includes(pmbId)));
+          //this.currentItems.person = this.allItems.person.filter(p => (p.idno[0]._.includes(pmbId)));
+          this.currentItems.person = this.allItems.person.filter(p => p['$']['xml:id'] === pmbId);
+          /*console.log(pmbId);
+          console.log(this.allItems)
+          console.log(this.currentItems.person)*/
           if (this.currentItems.person.length === 0) {
             this.noItems = true;
           }
