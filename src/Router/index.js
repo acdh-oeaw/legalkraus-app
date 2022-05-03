@@ -98,6 +98,7 @@ export default new Router({
         // {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung},
 
         {path: '/register/personen', name: 'pReg', component: Register},
+        {path: '/register/personen/:pmbid', name: 'pReg', component: Register},
         {path: '/register/orte', name: 'oReg', component: Register},
         {path: '/register/institutionen', name: 'iReg', component: Register},
         {path: '/register/werke', name: 'wReg', component: Register},

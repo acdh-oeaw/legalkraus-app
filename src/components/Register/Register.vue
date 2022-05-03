@@ -433,9 +433,9 @@ export default {
 
   methods: {
     rowClass(item, type) {
-      if (this.$route.query && this.$route.query.pmbId) {
+      if (this.$route.params && this.$route.params.pmbid) {
         console.log(type)
-       if (item['$']['xml:id'] === this.$route.query.pmbId.substring(1)) return "highlighted-row"   
+       if (item['$']['xml:id'] === this.$route.params.pmbid) return "highlighted-row"   
       }
     },
     setCategory() {
@@ -984,12 +984,13 @@ export default {
 
       this.noItems = false;
       //pmbId = pmbId.substring(4); //slice the leading '#pmb'
-      pmbId = pmbId.substring(1); //slice the leading '#'
+      //pmbId = pmbId.substring(1); //slice the leading '#'
 
       if (pmbId) {
         if (this.categoryShort === 'p') {
           await this.$refs['personTable'];
           const rowposition = this.$refs.personTable.sortedItems.findIndex(p => p['$']['xml:id'] === pmbId);
+    
           this.currentPage = Math.ceil(rowposition / this.perPage)
           await document.querySelectorAll(".highlighted-row");
           document.querySelectorAll(".highlighted-row")[0].scrollIntoView();
@@ -1036,6 +1037,7 @@ export default {
   created() {
     this.setCategory();
     if (this.$route.query) {
+      console.log(this.$route)
       this.query = this.$route.query;
     }
 
@@ -1055,8 +1057,8 @@ export default {
       this.currentPage = 1;
     },
     async allItems() {
-      if (this.query && this.query.pmbId) {
-        this.filterPmbId(this.query.pmbId);
+      if (this.$route.params && this.$route.params.pmbid) {
+        this.filterPmbId(this.$route.params.pmbid);
 
       }
     }

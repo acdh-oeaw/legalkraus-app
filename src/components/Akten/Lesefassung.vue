@@ -1043,7 +1043,7 @@ export default {
         textinfo.onclick = function () {
           let routeData = "";
           if (type === 'person') {
-            routeData = self.$router.resolve({name: "pReg", query: {pmbId: event.pmbId}});
+            routeData = self.$router.resolve({path: `/register/personen/${event.pmbId.substring(1)}`});
           } else if (type === 'place') {
             routeData = self.$router.resolve({name: "oReg", query: {pmbId: event.pmbId}});
           } else if (type === 'institution') {
