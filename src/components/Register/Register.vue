@@ -277,14 +277,15 @@
               :per-page="perPage"
               aria-controls="col-table"
           ></b-pagination>
-          <b-table id="col-table" :small="'small'" :sort-by="'title'" :sort-compare="tableSortCompare"
+          <b-table id="col-table" :small="'small'" :sort-by="'title'" :sort-compare="tableSortCompareFackel"
                    :no-border-collapse="true" :borderless="'borderless'"
                    :current-page="currentPage" :per-page="perPage"
                    :busy.sync="isBusy" :fields="[
             {
               key: 'title',
               label: 'Titel',
-              sortable: true
+              sortable: true,
+              'class': 'title-column',
             },
             {
               key: 'num',
@@ -297,11 +298,16 @@
                 <strong>Loading...</strong>
               </div>
             </template>
+           <!-- <template #cell(id)="data">
+             <div>{{data.item.title[0]._}}</div
+             <div v-if="data.item.title[0]._ !== 'Die Fackel'">{{ data.item.title[0]._ }}</div>
+              <div v-if="data.item.title[0]._ == 'Die Fackel'">{{ 'zzz'+ data.item.title[0]._ }}</div>
+            </template>-->
             <template #cell(title)="data">
               <div>{{ data.value[0]._ }}</div>
             </template>
             <template #cell(num)="data">
-              <div v-if="data.value">Fackel &nbsp; {{ data.value[0]._ }}/{{ data.value[1]._ }}</div>
+              <div v-if="data.value">Fackel, {{ data.value[0]._ }}, {{ data.value[1]._ }}</div>
             </template>
           </b-table>
           <b-table v-if="categoryShort==='p'" id="col-table" :small="'small'" :no-border-collapse="true"
@@ -845,6 +851,20 @@ export default {
         return false
       }
     },
+    tableSortCompareFackel(a, b, key) {
+      if (key === 'persName') {
+
+        return a[key][0].surname[0].localeCompare(b[key][0].surname[0])
+      } else if (key === 'title') {
+        let sorta = a[key][0]._ === 'Die Fackel' ? 'zzzDie Fackel' : a[key][0]._;
+        let sortb = b[key][0]._ === 'Die Fackel' ? 'zzzDie Fackel' : b[key][0]._;
+        return sorta.localeCompare(sortb)
+      } else if (key === 'placeName' || key === 'orgName') {
+        return a[key][0].localeCompare(b[key][0]);
+      } else {
+        return false
+      }
+    },
     filterLetter(l) {
       //remove old highlight
       for (let i = 0; i < document.getElementsByClassName('active').length; i++) {
@@ -1070,5 +1090,13 @@ export default {
 
 .message {
   margin: 5rem;
+}
+
+
+</style>
+<style>
+.title-column {
+  max-width:300px;
+  min-width:300px;
 }
 </style>

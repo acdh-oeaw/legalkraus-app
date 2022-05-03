@@ -23,7 +23,7 @@
                   class="d-block  img-fluid w-75 mx-auto"
                   width="1024"
                   height="380"
-                  :src="`${publicPath}slider1.png`"
+                  :src="`${publicPath}slider1.jpg`"
                   alt="image slot"
                 >
               </template></b-carousel-slide>
@@ -38,7 +38,7 @@
                   class="d-block  img-fluid w-75 mx-auto"
                   width="1024"
                   height="380"
-                  :src="`${publicPath}slider2.PNG`"
+                  :src="`${publicPath}slider2.jpg`"
                   alt="image slot"
                 >
               </template></b-carousel-slide>
@@ -53,7 +53,7 @@
                   class="d-block  img-fluid w-75 mx-auto"
                   width="1024"
                   height="380"
-                  :src="`${publicPath}slider3.PNG`"
+                  :src="`${publicPath}slider3.jpg`"
                   alt="image slot"
                 >
               </template></b-carousel-slide>
