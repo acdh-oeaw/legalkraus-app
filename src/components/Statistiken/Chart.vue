@@ -77,8 +77,10 @@ export default {
         legend: {
           useHTML:true,
           labelFormatter: function () {
-            return `
-              ${this.name}`
+             return `
+              ${this.name} 
+              
+              <a class="legend-link" href="/akten-edition/alle-akten?filter=keyword-${this.chart.title.textStr}.${this.name}">&#8594</a>`
             ;
           },
         },

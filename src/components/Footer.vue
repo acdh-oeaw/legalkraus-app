@@ -3,23 +3,13 @@
     <div class=" text text-left">
       <div>
         <p class="b mb-0">
-        Karl Kraus: Rechtsakten der Kanzlei Oskar Samek. Wissenschaftliche
-        Edition
+        Karl Kraus: Rechtsakten der Kanzlei Oskar Samek. <br/> 
+        Wissenschaftliche Edition
       </p>
       <p>
-        Zitierempfehlung:
-        <i
-          >Karl Kraus: Rechtsakten der Kanzlei Oskar Samek. Wissenschaftliche
-          Edition,</i
-        >
         hg. v. Johannes Knüchel und Isabel Langkabel unter Mitarbeit von Laura
         Untner, Andrea Ortner, Ingo Börner und Vanessa Hannesschläger (Wien
-        2022),<br /><a
-          href="https://www.kraus.wienbibliothek.at"
-          target="_blank"
-          rel="noopener noreferrer"
-          >https://www.kraus.wienbibliothek.at</a
-        >.
+        2022)
       </p>
       </div>
       <div class="middle">
@@ -75,7 +65,7 @@ main {
 .text {
   display: grid;
   grid-template-columns: repeat(3,auto);
-  column-gap: 5rem;
+  column-gap: 3rem;
   background-color: var(--secondary-gray-dark);
   padding: 2rem;
   margin: 0 !important;
@@ -121,7 +111,7 @@ main {
   margin-top: 1rem;
   text-align: left;
   grid-column: 3/4;
-  margin-right: 4rem;
+  margin-right: 1rem;
 }
 
 .r{

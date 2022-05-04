@@ -265,7 +265,6 @@
           </b-table>
         </div>
         <div v-if="categoryShort==='f' && !noItems" class="card">
-          {{this.currentItems}}
           <b-pagination
               page-class="custompaging"
               prev-class="custompagingarrows"
@@ -367,7 +366,7 @@
               last-class="custompagingarrows"
               class="custom-pagination"
               v-model="currentPage"
-              :total-rows="this.currentItems.item.length"
+              :total-rows="this.currentItems.bibl.length"
               :per-page="perPage"
               aria-controls="col-table"
           ></b-pagination>
@@ -381,7 +380,7 @@
               sortable: true
             },
 
-          ]" :items="this.currentItems.item" @row-clicked="openDetails">
+          ]" :items="this.currentItems.bibl" @row-clicked="openDetails">
             <template #table-busy>
               <div class="text-center my-2">
                 <b-spinner type="grow" class="align-middle"></b-spinner>
@@ -532,6 +531,7 @@ export default {
                 parseString(str, function (err, rs) {
                   self.currentItems = rs.TEI.text[0].body[0].listBibl[0];
                   self.allItems = JSON.parse(JSON.stringify(rs.TEI.text[0].body[0].listBibl[0]))
+                  console.log(self.currentItems);
                 });
               })
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
@@ -919,7 +919,7 @@ export default {
               i.orgName[0].startsWith(l));
         }
       }else if (this.categoryShort === 'j'){
-        this.currentItems.item = this.allItems.item.filter(j =>
+        this.currentItems.bibl = this.allItems.bibl.filter(j =>
             j.title[1]._.startsWith(l));
       }else if (this.categoryShort === 'f'){
         this.currentItems.bibl = this.allItems.bibl.filter(j =>
@@ -963,10 +963,10 @@ export default {
           this.noItems = true;
         }
       }else if (this.categoryShort === 'j') {
-        this.currentItems.item = this.allItems.item.filter(j =>
+        this.currentItems.bibl = this.allItems.bibl.filter(j =>
             (j.title[0]._.toUpperCase().includes(kw) ||
                 (j.title[1]._.toUpperCase().includes(kw))));
-        if (this.currentItems.place.length === 0) {
+        if (this.currentItems.bibl.length === 0) {
           this.noItems = true;
         }
       }
@@ -991,7 +991,7 @@ export default {
           await this.$refs['personTable'];
           const rowposition = this.$refs.personTable.sortedItems.findIndex(p => p['$']['xml:id'] === pmbId);
     
-          this.currentPage = Math.ceil(rowposition / this.perPage)
+          this.currentPage = Math.floor(rowposition / this.perPage +1);
           await document.querySelectorAll(".highlighted-row");
           document.querySelectorAll(".highlighted-row")[0].scrollIntoView();
 
@@ -1006,7 +1006,7 @@ export default {
         } else if (this.categoryShort === 'i') {
           await this.$refs['instTable'];
           const rowposition = this.$refs.instTable.sortedItems.findIndex(p => p['$']['xml:id'] === pmbId);
-          this.currentPage = Math.ceil(rowposition / this.perPage)
+          this.currentPage = Math.floor(rowposition / this.perPage +1);
           await document.querySelectorAll(".highlighted-row");
           document.querySelectorAll(".highlighted-row")[0].scrollIntoView();
           if (this.currentItems.org.length === 0) {
@@ -1015,7 +1015,8 @@ export default {
         } else if (this.categoryShort === 'o') {
           await this.$refs['placeTable'];
           const rowposition = this.$refs.placeTable.sortedItems.findIndex(o => o['$']['xml:id'] === pmbId);
-          this.currentPage = Math.ceil(rowposition / this.perPage);
+          this.currentPage = Math.floor(rowposition / this.perPage +1);
+          console.log(rowposition)
           await document.querySelectorAll(".highlighted-row");
           document.querySelectorAll(".highlighted-row")[0].scrollIntoView();
           if (this.currentItems.place.length === 0) {
@@ -1024,7 +1025,7 @@ export default {
         } else if (this.categoryShort === 'w') {
           await this.$refs['workTable'];
           const rowposition = this.$refs.workTable.sortedItems.findIndex(o => o['$']['xml:id'] === pmbId);
-          this.currentPage = Math.ceil(rowposition / this.perPage);
+          this.currentPage = Math.floor(rowposition / this.perPage +1);
           await document.querySelectorAll(".highlighted-row");
           document.querySelectorAll(".highlighted-row")[0].scrollIntoView();
           if (this.currentItems.work.length === 0) {

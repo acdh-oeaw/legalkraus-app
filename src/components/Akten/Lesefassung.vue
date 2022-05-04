@@ -980,8 +980,15 @@ export default {
             for (let i = 0; i < data.cases.length; i++) {
               let d = data.cases[i].doc_objs.filter(d => d.id.includes(filename))[0];
               if (d) {
-                let id = d.id.substring(3, d.id.length - 4).replaceAll('-', '.').replaceAll('0', '');
-                textinfo.innerHTML = id.substring(0, id.length - 1) + " " + d.title;
+                getArcheIdFromXmlId(filename+'.xml', rs => {
+                  console.log(rs)
+                  textinfo.innerHTML = `<a target="_blank" href="/lesefassung/${rs}">${d.title}</a>`;
+              //routeData = self.$router.resolve({name: "lesefassung", params: {id: rs}});
+              //window.open(routeData.href, '_blank');
+            });
+                //let id = d.id.substring(3, d.id.length - 4).replaceAll('-', '.').replaceAll('0', '');
+                //textinfo.innerHTML = id.substring(0, id.length - 1) + " " + d.title;
+               textinfo.onclick = '#';
                 break;
               }
 
@@ -997,9 +1004,10 @@ export default {
           textinfo.innerHTML = "<b>|</b>&nbsp;" + 'nicht erfasst'
         } else if (event.pmbId.includes('#')) {
           getPMBObjectWithId(event.pmbId.substring(1), 'quote', rs => {
-            let url = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + rs.id + "/detail"
-            textinfo.innerHTML = "<b>|</b>&nbsp;" + "PMB: " + "<a href='" + url + "' target='_blank'>" + rs.name + "</a>";
-            textinfo.onclick = "#";
+            //let url = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + rs.id + "/detail"
+            //textinfo.innerHTML = "<b>|</b>&nbsp;" + "PMB: " + "<a href='" + url + "' target='_blank'>" + rs.name + "</a>";
+            textinfo.innerHTML = "<b>|</b>&nbsp;" + "PMB: " + rs.name;
+            //textinfo.onclick = "#";
           });
         } else if (event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus") || event.pmbId.includes("https://legalkraus.acdh.oeaw.ac.at/id/")) {
           let filename = event.pmbId.substring(event.pmbId.lastIndexOf('/') + 1)
@@ -1045,13 +1053,13 @@ export default {
           if (type === 'person') {
             routeData = self.$router.resolve({path: `/register/personen/${event.pmbId.substring(1)}`});
           } else if (type === 'place') {
-            routeData = self.$router.resolve({name: "oReg", query: {pmbId: event.pmbId}});
+            routeData = self.$router.resolve({path: `/register/orte/${event.pmbId.substring(1)}`});
           } else if (type === 'institution') {
-            routeData = self.$router.resolve({name: "iReg", query: {pmbId: event.pmbId}});
+            routeData = self.$router.resolve({path: `/register/institutionen/${event.pmbId.substring(1)}`});
           } else if (type === 'work') {
             if (event.pmbId.includes('#pmb')){
-              routeData = self.$router.resolve({name: "wReg", query: {pmbId: event.pmbId}});
-            }
+              routeData = self.$router.resolve({path: `/register/werke/${event.pmbId.substring(1)}`});
+            } 
             else {
             let idx = event.pmbId.lastIndexOf('/');
             let xmlId = event.pmbId.substring(idx + 1) + '.xml';
@@ -1060,14 +1068,28 @@ export default {
               window.open(routeData.href, '_blank');
             });
             }
-          } else if (type === 'quote' || type === 'intertext') {
+          } else if (type === 'quote') {
+            if (event.pmbId.includes('#')){
+              console.log(event.pmbId)
+              routeData = self.$router.resolve({path: `/register/werke/pmb${event.pmbId.substring(1)}`});
+            } 
+            else {
+            let idx = event.pmbId.lastIndexOf('/');
+            let xmlId = event.pmbId.substring(idx + 1) + '.xml';
+            getArcheIdFromXmlId(xmlId, rs => {
+              routeData = self.$router.resolve({name: "lesefassung", params: {id: rs}});
+              window.open(routeData.href, '_blank');
+            });
+            }
+          } 
+          else if (type === 'intertext') {
             let idx = event.pmbId.lastIndexOf('/');
             let xmlId = event.pmbId.substring(idx + 1);
             getArcheIdFromXmlId(xmlId, rs => {
               routeData = self.$router.resolve({name: "lesefassung", params: {id: rs}});
               window.open(routeData.href, '_blank');
             });
-          }
+          } 
 
           window.open(routeData.href, '_blank');
         };

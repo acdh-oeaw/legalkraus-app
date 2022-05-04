@@ -132,12 +132,12 @@
             </xsl:when>
 
             <xsl:when test="@type = 'law'">
-                <span class="law {@ref}">
+                <entity-span id="{generate-id()}" class="law {@ref}">
                     <xsl:attribute name="v-bind:class">
                         <xsl:text>{ highlighter: highlighter.law }</xsl:text>
                     </xsl:attribute>
                     <xsl:apply-templates/>
-                </span>
+                </entity-span>
             </xsl:when>
 
             <xsl:when test="@type = 'work'">
