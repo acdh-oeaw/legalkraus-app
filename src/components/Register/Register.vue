@@ -370,7 +370,7 @@
               :per-page="perPage"
               aria-controls="col-table"
           ></b-pagination>
-          <b-table id="col-table" :small="'small'" :sort-by="'title'" :sort-compare="tableSortCompare"
+          <b-table :tbody-tr-class="rowClass" ref="jusTable" id="col-table" :small="'small'" :sort-by="'title'" :sort-compare="tableSortCompare"
                    :no-border-collapse="true" :borderless="'borderless'"
                    :current-page="currentPage" :per-page="perPage"
                    :busy.sync="isBusy" :fields="[
@@ -1029,6 +1029,22 @@ export default {
           await document.querySelectorAll(".highlighted-row");
           document.querySelectorAll(".highlighted-row")[0].scrollIntoView();
           if (this.currentItems.work.length === 0) {
+            this.noItems = true;
+          }
+        } else if (this.categoryShort === 'j') {
+          await this.$refs['jusTable'];
+          const rowposition = this.$refs.jusTable.sortedItems.findIndex(o => {
+           
+            let correspurl = new URL(o['$']['corresp']).search;
+              const lawtextid = Array.from(new URLSearchParams(correspurl).values()).join('_');
+             
+             return lawtextid === pmbId;
+            });
+             console.log(rowposition)
+          this.currentPage = Math.floor(rowposition / this.perPage +1);
+          await document.querySelectorAll(".highlighted-row");
+          document.querySelectorAll(".highlighted-row")[0].scrollIntoView();
+          if (this.currentItems.bibl.length === 0) {
             this.noItems = true;
           }
         }

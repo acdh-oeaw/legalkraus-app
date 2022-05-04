@@ -880,7 +880,7 @@ export default {
         return;
       }
 
-      if (event.type === 'quote' || event.type === 'intertext') {
+      if (event.type === 'quote' || event.type === 'law' || event.type === 'intertext') {
         let commentDiv = this.createCommentDiv(event, null, elem, event.type);
         //in case of an inline collision (due to nested elements, the comment is placed directly beneath the other comment)
         comments.forEach(e => {
@@ -930,6 +930,7 @@ export default {
      * @returns {HTMLDivElement}
      */
     createCommentDiv(event, rs, elem, type) {
+      console.log(type)
       var div = document.createElement('div');
       div.className = "comment position-relative";
       div.style.color = "var(--text-black)";
@@ -941,7 +942,7 @@ export default {
       let textinfo = document.createElement('p');
 
       textinfo.className = "textinfo m-0";
-
+      
       if (type === 'person') {
         if (rs.profession[0]) {
           // div.innerHTML = "<b>|</b>&nbsp;" + rs.name + ", " + rs.first_name + ", <br> " + rs.profession[0].name;
@@ -963,14 +964,25 @@ export default {
         if (rs.kind && rs.kind.name) {
           textinfo.innerHTML = "<b>|</b>&nbsp;" + rs.name + ', ' + rs.kind.name;
         }
-      } else if (type === 'work') {
+      }
+      else if (type === 'law') {
+        textinfo.innerHTML = 'Gesetzestext im Register'
+      }
+      
+      else if (type === 'work') {
         if (event.pmbId === '' || event.pmbId === null) {
           textinfo.innerHTML = "<b>|</b>&nbsp;" + 'nicht erfasst'
         } else if (event.pmbId.includes('pmb')) {
           getPMBObjectWithId(event.pmbId, 'work', rs => {
+            let authors = []; 
+            if (rs.relations.persons) {
+             authors = rs.relations.persons.filter(person => person.relation_type.id === 1049).map(fp => fp.target);
+            }
+            console.log(authors);
+            
             //let url = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + rs.id + "/detail"
             //textinfo.innerHTML = "<b>|</b>&nbsp;" + "PMB: " + "<a href='" + url + "' target='_blank'>" + rs.name + "</a>";
-            textinfo.innerHTML = "<b>|</b>&nbsp;" + "PMB: " +  rs.name
+            textinfo.innerHTML = "<b>|</b>&nbsp;" + "PMB: " +  rs.name + " " + authors.map(author=>author.first_name + " " + author.name)
             //.onclick = "#";
           });
         } else if (event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus")) {
@@ -1056,7 +1068,12 @@ export default {
             routeData = self.$router.resolve({path: `/register/orte/${event.pmbId.substring(1)}`});
           } else if (type === 'institution') {
             routeData = self.$router.resolve({path: `/register/institutionen/${event.pmbId.substring(1)}`});
-          } else if (type === 'work') {
+          }  else if (type === 'law') {
+              const lawendpointsearch = new URL(event.pmbId).search;
+              const lawtextid = Array.from(new URLSearchParams(lawendpointsearch).values()).join('_');
+              //console.log(Object.values(lawendpoint.entries()));
+            routeData = self.$router.resolve({path: `/register/juristische-texte/${lawtextid}`});
+          }  else if (type === 'work') {
             if (event.pmbId.includes('#pmb')){
               routeData = self.$router.resolve({path: `/register/werke/${event.pmbId.substring(1)}`});
             } 
