@@ -1,16 +1,20 @@
 <template>
-    <span>{{this.content}}</span>
+    <span v-if="this.medium">{{this.content}}, {{this.medium}}</span>
+    <span v-else>{{this.content}}</span>
 </template>
 
 <script>
 import {
-  getPmbEntityViaArche
-} from "../../services/ARCHEService";
+  getPmbPersonWithoutDetails
+} from "../../services/PMBService";
 
 export default {
   name: "MdHelper",
   props: {
-      id: null
+      id: null,
+      medium:null,
+      type:null,
+
   },
   data() {
     return {
@@ -18,8 +22,12 @@ export default {
     }
   },
   created() {
-      getPmbEntityViaArche(this.id, rs => {
-          this.content = rs[Object.keys(rs)[0]]['https://vocabs.acdh.oeaw.ac.at/schema#hasTitle'][0].value;
+      getPmbPersonWithoutDetails(this.id, this.type, rs => {
+        if (this.type ==='place' || this.type ==='institution') {
+          this.content = rs.name
+        } else {
+          this.content = rs.first_name + " " + rs.name;
+        }
           
         })
   }

@@ -433,8 +433,13 @@ export default {
   methods: {
     rowClass(item, type) {
       if (this.$route.params && this.$route.params.pmbid) {
-        console.log(type)
-       if (item['$']['xml:id'] === this.$route.params.pmbid) return "highlighted-row"   
+        console.log(type);
+        let lawtextid = '';
+        if (item['$']['corresp']) {
+        let correspurl = new URL(item['$']['corresp']).search;
+        lawtextid = Array.from(new URLSearchParams(correspurl).values()).join('_');
+        }
+       if (item['$']['xml:id'] === this.$route.params.pmbid || lawtextid === this.$route.params.pmbid ) return "highlighted-row"   
       }
     },
     setCategory() {
@@ -727,7 +732,6 @@ export default {
         "date": "-",
         "biblScope": "-"
       };
-
       if (record.title) {
         f.title = record.title[0] ? record.title[0]._ : '-'
       }
@@ -751,11 +755,12 @@ export default {
       if(record.ref){
         let refCases = [];
         let refDocs = [];
-
+         console.log(record.ref)
         record.ref.forEach(r =>{
           let xmlId = r._.substring(record.ref[0]._.lastIndexOf('|')+1);
           let caseId = parseInt(xmlId.replace("D_","").substring(0,6).replace('0',''));
           this.caseInfo.then(cd =>{
+            console.log(cd)
             cd.cases.forEach(c => {
               let cid = parseInt(c.id.replace("C_",'').substring(0, c.id.length-4));
               if(cid === caseId){

@@ -1,5 +1,6 @@
 <template>
   <div class="main" v-if="this.dataLoaded && this.docInfo">
+    <div class="bg-md">
     <Search class="py-2" v-bind:col-id="colId" v-bind:rs-id="objectId"></Search>
     <p v-if="propsSet" class="navigation">Akten-Edition
       <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
@@ -29,12 +30,12 @@
       <span  class="semibold">{{ this.objectTitle }}</span>
     </p>
     <div v-if="simpleMD" class="meta-data">
-      <router-link class="back" to="/">{{ this.objectTitle }}</router-link>
+      <router-link class="font-weight-bold" to="/">{{ this.objectTitle }}</router-link>
       <div class="meta5">
-        <p>Seitenanzahl: {{ this.facsURLs.length }}</p>
+        <p class="custom-p-bm"><span class="font-weight-bold">Seiten (Lesefassung):</span><br/> {{ this.facsURLs.length }}</p>
       </div>
       <div class="vl meta3"></div>
-      <p class="meta4">Datum: {{ this.docInfo.date }}</p>
+      <p class="meta4">Datum: {{ this.creationDate }}</p>
       <div class="meta12 d-inline-flex">
         <input class="vt c" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
         <button type="button" class="btn vt-button" data-search="next" v-on:click="highlightNext()">
@@ -55,47 +56,54 @@
     </div>
     <div v-if="letterMD && showMD" class="meta-data">
       <div class="meta1">
-        <router-link class="back" to="/">{{ this.objectTitle }}</router-link>
-        <p>Seitenanzahl: {{ this.facsURLs.length }}</p>
-        <p>Betreff: {{ this.noteGrp.subject }}</p>
-        <p>Diktation: {{ this.noteGrp.dictation }}</p>
+        <router-link class="font-weight-bold" to="/">{{ this.objectTitle }}</router-link>
+        <div class="mt-3">
+          <p class="custom-p-bm"><span class="font-weight-bold">Seiten (Lesefassung):</span><br/> {{ this.facsURLs.length }}</p>
+        </div>
       </div>
       <div class="meta11">
-        <span v-if="handsClosed" class="hasActor">
+        <!--<span v-if="handsClosed" class="hasActor">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right"
              viewBox="0 0 16 16" v-on:click="toggleHands">
           <path
               d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
         </svg>
         Schreiberhände: {{ this.hands.length }}
-          </span>
-        <div v-show="!handsClosed">
-        <span class="hasActor">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down"
+          </span>-->
+        <div v-if="this.hands.length > 0">
+        <span class="hasActor font-weight-bold">
+        <!--<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down"
              viewBox="0 0 16 16" v-on:click="toggleHands">
   <path
       d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
-</svg>
+</svg>-->
         Schreiberhände:
-
+<br/>
           </span>
-          <MDHelper v-for="hand in this.hands" :key="hand" :id="hand"/>
+          <MDHelper v-for="hand in this.hands" :key="hand.writer" :medium="hand.medium" :id="hand.writer"/>
           <!--<p class="m-item" v-for="h in this.hands" v-bind:key="h.id">{{ h.name }}</p>-->
         </div>
+         <p v-if="this.docInfo.materiality[0]" class="meta2">Materialitätstyp: {{ this.docInfo.materiality[0] }}</p>
       </div>
+    
+     
       <div class="vl meta3"></div>
       <div class="meta4">
-        <b>Sender</b>
-        <p>Name: <MDHelper v-if="this.sent.name.includes('#pmb')" :id="this.sent.name.substring(4)"/><span v-else>{{this.sent.name}}</span></p>
-        <p>Straße: {{ this.sent.street }}</p>
-        <p>Ort: {{ this.sent.settlement }}</p>
-        <p>Datum: {{ this.sent.date }}</p>
+        <p class="font-weight-bold">Sender<p>
+        <div class="mt-2">
+          <p class="custom-p-bm"><MDHelper v-if="sent.name.includes('#pmb')" :id="this.sent.name.substring(4)"/><MDHelper v-else-if="sent.name.includes('#') && !sent.name.includes('#pmb')" :id="this.sent.name.substring(1)"/><span v-else>{{this.sent.name}}</span></p>
+          <p class="custom-p-bm"><MDHelper type="place" v-if="sent.street.includes('#pmb')" :id="this.sent.street.substring(4)"/><MDHelper type="place" v-else-if="sent.street.includes('#') && !sent.street.includes('#pmb')" :id="this.sent.street.substring(1)"/><span v-else>{{this.sent.street}}</span></p>
+          <p class="custom-p-bm"><MDHelper type="place" v-if="sent.settlement.includes('#pmb')" :id="this.sent.settlement.substring(4)"/><MDHelper type="place" v-else-if="sent.settlement.includes('#') && !sent.settlment.includes('#pmb')" :id="this.sent.settlement.substring(1)"/><span v-else>{{this.sent.settlement}}</span></p>
+          <p v-if="this.sent.date !== '-'" class="custom-p-bm">{{ this.sent.date }}</p>
+        </div>
+        <div class="mt-3">
+        <p v-if="this.noteGrp.subject  !== '-'" class="custom-p-bm">Betreff: {{ this.noteGrp.subject }}</p>
+        <p v-if="this.noteGrp.dictation  !== '-'" class="custom-p-bm">Diktatsigle: {{ this.noteGrp.dictation }}</p>
       </div>
-      <div v-if="stamp===null" class="meta5">Stempel: -</div>
-      <div v-if="stamp!==null" class="meta5">Stempel: <MDHelper :id="this.stamp"/></div>
-      
-      <p class="meta2">Materialitätstyp: {{ this.docInfo.materiality[0] }}</p>
-      <div class="meta10">
+      </div>
+      <!--<div v-if="stamp===null" class="meta5">Stempel: -</div>-->
+      <div v-if="stamp!==null" class="meta5">Stempel: <MDHelper  type="institution" :id="this.stamp"/></div>
+      <!--<div class="meta10">
         <span v-if="actorsClosed" class="hasActor">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right"
              viewBox="0 0 16 16" v-on:click="toggleActors">
@@ -116,7 +124,7 @@
           </span>
           <p class="m-item" v-for="actor in this.docInfo.acts" v-bind:key="actor.key">{{ actor.value }}</p>
         </div>
-      </div>
+      </div>-->
       <div class="vl meta7"></div>
       <div class="meta8">
         <input class="vt" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
@@ -136,48 +144,50 @@
         </button>
       </div>
       <div class="meta12">
-        <b>Empfänger</b>
-        <p>Name: <MDHelper v-if="this.received.name.includes('#pmb')" :id="this.received.name.substring(4)"/><span v-else>{{this.received.name}}</span></p>
-        <p>Straße: {{ this.received.street }}</p>
-        <p>Ort: {{ this.received.settlement }}</p>
-        <p>Datum: {{ this.received.date }}</p>
+        <p class="font-weight-bold">Empfänger</p>
+          <div class="mt-2">
+            <p class="custom-p-bm">An: <MDHelper v-if="this.received.name.includes('#pmb')" :id="this.received.name.substring(4)"/><span v-else>{{this.received.name}}</span></p>
+            <p class="custom-p-bm"><MDHelper type="place" v-if="received.street.includes('#pmb')" :id="this.received.street.substring(4)"/><MDHelper type="place" v-else-if="received.street.includes('#') && !received.street.includes('#pmb')" :id="this.received.street.substring(1)"/><span v-else>{{this.received.street}}</span></p>
+          <p class="custom-p-bm"><MDHelper type="place" v-if="received.settlement.includes('#pmb')" :id="this.received.settlement.substring(4)"/><MDHelper type="place" v-else-if="received.settlement.includes('#') && !received.settlment.includes('#pmb')" :id="this.received.settlement.substring(1)"/><span v-else>{{this.received.settlement}}</span></p>
+            <p v-if="this.received.date !== '-'" class="custom-p-bm">{{ this.received.date }}</p>
+          </div>
       </div>
     </div>
     <div v-if="letterMD && !showMD" class="loader"></div>
     <div v-if="defaultMD" class="meta-data">
       <div class="meta1">
-        <router-link class="back" to="/">{{ this.objectTitle }}</router-link>
+        <router-link class="font-weight-bold" to="/">{{ this.objectTitle }}</router-link>
       </div>
       <div class="meta2">
-        <p>Seitenanzahl: {{ this.facsURLs.length }}</p>
+        <p><span class="font-weight-bold">Seiten (Lesefassung):</span><br/> {{ this.facsURLs.length }}</p>
       </div>
       <div class="meta2-1">
-        <span v-if="handsClosed" class="hasActor">
+        <!--<span v-if="handsClosed" class="hasActor">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right"
              viewBox="0 0 16 16" v-on:click="toggleHands">
           <path
               d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
         </svg>
         Schreiberhände: {{ this.hands.length }}
-          </span>
-        <div v-if="!handsClosed">
-        <span class="hasActor">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down"
+          </span>-->
+        <div  v-if="this.hands.length > 0">
+        <span class="hasActor font-weight-bold">
+       <!-- <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down"
              viewBox="0 0 16 16" v-on:click="toggleHands">
   <path
       d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
-</svg>
+</svg>-->
         Schreiberhände:
-
+<br/>
           </span>
-          <p class="m-item" v-for="h in this.hands" v-bind:key="h.id">{{ h.name }}</p>
+          <MDHelper v-for="hand in this.hands" :key="hand.writer" :medium="hand.medium" :id="hand.writer"/>
         </div>
       </div>
-      <div class="meta5">Datum: {{ this.docInfo.date }}</div>
-      <div v-if="stamp===null" class="meta12">Stempel: -</div>
-      <div v-if="stamp!==null" class="meta12">Stempel: <MDHelper :id="this.stamp"/></div>
+      <div class="meta5">Datum: {{ this.creationDate }}</div>
+      <!--<div v-if="stamp===null" class="meta12">Stempel: -</div>-->
+      <div v-if="stamp!==null" class="meta12">Stempel: <MDHelper type='institution' :id="this.stamp"/></div>
       <p class="meta4">Materialitätstyp: {{ this.docInfo.materiality[0] }}</p>
-      <div class="meta6">
+      <!--<div class="meta6">
         <span v-if="actorsClosed" class="hasActor">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right"
              viewBox="0 0 16 16" v-on:click="toggleActors">
@@ -198,7 +208,7 @@
           </span>
           <p class="m-item" v-for="actor in this.docInfo.acts" v-bind:key="actor.key">{{ actor.value }}</p>
         </div>
-      </div>
+      </div>-->
       <div class="vl meta7"></div>
       <div class="meta9">
         <input class="vt" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
@@ -217,6 +227,7 @@
           </svg>
         </button>
       </div>
+    </div>
     </div>
     <div class="grid-container">
       <div id="card-left-small" class="card-left-small" v-if="this.showLF && !this.showFacs"
@@ -605,6 +616,7 @@ export default {
       received: {},
       noteGrp: {},
       showMD: false,
+      creationDate:null
     }
   },
   computed: {
@@ -1247,12 +1259,24 @@ export default {
       let tmp = {};
       if (c.innerHTML.includes('street')) {
         let street = c.getElementsByTagName("street")[0];
-        this[type].street = street.innerHTML === '' ? '-' : street.innerHTML;
+        if (street.getAttribute('corresp')) {
+          this[type].street = street.getAttribute('corresp');
+        }
+        else {
+           this[type].street = street.textNode;
+        }
+        //this[type].street = street.innerHTML === '' ? street.getAttribute('corresp') : street.innerHTML;
       }
 
       if (c.innerHTML.includes('settlement')) {
-        let set = c.getElementsByTagName("settlement")[0];
-        this[type].settlement = set.innerHTML === '' ? '-' : set.innerHTML;
+        let settlement = c.getElementsByTagName("settlement")[0];
+        if (settlement.getAttribute('ref')) {
+          this[type].settlement = settlement.getAttribute('ref');
+        }
+        else {
+           this[type].settlement = settlement.textNode;
+        }
+        //this[type].settlement = set.innerHTML === '' ? '-' : set.innerHTML;
       }
 
       if (c.innerHTML.includes('date')) {
@@ -1382,10 +1406,17 @@ export default {
           let msDesc = this.dom.getElementsByTagName("msDesc")[0];
           let profileDesc = this.dom.getElementsByTagName("profileDesc")[0];
           let correspDesc = this.dom.getElementsByTagName("correspDesc")[0];
+          if (profileDesc.innerHTML.includes("creation")) {
+            const creation = profileDesc.getElementsByTagName("creation")[0];
+            if (creation.innerHTML.includes("date")) {
+              const creationDate = profileDesc.getElementsByTagName("date")[0];
+              this.creationDate = creationDate.textContent;
+            }
+          }
           if (profileDesc.innerHTML.includes('handNote')) {
             let hands = ([...profileDesc.getElementsByTagName("handNote")]);
             for (const h of hands) {
-              this.hands.push(h.getAttribute('scribeRef').substring(1));
+              this.hands.push({'writer':h.getAttribute('scribeRef').substring(1),'medium':h.getAttribute('medium')});
             }
           }
           if (msDesc.innerHTML.includes('<ab') && msDesc.innerHTML.includes('stamp')) {
@@ -2084,6 +2115,14 @@ mark {
   margin-right: auto;
   margin-top: 3rem;
   margin-bottom: 3rem;
+}
+
+.bg-md {
+  background-color: var(--secondary-gray-dark);
+}
+
+.custom-p-bm {
+  margin-bottom:0.5rem;
 }
 
 @keyframes spin {
