@@ -132,7 +132,7 @@
             </xsl:when>
 
             <xsl:when test="@type = 'law'">
-                <entity-span id="{generate-id()}" class="law {@ref}">
+                <entity-span id="{generate-id()}" class="law {@ref}" v-on:click="navigateTo('{@ref}', '{@type}', $event)">
                     <xsl:attribute name="v-bind:class">
                         <xsl:text>{ highlighter: highlighter.law }</xsl:text>
                     </xsl:attribute>
