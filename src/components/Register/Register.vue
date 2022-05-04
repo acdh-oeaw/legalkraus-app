@@ -277,7 +277,7 @@
               :per-page="perPage"
               aria-controls="col-table"
           ></b-pagination>
-          <b-table id="col-table" :small="'small'" :sort-by="'title'" :sort-compare="tableSortCompareFackel"
+          <b-table :tbody-tr-class="rowClass" ref="fackelTable" id="col-table" :small="'small'" :sort-by="'title'" :sort-compare="tableSortCompareFackel"
                    :no-border-collapse="true" :borderless="'borderless'"
                    :current-page="currentPage" :per-page="perPage"
                    :busy.sync="isBusy" :fields="[
@@ -435,11 +435,20 @@ export default {
       if (this.$route.params && this.$route.params.pmbid) {
         console.log(type);
         let lawtextid = '';
+        let fackelid = '';
         if (item['$']['corresp']) {
+          if (item['$']['corresp'].includes('https://fackel.oeaw.ac.at')) {
+             const regex = /[0-9]+.[0-9]+/g;
+             const match = item['$']['corresp'].match(regex)[0];
+             if (match) {
+              fackelid = match.replace(',','_');
+             } 
+          } else {
         let correspurl = new URL(item['$']['corresp']).search;
         lawtextid = Array.from(new URLSearchParams(correspurl).values()).join('_');
         }
-       if (item['$']['xml:id'] === this.$route.params.pmbid || lawtextid === this.$route.params.pmbid ) return "highlighted-row"   
+        }
+       if (item['$']['xml:id'] === this.$route.params.pmbid || lawtextid === this.$route.params.pmbid  || fackelid === this.$route.params.pmbid) return "highlighted-row"   
       }
     },
     setCategory() {
@@ -1044,6 +1053,25 @@ export default {
               const lawtextid = Array.from(new URLSearchParams(correspurl).values()).join('_');
              
              return lawtextid === pmbId;
+            });
+             console.log(rowposition)
+          this.currentPage = Math.floor(rowposition / this.perPage +1);
+          await document.querySelectorAll(".highlighted-row");
+          document.querySelectorAll(".highlighted-row")[0].scrollIntoView();
+          if (this.currentItems.bibl.length === 0) {
+            this.noItems = true;
+          }
+        }
+        else if (this.categoryShort === 'f') {
+          await this.$refs['fackelTable'];
+          const rowposition = this.$refs.fackelTable.sortedItems.findIndex(o => {
+            const regex = /[0-9]+.[0-9]+/g;
+            const match = o['$']['corresp'].match(regex)[0];
+             let fid;
+             if (match) {
+               fid = match.replace(',','_');
+             }
+             return fid === pmbId;
             });
              console.log(rowposition)
           this.currentPage = Math.floor(rowposition / this.perPage +1);

@@ -1,4 +1,4 @@
-<template>
+<template  @click="$emit('click', $event)">
 <span>
 <slot></slot>
 </span>

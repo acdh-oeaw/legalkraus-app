@@ -61,6 +61,7 @@
           <p class="custom-p-bm"><span class="font-weight-bold">Seiten (Lesefassung):</span><br/> {{ this.facsURLs.length }}</p>
         </div>
       </div>
+      <p v-if="this.docInfo.materiality[0]" class="meta2"><span class="font-weight-bold">Materialitätstyp:</span><br/> {{ this.docInfo.materiality[0] }}</p>
       <div class="meta11">
         <!--<span v-if="handsClosed" class="hasActor">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right"
@@ -80,10 +81,10 @@
         Schreiberhände:
 <br/>
           </span>
-          <MDHelper v-for="hand in this.hands" :key="hand.writer" :medium="hand.medium" :id="hand.writer"/>
+          <MDHelper class="d-block" v-for="hand in this.hands" :key="hand.writer" :medium="hand.medium" :id="hand.writer"/>
           <!--<p class="m-item" v-for="h in this.hands" v-bind:key="h.id">{{ h.name }}</p>-->
         </div>
-         <p v-if="this.docInfo.materiality[0]" class="meta2">Materialitätstyp: {{ this.docInfo.materiality[0] }}</p>
+         
       </div>
     
      
@@ -161,6 +162,7 @@
       <div class="meta2">
         <p><span class="font-weight-bold">Seiten (Lesefassung):</span><br/> {{ this.facsURLs.length }}</p>
       </div>
+      <p class="meta4"><span class="font-weight-bold">Materialitätstyp:</span><br/> {{ this.docInfo.materiality[0] }}</p>
       <div class="meta2-1">
         <!--<span v-if="handsClosed" class="hasActor">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right"
@@ -180,13 +182,12 @@
         Schreiberhände:
 <br/>
           </span>
-          <MDHelper v-for="hand in this.hands" :key="hand.writer" :medium="hand.medium" :id="hand.writer"/>
+          <MDHelper class="d-block" v-for="hand in this.hands" :key="hand.writer" :medium="hand.medium" :id="hand.writer"/>
         </div>
       </div>
       <div class="meta5">Datum: {{ this.creationDate }}</div>
       <!--<div v-if="stamp===null" class="meta12">Stempel: -</div>-->
       <div v-if="stamp!==null" class="meta12">Stempel: <MDHelper type='institution' :id="this.stamp"/></div>
-      <p class="meta4">Materialitätstyp: {{ this.docInfo.materiality[0] }}</p>
       <!--<div class="meta6">
         <span v-if="actorsClosed" class="hasActor">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right"
@@ -367,14 +368,14 @@
             >
               Zitat
             </b-form-checkbox>
-            <b-form-checkbox
+           <!-- <b-form-checkbox
                 id="intertext-toggle"
                 v-model="highlighter['intertext']"
                 v-on:change="updateHighlighter('intertext', highlighter['intertext'])"
                 switch
             >
               Intertext Fackel
-            </b-form-checkbox>
+            </b-form-checkbox>-->
           </div>
 
           <!--          <div class="vt-container">
@@ -414,7 +415,7 @@
           </a>
         </div>
         <div class="text-comment-wrap  position-relative">
-          <div class="card card-full bg-light">
+          <div class="card w-70 card-full bg-light">
             <div class="header">
               <div class="all-annotations">
                 <b-form-checkbox
@@ -481,18 +482,18 @@
               >
                 Zitat
               </b-form-checkbox>
-              <b-form-checkbox
+              <!--<b-form-checkbox
                   id="intertext-toggle"
                   v-model="highlighter['intertext']"
                   v-on:change="updateHighlighter('intertext', highlighter['intertext'])"
                   switch
               >
                 Intertext Fackel
-              </b-form-checkbox>
+              </b-form-checkbox>-->
             </div>
 
             <div class="body row m-0 overflow-auto">
-              <component class="col-9" v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"
+              <component class="col-12" v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"
                          v-on:child-mounted="childMounted"/>
             </div>
 
@@ -1026,7 +1027,11 @@ export default {
       } else if (event.type === 'quote' || event.type === 'intertext') {
         if (event.pmbId === '' || event.pmbId === null) {
           textinfo.innerHTML = "<b>|</b>&nbsp;" + 'nicht erfasst'
-        } else if (event.pmbId.includes('#')) {
+        } else if (event.type === 'intertext' && event.pmbId.includes("https://fackel.oeaw.ac.at/")) {
+          textinfo.innerHTML = "<b>|</b>&nbsp;" + 'Die Fackel im Register';
+        }
+        
+        else if (event.pmbId.includes('#')) {
           getPMBObjectWithId(event.pmbId.substring(1), 'quote', rs => {
             //let url = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + rs.id + "/detail"
             //textinfo.innerHTML = "<b>|</b>&nbsp;" + "PMB: " + "<a href='" + url + "' target='_blank'>" + rs.name + "</a>";
@@ -1071,7 +1076,8 @@ export default {
       let self = this; //"this" cannot be used in JS functions
 
       //if a work only refers to a pmb or fackel entry, no onclick function is needed
-      if (!(type === 'work' && event.pmbId && event.pmbId.includes('pmb') && event.pmbId.includes('fackel'))) {
+      //if (!(type === 'work' && event.pmbId && event.pmbId.includes('pmb') && event.pmbId.includes('fackel'))) {
+        if (!(type === 'work' && event.pmbId && event.pmbId.includes('pmb'))) {
         textinfo.onclick = function () {
           let routeData = "";
           if (type === 'person') {
@@ -1099,7 +1105,6 @@ export default {
             }
           } else if (type === 'quote') {
             if (event.pmbId.includes('#')){
-              console.log(event.pmbId)
               routeData = self.$router.resolve({path: `/register/werke/pmb${event.pmbId.substring(1)}`});
             } 
             else {
@@ -1112,12 +1117,21 @@ export default {
             }
           } 
           else if (type === 'intertext') {
-            let idx = event.pmbId.lastIndexOf('/');
-            let xmlId = event.pmbId.substring(idx + 1);
-            getArcheIdFromXmlId(xmlId, rs => {
+           if (event.pmbId && event.pmbId.includes("https://fackel.oeaw.ac.at")) {
+            
+             const regex = /[0-9]+.[0-9]+/g;
+             const match = event.pmbId.match(regex)[0];
+             if (match) {
+               const fid = match.replace(',','_');
+              routeData = self.$router.resolve({path: `/register/fackel/${fid}`});
+             }
+           }
+            /*let idx = event.pmbId.lastIndexOf('/');
+            let xmlId = event.pmbId.substring(idx + 1);*/
+            /*getArcheIdFromXmlId(xmlId, rs => {
               routeData = self.$router.resolve({name: "lesefassung", params: {id: rs}});
               window.open(routeData.href, '_blank');
-            });
+            });*/
           } 
 
           window.open(routeData.href, '_blank');
@@ -1157,12 +1171,19 @@ export default {
             this.xml = str;
             this.xmlFile = this.saveStringToXML(this.xml);
             this.dom = dom;
-
+            const pbs = Array.from(this.dom.getElementsByTagName("pb"))
+            if (pbs.length > 0) {
             const pbsfacs = Array.from(this.dom.getElementsByTagName("pb")).map(pb => pb.attributes.facs.nodeValue.replace('#', ''));
             pbsfacs.forEach(facsid => {
               let facsUrl = this.dom.querySelectorAll(`[*|id='${facsid}'] graphic[source='wienbibliothek']`)[0].attributes.url.nodeValue
               this.facsURLs.push(facsUrl)
             })
+            } else {
+              const graphics = this.dom.querySelectorAll(`graphic[source='wienbibliothek']`);
+              graphics.forEach(gr => {
+                this.facsURLs.push(gr.getAttribute("url"))
+              })
+            }
             this.dataLoaded = true;
             const furtherWitnesses = this.dom.querySelectorAll("facsimile[ana='further-witnesses'] graphic[source='wienbibliothek']")
             if (furtherWitnesses.length > 0) {
@@ -1258,12 +1279,17 @@ export default {
       let nameElem = null;
       let tmp = {};
       if (c.innerHTML.includes('street')) {
+        
         let street = c.getElementsByTagName("street")[0];
-        if (street.getAttribute('corresp')) {
+  
+        if (street.textContent && street.textContent.length > 0) {
+            this[type].street = street.textContent;
+        }
+        else if (street.getAttribute('corresp')) {
           this[type].street = street.getAttribute('corresp');
         }
         else {
-           this[type].street = street.textNode;
+         this[type].street = '';
         }
         //this[type].street = street.innerHTML === '' ? street.getAttribute('corresp') : street.innerHTML;
       }
@@ -1274,7 +1300,7 @@ export default {
           this[type].settlement = settlement.getAttribute('ref');
         }
         else {
-           this[type].settlement = settlement.textNode;
+           this[type].settlement = settlement.textContent;
         }
         //this[type].settlement = set.innerHTML === '' ? '-' : set.innerHTML;
       }
@@ -1789,6 +1815,10 @@ export default {
   width: 5%;
 }
 
+.w-70 {
+  width:70%;
+}
+
 .w-95 {
   width: 95%;
 }
@@ -1821,7 +1851,7 @@ export default {
   background: var(--toggele-quote);
 }
 
-.highlighter.fackel-ref {
+.fackel-ref {
   background: var(--toggle-intertext);
 }
 
@@ -2124,6 +2154,7 @@ mark {
 .custom-p-bm {
   margin-bottom:0.5rem;
 }
+
 
 @keyframes spin {
   0% {

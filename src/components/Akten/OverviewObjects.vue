@@ -164,7 +164,7 @@
             <h6 class="card-title cursor-pointer" v-on:click="navToLesefassung(val)">
               <b>{{ val.title }}</b>
             </h6>
-            <span v-if="Object.keys(val.persons).length > 0">
+            <!--<span v-if="Object.keys(val.persons).length > 0">
               <p><b>Beteiligte:</b></p>
               <div
                 class="pmb-link"
@@ -172,11 +172,10 @@
                 :key="pmbid"
                 v-on:click="navToPMBActor($event, pmbid)"
               >
-                <!--   v-on:click="navToPMB($event, a)"-->
                 {{ name }}
               </div>
             </span>
-            <div v-else>Beteiligte: -</div>
+            <div v-else>Beteiligte: -</div>-->
             <span v-if="Object.keys(val.places).length > 0">
               <p class="p-s">Orte:</p>
               <div

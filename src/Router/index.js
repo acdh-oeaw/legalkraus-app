@@ -106,6 +106,7 @@ export default new Router({
         {path: '/register/werke', name: 'wReg', component: Register},
         {path: '/register/werke/:pmbid', name: 'wReg', component: Register},
         {path: '/register/fackel', name: 'fReg', component: Register},
+        {path: '/register/fackel/:pmbid', name: 'fReg', component: Register},
         {path: '/register/juristische-texte', name: 'gReg', component: Register},
         {path: '/register/juristische-texte/:pmbid', name: 'gReg', component: Register},
         {path: '/projekt/projektinformationen', component: Projektinformationen},
