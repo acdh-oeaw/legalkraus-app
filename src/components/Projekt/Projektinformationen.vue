@@ -1,20 +1,14 @@
 <template>
   <b-container class="mt-3 no-grid-col-container">
-    <h1 class="font-weight-bold text-left">Projektinformation</h1>
+    <h1 class="font-weight-bold text-left mb-3">Projektinformation</h1>
     <b-row>
       <b-col cols="7">
         <div class="text-left">
         <p>
-          Mit Karl Kraus (1874-1936) war eine zentrale Persönlichkeit der Wiener
-          Moderne und als Schriftsteller und Publizist ungeheuer produktiv.
-          Obwohl das Rechtssystem für ihn von zentraler Bedeutung war, sind
-          seine umfangreichen Rechtsakten nahezu unerforscht. Sie stammen aus
-          der Kanzlei seines langjährigen Anwaltes Oskar Samek, dokumentieren
-          über 200 Fälle aus 17 Jahren (1922–1938) und befinden sich im Karl
-          Kraus-Archiv der Wienbibliothek im Rathaus.
+          Karl Kraus (1874–1936) war eine zentrale Persönlichkeit der Wiener Moderne und als Schriftsteller sowie Publizist ungeheuer produktiv. Obwohl das Rechtssystem für ihn von zentraler Bedeutung war, sind seine umfangreichen Rechtsakten nahezu unerforscht. Sie stammen aus der Kanzlei seines langjährigen Anwaltes Oskar Samek, dokumentieren über 200 Fälle aus 17 Jahren (1922–1938) und befinden sich im Karl Kraus-Archiv der Wienbibliothek im Rathaus.
         </p>
         <p>
-          Das FWF-Projekt der <i>Rechtsakten Karl Kraus</i> baut aui das vorangegangene
+          Das FWF-Projekt der <i>Rechtsakten Karl Kraus</i> baut auf das vorangegangene
           Projekt <i>Karl Kraus Online – Die Rechtsperson</i> (Ludwig Boltzmann
           Institut für Geschichte und Theorie der Biographie) auf. Katharina
           Prager hat von 2012 bis 2018 Bestände des Karl Kraus-Archivs in der
@@ -38,31 +32,25 @@
           Ergebnisse liegen nun in Form dieser wissenschaftlichen Edition vor.
         </p>
         <p>
-          Die Digitalisate sind einer Transkription synoptisch
-          gegenübergestellt. Der von der Text Encoding Initiative vorgegebene
-          Standard zur Auszeichnung von XML-Dokumenten wurde für das Projekt und
-          das zu edierende Material angepasst und optimiert. So ist die
-          Auszeichnung der Texte und in der Folge die Herstellung von Bezügen
-          zwischen den einzelnen Dokumenten und darüber hinaus ermöglicht.
+          Die Digitalisate sind einer Transkription synoptisch gegenübergestellt. Der von der Text Encoding Initiative vorgegebene Standard zur Auszeichnung von XML-Dokumenten wurde für das Projekt und das zu edierende Material angepasst und optimiert. So ist die Auszeichnung der Texte und in der Folge die Herstellung von Bezügen zwischen den einzelnen Dokumenten und darüber hinaus ermöglicht.
+
         </p>
         <p>
           Den Nutzerinnen und Nutzern wird der Zugang zu dem umfangreichen und
           komplexen Material in mehrerer Hinsicht erleichtert:
-        </p>
-        <p>
+        <br/>
           Über eine Auswahl verschiedener Themen (Kultur, Recht, Politik) kommen
           die Benutzerinnen und Benutzer zu bestimmten Vorauswahlen von Akten,
           die jeweils mit einem erläuternden Text der Herausgeber:innen versehen
           sind.
-        </p>
-        <p>
+        <br/>
           Zusätzlich gibt es die Möglichkeit, sich Dokumente nach
           handschriftlichen Kriterien gefiltert anzeigen zu lassen, da
           nachträgliche handschriftliche Überarbeitungen von besonderer Relevanz
           sein können. So kann unter anderem die Zusammenarbeit zwischen dem
-          Anwalt Oskar Samek und seinem Mandanten Karl Kraus studiert werden.
+          Anwalt Oskar Samek und seinem Mandanten Karl Kraus studiert werden.<br/>
         </p>
-        <p>Daneben lässt sich auch eine Liste aller Akten aufrufen.</p>
+        <p>Daneben lässt sich auch eine Liste aller Akten aufrufen.<br/>
         <p>
           Darüber hinaus können die Nutzerinnen und Nutzer über einen
           Handapparat auf mehrere Materialien zugreifen, welche die
@@ -72,16 +60,13 @@
           Oskar Samek gewidmet und enthält einen biographischen Aufsatz sowie
           ein Interviewtranskript. Und im dritten Teil wird die durch Hermann
           Böhm verantwortete Print-Ausgabe der Rechtsakten aus den 1990er Jahren
-          für die Forschung bereitgestellt.
-        </p>
-        <p>
+          für die Forschung bereitgestellt.<br/>
           Daneben erhalten die Nutzerinnen und Nutzer aber auch die Möglichkeit,
           über von <i>Karl Kraus Online</i> adaptierte, aktualisierte Statistiken eine
           quantitative Auswertung zu den juristischen Delikten, Verfahren und
           Prozessen zu erhalten. Ein Zeitstrahl bietet einen Überblick über die
           gesamten 215 Akten.
         </p>
-
         <p>
           Für das Projekt stand die Forschungsfrage im Zentrum, wie Karl Kraus’
           Zitatverfahren und -strategien konkret aussahen. Wer spricht in den
@@ -90,9 +75,7 @@
           in den anderen Texten von Kraus, welche Akten nahm Kraus später in
           seine Zeitschrift <i>Die Fackel</i> auf und sind im Laufe der für Österreich
           politisch bewegten 15 Jahre, über die sich die Rechtsakten erstrecken,
-          Veränderungen bemerkbar?
-        </p>
-        <p>
+          Veränderungen bemerkbar?<br/>
           Die zahlreichen Auszeichnungen der edierten Dokumente (s.
           Editionsrichtlinien) geben auf viele dieser Fragen konkrete Antworten
           und legen gleichzeitig die Grundlage für weitergehende Forschungen.

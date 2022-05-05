@@ -11,7 +11,14 @@
         Beta Version <b-icon icon="info" aria-hidden="true"></b-icon>
       </b-button>
       <b-modal hide-footer :content-class="'rounded-0 opensans'" id="modal-betaversion" title="Beta Version">
-        <div v-html="modalcontent"/>
+        <!--<div v-html="modalcontent"/>-->
+        <p>Zukünftige Features und Ergänzungen</p>
+          <ul class="list-unstyled">
+            <li>Zeitstrahl</li>
+            <li>Böhm Edition</li>
+            <li>Editionsrichtlinien</li>
+            <li>Lizenzen und Technische Dokumentation</li>
+          </ul>
       </b-modal>
     </div>
     <div class="navigation">
@@ -32,12 +39,12 @@
           <b-dropdown-item class="dd-item" to="/projekt/benutzungshinweise">
               Benutzungshinweise
           </b-dropdown-item>
-          <b-dropdown-item class="dd-item" to="/projekt/lizenzen">
+         <!-- <b-dropdown-item class="dd-item" to="/projekt/lizenzen">
               Lizenzen
           </b-dropdown-item>
           <b-dropdown-item class="dd-item" to="/projekt/dokumentation">
               Technische Dokumentation
-          </b-dropdown-item>
+          </b-dropdown-item>-->
         </b-dropdown>
       </p>
       <p class="nav-el">
@@ -110,9 +117,10 @@ export default {
       return this.$route.path.includes(val)
     },
      showBetaVersionModal() {
-       fetch('https://raw.githubusercontent.com/wiki/acdh-oeaw/legalkraus-app/Beta-Version.md', {cache: "no-store"}).then(response => response.text())
+       this.$root.$emit('bv::show::modal', 'modal-betaversion', '#btnShow')
+      /* fetch('https://raw.githubusercontent.com/wiki/acdh-oeaw/legalkraus-app/Beta-Version.md', {cache: "no-store"}).then(response => response.text())
   .then(data => fetch('https://api.github.com/markdown',{cache: "no-store", method:'POST', body: JSON.stringify({'mode': 'markdown', 'text': data})})
-  .then(response => response.text()).then(data => {this.modalcontent = data;this.$root.$emit('bv::show::modal', 'modal-betaversion', '#btnShow')}))
+  .then(response => response.text()).then(data => {this.modalcontent = data;this.$root.$emit('bv::show::modal', 'modal-betaversion', '#btnShow')}))*/
       
     },
   },

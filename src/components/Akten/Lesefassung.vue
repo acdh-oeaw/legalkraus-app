@@ -1028,7 +1028,9 @@ export default {
         if (event.pmbId === '' || event.pmbId === null) {
           textinfo.innerHTML = "<b>|</b>&nbsp;" + 'nicht erfasst'
         } else if (event.type === 'intertext' && event.pmbId.includes("https://fackel.oeaw.ac.at/")) {
-          textinfo.innerHTML = "<b>|</b>&nbsp;" + 'Die Fackel im Register';
+       
+          textinfo.innerHTML = `<b>|</b>&nbsp;<a target="_blank" rel="noopener noreferrer" href="${event.pmbId}">${event.pmbId}</a>`;
+          textinfo.onclick = '#';
         }
         
         else if (event.pmbId.includes('#')) {
@@ -1117,7 +1119,8 @@ export default {
             }
           } 
           else if (type === 'intertext') {
-           if (event.pmbId && event.pmbId.includes("https://fackel.oeaw.ac.at")) {
+          
+           /*if (event.pmbId && event.pmbId.includes("https://fackel.oeaw.ac.at")) {
             
              const regex = /[0-9]+.[0-9]+/g;
              const match = event.pmbId.match(regex)[0];
@@ -1125,7 +1128,7 @@ export default {
                const fid = match.replace(',','_');
               routeData = self.$router.resolve({path: `/register/fackel/${fid}`});
              }
-           }
+           }*/
             /*let idx = event.pmbId.lastIndexOf('/');
             let xmlId = event.pmbId.substring(idx + 1);*/
             /*getArcheIdFromXmlId(xmlId, rs => {
@@ -1133,8 +1136,9 @@ export default {
               window.open(routeData.href, '_blank');
             });*/
           } 
-
-          window.open(routeData.href, '_blank');
+          if (type !== 'intertext') {
+            window.open(routeData.href, '_blank');
+          }
         };
       }
 
@@ -1828,7 +1832,7 @@ export default {
   width: 95%;
 }
 
-.person, .work, .institution, .place, .quote, .quote-spoken {
+.person, .work, .institution, .place, .quote, .quote-spoken, .fackel-ref {
   cursor: pointer;
 }
 

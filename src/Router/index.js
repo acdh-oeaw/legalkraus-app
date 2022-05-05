@@ -23,8 +23,8 @@ import Editionsrichtlinien from "../components/Projekt/Editionsrichtlinien";
 import Projektteam from "../components/Projekt/Projektteam";
 import Publikationen from "../components/Projekt/Publikationen";
 import Benutzungshinweise from "../components/Projekt/Benutzungshinweise";
-import Lizenzen from "../components/Projekt/Lizenzen";
-import Dokumentation from "../components/Projekt/Dokumentation";
+// import Lizenzen from "../components/Projekt/Lizenzen";
+// import Dokumentation from "../components/Projekt/Dokumentation";
 import Register from "../components/Register/Register";
 import Stats from "../components/Statistiken/Stats";
 import OverviewHandschriftliches from "../components/Akten/OverviewHandschriftliches";
@@ -115,8 +115,8 @@ export default new Router({
         {path: '/projekt/projektteam', component: Projektteam},
         {path: '/projekt/publikationen', component: Publikationen},
         {path: '/projekt/benutzungshinweise', component: Benutzungshinweise},
-        {path: '/projekt/lizenzen', component: Lizenzen},
-        {path: '/projekt/dokumentation', component: Dokumentation},
+        //{path: '/projekt/lizenzen', component: Lizenzen},
+        //{path: '/projekt/dokumentation', component: Dokumentation},
         {path: '/visualisierungen/fallstatistik', name: 'fstat', component: Stats},
         {path: '/impressum', component: Impressum},
     ]

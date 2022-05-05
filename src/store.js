@@ -102,7 +102,6 @@ export default new Vuex.Store({
         },
         MUTATE_HIGHLIGHTER: (state, highlight) => {
             state.highlighter[highlight.highlightprop] = highlight.highlightbool;
-            console.log(highlight)
         },
         MUTATE_All_HIGHLIGHTERS:(state, b) => {
             state.highlighter.person = b.highlightbool;

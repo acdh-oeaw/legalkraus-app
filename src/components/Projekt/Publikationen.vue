@@ -1,6 +1,6 @@
 <template>
   <b-container class="mt-3">
-    <h1 class="font-weight-bold text-left">Publikationen</h1>
+    <h1 class="font-weight-bold text-left mb-3">Publikationen</h1>
     <b-row>
       <b-col cols="7">
         <div class="text-left">
@@ -15,7 +15,7 @@
             Scholarly Digital Edition, in: KONDE Weißbuch, hg. v. Helmut W. Klug
             unter Mitarbeit von Selina Galka und Elisabeth Steiner. Aufgerufen
             am: 24.4.2022, <a
-              href="hdl.handle.net/11471/562.50.243"
+              href="http://hdl.handle.net/11471/562.50.243"
               target="_blank"
               rel="noopener noreferrer"
               >hdl.handle.net/11471/562.50.243</a>. PID: o:konde.p20.
@@ -136,5 +136,9 @@ main {
 
 h2 {
   text-align: left;
+}
+
+a {
+  color: var(--primary-red);
 }
 </style>

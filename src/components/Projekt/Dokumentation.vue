@@ -1,6 +1,6 @@
 <template>
   <b-container class="mt-3">
-    <h1 class="font-weight-bold text-left">Technische Dokumentation</h1>
+    <h1 class="font-weight-bold text-left mb-3">Technische Dokumentation</h1>
     <b-row>
       <b-col cols="7">
         <div class="text-left">
