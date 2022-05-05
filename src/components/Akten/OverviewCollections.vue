@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div class="filter-nav">
+    <div :class="{'filter-nav': this.category !== 'Kultur' && this.category !== 'Politik'}">
       <p class="navigation">Akten-Edition
         <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
         <router-link router-link class="nav-link" :to="'/akten-edition/' + catLower">
@@ -9,7 +9,7 @@
         <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
         <span class="semibold">{{ this.showSubCat }}</span>
       </p>
-      <div class="filters">
+      <div class="filters" v-if="this.category !== 'Kultur' && this.category !== 'Politik'">
         <div class="searchPers">
           <input class="vt vtp" placeholder="Person:" list="persons" v-model="kwP" @keyup.enter="setCurrPers(kwP)"/>
           <datalist id="persons">
