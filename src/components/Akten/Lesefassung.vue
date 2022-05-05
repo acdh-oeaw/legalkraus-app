@@ -415,7 +415,7 @@
           </a>
         </div>
         <div class="text-comment-wrap  position-relative">
-          <div class="card w-70 card-full bg-light">
+          <div class="card custom-card-width card-full bg-light">
             <div class="header">
               <div class="all-annotations">
                 <b-form-checkbox
@@ -492,7 +492,7 @@
               </b-form-checkbox>-->
             </div>
 
-            <div class="body row m-0 overflow-auto">
+            <div class="body custom-width row m-0 overflow-auto">
               <component class="col-12" v-if="pages" :is="dynComponent" v-on:childToParent="childToParent($event)"
                          v-on:child-mounted="childMounted"/>
             </div>
@@ -1815,9 +1815,14 @@ export default {
   width: 5%;
 }
 
-.w-70 {
+.custom-width {
+  min-width:max-content;
+  }
+
+.custom-card-width {
+  overflow-x:scroll;
   width:70%;
-}
+  }  
 
 .w-95 {
   width: 95%;

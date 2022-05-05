@@ -28,6 +28,7 @@ import Dokumentation from "../components/Projekt/Dokumentation";
 import Register from "../components/Register/Register";
 import Stats from "../components/Statistiken/Stats";
 import OverviewHandschriftliches from "../components/Akten/OverviewHandschriftliches";
+import Impressum from "../components/Projekt/Impressum";
 
 
 Vue.use(Router)
@@ -117,5 +118,6 @@ export default new Router({
         {path: '/projekt/lizenzen', component: Lizenzen},
         {path: '/projekt/dokumentation', component: Dokumentation},
         {path: '/visualisierungen/fallstatistik', name: 'fstat', component: Stats},
+        {path: '/impressum', component: Impressum},
     ]
 })

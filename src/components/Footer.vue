@@ -22,7 +22,7 @@
       </div>
       <div class="right">
         <div class="contact-info">
-          <p class="b">Impressum</p>
+          <p class="b"><router-link class="imprint-link" to="/impressum">Impressum</router-link></p>
         </div>
         <p class="b r">HELPDESK</p>
         <p>ACDH runs a helpdesk offering
@@ -128,6 +128,10 @@ main {
 
 .bi-headset{
   margin-right: 0.5rem;
+}
+
+.imprint-link:hover {
+  color:var(--primary-red-dark);
 }
 
 </style>
