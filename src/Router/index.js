@@ -37,8 +37,8 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 
 export default new Router({
-    mode: 'history',
-    base: process.env.BASE_URL,
+   // mode: 'history',
+   // base: process.env.BASE_URL,
     scrollBehavior() {
         window.scrollTo(0, 0)
       },    
