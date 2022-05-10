@@ -129,6 +129,9 @@ main {
 .bi-headset{
   margin-right: 0.5rem;
 }
+.imprint-link {
+  color: #000;
+}
 
 .imprint-link:hover {
   color:var(--primary-red-dark);

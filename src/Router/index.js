@@ -1,14 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Test from "@/components/TestCalls"
+/*import Test from "@/components/TestCalls"
 import OverviewRecht from "@/components/Akten/Recht/OverviewRecht"
 import OverviewCollections from "@/components/Akten/OverviewCollections";
 import OverviewPolitik from "@/components/Akten/Politik/OverviewPolitik";
 import OverviewKultur from "@/components/Akten/Kultur/OverviewKultur";
 import OverviewObjects from "@/components/Akten/OverviewObjects";
 import OverviewAllCollections from "@/components/Akten/OverviewAllCollections"
-import Lesefassung from "@/components/Akten/Lesefassung";
+import Lesefassung from "@/components/Akten/Lesefassung";*/
 import Main from "@/components/Main";
+import Maintenance from "@/components/Maintenance";
 import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 
 // Import Bootstrap an BootstrapVue CSS files (order is important)
@@ -25,9 +26,9 @@ import Publikationen from "../components/Projekt/Publikationen";
 import Benutzungshinweise from "../components/Projekt/Benutzungshinweise";
 // import Lizenzen from "../components/Projekt/Lizenzen";
 // import Dokumentation from "../components/Projekt/Dokumentation";
-import Register from "../components/Register/Register";
-import Stats from "../components/Statistiken/Stats";
-import OverviewHandschriftliches from "../components/Akten/OverviewHandschriftliches";
+//import Register from "../components/Register/Register";
+//import Stats from "../components/Statistiken/Stats";
+//import OverviewHandschriftliches from "../components/Akten/OverviewHandschriftliches";
 import Impressum from "../components/Projekt/Impressum";
 
 
@@ -43,9 +44,9 @@ export default new Router({
         window.scrollTo(0, 0)
       },    
     routes: [
-        {path: '/test', component: Test},
+       // {path: '/test', component: Test},
         {path: '/', name: 'home', component: Main},
-        {path: '/akten-edition/recht', component: OverviewRecht},
+       /* {path: '/akten-edition/recht', component: OverviewRecht},
         {path: '/akten-edition/recht/privatrecht/collections', component: OverviewCollections},
         {path: '/akten-edition/recht/privatrecht/objects/:id', name: 'privatrecht-objects', component: OverviewObjects},
         {path: '/akten-edition/recht/strafrecht/collections', component: OverviewCollections},
@@ -86,19 +87,19 @@ export default new Router({
 
         {path: '/akten-edition/handschriftliches', component: OverviewHandschriftliches},
         {path: '/akten-edition/alle-akten', component: OverviewAllCollections},
-        {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung},
+        {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung},*/
 
         {path: '/handapparat', component: OverviewHandapparat},
         //{path: '/handapparat/boehm', component: BoehmEdition},
         {path: '/handapparat/beitraege', component: Beitraege},
         {path: '/handapparat/oskar-samek', component: OskarSamek},
-        {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung, props: {
+       /* {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung, props: {
                 header: true,
                 content: true
-            }},
+            }},*/
         // {path: '/lesefassung/:id', name: 'lesefassung', component: Lesefassung},
 
-        {path: '/register/personen', name: 'pReg', component: Register},
+       /* {path: '/register/personen', name: 'pReg', component: Register},
         {path: '/register/personen/:pmbid', name: 'pReg', component: Register},
         {path: '/register/orte', name: 'oReg', component: Register},
         {path: '/register/orte/:pmbid', name: 'oReg', component: Register},
@@ -109,7 +110,7 @@ export default new Router({
         {path: '/register/fackel', name: 'fReg', component: Register},
         {path: '/register/fackel/:pmbid', name: 'fReg', component: Register},
         {path: '/register/juristische-texte', name: 'gReg', component: Register},
-        {path: '/register/juristische-texte/:pmbid', name: 'gReg', component: Register},
+        {path: '/register/juristische-texte/:pmbid', name: 'gReg', component: Register},*/
         {path: '/projekt/projektinformationen', component: Projektinformationen},
         {path: '/projekt/editionsrichtlinien', component: Editionsrichtlinien},
         {path: '/projekt/projektteam', component: Projektteam},
@@ -117,7 +118,12 @@ export default new Router({
         {path: '/projekt/benutzungshinweise', component: Benutzungshinweise},
         //{path: '/projekt/lizenzen', component: Lizenzen},
         //{path: '/projekt/dokumentation', component: Dokumentation},
-        {path: '/visualisierungen/fallstatistik', name: 'fstat', component: Stats},
+        //{path: '/visualisierungen/fallstatistik', name: 'fstat', component: Stats},
         {path: '/impressum', component: Impressum},
+        { path: "/akten-edition/*", component: Maintenance },
+        { path: "/register/*", component: Maintenance },
+        { path: "/visualisierungen/*", component: Maintenance },
+        { path: "/lesefassung/*", component: Maintenance },
+        { path: "/objects/*", component: Maintenance }
     ]
 })
