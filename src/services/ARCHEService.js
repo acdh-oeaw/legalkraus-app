@@ -5,7 +5,7 @@ const {
 const {queryAndProcessMD} = require("../utils")
 const store = require("../store");
 
-const ARCHE_BASE_URL = "https://arche-dev.acdh-dev.oeaw.ac.at/api";
+const ARCHE_BASE_URL = "https://arche.acdh.oeaw.ac.at/api";
 const FORMAT_NTRIPLES = "application/n-triples";
 const READMODE_RESOURCE = "resource";
 const READMODE_RELATIVES = "relatives";
@@ -142,7 +142,7 @@ module.exports.getObjectsOfCollection = async (resourceId, callback) => {
             const optionsChildRes = {
                 "subject": null,
                 "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#isPartOf",
-                "object": 'https://arche-dev.acdh-dev.oeaw.ac.at/api/' + resourceId,
+                "object": 'https://arche.acdh.oeaw.ac.at/api/' + resourceId,
                 "expiry": 14
             };
 
@@ -190,6 +190,7 @@ module.exports.getObjectsOfCollection = async (resourceId, callback) => {
                     actors: actors.value,
                     places: places.value
                 });
+                console.log(result)
             }
             return callback(result);
         });
@@ -260,13 +261,14 @@ module.exports.getCollectionOfObject = async (resourceId, callback) => {
                 let result = [];
                 let idx = documents.value[0].hasNumberOfItems.object.lastIndexOf('^');
                 let docs = documents.value[0].hasNumberOfItems.object.substring(0, idx - 1);
-
+                let colxmlId = identifier.value.map(aI => aI.hasIdentifier.object).filter(id => id.includes('https://id.acdh.oeaw.ac.at/legalkraus/'))[0];
                 result.push({
                     url: colFetchUrl,
                     title: t,
                     size: docs,
                     id: colId,
-                    xmlId: identifier.value[1].hasIdentifier.object.substring(identifier.value[1].hasIdentifier.object.lastIndexOf('/') + 1)
+                    //xmlId: identifier.value[1].hasIdentifier.object.substring(identifier.value[1].hasIdentifier.object.lastIndexOf('/') + 1)
+                    xmlId:colxmlId.substring(colxmlId.lastIndexOf('/') + 1)
                 });
                 return callback(result);
             });
@@ -300,7 +302,7 @@ module.exports.getAllResources = async (startPage, callback) => {
 
 module.exports.getTransformedHtmlResource = async (objectId, callback) => {
     try {
-        const url = `https://service4tei.acdh-dev.oeaw.ac.at/tei2html.xql?tei=https://arche-dev.acdh-dev.oeaw.ac.at/api/${objectId}&xsl=https://raw.githubusercontent.com/acdh-oeaw/legalkraus-app/master/src/lesefassung_xsl/legal_kraus_lesefassung.xsl`;
+        const url = `https://service4tei.acdh-dev.oeaw.ac.at/tei2html.xql?tei=https://arche.acdh.oeaw.ac.at/api/${objectId}&xsl=https://raw.githubusercontent.com/acdh-oeaw/legalkraus-app/master/src/lesefassung_xsl/legal_kraus_lesefassung.xsl`;
         const resp = await fetch(url);
         const data = await resp.text();
         return callback(data);
@@ -327,8 +329,8 @@ module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback)
             "value[0]": searchTerm,
             "property[1]": "https://vocabs.acdh.oeaw.ac.at/schema#isPartOf",
             "operator[1]": "=",
-            "value[1]": "https://arche-dev.acdh-dev.oeaw.ac.at/api/" + colId,
-            "value[2]": "https://arche-dev.acdh-dev.oeaw.ac.at/api/" + rsId,
+            "value[1]": "https://arche.acdh.oeaw.ac.at/api/" + colId,
+            "value[2]": "https://arche.acdh.oeaw.ac.at/api/" + rsId,
             "ftsQuery": searchTerm
 
         }), {
@@ -346,7 +348,7 @@ module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback)
             "value[0]": searchTerm,
             "property[1]": "https://vocabs.acdh.oeaw.ac.at/schema#isPartOf",
             "operator[1]": "=",
-            "value[1]": "https://arche-dev.acdh-dev.oeaw.ac.at/api/" + colId,
+            "value[1]": "https://arche.acdh.oeaw.ac.at/api/" + colId,
             "ftsQuery": searchTerm
 
         }), {
@@ -358,7 +360,7 @@ module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback)
     } else {
         console.log('all')
         //searches in all collections
-        const url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/search?sql=SELECT id FROM full_text_search JOIN (SELECT (get_relatives(id, ?, 9999, 0)).id FROM identifiers WHERE ids = ?) t USING (id)  WHERE websearch_to_tsquery('simple', ?) @@ segments&sqlParam[]=https://vocabs.acdh.oeaw.ac.at/schema%23isPartOf&sqlParam[]=https://arche-dev.acdh-dev.oeaw.ac.at/api/17722&format=application/json&sqlParam[]=" + searchTerm + "&readMode=ids&limit=25&ftsQuery=" + searchTerm;
+        const url = "https://arche.acdh.oeaw.ac.at/api/search?sql=SELECT id FROM full_text_search JOIN (SELECT (get_relatives(id, ?, 9999, 0)).id FROM identifiers WHERE ids = ?) t USING (id)  WHERE websearch_to_tsquery('simple', ?) @@ segments&sqlParam[]=https://vocabs.acdh.oeaw.ac.at/schema%23isPartOf&sqlParam[]=https://arche.acdh.oeaw.ac.at/api/188397&format=application/json&sqlParam[]=" + searchTerm + "&readMode=ids&limit=25&ftsQuery=" + searchTerm;
         fetch(url).then(rs => rs.json()).then(data => {
             return callback(data);
         });
@@ -385,7 +387,7 @@ module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback)
 module.exports.downloadCaseInfo = async () => {
     try {
         // const url = "https://id.acdh.oeaw.ac.at/legalkraus/cases-index.json";
-        const url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/17726";
+        const url = "https://arche.acdh.oeaw.ac.at/api/188435";
         const resp = await fetch(url);
         return await resp.json();
     } catch (error) {

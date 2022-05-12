@@ -140,9 +140,8 @@ export default {
   },
   methods: {
     getMetaData() {
-      console.log("getMetaData()");
       //const host = 'https://arche.acdh.oeaw.ac.at/api'
-      const host = 'https://arche-dev.acdh-dev.oeaw.ac.at/api'
+      const host = 'https://arche.acdh.oeaw.ac.at/api'
       //const resourceId = "37705"
       const resourceId = "37562";
       const format = "application/n-triples"
@@ -157,14 +156,13 @@ export default {
         // as predicate and leave the others to null you will receive all titles and URIs
         let queryJson = query(null, null, null, rs)
         this.archeMetaData = extractPredicateAndObjectAsJSONfromRDF(queryJson);
-        console.log(this.archeMetaData)
         //this.objectData[0].n = "w";
 
       });
     },
     getCollections() {
       console.log("getCollections()");
-      const host = 'https://arche-dev.acdh-dev.oeaw.ac.at/api'
+      const host = 'https://arche.acdh.oeaw.ac.at/api'
       //const host = 'https://arche.acdh.oeaw.ac.at/api'
       const resourceId = "37565";
       //const resourceId = "37562"
@@ -195,8 +193,7 @@ export default {
 
         //console.log(queryJson)
         this.archeCollections = queryJson;*/
-        let child_resources = query(null, 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf', 'https://arche-dev.acdh-dev.oeaw.ac.at/api/37565', rs);
-        console.log(child_resources);
+        let child_resources = query(null, 'https://vocabs.acdh.oeaw.ac.at/schema#isPartOf', 'https://arche.acdh.oeaw.ac.at/api/37565', rs);
         for (let i = 0; i < child_resources.length; i++) {
           console.log(child_resources[i].subject);
           let title = ARCHErdfQuery(child_resources[i].subject, 'https://vocabs.acdh.oeaw.ac.at/schema#hasTitle', null, rs);
@@ -212,7 +209,7 @@ export default {
     },
     getObject(id) {
       console.log("getObject()");
-      const host = 'https://arche-dev.acdh-dev.oeaw.ac.at/api'
+      const host = 'https://arche.acdh.oeaw.ac.at/api'
       const resourceId = id;
       const format = "application/n-triples"
       const readMode = "resource"

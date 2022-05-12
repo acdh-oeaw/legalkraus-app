@@ -943,7 +943,6 @@ export default {
      * @returns {HTMLDivElement}
      */
     createCommentDiv(event, rs, elem, type) {
-      console.log(type)
       var div = document.createElement('div');
       div.className = "comment position-relative";
       div.style.color = "var(--text-black)";
@@ -1006,7 +1005,6 @@ export default {
               let d = data.cases[i].doc_objs.filter(d => d.id.includes(filename))[0];
               if (d) {
                 getArcheIdFromXmlId(filename+'.xml', rs => {
-                  console.log(rs)
                   textinfo.innerHTML = `<a target="_blank" href="/lesefassung/${rs}">${d.title}</a>`;
               //routeData = self.$router.resolve({name: "lesefassung", params: {id: rs}});
               //window.open(routeData.href, '_blank');

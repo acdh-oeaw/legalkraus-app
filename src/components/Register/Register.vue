@@ -478,7 +478,7 @@ export default {
       var self = this;
       switch (this.categoryShort) {
         case "p":
-          url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/27726";
+          url = "https://arche.acdh.oeaw.ac.at/api/213791";
           fetch(url)
               .then(response => response.text())
               .then(str => {
@@ -490,7 +490,7 @@ export default {
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
           break;
         case "o":
-          url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/27721";
+          url = "https://arche.acdh.oeaw.ac.at/api/213794";
           fetch(url)
               .then(response => response.text())
               .then(str => {
@@ -502,7 +502,7 @@ export default {
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
           break;
         case "i":
-          url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/27722";
+          url = "https://arche.acdh.oeaw.ac.at/api/213789";
           fetch(url)
               .then(response => response.text())
               .then(str => {
@@ -514,7 +514,7 @@ export default {
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
           break;
         case "w":
-          url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/27723";
+          url = "https://arche.acdh.oeaw.ac.at/api/213790";
           fetch(url)
               .then(response => response.text())
               .then(str => {
@@ -526,7 +526,7 @@ export default {
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
           break;
         case "f":
-          url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/27724";
+          url = "https://arche.acdh.oeaw.ac.at/api/213793";
           fetch(url)
               .then(response => response.text())
               .then(str => {
@@ -538,7 +538,7 @@ export default {
               .catch((e) => console.log("Error while fetching or transforming xml file: " + e.toString()))
           break;
         case "j":
-          url = "https://arche-dev.acdh-dev.oeaw.ac.at/api/27725";
+          url = "https://arche.acdh.oeaw.ac.at/api/213792";
           fetch(url)
               .then(response => response.text())
               .then(str => {

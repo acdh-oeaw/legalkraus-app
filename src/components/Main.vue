@@ -4,8 +4,9 @@
       
            <b-jumbotron class="p-0">
           <b-carousel
+            controls
             id="carousel"
-            :interval="0"
+            :interval="4000"
             img-width="1024"
             img-height="380"
             style="text-shadow: 1px 1px 2px #333;"
@@ -16,12 +17,12 @@
               text=""
             >
             <template>
-              <div class="d-flex h-100 justify-content-center align-items-center">
+              <!--<div class="d-flex h-100 justify-content-center align-items-center">
                 <p>
                   Diese Seite befindet sich vorübergehend im Wartungsmodus.<br/>
                   Vielen Dank für ihr Verständnis!
                 </p>
-              </div>
+              </div>-->
             </template><template #img>
               
               
@@ -356,18 +357,15 @@ a:hover {
 <style>
 
 /**style for maintence mode start **/
-.carousel-caption {
+/*.carousel-caption {
   padding:0 !important;
   top:0 !important;
   left:0 !important;
   width:100% !important;
   height:100% !important;
   background:rgb(167, 61, 46,0.7)
-}
+}*/
 
-.carousel-caption h1 {
-  
-}
 
 /**style for maintence mode end **/
 </style>

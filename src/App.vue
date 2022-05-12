@@ -11,8 +11,8 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-/*import {downloadCaseInfo} from "./services/ARCHEService";
-import { processCaseInfo } from './utils';*/
+import {downloadCaseInfo} from "./services/ARCHEService";
+import { processCaseInfo } from './utils';
 
 
 export default {
@@ -22,13 +22,13 @@ export default {
     Footer
   },
   created() {
-    /*let data = downloadCaseInfo();
+    let data = downloadCaseInfo();
     this.$store.dispatch('setCaseInfo', data);
     data.then(dt=>{
       this.$store.dispatch('setCases', dt.cases);
       processCaseInfo(dt);
       this.$store.dispatch('setAppDataStatus',true)
-    }) */
+    })
   }
 };
 

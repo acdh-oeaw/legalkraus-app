@@ -105,7 +105,7 @@ export default {
       //search in all collections
 
       for (const [key, value] of Object.entries(data)) {
-        const id = key.replace("https://arche-dev.acdh-dev.oeaw.ac.at/api/", "");
+        const id = key.replace("https://arche.acdh.oeaw.ac.at/api/", "");
 
         if (id && id !== "") {
           await getCollectionOfObject(id, rs => {

@@ -721,13 +721,15 @@ export default {
         object: null,
         expiry: 14,
       };
-
+    
+    
       this.caseTitle = ARCHErdfQuery(
         optionsTitle,
         result
       ).value[0].hasTitle.object;
-      let xmlId = ARCHErdfQuery(optionsXmlId, result).value[1].hasIdentifier
-        .object;
+      //let xmlId = ARCHErdfQuery(optionsXmlId, result).value[1].hasIdentifier.object;
+      let archeIdentifiers = ARCHErdfQuery(optionsXmlId, result).value;
+      let xmlId = archeIdentifiers.map(aI => aI.hasIdentifier.object).filter(id => id.includes('https://id.acdh.oeaw.ac.at/legalkraus/'))[0];
       let documents = ARCHErdfQuery(optionsSize, result).value[0]
         .hasNumberOfItems.object;
 
@@ -736,6 +738,7 @@ export default {
 
       let idx2 = xmlId.lastIndexOf("/");
       this.xmlIdCase = xmlId.substring(idx2 + 1) + ".xml";
+      console.log(this.xmlIdCase)
 
       this.caseInfo.then((data) => {
         this.caseData = data.cases.filter((cs) => cs.id === this.xmlIdCase)[0];

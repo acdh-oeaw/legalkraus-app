@@ -113,7 +113,6 @@ export default {
   },
   methods: {
     itemIsActive(val) {
-      console.log(this.$route.path.includes(val))
       return this.$route.path.includes(val)
     },
      showBetaVersionModal() {
