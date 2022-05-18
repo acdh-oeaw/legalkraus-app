@@ -659,7 +659,14 @@ export default {
         },
         methods: {
           navigateTo(pmbId, type, event) {
-            this.$emit('childToParent', {pmbId: pmbId, type: type, htmlId: event.target.id});
+            let targetId = '';
+            if (event.target.nodeName === 'SPAN') {
+              targetId = event.target.parentElement.id
+            }
+            else if (event.target.nodeName === 'ENTITY-SPAN') {
+              targetId = event.target.id;
+            }
+            this.$emit('childToParent', {pmbId: pmbId, type: type, htmlId: targetId});
           },
           setWitness(val) {
             this.$parent.witness = val
@@ -1024,28 +1031,42 @@ export default {
 
       } else if (event.type === 'quote' || event.type === 'intertext') {
         if (event.pmbId === '' || event.pmbId === null) {
-          textinfo.innerHTML = "<b>|</b>&nbsp;" + 'nicht erfasst'
-        } else if (event.type === 'intertext' && event.pmbId.includes("https://fackel.oeaw.ac.at/")) {
-       
+          textinfo.innerHTML = "<b>|</b>&nbsp;" + 'nicht erfasst';
+        } else if ((event.type === 'intertext' || event.type === 'quote') && event.pmbId.includes("https://fackel.oeaw.ac.at/")) {
+
           textinfo.innerHTML = `<b>|</b>&nbsp;<a target="_blank" rel="noopener noreferrer" href="${event.pmbId}">${event.pmbId}</a>`;
           textinfo.onclick = '#';
         }
         
-        else if (event.pmbId.includes('#')) {
+        else if ((/#[0-9]/).test(event.pmbId)) {
           getPMBObjectWithId(event.pmbId.substring(1), 'quote', rs => {
             //let url = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + rs.id + "/detail"
             //textinfo.innerHTML = "<b>|</b>&nbsp;" + "PMB: " + "<a href='" + url + "' target='_blank'>" + rs.name + "</a>";
             textinfo.innerHTML = "<b>|</b>&nbsp;" + "PMB: " + rs.name;
             //textinfo.onclick = "#";
           });
-        } else if (event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus") || event.pmbId.includes("https://legalkraus.acdh.oeaw.ac.at/id/")) {
-          let filename = event.pmbId.substring(event.pmbId.lastIndexOf('/') + 1)
+        } //else if (event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus") || event.pmbId.includes("https://legalkraus.acdh.oeaw.ac.at/id/")) {
+          else if ((/(#D)|(https:\/\/(id|legalkraus)\.acdh\.oeaw\.ac\.at\/(id|legalkraus)\/D)/).test(event.pmbId)) {
+          let filename =  event.pmbId.replace(/(#)|(https:\/\/(id|legalkraus)\.acdh\.oeaw\.ac\.at\/(id|legalkraus)\/)/,'').split('.')[0]; 
+          //let filename = event.pmbId.substring(event.pmbId.lastIndexOf('/') + 1)
           this.caseInfo.then(data => {
-            let c = data.cases.filter(c => c.id.includes(this.colXmlId))[0];
-            let d = c.doc_objs.filter(d => d.id.includes(filename))[0];
-            let id = d.id.substring(3, d.id.length - 4).replaceAll('-', '.').replaceAll('0', '');
+            //let c = data.cases.filter(c => c.id.includes(this.colXmlId))[0];
+            for (let i = 0; i < data.cases.length; i++) {
+              let d = data.cases[i].doc_objs.filter(d => d.id.includes(filename))[0];
+              if (d) {
+                getArcheIdFromXmlId(filename+'.xml', rs => {
+                  textinfo.innerHTML = `<a target="_blank" href="/lesefassung/${rs}">${d.title}</a>`;
+              //routeData = self.$router.resolve({name: "lesefassung", params: {id: rs}});
+              //window.open(routeData.href, '_blank');
+            });
+                //let id = d.id.substring(3, d.id.length - 4).replaceAll('-', '.').replaceAll('0', '');
+                //textinfo.innerHTML = id.substring(0, id.length - 1) + " " + d.title;
+               textinfo.onclick = '#';
+                break;
+              }
 
-            textinfo.innerHTML = "<b>|</b>&nbsp;" + id.substring(0, id.length - 1) + " " + d.title;
+            }
+
           });
         }
       }
@@ -1070,7 +1091,7 @@ export default {
       div.style.position = "absolute";
       div.style.cursor = "pointer";
       //offset from nearest <p> + offset from d-block + offset from body + card offset offset of the comments container
-
+    
       div.style.top = elem.offsetTop + elem.closest(".body").offsetTop + "px";
 
       let self = this; //"this" cannot be used in JS functions
@@ -1104,16 +1125,27 @@ export default {
             });
             }
           } else if (type === 'quote') {
-            if (event.pmbId.includes('#')){
+            console.log(event.pmbId)
+            if ((/#[0-9]/).test(event.pmbId)){
+              console.log(event.pmbId)
               routeData = self.$router.resolve({path: `/register/werke/pmb${event.pmbId.substring(1)}`});
+              window.open(routeData.href, '_blank');
             } 
-            else {
-            let idx = event.pmbId.lastIndexOf('/');
-            let xmlId = event.pmbId.substring(idx + 1) + '.xml';
+            else if (event.pmbId === '' || event.pmbId === null) {
+              return false;
+            }
+            else if ((/(#D)|(https:\/\/(id|legalkraus)\.acdh\.oeaw\.ac\.at\/(id|legalkraus)\/D)/).test(event.pmbId)) { 
+            let sourceAtt = event.pmbId.replace(/(#)|(https:\/\/(id|legalkraus)\.acdh\.oeaw\.ac\.at\/(id|legalkraus)\/)/,'').split('.')[0]; 
+            //let idx = event.pmbId.lastIndexOf('/');
+            let xmlId = sourceAtt + '.xml';
+            console.log(xmlId);
             getArcheIdFromXmlId(xmlId, rs => {
               routeData = self.$router.resolve({name: "lesefassung", params: {id: rs}});
               window.open(routeData.href, '_blank');
             });
+            }
+            else {
+              return false;
             }
           } 
           else if (type === 'intertext') {
@@ -1134,7 +1166,7 @@ export default {
               window.open(routeData.href, '_blank');
             });*/
           } 
-          if (type !== 'intertext') {
+          if (type !== 'intertext' && type!== 'quote') {
             window.open(routeData.href, '_blank');
           }
         };
