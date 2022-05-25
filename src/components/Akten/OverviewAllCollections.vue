@@ -6,7 +6,7 @@
         Akten-Edition <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon> <span class="semibold">Alle Akten</span>
       </p>
       <div class="filters">
-        <div class="searchPers">
+       <!-- <div class="searchPers">
           <input class="vt vtp" placeholder="Person:" list="persons" v-model="kwP" @keyup.enter="setCurrPers(kwP)"/>
           <datalist id="persons">
             <option v-for="pers in this.allPersons" :key="pers.key" :value="pers.value">{{ pers.value }}</option>
@@ -18,6 +18,7 @@
             <option v-for="org in this.allOrgs" :key="org.key" :value="org.value">{{ org.value }}</option>
           </datalist>
         </div>
+        -->
         <Search class="py-2 vt" v-on:searchPerformed="searchPerformed($event)"></Search>
         <div class="mleft">
         <input class="vt vty" type="number" placeholder="Bis Jahr:" v-model="kwY"/>
@@ -44,8 +45,9 @@
             zurücksetzen
           </button>
         </div>
-
-        <input class="vt vtt" type="text" placeholder="Fall-Titel:" v-model="kwT"/>
+        <div>
+          <input class="vt vto" type="text" placeholder="Fall-Titel:" v-model="kwT"/>
+        </div>
       </div>
     </div>
     <div v-if="!searchView">
@@ -96,7 +98,7 @@
                   :per-page="perPage"
                   aria-controls="col-table"
               ></b-pagination>
-              <div class="col-md-4">{{ this.$store.getters.noOfCollections }} Sammlungen</div>
+              <div class="col-md-4">{{ this.$store.getters.noOfCollections }} Akten</div>
             </div>
             <b-table
                 :tbody-tr-class="'cursor-pointer'"

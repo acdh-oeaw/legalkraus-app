@@ -1,5 +1,6 @@
 <template>
-  <span v-if="this.medium">{{ this.content }}, {{ getTranslatedMedium(this.medium) }}</span>
+  <span v-if="this.medium && this.content.length > 0">{{ this.content }}, {{ getTranslatedMedium(this.medium) }}</span>
+  <span v-else-if="this.medium && this.content.length === 0">{{ getTranslatedMedium(this.medium) }}</span>
   <span v-else>{{ this.content }}</span>
 </template>
 
@@ -19,14 +20,16 @@ export default {
     };
   },
   created() {
-    getPmbPersonWithoutDetails(this.id, this.type, (rs) => {
-      if (this.type === "place" || this.type === "institution") {
-        console.log(rs)
-        this.content = rs.name;
-      } else {
-        this.content = rs.first_name + " " + rs.name;
-      }
-    });
+    if (this.id !== ''){
+      getPmbPersonWithoutDetails(this.id, this.type, (rs) => {
+        if (this.type === "place" || this.type === "institution") {
+          console.log(rs)
+          this.content = rs.name;
+        } else {
+          this.content = rs.first_name + " " + rs.name;
+        }
+      });
+    }
   },
   methods: {
     getTranslatedMedium(medium) {

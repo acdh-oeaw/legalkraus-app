@@ -69,7 +69,7 @@
           :per-page="perPage"
           aria-controls="col-table"
       ></b-pagination>
-      <div class="sammlungen ml-3">{{ this.$store.getters.noOfCollections }} Sammlungen</div>
+      <div class="sammlungen ml-3">{{ this.$store.getters.noOfCollections }} Akten</div>
       </b-row>
       <b-table :tbody-tr-class="'cursor-pointer'" :thead-class="'semi-bold'" id="col-table" :small="'small'" :no-border-collapse="true" :borderless="'borderless'"
                :current-page="currentPage" :per-page="perPage" :sort-by="'id'"

@@ -30,7 +30,7 @@
         <span  class="semibold">{{ this.caseTitle }}</span>
       </p>
       <div class="filters">
-        <div class="searchPers">
+        <div v-if="catLower !== 'kultur' && catLower !== 'politik'" class="searchPers">
           <input
             class="vt vtp"
             placeholder="Person:"

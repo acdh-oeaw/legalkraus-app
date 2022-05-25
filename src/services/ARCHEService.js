@@ -360,7 +360,7 @@ module.exports.performFullTextSearch = async (searchTerm, colId, rsId, callback)
     } else {
         console.log('all')
         //searches in all collections
-        const url = "https://arche.acdh.oeaw.ac.at/api/search?sql=SELECT id FROM full_text_search JOIN (SELECT (get_relatives(id, ?, 9999, 0)).id FROM identifiers WHERE ids = ?) t USING (id)  WHERE websearch_to_tsquery('simple', ?) @@ segments&sqlParam[]=https://vocabs.acdh.oeaw.ac.at/schema%23isPartOf&sqlParam[]=https://arche.acdh.oeaw.ac.at/api/188397&format=application/json&sqlParam[]=" + searchTerm + "&readMode=ids&limit=25&ftsQuery=" + searchTerm;
+        const url = "https://arche.acdh.oeaw.ac.at/api/search?sql=SELECT id FROM full_text_search JOIN (SELECT (get_relatives(id, ?, 9999, 0)).id FROM identifiers WHERE ids = ?) t USING (id)  WHERE websearch_to_tsquery('simple', ?) @@ segments&sqlParam[]=https://vocabs.acdh.oeaw.ac.at/schema%23isPartOf&sqlParam[]=https://arche.acdh.oeaw.ac.at/api/188459&format=application/json&sqlParam[]=" + searchTerm + "&readMode=ids&limit=25&ftsQuery=" + searchTerm;
         fetch(url).then(rs => rs.json()).then(data => {
             return callback(data);
         });

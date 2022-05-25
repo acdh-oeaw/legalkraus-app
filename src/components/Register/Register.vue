@@ -30,8 +30,10 @@
               :per-page="perPage"
               aria-controls="col-table"
           ></b-pagination>
-          <b-table :tbody-tr-class="rowClass" ref="workTable" id="col-table" :small="'small'" :sort-by="'title'" :sort-compare="tableSortCompare"
-                   :no-border-collapse="true" :borderless="'borderless'"
+          <b-table :tbody-tr-class="rowClass" class="border-0" ref="workTable" id="col-table" :small="'small'" :sort-by="'title'" :sort-compare="tableSortCompare"
+                   bordered
+                   selectable
+                    select-mode="single"
                    :current-page="currentPage" :per-page="perPage"
                    :busy.sync="isBusy" :fields="[
             {
@@ -125,7 +127,9 @@
               aria-controls="col-table"
           ></b-pagination>
           <b-table id="col-table" :tbody-tr-class="rowClass" ref="personTable" :small="'small'" sort-by="persName" :sort-compare="tableSortCompare"
-                   :no-border-collapse="true" :borderless="'borderless'"
+                   bordered
+                   selectable
+                    select-mode="single"
                    :current-page="currentPage" :per-page="perPage"
                    :busy.sync="isBusy" :fields="[
             {
@@ -181,7 +185,9 @@
               aria-controls="col-table"
           ></b-pagination>
           <b-table :tbody-tr-class="rowClass" id="col-table" ref="placeTable" :small="'small'" :sort-by="'placeName'" :sort-compare="tableSortCompare"
-                   :no-border-collapse="true" :borderless="'borderless'"
+                    bordered
+                   selectable
+                    select-mode="single"
                    :current-page="currentPage" :per-page="perPage"
                    :busy.sync="isBusy" :fields="[
             {
@@ -229,7 +235,9 @@
               aria-controls="col-table"
           ></b-pagination>
           <b-table :tbody-tr-class="rowClass" id="col-table" ref="instTable" :small="'small'" :sort-by="'orgName'" :sort-compare="tableSortCompare"
-                   :no-border-collapse="true" :borderless="'borderless'"
+                   bordered
+                   selectable
+                    select-mode="single"
                    :current-page="currentPage" :per-page="perPage"
                    :busy.sync="isBusy" :fields="[
             {
@@ -278,7 +286,9 @@
               aria-controls="col-table"
           ></b-pagination>
           <b-table :tbody-tr-class="rowClass" ref="fackelTable" id="col-table" :small="'small'" :sort-by="'title'" :sort-compare="tableSortCompareFackel"
-                   :no-border-collapse="true" :borderless="'borderless'"
+                   bordered
+                   selectable
+                    select-mode="single"
                    :current-page="currentPage" :per-page="perPage"
                    :busy.sync="isBusy" :fields="[
             {
@@ -371,7 +381,9 @@
               aria-controls="col-table"
           ></b-pagination>
           <b-table :tbody-tr-class="rowClass" ref="jusTable" id="col-table" :small="'small'" :sort-by="'title'" :sort-compare="tableSortCompare"
-                   :no-border-collapse="true" :borderless="'borderless'"
+                    bordered
+                   selectable
+                    select-mode="single"
                    :current-page="currentPage" :per-page="perPage"
                    :busy.sync="isBusy" :fields="[
             {
@@ -438,11 +450,18 @@ export default {
         let fackelid = '';
         if (item['$']['corresp']) {
           if (item['$']['corresp'].includes('https://fackel.oeaw.ac.at')) {
-             const regex = /[0-9]+.[0-9]+/g;
-             const match = item['$']['corresp'].match(regex)[0];
-             if (match) {
-              fackelid = match.replace(',','_');
-             } 
+            console.log(item.ref)
+            const foundRef = item.ref.find(or => {
+              
+             let orfid = `f_${or['$'].target.replace('https://fackel.oeaw.ac.at/f/','').replace(',','_')}`;
+              console.log(orfid)
+              return orfid === this.$route.params.pmbid;
+              });
+              console.log(foundRef)
+              if (foundRef !== undefined) {
+                  fackelid = `f_${foundRef['$'].target.replace('https://fackel.oeaw.ac.at/f/','').replace(',','_')}`;
+                  console.log(fackelid)
+              }
           } else {
         let correspurl = new URL(item['$']['corresp']).search;
         lawtextid = Array.from(new URLSearchParams(correspurl).values()).join('_');
@@ -773,10 +792,13 @@ export default {
             cd.cases.forEach(c => {
               let cid = parseInt(c.id.replace("C_",'').substring(0, c.id.length-4));
               if(cid === caseId){
+                if (refCases.indexOf(c)=== -1) {
                 refCases.push(c);
+              }
                 for (let i = 0; i < c.doc_objs.length; i++) {
                   if(c.doc_objs[i].id === xmlId){
-                    refDocs.push(c.doc_objs[i]);
+                    const docObj = {target:r['$'].target,...c.doc_objs[i]} 
+                    refDocs.push(docObj);
                     break;
                   }
                 }
@@ -815,16 +837,24 @@ export default {
       if(record.ref){
         let refCases = [];
         let refDocs = [];
+           console.log(record.ref)
         record.ref.forEach(r =>{
           let caseId = parseInt(r.$.target.replace("D_","").substring(0,6).replace('0',''));
           this.caseInfo.then(cd =>{
+            
             cd.cases.forEach(c => {
               let cid = parseInt(c.id.replace("C_",'').substring(0, c.id.length-4));
               if(cid === caseId){
-                refCases.push(c);
+              
+              //  const csWId = {"cid":cid,...c}
+                 if (refCases.indexOf(c)=== -1) {
+                  
+                    refCases.push(c);
+                 }
                 for (let i = 0; i < c.doc_objs.length; i++) {
                   if(c.doc_objs[i].id === r.$.target){
-                    refDocs.push(c.doc_objs[i]);
+                    const docObj = {target:record.$.corresp,...c.doc_objs[i]} 
+                    refDocs.push(docObj);
                     break;
                   }
                 }
@@ -839,6 +869,9 @@ export default {
       return l;
     },
     async openDetails(record) {
+      if (document.querySelectorAll(".highlighted-row").length > 0) { 
+        document.querySelectorAll(".highlighted-row")[0].classList.remove("highlighted-row");
+      }
       let item;
       if (this.categoryShort === 'p') {
         item = this.processPerson(record);
@@ -1006,6 +1039,7 @@ export default {
           const rowposition = this.$refs.personTable.sortedItems.findIndex(p => p['$']['xml:id'] === pmbId);
     
           this.currentPage = Math.floor(rowposition / this.perPage +1);
+          
           await document.querySelectorAll(".highlighted-row");
           document.querySelectorAll(".highlighted-row")[0].scrollIntoView();
 
@@ -1040,7 +1074,8 @@ export default {
           await this.$refs['workTable'];
           const rowposition = this.$refs.workTable.sortedItems.findIndex(o => o['$']['xml:id'] === pmbId);
           this.currentPage = Math.floor(rowposition / this.perPage +1);
-          await document.querySelectorAll(".highlighted-row");
+          //await document.querySelectorAll(".highlighted-row");
+          await document.querySelectorAll(".highlighted-row")
           document.querySelectorAll(".highlighted-row")[0].scrollIntoView();
           if (this.currentItems.work.length === 0) {
             this.noItems = true;
@@ -1065,13 +1100,13 @@ export default {
         else if (this.categoryShort === 'f') {
           await this.$refs['fackelTable'];
           const rowposition = this.$refs.fackelTable.sortedItems.findIndex(o => {
-            const regex = /[0-9]+.[0-9]+/g;
-            const match = o['$']['corresp'].match(regex)[0];
-             let fid;
-             if (match) {
-               fid = match.replace(',','_');
-             }
-             return fid === pmbId;
+            
+           const foundRef = o.ref ? o.ref.find(or => {
+              let orfid = `f_${or['$'].target.replace('https://fackel.oeaw.ac.at/f/','').replace(',','_')}`;
+
+              return orfid === pmbId;
+              }) : undefined;
+            return foundRef
             });
              console.log(rowposition)
           this.currentPage = Math.floor(rowposition / this.perPage +1);
@@ -1136,6 +1171,8 @@ export default {
   border: none;
 }
 
+
+
 .tables > .card:hover {
   cursor: pointer !important;
 }
@@ -1183,8 +1220,21 @@ export default {
 
 </style>
 <style>
-.highlighted-row {
+
+.table-bordered th, .table-bordered td {
+  border: 3px solid white;
+}
+
+.highlighted-row, .b-table-row-selected {
   font-weight:bold;
+  outline: thin solid;
+  outline-width:2px;
+}
+
+
+.highlighted-row td, .b-table-row-selected td {
+  background: white !important;
+
 }
 
 .title-column {

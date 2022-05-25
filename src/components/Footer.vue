@@ -17,7 +17,7 @@
         <p>Projektleitung: Katharina Prager<br/>
           <a class="r b" href="mailto:katharina.prager@wien.gv.at">katharina.prager@wien.gv.at</a><br/>
           Wienbibliothek im Rathaus<br/>
-        1082 Wien,Rathaus, Stiege 8, Hochpaterre, Zi 104W</p>
+        1082 Wien, Rathaus, Stiege 8, Hochparterre, Zi 104W</p>
 
       </div>
       <div class="right">

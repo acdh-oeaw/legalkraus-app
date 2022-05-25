@@ -238,7 +238,7 @@
         </div>
 
         <div class="card card-fixed-small">
-          <img class="embedded-img-small" :src="getCurrentFacs()" alt="facsimile">
+          <img class="embedded-img-small" :src="getCurrentFacs()" alt="facsimile" @error="fallbackImage">
         </div>
       </div>
 
@@ -258,7 +258,7 @@
                     d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707zm4.344 0a.5.5 0 0 1 .707 0l4.096 4.096V11.5a.5.5 0 1 1 1 0v3.975a.5.5 0 0 1-.5.5H11.5a.5.5 0 0 1 0-1h2.768l-4.096-4.096a.5.5 0 0 1 0-.707zm0-4.344a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H11.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707zm-4.344 0a.5.5 0 0 1-.707 0L1.025 1.732V4.5a.5.5 0 0 1-1 0V.525a.5.5 0 0 1 .5-.5H4.5a.5.5 0 0 1 0 1H1.732l4.096 4.096a.5.5 0 0 1 0 .707z"/>
             </svg>
           </div>
-          <img class="embedded-img" :src="getCurrentFacs()" alt="facsimile">
+          <img class="embedded-img" :src="getCurrentFacs()" alt="facsimile" @error="fallbackImage">
         </div>
       </div>
 
@@ -270,7 +270,7 @@
           </button>
         </div>
         <div class="card card-full">
-          <img class="embedded-img" :src="getCurrentFacs()" alt="facsimile">
+          <img class="embedded-img" :src="getCurrentFacs()" alt="facsimile" @error="fallbackImage">
         </div>
       </div>
 
@@ -531,7 +531,7 @@
       </template>
       <div class="d-block text-center">
         <div :key="`w${idx}`" v-for="(imgurl,idx) in this.witness">
-          <img :src="witnessImageSize(imgurl)"/>
+          <img :src="witnessImageSize(imgurl)" @error="fallbackImage"/>
         </div>
       </div>
     </b-modal>
@@ -541,7 +541,7 @@
       </template>
       <div class="d-block text-center">
         <div :key="`w${idx}`" v-for="(imgurl,idx) in this.furtherWitnesses">
-          <img :src="witnessImageSize(imgurl)"/>
+          <img :src="witnessImageSize(imgurl)" @error="fallbackImage"/>
         </div>
       </div>
     </b-modal>
@@ -556,6 +556,7 @@ import {
   getObjectWithId,
   getTransformedHtmlResource
 } from "../../services/ARCHEService";
+import fallbackImage from "@/assets/nofacsimage.svg";
 import {getObjectWithId as getPMBObjectWithId} from "../../services/PMBService";
 import {ARCHErdfQuery} from "arche-api/src";
 import EntitySpan from "./EntitySpan";
@@ -678,6 +679,9 @@ export default {
   methods: {
     witnessImageSize(val) {
       return val.replace('full/full/', 'full/600,/')
+    },
+    fallbackImage: function (e) {
+      return (e.target.src = `${fallbackImage}`);
     },
     async highlightQueryOnMounted(q) {
       await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
@@ -972,7 +976,7 @@ export default {
 
       } else if (type === 'place') {
         const res = rs.results[0]
-        if (res.kind.name !== undefined) {
+        if (res.kind && res.kind.name !== undefined) {
           textinfo.innerHTML = "<b>|</b>&nbsp;" + res.name + ", " + res.kind.name;
         } else {
           textinfo.innerHTML = "<b>|</b>&nbsp;" + res.name;
@@ -985,7 +989,12 @@ export default {
         }
       }
       else if (type === 'law') {
-        textinfo.innerHTML = 'Gesetzestext im Register'
+         if (event.pmbId === '' || event.pmbId === null) {
+           textinfo.innerHTML = "<b>|</b>&nbsp;" + 'nicht erfasst';
+         }
+         else {
+           textinfo.innerHTML = 'Gesetzestext im Register'
+         }
       }
       
       else if (type === 'work') {
@@ -1001,7 +1010,7 @@ export default {
             
             //let url = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + rs.id + "/detail"
             //textinfo.innerHTML = "<b>|</b>&nbsp;" + "PMB: " + "<a href='" + url + "' target='_blank'>" + rs.name + "</a>";
-            textinfo.innerHTML = "<b>|</b>&nbsp;" + "PMB: " +  rs.name + " " + authors.map(author=>author.first_name + " " + author.name)
+            textinfo.innerHTML = "<b>|</b>&nbsp;" + rs.name + " " + authors.map(author=>author.first_name + " " + author.name)
             //.onclick = "#";
           });
         } else if (event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus")) {
@@ -1026,23 +1035,26 @@ export default {
 
           });
         } else if (event.pmbId.includes("https://fackel.oeaw.ac.at/")) {
-          textinfo.innerHTML = "<b>|</b>&nbsp;" + event.pmbId;
+          textinfo.innerHTML = "<b>|</b>&nbsp; Zur Fackel im Register";
         }
 
       } else if (event.type === 'quote' || event.type === 'intertext') {
         if (event.pmbId === '' || event.pmbId === null) {
           textinfo.innerHTML = "<b>|</b>&nbsp;" + 'nicht erfasst';
-        } else if ((event.type === 'intertext' || event.type === 'quote') && event.pmbId.includes("https://fackel.oeaw.ac.at/")) {
+        } else if (event.type === 'intertext' && event.pmbId.includes("https://fackel.oeaw.ac.at/")) {
 
           textinfo.innerHTML = `<b>|</b>&nbsp;<a target="_blank" rel="noopener noreferrer" href="${event.pmbId}">${event.pmbId}</a>`;
           textinfo.onclick = '#';
+        } else if (event.type === 'quote' && event.pmbId.includes("https://fackel.oeaw.ac.at/")) { 
+           textinfo.innerHTML = `<b>|</b>&nbsp;Zur Fackel im Register`
         }
         
         else if ((/#[0-9]/).test(event.pmbId)) {
           getPMBObjectWithId(event.pmbId.substring(1), 'quote', rs => {
             //let url = "https://pmb.acdh.oeaw.ac.at/apis/entities/entity/work/" + rs.id + "/detail"
             //textinfo.innerHTML = "<b>|</b>&nbsp;" + "PMB: " + "<a href='" + url + "' target='_blank'>" + rs.name + "</a>";
-            textinfo.innerHTML = "<b>|</b>&nbsp;" + "PMB: " + rs.name;
+            //textinfo.innerHTML = "<b>|</b>&nbsp;" + "PMB: " + rs.name;
+            textinfo.innerHTML = "<b>|</b>&nbsp;" + rs.name;
             //textinfo.onclick = "#";
           });
         } //else if (event.pmbId.includes("https://id.acdh.oeaw.ac.at/legalkraus") || event.pmbId.includes("https://legalkraus.acdh.oeaw.ac.at/id/")) {
@@ -1068,6 +1080,8 @@ export default {
             }
 
           });
+        } else if (event.pmbId.includes('alex.onb.ac.at')) {
+            textinfo.innerHTML = `<b>|</b>&nbsp;Gesetzestext im Register`;
         }
       }
 
@@ -1098,8 +1112,9 @@ export default {
 
       //if a work only refers to a pmb or fackel entry, no onclick function is needed
       //if (!(type === 'work' && event.pmbId && event.pmbId.includes('pmb') && event.pmbId.includes('fackel'))) {
-        if (!(type === 'work' && event.pmbId && event.pmbId.includes('pmb'))) {
+      /*if (!(event.pmbId && event.pmbId.includes('pmb'))) {*/
         textinfo.onclick = function () {
+          if (!(event.pmbId === null || event.pmbId === '' )) {
           let routeData = "";
           if (type === 'person') {
             routeData = self.$router.resolve({path: `/register/personen/${event.pmbId.substring(1)}`});
@@ -1115,7 +1130,13 @@ export default {
           }  else if (type === 'work') {
             if (event.pmbId.includes('#pmb')){
               routeData = self.$router.resolve({path: `/register/werke/${event.pmbId.substring(1)}`});
+               window.open(routeData.href, '_blank');
             } 
+           else if (event.pmbId.includes('fackel.oeaw.ac.at')) {
+              let fid = `f_${event.pmbId.replace('https://fackel.oeaw.ac.at/f/','').replace(',','_')}`;
+              routeData = self.$router.resolve({path: `/register/fackel/${fid}`});
+              window.open(routeData.href, '_blank');
+            }
             else {
             let idx = event.pmbId.lastIndexOf('/');
             let xmlId = event.pmbId.substring(idx + 1) + '.xml';
@@ -1143,6 +1164,16 @@ export default {
               routeData = self.$router.resolve({name: "lesefassung", params: {id: rs}});
               window.open(routeData.href, '_blank');
             });
+            } else if (event.pmbId.includes('fackel.oeaw.ac.at')) {
+              let fid = `f_${event.pmbId.replace('https://fackel.oeaw.ac.at/f/','').replace(',','_')}`;
+              routeData = self.$router.resolve({path: `/register/fackel/${fid}`});
+              window.open(routeData.href, '_blank');
+            }
+            else if (event.pmbId.includes('alex.onb.ac.at')) {
+              const lawendpointsearch = new URL(event.pmbId).search;
+              const lawtextid = Array.from(new URLSearchParams(lawendpointsearch).values()).join('_');
+              routeData = self.$router.resolve({path: `/register/juristische-texte/${lawtextid}`});
+              window.open(routeData.href, '_blank');
             }
             else {
               return false;
@@ -1166,11 +1197,12 @@ export default {
               window.open(routeData.href, '_blank');
             });*/
           } 
-          if (type !== 'intertext' && type!== 'quote') {
+          if (type !== 'intertext') {
             window.open(routeData.href, '_blank');
           }
+          }
         };
-      }
+     /*}*/
 
       return div;
     },
@@ -1208,10 +1240,16 @@ export default {
             const pbs = Array.from(this.dom.getElementsByTagName("pb"))
             if (pbs.length > 0) {
             const pbsfacs = Array.from(this.dom.getElementsByTagName("pb")).map(pb => pb.attributes.facs.nodeValue.replace('#', ''));
+            console.log(pbsfacs)
             pbsfacs.forEach(facsid => {
-              let facsUrl = this.dom.querySelectorAll(`[*|id='${facsid}'] graphic[source='wienbibliothek']`)[0].attributes.url.nodeValue
+              let facsUrl = ''; 
+              if (this.dom.querySelectorAll(`[*|id='${facsid}'] graphic[source='wienbibliothek']`).length > 0) {
+                facsUrl = this.dom.querySelectorAll(`[*|id='${facsid}'] graphic[source='wienbibliothek']`)[0].attributes.url.nodeValue
+              }
+              
               this.facsURLs.push(facsUrl)
             })
+            console.log(this.facsURLs)
             } else {
               const graphics = this.dom.querySelectorAll(`graphic[source='wienbibliothek']`);
               graphics.forEach(gr => {
@@ -1823,7 +1861,7 @@ export default {
   content: attr(data-lbnr);
   padding-top: 0.2rem;
   left: -0.8rem;
-  width: auto;
+  width: 2ch;
   text-align: right;
   font-size: 80%;
   position: absolute;
@@ -1834,7 +1872,7 @@ export default {
   content: attr(data-lbnr);
   padding-top: 0.2rem;
   left: 0.5rem;
-  width: auto;
+  width: 2ch;
   text-align: right;
   font-size: 80%;
   position: absolute;
@@ -1862,7 +1900,7 @@ export default {
   width: 95%;
 }
 
-.person, .work, .institution, .place, .quote, .quote-spoken, .fackel-ref {
+.person, .work, .institution, .place, .quote, .quote-spoken, .fackel-ref, .law {
   cursor: pointer;
 }
 
@@ -2063,8 +2101,12 @@ export default {
   letter-spacing: 0.2rem;
 }
 
-.add-hand {
+.add {
   font-weight: 600;
+}
+
+.add-hand {
+  font-weight: 700;
 }
 
 .del {
