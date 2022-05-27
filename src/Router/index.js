@@ -119,6 +119,11 @@ export default new Router({
         //{path: '/projekt/lizenzen', component: Lizenzen},
         //{path: '/projekt/dokumentation', component: Dokumentation},
         {path: '/visualisierungen/fallstatistik', name: 'fstat', component: Stats},
-        {path: '/impressum', component: Impressum}
+        {path: '/impressum', component: Impressum},
+        {path: '/der-vorleser',
+            beforeEnter() {
+                location.href = 'https://www.kraus-vorleser.wienbibliothek.at'
+            }
+       }
     ]
 })
