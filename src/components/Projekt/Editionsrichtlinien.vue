@@ -40,15 +40,15 @@
 <p class="font-weight-bold">Intertextualität und weitere Referenzen</p>
 
 <p>Der Projektausrichtung und zentralen Forschungsfrage gemäß wurden im transkribierten Text mehrere Auszeichnungen vorgenommen. Alle identifizierbaren Werke und Zitate aus Rechtstexten, die in <a target="_blank" rel="noopener noreferrer" href="https://alex.onb.ac.at/"><i>ALEX</i></a> (Service der Österreichischen Nationalbibliothek) mit Digitalisaten zu historischen Rechts- und Gesetzestexten enthalten sind, wurden referenziert. Nicht ermittelte Werke und Zitate wurden als solche ausgezeichnet. Außerdem wurden Zitate und Werke aus der <a target="_blank" rel="noopener noreferrer" href="https://fackel.oeaw.ac.at"><i>Fackel</i></a> seitengetreu referenziert. Darüber hinaus sind Zitate aus anderen, in den Rechtsakten enthaltenen Dokumenten bzw. die Dokumente selbst ausgezeichnet und referenziert.</p>
-<p>Ein Sonderfall der Auszeichnung stellen jene in den Akten enthaltenen Textpassagen dar, die zu einem späteren Zeitpunkt in der <i>Fackel</i> veröffentlicht wurden und somit Teil eines literarischen Textes wurden. Diese sind, soweit sie identifizierbar waren, seitengenau referenziert.</p>
+<p>Ein Sonderfall der Auszeichnung stellen jene in den Akten enthaltenen Textpassagen dar, die zu einem späteren Zeitpunkt in der <i>Fackel</i> veröffentlicht wurden und somit Teil eines literarischen Textes wurden. Diese sogenannten <i>Fackel</i>-Intertexte sind, soweit sie identifizierbar waren, rot hervorgehoben und mit einem Verweis auf die entsprechende Stelle in der <i>Fackel</i> referenziert.</p>
 
 <p>In den Transkriptionen werden neben den Intertextualitätsreferenzen weitere Entitäten wie Personen, Orte, Institutionen ausgezeichnet.</p>
 
-<p>Für Beispiele zu den beschriebenen Auszeichnungen <!--<a
+<p>Für Beispiele zu den beschriebenen Auszeichnungen siehe <a
         target="_blank"
         rel="noopener noreferrer"
-        :href="`${publicPath}textkritische_zeichen.pdf`"
-        >-->s. PDF<!--</a>--> zu den textkritischen Zeichen (folgt).</p>
+        :href="`${publicPath}textkritische_zeichen_rechtsakten_karl_kraus.pdf`"
+        >textkritische Zeichen</a>.</p>
         </div>
       </b-col>
       <b-col cols="5">

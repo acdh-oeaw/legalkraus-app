@@ -152,7 +152,7 @@
     </b-container>
     </div>
     <div v-if="searchView">
-      <p>{{ searchResultsCount }} Ergebnisse für "{{ keyword }}"</p>
+      <p>{{ searchResultsCount }}  von {{ totalResultCount }}  Ergebnissen für "{{ keyword }}"</p>
       <button type="button" class="btn btn-secondary btn-sm" v-on:click="toggleView">Zurück zur Übersicht</button>
       <div v-for="item in searchResults" v-bind:key="item.key">
         <SearchResultItem v-bind:item="item" v-on:nav-to-objects="navToObjects($event)"></SearchResultItem>
@@ -233,6 +233,7 @@ export default {
       searchView: false,
       searchResults: [],
       searchResultsCount: Number,
+      totalResultCount: Number,
       keyword: String,
     };
   },
@@ -378,8 +379,10 @@ export default {
         return;
       }
       this.searchView = true;
+      console.log(event)
       this.searchResults = event.searchResults;
       this.searchResultsCount = event.searchResults.length;
+      this.totalResultCount = event.totalResultCount;
       this.keyword = event.keyword;
     },
   toggleView() {

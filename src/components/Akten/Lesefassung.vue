@@ -1020,7 +1020,8 @@ export default {
             for (let i = 0; i < data.cases.length; i++) {
               let d = data.cases[i].doc_objs.filter(d => d.id.includes(filename))[0];
               if (d) {
-                getArcheIdFromXmlId(filename+'.xml', rs => {
+                getArcheIdFromXmlId(filename.replace('.xml','')+'.xml', rs => {
+                  console.log(rs)
                   textinfo.innerHTML = `<a target="_blank" href="/lesefassung/${rs}">${d.title}</a>`;
               //routeData = self.$router.resolve({name: "lesefassung", params: {id: rs}});
               //window.open(routeData.href, '_blank');
@@ -2109,6 +2110,15 @@ export default {
   font-weight: 700;
 }
 
+.subst {
+  font-size:0;
+  
+}
+
+.subst span {
+  font-size:1rem;
+}
+
 .del {
   text-decoration: line-through;
 }
@@ -2174,7 +2184,6 @@ mark {
 }
 
 .page-jump {
-  padding: 0.375rem 0.375rem;
   border-radius: 0.25rem;
   border: solid var(--secondary-gray-light);
   width: 3rem;

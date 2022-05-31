@@ -50,12 +50,15 @@ export default {
       searchResults: [],
       searchResultsCount: null,
       loading: false,
+      offset: 0,
+      totalResultsCount:0,
     }
   },
   props: ['colId', 'rsId'],
   methods: {
     async processSearchResults(data) {
       this.searchResults = [];
+      this.totalResultCount = data['https://arche.acdh.oeaw.ac.at/api/']['search://count'][0].value
      /* if (this.colId) {
         //search in a specific collection
         for (const [key, value] of Object.entries(data)) {
@@ -103,12 +106,28 @@ export default {
 
       //keine Unterschiedliche Darstellung von Suche in allen collections bzw nur in einer
       //search in all collections
-
+      const promises = [];
       for (const [key, value] of Object.entries(data)) {
         const id = key.replace("https://arche.acdh.oeaw.ac.at/api/", "");
 
         if (id && id !== "") {
-          await getCollectionOfObject(id, rs => {
+          promises.push(new Promise((resolve =>{
+            getCollectionOfObject(id,rs => {
+            
+              resolve(
+             this.searchResults.push({
+              "type": 'searchInAllCol',
+              "id": id,
+              "xmlid":rs[0].xmlId,
+              "url": key,
+              "collection": rs[0].title,
+              "collectionId": rs[0].id,
+              "title": value["https://vocabs.acdh.oeaw.ac.at/schema#hasTitle"][0].value,
+              "kwic": value["search://fts"].map(kwic => kwic.value.replace('\n', '')),
+              "searchTerm": this.searchTerm
+            }))})}))
+        )
+          /*await getCollectionOfObject(id, rs => {
             this.searchResults.push({
               "type": 'searchInAllCol',
               "id": id,
@@ -119,17 +138,25 @@ export default {
               "kwic": value["search://fts"].map(kwic => kwic.value.replace('\n', '')),
               "searchTerm": this.searchTerm
             })
-          });
+          });*/
         }
 
       }
-      this.searchResultsCount = this.searchResults.length;
-      this.$emit('searchPerformed', {searchResults: this.searchResults, keyword: this.searchTerm});
-      this.loading = false;
+      
+      Promise.all(promises).then(()=>{
+     
+        this.searchResultsCount = this.searchResults.length;
+        console.log(this.searchResults.length)
+        this.searchResults.sort((a,b) => {
+          parseInt(a.xmlid.replace("C_",'').substring(0, a.xmlid.length-4)) < parseInt(b.xmlid.replace("C_",'').substring(0, b.xmlid.length-4))
+        } )
+        this.$emit('searchPerformed', {searchResults: this.searchResults, keyword: this.searchTerm, totalResultCount: this.totalResultCount});
+        this.loading = false;
+      })
     },
     performFullTextSearch() {
       this.loading = true;
-      performFullTextSearch(this.searchTerm, this.colId, this.rsId, data => {
+      performFullTextSearch(this.searchTerm, this.colId, this.rsId, this.offset, data => {
         this.processSearchResults(data)
       });
     },
