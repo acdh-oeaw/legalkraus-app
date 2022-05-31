@@ -176,6 +176,7 @@
               </div>
             </span>
             <div v-else>Beteiligte: -</div>-->
+            <p v-if="val.date!==''">{{new Date(val.date).toLocaleDateString('de-DE', {year: 'numeric', month: 'long', day: 'numeric' })}}</p>
             <span v-if="Object.keys(val.places).length > 0">
               <p class="p-s">Orte:</p>
               <div
@@ -888,7 +889,6 @@ export default {
 }
 
 .p-s {
-  padding-top: 2rem;
   font-weight: bold;
 }
 

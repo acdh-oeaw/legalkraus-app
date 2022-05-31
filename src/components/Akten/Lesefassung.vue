@@ -61,7 +61,7 @@
           <p class="custom-p-bm"><span class="font-weight-bold">Seiten (Lesefassung):</span><br/> {{ this.facsURLs.length }}</p>
         </div>
       </div>
-      <p v-if="this.docInfo.materiality[0]" class="meta2"><span class="font-weight-bold">Materialitätstyp:</span><br/> {{ this.docInfo.materiality[0] }}</p>
+      <p v-if="this.docInfo.materiality[0]" class="meta2"><span class="font-weight-bold">Materialitätstyp:</span><br/><span  class="d-block" v-for="(mat,idx) in  this.docInfo.materiality" :key="`mat${idx}`"> {{mat}}</span></p>
       <div class="meta11">
         <!--<span v-if="handsClosed" class="hasActor">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right"
@@ -162,7 +162,7 @@
       <div class="meta2">
         <p><span class="font-weight-bold">Seiten (Lesefassung):</span><br/> {{ this.facsURLs.length }}</p>
       </div>
-      <p class="meta4"><span class="font-weight-bold">Materialitätstyp:</span><br/> {{ this.docInfo.materiality[0] }}</p>
+      <p class="meta4"><span class="font-weight-bold">Materialitätstyp:</span><br/><span  class="d-block" v-for="(mat,idx) in  this.docInfo.materiality" :key="`mat${idx}`"> {{mat}}</span></p>
       <div class="meta2-1">
         <!--<span v-if="handsClosed" class="hasActor">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-right"

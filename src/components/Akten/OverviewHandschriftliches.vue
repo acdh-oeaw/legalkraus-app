@@ -67,7 +67,8 @@
                v-on:click="navToLesefassung(val)">
           <div class="case-data scroll">
             <h6 class="card-title cursor-pointer" v-on:click="navToLesefassung(val)"><b>{{ val.title }}</b></h6>
-            <div style="padding-bottom: 1rem"> {{ val.materiality[0] }}</div>
+            <p v-if="val.date!==''">{{new Date(val.date).toLocaleDateString('de-DE', {year: 'numeric', month: 'long', day: 'numeric' })}}</p>
+            <div style="padding-bottom: 1rem"><span class="d-block" v-for="(mat,idx) in val.materiality" :key="`mat${idx}`">{{ mat }}<span v-if="idx < val.materiality.length - 1">,</span></span></div>
           </div>
         </div>
       </div>
@@ -152,6 +153,7 @@ export default {
       this.filterAll();
     },
     filterAll() {
+      this.currPage = 1;
       //extract docs that contain all persons in this.currPerson and all orgs in this.currOrgs and match title and year
       let temp = [];
       this.docObjs.forEach(d => {
@@ -161,12 +163,17 @@ export default {
             containsAll = false;
           }
         });
-
-        this.currMat.forEach(m => {
+          
+         if (!(this.currMat.map(m => m.toUpperCase()).some(r=> d.materiality.map(dm => dm.toUpperCase()).indexOf(r) >=0))) {
+           containsAll = false;
+         }
+         
+        /* this.currMat.forEach(m => {
+        
           if (!(d.materiality[0].toUpperCase() === m.toUpperCase())) {
             containsAll = false;
           }
-        });
+        });*/
 
 
         if (this.kwT) {
@@ -311,7 +318,9 @@ export default {
       //verified: every case contains at least one doc that falls into the handschriftlich category
       cD.cases.forEach(c => {
         c.doc_objs.forEach(d => {
-          if (this.matTypeStrings.includes(d.materiality[0])) {
+          if (this.matTypeStrings.some(r=> d.materiality.indexOf(r) >= 0)) {
+            
+         // if (this.matTypeStrings.includes(d.materiality[0])) {
             d.pers = [];
             d.pls = [];
             for (const [key, value] of Object.entries(d.persons)) {

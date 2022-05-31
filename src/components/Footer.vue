@@ -38,8 +38,8 @@
     <div class="logos">
       <img class="logo" src=".././assets/acdh-ch-logo96.png" width="auto" height="70px" alt="acdh-logo">
       <img class="logo" src=".././assets/stadtwien.svg" width="auto" height="70px" alt="acdh-logo">
-      <img class="logo" src=".././assets/fwf.png" width="auto" height="70px" alt="acdh-logo">
       <img class="logo" src=".././assets/boltzmann.svg" width="auto" height="70px" alt="acdh-logo">
+      <img class="logo" src=".././assets/fwf.png" width="auto" height="70px" alt="acdh-logo">
     </div>
   </main>
 </template>
