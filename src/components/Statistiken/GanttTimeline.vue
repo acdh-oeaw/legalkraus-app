@@ -13,6 +13,7 @@
 
 <script>
 import gs from "./ganttseries.json";
+import {getArcheIdFromXmlId} from '../../services/ARCHEService'
 import { dateFormat } from "highcharts";
 export default {
   name: "GanttTimeLine",
@@ -21,7 +22,6 @@ export default {
   },
   methods: {
     chartCallback(chart) {
-      console.log(chart);
       let chartWidth = (30 * chart.series[0].data.length) / 8;
       let chartHeight =
         15 *
@@ -39,10 +39,14 @@ export default {
   },
   computed: {
     chartOptions() {
-      /*gs[0].point = {"events": {
+      const self = this;
+      gs[0].point = {"events": {
       "click":function (e) {
-        console.log(e.point.name);
-      }}};*/
+         getArcheIdFromXmlId(`${e.point.id}.xml`, rs => {
+              const routeData = self.$router.resolve({path: `/objects/${rs}`});
+              window.open(routeData.href, '_blank');
+            });
+      }}};
       return {
         chart: {
           inverted: true,
