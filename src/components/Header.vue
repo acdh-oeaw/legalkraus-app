@@ -72,6 +72,9 @@
           <b-dropdown-item class="dd-item" to="/visualisierungen/fallstatistik">
               Fallstatistik
           </b-dropdown-item>
+           <b-dropdown-item class="dd-item" to="/visualisierungen/zeitstrahl">
+              Zeitstrahl
+          </b-dropdown-item>
         </b-dropdown>
       </p>
       <p class="nav-el">

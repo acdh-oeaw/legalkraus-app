@@ -28,7 +28,8 @@ export default new Vuex.Store({
         vocabReady:false,
         groupedCases: {},
         cases: null,
-        appDataReady: false
+        appDataReady: false,
+        caseDates: []
         
     },
 
@@ -83,6 +84,9 @@ export default new Vuex.Store({
         },
         appDataReady: state => {
             return state.appDataReady
+        },
+        getEarliestAndLatestCaseDate:  state => {
+            return state.caseDates
         }
     },
 
@@ -156,6 +160,9 @@ export default new Vuex.Store({
         },
         MUTATE_APPDATA_STATUS: (state, appdatastatus) => {
             state.appDataReady = appdatastatus;
+        },
+        MUTATE_CASEDATES: (state, dates) => {
+            state.caseDates = dates;
         }
     },
 
@@ -212,6 +219,9 @@ export default new Vuex.Store({
             context.commit('MUTATE_GROUPED_CASES', groupedcases);
         },
         setCases: (context, cases) => {
+            let sortedStartDates = cases.filter(cs => cs.start_date !== '').map(cs=> new Date(cs.start_date)).sort((a,b) => a - b);
+            let sortedEndDates = cases.filter(cs => cs.end_date !== '').map(cs=> new Date(cs.end_date)).sort((a,b) => b - a);
+            context.commit('MUTATE_CASEDATES',[sortedStartDates[0],sortedEndDates[0]]);
             context.commit('MUTATE_CASES', cases);
         },
         setAppDataStatus: (context, appdatastatus) => {

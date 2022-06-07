@@ -28,9 +28,23 @@ import Benutzungshinweise from "../components/Projekt/Benutzungshinweise";
 // import Dokumentation from "../components/Projekt/Dokumentation";
 import Register from "../components/Register/Register";
 import Stats from "../components/Statistiken/Stats";
+import GanttTimeline from "../components/Statistiken/GanttTimeline";
 import OverviewHandschriftliches from "../components/Akten/OverviewHandschriftliches";
 import Impressum from "../components/Projekt/Impressum";
 
+import Highcharts from "highcharts";
+import Gantt from "highcharts/modules/gantt";
+import HighchartsVue from "highcharts-vue";
+
+Highcharts.setOptions({
+    lang: {
+      months: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+      weekdays: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag']
+    }
+  })
+
+Gantt(Highcharts);
+Vue.use(HighchartsVue);
 
 Vue.use(Router)
 Vue.use(BootstrapVue)
@@ -119,6 +133,7 @@ export default new Router({
         //{path: '/projekt/lizenzen', component: Lizenzen},
         //{path: '/projekt/dokumentation', component: Dokumentation},
         {path: '/visualisierungen/fallstatistik', name: 'fstat', component: Stats},
+        {path: '/visualisierungen/zeitstrahl', name: 'zstat', component: GanttTimeline},
         {path: '/impressum', component: Impressum},
         {path: '/der-vorleser',
             beforeEnter() {
