@@ -2140,6 +2140,27 @@ export default {
   font-weight: 600;
 }
 
+.metamark-no-text.marginLeft {
+ position: absolute;
+}
+
+.metamark-no-text.marginLeft::before {
+  text-align:left;  
+   border-right: 1.8px solid;
+  content:"\00a0";
+  position:absolute;
+  right: 2rem;
+}
+
+.metamark-no-text.marginRight::before {
+   border-left: 1.8px solid;
+  content:"\00a0";
+  position:absolute;
+  right: -1rem;
+}
+
+
+
 .marginalie-text.marginLeft {
   border-right: 1.8px solid;
 }

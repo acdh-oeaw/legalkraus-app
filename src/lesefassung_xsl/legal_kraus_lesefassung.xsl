@@ -243,8 +243,8 @@
         </span>
     </xsl:template>
 
-    <xsl:template match="tei:metamark[@function = 'marginal' and @hand = '*' and @rend = '*']">
-        <span class="metamark">
+    <xsl:template match="tei:metamark[@function = 'marginal'][@hand][@rend]">
+        <span class="metamark-no-text {@rend}">
             <xsl:apply-templates/>
         </span>
     </xsl:template>

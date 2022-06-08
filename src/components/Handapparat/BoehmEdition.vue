@@ -45,7 +45,7 @@
       <div class="card">
         <div class="w-100 viewer" id ="iiif_viewer"/>
       </div>
-      <div class="text">Dank an Böhm</div>
+      <div class="text">Mit großem Dank an Hermann Böhm</div>
     </b-container>
   </main>
 </template>
