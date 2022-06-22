@@ -137,7 +137,7 @@ export default new Router({
         {path: '/impressum', component: Impressum},
         {path: '/der-vorleser',
             beforeEnter() {
-                location.href = 'https://www.kraus-vorleser.wienbibliothek.at'
+                location.href = 'https://www.kraus-vorleser.wienbibliothek.at/der-vorleser'
             }
        }
     ]
