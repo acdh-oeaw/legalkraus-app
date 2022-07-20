@@ -2,13 +2,14 @@ const {default: fetch} = require('node-fetch');
 const {
     ARCHErdfQuery, ARCHEdownloadResourceIdM,
 } = require("arche-api");
-const {queryAndProcessMD} = require("../utils")
+const {queryAndProcessMD, processArcheSearchResults} = require("../utils")
 const store = require("../store");
 
 const ARCHE_BASE_URL = "https://arche.acdh.oeaw.ac.at/api";
 const FORMAT_NTRIPLES = "application/n-triples";
 const READMODE_RESOURCE = "resource";
 const READMODE_RELATIVES = "relatives";
+
 
 module.exports.getObjectWithId = async (resourceId, callback) => {
 
@@ -341,6 +342,7 @@ module.exports.performFullTextSearch = async (searchTerm, colId, rsId, offset, c
 
     } else if (colId) {
         console.log('col')
+        console.log(colId)
         //searches in all resources that are part of the collection with colId
         fetch(url + new URLSearchParams({
             "property[0]": "BINARY",
@@ -349,19 +351,28 @@ module.exports.performFullTextSearch = async (searchTerm, colId, rsId, offset, c
             "property[1]": "https://vocabs.acdh.oeaw.ac.at/schema#isPartOf",
             "operator[1]": "=",
             "value[1]": "https://arche.acdh.oeaw.ac.at/api/" + colId,
-            "ftsQuery": searchTerm
+            "ftsQuery": searchTerm,
+            "offset":offset,
+            "limit":25
 
         }), {
-            headers: {'Accept': 'application/json'}
-        }).then(response => response.json()).then(data => {
-            data.type = 'col';
-            return callback(data);
+           // headers: {'Accept': 'application/json'}
+        }).then(response => response.text()).then(data => {
+            //data.type = 'col';
+            const finalResults = processArcheSearchResults(data,'col');
+            return callback(finalResults);
         })
     } else {
         //searches in all collections
-        const url = "https://arche.acdh.oeaw.ac.at/api/search?sql=SELECT id FROM full_text_search JOIN (SELECT (get_relatives(id, ?, 9999, 0)).id FROM identifiers WHERE ids = ?) t USING (id)  WHERE websearch_to_tsquery('simple', ?) @@ segments&sqlParam[]=https://vocabs.acdh.oeaw.ac.at/schema%23isPartOf&sqlParam[]=https://arche.acdh.oeaw.ac.at/api/188459&format=application/json&sqlParam[]=" + searchTerm + "&readMode=ids&limit=25&ftsQuery=" + searchTerm + "&offset=" + offset;
-        fetch(url).then(rs => rs.json()).then(data => {
-            return callback(data);
+        //const url = "https://arche.acdh.oeaw.ac.at/api/search?sql=SELECT id FROM full_text_search JOIN (SELECT (get_relatives(id, ?, 9999, 0)).id FROM identifiers WHERE ids = ?) t USING (id)  WHERE websearch_to_tsquery('simple', ?) @@ segments&sqlParam[]=https://vocabs.acdh.oeaw.ac.at/schema%23isPartOf&sqlParam[]=https://arche.acdh.oeaw.ac.at/api/188459&format=application/json&sqlParam[]=" + searchTerm + "&readMode=ids&limit=25&ftsQuery=" + searchTerm + "&offset=" + offset;
+        const url = "https://arche.acdh.oeaw.ac.at/api/search?sql=SELECT id FROM full_text_search JOIN (SELECT (get_relatives(id, ?, 9999, 0)).id FROM identifiers WHERE ids = ?) t USING (id)  WHERE websearch_to_tsquery('simple', ?) @@ segments&sqlParam[]=https://vocabs.acdh.oeaw.ac.at/schema%23isPartOf&sqlParam[]=https://arche.acdh.oeaw.ac.at/api/188459&format=application/n-triples&sqlParam[]=" + searchTerm + "&readMode=neighbors&limit=25&ftsQuery=" + searchTerm + "&offset=" + offset;
+        
+        fetch(url).then(rs => rs.text()).then(data => {
+           
+            const finalResults = processArcheSearchResults(data);
+          
+            return callback(finalResults);
+           
         });
 
         /*const baseColId = 37562;

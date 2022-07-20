@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div class="col elem">
+    <div class="col elem" v-if="item.collection">
       <svg v-if="!showTitle" v-on:click="toggleTitle" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
            fill="currentColor"
            class="bi bi-caret-right"
@@ -18,7 +18,7 @@
         {{ item.collection }}
       </div>
     </div>
-    <div v-if="showTitle" class="title elem" v-on:click="toggleKwic">
+    <div v-if="item.collection && showTitle || !(item.collection)" class="title elem" v-on:click="toggleKwic">
       <svg v-if="!showKwic" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
            class="bi bi-caret-right"
            viewBox="0 0 16 16">
@@ -34,7 +34,7 @@
         {{ item.title }}
       </div>
     </div>
-    <div v-if="showTitle && showKwic">
+    <div v-if="(item.collection && showTitle || !(item.collection)) && showKwic">
       <div v-on:click="navToLFWithKeyword">
         <div class="kwic elem" v-for="(kwic, i) in item.kwic" :key="`kw${i}`">
           <div v-html="kwic" class="text-left"/>
@@ -66,11 +66,12 @@ export default {
       this.$emit("nav-to-objects", {id: this.item.collectionId})
     },
     navToLF() {
-      this.$router.push({
+     /* this.$router.push({
         name: "lesefassung",
         params: {id: this.item.id}
-
-      });
+      });*/
+      let routeData = this.$router.resolve({name: 'lesefassung', params: {id: this.item.id}});
+      window.open(routeData.href, '_blank');
     },
     navToLFWithKeyword() {
       let text = new DOMParser()
@@ -78,11 +79,12 @@ export default {
           .documentElement.textContent;
       //remove multiple whitespaces
       let contextNoMultSpace = text.replace(/\s\s+/g, ' ').substring(0, 20);
-      this.$router.push({
+      /*this.$router.push({
         name: "lesefassung",
         params: {id: this.item.id, searchTermContext: contextNoMultSpace}
-
-      });
+      });*/
+      let routeData = this.$router.resolve({name: 'lesefassung', params: {id: this.item.id}, query: {searchTermContext: contextNoMultSpace}});
+      window.open(routeData.href, '_blank');
     }
   },
 }

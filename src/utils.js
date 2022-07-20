@@ -117,14 +117,14 @@ const processCaseInfo = (caseInfo) => {
 
 
     getVocab().then((data) => {
-        
+
         data.topconcepts.map(async (tc) => {
             getConceptChildren(tc).then(() => {
                 for (const [uri, concept] of Object.entries(
                     store.default.getters.vocabs
                 )) {
                     if (groupedData[concept.prefLabel]) {
-                        
+
                         store.default.dispatch("updateConcept", {
                             uri: uri,
                             propname: "cases",
@@ -135,67 +135,67 @@ const processCaseInfo = (caseInfo) => {
             });
         });
 
-        
+
         createListsFromCases(caseInfo)
-        store.default.dispatch("setVocabReady",true)
+        store.default.dispatch("setVocabReady", true)
         //groupCasesByTopConcepts();
     })
 
-    
+
 }
 
 const createListsFromCases = (data) => {
     let lists = {};
     data.cases.map((cs) => {
         cs.org_actor.map((oa) => {
-          if (!lists[oa.role_label]) {
-            lists[oa.role_label] = {
-              isTopElement: true,
-              label: oa.role_label,
-              children: [],
-            };
-          }
-          if (
-            lists[oa.role_label].children.filter(
-              (ch) => ch.title === oa.title
-            ).length === 0
-          ) {
-            lists[oa.role_label].children.push({
-              ...oa,
-              cases: [],
-            });
-          }
-          lists[oa.role_label].children
-            .filter((ch) => ch.title === oa.title)[0]
-            .cases.push(cs);
+            if (!lists[oa.role_label]) {
+                lists[oa.role_label] = {
+                    isTopElement: true,
+                    label: oa.role_label,
+                    children: [],
+                };
+            }
+            if (
+                lists[oa.role_label].children.filter(
+                    (ch) => ch.title === oa.title
+                ).length === 0
+            ) {
+                lists[oa.role_label].children.push({
+                    ...oa,
+                    cases: [],
+                });
+            }
+            lists[oa.role_label].children
+                .filter((ch) => ch.title === oa.title)[0]
+                .cases.push(cs);
         });
 
         cs.actors.map((oa) => {
-          if (!lists[oa.role_label]) {
-           lists[oa.role_label] = {
-              isTopElement: true,
-              label: oa.role_label,
-              children: [],
-            };
-          }
-          if (
-            lists[oa.role_label].children.filter(
-              (ch) => ch.title === oa.title
-            ).length === 0
-          ) {
-            lists[oa.role_label].children.push({
-              ...oa,
-              cases: [],
-            });
-          }
-          lists[oa.role_label].children
-            .filter((ch) => ch.title === oa.title)[0]
-            .cases.push(cs);
+            if (!lists[oa.role_label]) {
+                lists[oa.role_label] = {
+                    isTopElement: true,
+                    label: oa.role_label,
+                    children: [],
+                };
+            }
+            if (
+                lists[oa.role_label].children.filter(
+                    (ch) => ch.title === oa.title
+                ).length === 0
+            ) {
+                lists[oa.role_label].children.push({
+                    ...oa,
+                    cases: [],
+                });
+            }
+            lists[oa.role_label].children
+                .filter((ch) => ch.title === oa.title)[0]
+                .cases.push(cs);
         });
-      
-      
-      });
-      store.default.dispatch("setGroupedCases",lists)
+
+
+    });
+    store.default.dispatch("setGroupedCases", lists)
 }
 
 /*const groupCasesByTopConcepts = () => {
@@ -234,9 +234,6 @@ const getConceptChildren = (concept) => {
     }
 }
 
-
-
-
 const group = (items) => {
     let grouped = {};
 
@@ -256,9 +253,70 @@ const group = (items) => {
     return grouped;
 }
 
+const getTriples = (subj, predicate, data) => {
+    const options = {
+        "subject": subj,
+        "predicate": predicate,
+        "object": null,
+        "expiry": 14
+    };
+    return ARCHErdfQuery(options, data).value.map((item) =>
+        Object.values(item)[0]
+    );
+}
+
+
+const parseTripleValue = (val) => {
+    var match = val.match(/^[0-9]+(?<!\^\^)/);
+    if (!match)
+        throw new Error('wrong format');
+    return match[0];
+}
+
+
+const processArcheSearchResults = (data, type = '') => {
+    let searchResults = getTriples(null, 'search://fts', data)
+
+    let searchResultCount = parseTripleValue(getTriples(null, 'search://count', data)[0].object)
+    var finalResults = { count: searchResultCount, results: [] };
+
+    searchResults.forEach(sr => {
+        if (type != 'col') {
+            const optionsIsPartOf = {
+                "subject": sr.subject,
+                "predicate": "https://vocabs.acdh.oeaw.ac.at/schema#isPartOf",
+                "object": null,
+                "expiry": 14
+            };
+            ARCHErdfQuery(optionsIsPartOf, data).value.map((op) => {
+                const title = getTriples(sr.subject, "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle", data)[0].object;
+                const parentTitle = getTriples(Object.values(op)[0].object, "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle", data)[0].object;
+                const parentXMLId = getTriples(Object.values(op)[0].object, "https://vocabs.acdh.oeaw.ac.at/schema#hasIdentifier", data).map(tr => tr.object).filter(id => id.includes('https://id.acdh.oeaw.ac.at/legalkraus/'))[0];
+                const mergedObj = { id: sr.subject, title: title, parent: Object.values(op)[0].object, parentTitle: parentTitle, kwic: sr.object, parentXMLId: parentXMLId }
+                finalResults.results.push(mergedObj)
+            } 
+
+            );
+        }
+        else { 
+            const title = getTriples(sr.subject, "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle", data)[0].object;
+            const mergedObj = { id: sr.subject, title: title, kwic: sr.object }
+            finalResults.results.push(mergedObj)
+        
+        }
+
+    });
+    return finalResults;
+}
+
+
+
 module.exports = {
     collections2view,
     //resources2view
     queryAndProcessMD,
-    processCaseInfo
+    processCaseInfo,
+    getTriples,
+    parseTripleValue,
+    processArcheSearchResults
 }

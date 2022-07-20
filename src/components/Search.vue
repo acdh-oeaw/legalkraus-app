@@ -4,13 +4,13 @@
     <b-row>
       <b-col>
         <div class="metainfo">
-          <b-form @submit="performFullTextSearch()" @submit.prevent >
+          <b-form @submit="performFullTextSearch('',true)" @submit.prevent >
             <b-form-input size="sm" placeholder="Volltextsuche" :type="'search'" v-model="searchTerm"></b-form-input>
           </b-form>
         </div>
       </b-col>
     </b-row>
-    <div v-if="loading" class="loader"></div>
+    <div v-if="loading && showMainLoader===true" class="loader"></div>
     <!--    <b-row>
           <b-col>
             <b-spinner v-if="this.loading === true" type="grow" label="Spinning"></b-spinner>
@@ -40,7 +40,7 @@
 </template>
 <script>
 import {performFullTextSearch} from "@/services/ARCHEService";
-import {getCollectionOfObject} from "../services/ARCHEService";
+//import {getCollectionOfObject} from "../services/ARCHEService";
 
 export default {
   name: "Header",
@@ -52,110 +52,58 @@ export default {
       loading: false,
       offset: 0,
       totalResultsCount:0,
+      showMainLoader:false
     }
   },
   props: ['colId', 'rsId'],
   methods: {
     async processSearchResults(data) {
-      this.searchResults = [];
-      this.totalResultCount = data['https://arche.acdh.oeaw.ac.at/api/']['search://count'][0].value
-     /* if (this.colId) {
-        //search in a specific collection
-        for (const [key, value] of Object.entries(data)) {
-          if (Object.prototype.hasOwnProperty.call(value, "https://vocabs.acdh.oeaw.ac.at/schema#hasTitle")) {
-            const id = key.replace("https://arche-dev.acdh-dev.oeaw.ac.at/api/", "");
-
-            this.searchResults.push({
-              "type": 'searchIn1Col',
-              "id": id,
-              "url": key,
-              "title": value["https://vocabs.acdh.oeaw.ac.at/schema#hasTitle"][0].value,
-              "collection": value["https://vocabs.acdh.oeaw.ac.at/schema#isPartOf"][0].value,
-              "kwic": value["search://fts"].map(kwic => kwic.value.replace('\n', '')),
-              "searchTerm": this.searchTerm
-            })
-          }
-        }
-        this.searchResultsCount = this.searchResults.length;
-        this.$emit('searchPerformed', {searchResults: this.searchResults, keyword: this.searchTerm});
-      } else {
-        //search in all collections
-
-        for (const [key, value] of Object.entries(data)) {
-          const id = key.replace("https://arche-dev.acdh-dev.oeaw.ac.at/api/", "");
-
-          if (id && id !== "") {
-            await getCollectionOfObject(id, rs => {
-              this.searchResults.push({
-                "type": 'searchInAllCol',
-                "id": id,
-                "url": key,
-                "collection": rs[0].title,
-                "collectionId": rs[0].id,
-                "title": value["https://vocabs.acdh.oeaw.ac.at/schema#hasTitle"][0].value,
-                "kwic": value["search://fts"].map(kwic => kwic.value.replace('\n', '')),
-                "searchTerm": this.searchTerm
-              })
-            });
-          }
-
-        }
-        this.searchResultsCount = this.searchResults.length;
-        this.$emit('searchPerformed', {searchResults: this.searchResults, keyword: this.searchTerm});
-      }*/
+      this.totalResultCount = data.count
 
       //keine Unterschiedliche Darstellung von Suche in allen collections bzw nur in einer
       //search in all collections
-      const promises = [];
-      for (const [key, value] of Object.entries(data)) {
-        const id = key.replace("https://arche.acdh.oeaw.ac.at/api/", "");
-
-        if (id && id !== "") {
-          promises.push(new Promise((resolve =>{
-            getCollectionOfObject(id,rs => {
-            
-              resolve(
-             this.searchResults.push({
-              "type": 'searchInAllCol',
-              "id": id,
-              "xmlid":rs[0].xmlId,
-              "url": key,
-              "collection": rs[0].title,
-              "collectionId": rs[0].id,
-              "title": value["https://vocabs.acdh.oeaw.ac.at/schema#hasTitle"][0].value,
-              "kwic": value["search://fts"].map(kwic => kwic.value.replace('\n', '')),
-              "searchTerm": this.searchTerm
-            }))})}))
-        )
-          /*await getCollectionOfObject(id, rs => {
-            this.searchResults.push({
-              "type": 'searchInAllCol',
-              "id": id,
-              "url": key,
-              "collection": rs[0].title,
-              "collectionId": rs[0].id,
-              "title": value["https://vocabs.acdh.oeaw.ac.at/schema#hasTitle"][0].value,
-              "kwic": value["search://fts"].map(kwic => kwic.value.replace('\n', '')),
-              "searchTerm": this.searchTerm
-            })
-          });*/
+      //const promises = [];
+      this.searchResults = data.results.map(r => {
+        const id = r.id.replace("https://arche.acdh.oeaw.ac.at/api/", "");
+        let parentid = null;
+        if (r.parent) {
+        parentid = r.parent.replace("https://arche.acdh.oeaw.ac.at/api/", "");
         }
-
+          if (id && id !== "" && (/[0-9]+/).test(id)) { 
+            return  {
+              "type": 'searchInAllCol',
+              "id": id,
+              "xmlid":r.parentXMLId,
+              "url": r.id,
+              "collection": r.parentTitle,
+              "collectionId": parentid,
+              "title": r.title,
+              "kwic": [r.kwic.replace('\n', '')],
+              "searchTerm":this.searchTerm
+              }
+          }
       }
-      
-      Promise.all(promises).then(()=>{
-     
+      )
         this.searchResultsCount = this.searchResults.length;
-        console.log(this.searchResults.length)
-        this.searchResults.sort((a,b) => {
+      /*  this.searchResults.sort((a,b) => {
           parseInt(a.xmlid.replace("C_",'').substring(0, a.xmlid.length-4)) < parseInt(b.xmlid.replace("C_",'').substring(0, b.xmlid.length-4))
-        } )
+        } )*/
         this.$emit('searchPerformed', {searchResults: this.searchResults, keyword: this.searchTerm, totalResultCount: this.totalResultCount});
         this.loading = false;
-      })
     },
-    performFullTextSearch() {
+    performFullTextSearch(page='',showMainLoader=true) {
+
+      this.showMainLoader = showMainLoader;
       this.loading = true;
+      if (page==='nextPage') {
+        this.offset += 25;
+      } else
+      if (page==='prevPage') {
+        this.offset -= 25;
+      }
+      else {
+        this.offset = 0;
+      }
       performFullTextSearch(this.searchTerm, this.colId, this.rsId, this.offset, data => {
         this.processSearchResults(data)
       });

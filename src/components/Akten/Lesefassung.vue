@@ -5,7 +5,7 @@
     <p v-if="propsSet" class="navigation">Akten-Edition
       <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
       <router-link router-link class="nav-link" :to="'/akten-edition/' + this.cat">
-        {{ this.$route.params.cat }}
+        {{ this.$route.query.cat }}
       </router-link>
       <b-icon class="mx-1 breadcrumbarrow" icon="chevron-right" shift-v="-10" font-scale="0.7"></b-icon>
       <router-link router-link class="nav-link"
@@ -1406,42 +1406,42 @@ export default {
   created() {
     this.caseInfo = this.$store.getters.caseInfo;
     this.objectId = this.$route.params.id;
-    if (this.$route.params.cat) {
+    if (this.$route.query.cat) {
       this.propsSet = true;
     }
-    if (this.$route.params.searchTermContext) {
-      this.keyword = this.$route.params.searchTermContext;
+    if (this.$route.query.searchTermContext) {
+      this.keyword = this.$route.query.searchTermContext;
     }
-    if (this.$route.params.subcat && this.$route.params.subcat === "Die Fackel") {
+    if (this.$route.query.subcat && this.$route.query.subcat === "Die Fackel") {
       this.$route.params.subcat = "Fackel";
       this.showSubcat = 'Fackel'
-    } else if (this.$route.params.subcat && this.$route.params.subcat.includes("Christlich")) {
+    } else if (this.$route.query.subcat && this.$route.query.subcat.includes("Christlich")) {
       this.showSubcat = "Christlichsozial"
-    } else if (this.$route.params.subcat && this.$route.params.subcat.includes("Tageblatt")) {
+    } else if (this.$route.query.subcat && this.$route.query.subcat.includes("Tageblatt")) {
       this.showSubcat = "Berliner Tageblatt"
-    } else if (this.$route.params.subcat && this.$route.params.subcat.includes("Verlag")) {
+    } else if (this.$route.query.subcat && this.$route.query.subcat.includes("Verlag")) {
       this.showSubcat = "Verlage"
     } else {
-      this.showSubcat = this.$route.params.subcat;
+      this.showSubcat = this.$route.query.subcat;
     }
 
-    this.cat = this.$route.params.cat ? this.$route.params.cat.toLowerCase() : null;
+    this.cat = this.$route.query.cat ? this.$route.query.cat.toLowerCase() : null;
 
-    if (this.$route.params.subcat) {
-      if (this.$route.params.subcat.toLowerCase() === "berichtigung (ausgang)") {
+    if (this.$route.query.subcat) {
+      if (this.$route.query.subcat.toLowerCase() === "berichtigung (ausgang)") {
         this.subcat = 'berichtigung'
-      } else if (this.$route.params.subcat.toLowerCase().includes('tageblatt')) {
+      } else if (this.$route.query.subcat.toLowerCase().includes('tageblatt')) {
         this.subcat = "berliner-tageblatt";
-      } else if (this.$route.params.subcat.toLowerCase().includes('stunde')) {
+      } else if (this.$route.query.subcat.toLowerCase().includes('stunde')) {
         this.subcat = "die-stunde";
-      } else if (this.$route.params.subcat.toLowerCase().includes('schober')) {
+      } else if (this.$route.query.subcat.toLowerCase().includes('schober')) {
         this.subcat = "schober";
-      } else if (this.$route.params.subcat.toLowerCase().includes('verlag')) {
+      } else if (this.$route.query.subcat.toLowerCase().includes('verlag')) {
         this.subcat = "verlage";
-      } else if (this.$route.params.subcat.toLowerCase().includes('christlich')) {
+      } else if (this.$route.query.subcat.toLowerCase().includes('christlich')) {
         this.subcat = "christlich-sozial";
       } else {
-        this.subcat = this.$route.params.subcat.toLowerCase();
+        this.subcat = this.$route.query.subcat.toLowerCase();
       }
     }
 

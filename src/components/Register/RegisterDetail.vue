@@ -378,7 +378,8 @@ export default {
     },
     navToObjects(c) {
       getArcheIdFromXmlId(c.id, rs => {
-        this.$router.push({name: "overview-objects", params: {id: rs}});
+        let routeData = this.$router.resolve({name: 'overview-objects', params: {id: rs}});
+        window.open(routeData.href, '_blank');
       });
 
     },
@@ -388,10 +389,14 @@ export default {
 
       getArcheIdFromXmlId(id, rs => {
         if(!(this.category === 'j'|| this.category === 'f')){
-         this.$router.push({name: "lesefassung", params: {id: rs}, query: {q: this.item.pmbID}});
+         //this.$router.push({name: "lesefassung", params: {id: rs}, query: {q: this.item.pmbID}});
+         let routeData = this.$router.resolve({name: 'lesefassung', params: {id: rs}, query: {q: this.item.pmbID}});
+         window.open(routeData.href, '_blank');
         }else{
           //laws do not have pmbIDs
-          this.$router.push({name: "lesefassung", params: {id: rs}, query: {q: d.target}});
+          //this.$router.push({name: "lesefassung", params: {id: rs}, query: {q: d.target}});
+          let routeData = this.$router.resolve({name: 'lesefassung', params: {id: rs}, query: {q: d.target}});
+          window.open(routeData.href, '_blank');
         }
 
       });

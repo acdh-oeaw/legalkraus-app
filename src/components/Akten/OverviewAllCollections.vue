@@ -19,7 +19,7 @@
           </datalist>
         </div>
         -->
-        <Search class="py-2 vt" v-on:searchPerformed="searchPerformed($event)"></Search>
+        <Search class="py-2 vt" ref="search"  v-on:searchPerformed="searchPerformed($event)"></Search>
         <div class="mleft">
         <input class="vt vty" type="number" placeholder="Bis Jahr:" v-model="kwY"/>
         </div>
@@ -152,7 +152,21 @@
     </b-container>
     </div>
     <div v-if="searchView">
-      <p>{{ searchResultsCount }}  von {{ totalResultCount }}  Ergebnissen für "{{ keyword }}"</p>
+      <div>
+         <svg :class="{'disabled':this.$refs.search.offset === 0}" v-on:click="prev()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+           class="bi bi-arrow-left text-bottom" viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+              d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+      </svg>
+      <span>{{ totalResultCount }}  Ergebnisse für "{{ keyword }}"</span><span>
+    </span>
+       <svg :class="{'disabled':this.$refs.search.offset + searchResultsCount >= totalResultCount}" v-on:click="next()" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+           class="bi bi-arrow-right text-bottom" viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+              d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+      </svg>
+      <div v-if="this.$refs.search.loading && this.$refs.search.showMainLoader===false" class="loader"></div>
+      </div>
       <button type="button" class="btn btn-secondary btn-sm" v-on:click="toggleView">Zurück zur Übersicht</button>
       <div v-for="item in searchResults" v-bind:key="item.key">
         <SearchResultItem v-bind:item="item" v-on:nav-to-objects="navToObjects($event)"></SearchResultItem>
@@ -301,12 +315,24 @@ export default {
     navToObjects(item) {
       if(item.id.includes('_')){
         getArcheIdFromXmlId(item.id, rs => {
-          this.$router.push({name: "overview-objects", params: {id: rs}});
+          //this.$router.push({name: "overview-objects", params: {id: rs}});
+          let routeData = this.$router.resolve({name: 'overview-objects', params: {id: rs}});
+          window.open(routeData.href, '_blank');
         })
       }else{
-        this.$router.push({name: "overview-objects", params: {id: item.id}});
+        //this.$router.push({name: "overview-objects", params: {id: item.id}});
+        let routeData = this.$router.resolve({name: 'overview-objects', params: {id: item.id}});
+        window.open(routeData.href, '_blank');
       }
 
+    },
+    prev() {
+      this.$refs.search.performFullTextSearch('prevPage',false)
+    },
+    next() {
+      if (this.$refs.search.offset + this.searchResultsCount < this.totalResultCount) {
+        this.$refs.search.performFullTextSearch('nextPage',false)
+      }
     },
     getIdFromUrl(url) {
       let idx = url.lastIndexOf("/");
@@ -379,7 +405,6 @@ export default {
         return;
       }
       this.searchView = true;
-      console.log(event)
       this.searchResults = event.searchResults;
       this.searchResultsCount = event.searchResults.length;
       this.totalResultCount = event.totalResultCount;
@@ -604,5 +629,11 @@ export default {
 
 .mleft{
   margin-left: 2rem;
+}
+</style>
+
+<style scoped>
+svg.disabled {
+  fill:#CCC;
 }
 </style>
