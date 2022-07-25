@@ -370,10 +370,12 @@ export default {
             window.open(routeData.href, '_blank');
           }
         } else {
-          this.$router.push({
+          /*this.$router.push({
             name: "lesefassung",
             params: { id: id, case: this.caseTitle },
-          });
+          });*/
+         let routeData = this.$router.resolve({name: 'lesefassung', params:{id:id}})
+          window.open(routeData.href, '_blank');
         }
       });
 

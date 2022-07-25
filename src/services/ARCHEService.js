@@ -352,6 +352,9 @@ module.exports.performFullTextSearch = async (searchTerm, colId, rsId, offset, c
             "operator[1]": "=",
             "value[1]": "https://arche.acdh.oeaw.ac.at/api/" + colId,
             "ftsQuery": searchTerm,
+            "property[2]": "https://vocabs.acdh.oeaw.ac.at/schema#hasFilename",
+            "operator[2]": "~",
+            "value[2]": "D.*",
             "offset":offset,
             "limit":25
 
@@ -365,7 +368,14 @@ module.exports.performFullTextSearch = async (searchTerm, colId, rsId, offset, c
     } else {
         //searches in all collections
         //const url = "https://arche.acdh.oeaw.ac.at/api/search?sql=SELECT id FROM full_text_search JOIN (SELECT (get_relatives(id, ?, 9999, 0)).id FROM identifiers WHERE ids = ?) t USING (id)  WHERE websearch_to_tsquery('simple', ?) @@ segments&sqlParam[]=https://vocabs.acdh.oeaw.ac.at/schema%23isPartOf&sqlParam[]=https://arche.acdh.oeaw.ac.at/api/188459&format=application/json&sqlParam[]=" + searchTerm + "&readMode=ids&limit=25&ftsQuery=" + searchTerm + "&offset=" + offset;
-        const url = "https://arche.acdh.oeaw.ac.at/api/search?sql=SELECT id FROM full_text_search JOIN (SELECT (get_relatives(id, ?, 9999, 0)).id FROM identifiers WHERE ids = ?) t USING (id)  WHERE websearch_to_tsquery('simple', ?) @@ segments&sqlParam[]=https://vocabs.acdh.oeaw.ac.at/schema%23isPartOf&sqlParam[]=https://arche.acdh.oeaw.ac.at/api/188459&format=application/n-triples&sqlParam[]=" + searchTerm + "&readMode=neighbors&limit=25&ftsQuery=" + searchTerm + "&offset=" + offset;
+        const url = "https://arche.acdh.oeaw.ac.at/api/search?sql=SELECT fts.id FROM full_text_search as fts JOIN (SELECT (get_relatives(id, ?, 9999, 0)).id FROM identifiers WHERE ids = ?) \
+        t USING (id) \
+        JOIN (SELECT id from metadata_view as mv where mv.property = ? and  mv.value ~ ?) as mvr on mvr.id= fts.id \
+        WHERE websearch_to_tsquery('simple', ?) @@ segments group by fts.id\
+        &sqlParam[]=https://vocabs.acdh.oeaw.ac.at/schema%23isPartOf&sqlParam[]=https://arche.acdh.oeaw.ac.at/api/188459&\
+        sqlParam[]=https://vocabs.acdh.oeaw.ac.at/schema%23hasFilename&\
+        sqlParam[]=D.*&\
+        format=application/n-triples&sqlParam[]=" + searchTerm + "&readMode=neighbors&limit=25&ftsQuery=" + searchTerm + "&offset=" + offset;
         
         fetch(url).then(rs => rs.text()).then(data => {
            
