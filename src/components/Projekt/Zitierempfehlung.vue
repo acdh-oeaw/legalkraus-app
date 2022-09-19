@@ -11,7 +11,7 @@
           >Karl Kraus: Rechtsakten der Kanzlei Oskar Samek. Wissenschaftliche
           Edition,</i
         >
-        hg. v. Johannes Knüchel und Isabel Langkabel unter Mitarbeit von Laura
+        hg. v. Johannes Knüchel und Isabel Langkabel, auf Grundlage der Vorarbeiten Katharina Pragers, unter Mitarbeit von Laura
         Untner, Andrea Ortner, Ingo Börner und Vanessa Hannesschläger (Wien
         2022),<br /><a
           href="https://www.kraus.wienbibliothek.at"

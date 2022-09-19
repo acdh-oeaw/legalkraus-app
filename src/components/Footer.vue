@@ -7,7 +7,7 @@
         Wissenschaftliche Edition
       </p>
       <p>
-        hg. v. Johannes Knüchel und Isabel Langkabel unter Mitarbeit von Laura
+        hg. v. Johannes Knüchel und Isabel Langkabel, auf Grundlage der Vorarbeiten Katharina Pragers, unter Mitarbeit von Laura
         Untner, Andrea Ortner, Ingo Börner und Vanessa Hannesschläger (Wien
         2022)
       </p>

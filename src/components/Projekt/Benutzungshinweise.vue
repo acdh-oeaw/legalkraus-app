@@ -9,7 +9,7 @@
 <p class="font-weight-bold">Hinweise zur Zitation</p>
 
 <p>Haupttitel:<br/>
-  <i>Karl Kraus: Rechtsakten der Kanzlei Oskar Samek. Wissenschaftliche Edition</i>, hg. v. Johannes Knüchel und Isabel Langkabel unter Mitarbeit von Laura Untner, Andrea Ortner, Ingo Börner und Vanessa Hannesschläger (Wien 2022), <a rel="noopener noreferrer" href="https://www.kraus.wienbibliothek.at" target="_blank">https://www.kraus.wienbibliothek.at</a>.
+  <i>Karl Kraus: Rechtsakten der Kanzlei Oskar Samek. Wissenschaftliche Edition</i>, hg. v. Johannes Knüchel und Isabel Langkabel, auf Grundlage der Vorarbeiten Katharina Pragers, unter Mitarbeit von Laura Untner, Andrea Ortner, Ingo Börner und Vanessa Hannesschläger (Wien 2022), <a rel="noopener noreferrer" href="https://www.kraus.wienbibliothek.at" target="_blank">https://www.kraus.wienbibliothek.at</a>.
 
 </p> 
 <p>
