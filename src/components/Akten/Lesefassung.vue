@@ -37,7 +37,10 @@
       <div class="vl meta3"></div>
       <p class="meta4">Datum: {{ this.creationDate }}</p>
       <div class="meta12 d-inline-flex">
-        <input class="vt c" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
+        <div>
+          <input class="vt c" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
+          <small class="no-match-note"></small>
+        </div>
         <button type="button" class="btn vt-button" data-search="next" v-on:click="highlightNext()">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                class="bi bi-arrow-down-short" viewBox="0 0 16 16">
@@ -128,7 +131,10 @@
       </div>-->
       <div class="vl meta7"></div>
       <div class="meta8">
-        <input class="vt" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
+        <div>
+          <input class="vt" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
+          <small class="no-match-note"></small>
+        </div>
         <button type="button" class="btn vt-button" data-search="next" v-on:click="highlightNext()">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                class="bi bi-arrow-down-short" viewBox="0 0 16 16">
@@ -212,7 +218,10 @@
       </div>-->
       <div class="vl meta7"></div>
       <div class="meta9">
-        <input class="vt" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
+        <div>
+          <input class="vt" type="text" placeholder="Volltextsuche:" v-model="keyword" @keyup="highlight(keyword)"/>
+          <small class="no-match-note"></small>
+        </div>
         <button type="button" class="btn vt-button" data-search="next" v-on:click="highlightNext()">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                class="bi bi-arrow-down-short" viewBox="0 0 16 16">
@@ -728,7 +737,7 @@ export default {
         "wildcards": "enabled",
         "acrossElements": true,
         "noMatch": function () {
-          alert("Kein Treffer für \" " + keyword + "\"");
+          document.querySelector(".no-match-note").innerHTML = `Kein Treffer für "${keyword}"`
         }
       };
       /* set page, need to find a solution for multiple marks */
@@ -752,7 +761,7 @@ export default {
             "wildcards": "enabled",
             "acrossElements": true,
             "noMatch": function () {
-              alert("Kein Treffer für \" " + keyword + "\"");
+              document.querySelector(".no-match-note").innerHTML = `Kein Treffer für "${keyword}"`
             }
           };
           instance.mark(keyword, options);
