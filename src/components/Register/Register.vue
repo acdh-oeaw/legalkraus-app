@@ -617,14 +617,17 @@ export default {
 
       if (record.listEvent) {
         let docs =[];
-        record.listEvent[0].event.forEach(e => {
-          let url = e.linkGrp[0].link[0].$.target;
-          let idx = url.lastIndexOf('/');
-          let id = url.substring(idx+1);
-          docs.push(id);
-        });
+        record.listEvent.forEach(le => {
+          le.event.forEach(e => {
+            if (e.$.type == 'mentioned') {
+              let url = e.linkGrp[0].link[0].$.target;
+              let idx = url.lastIndexOf('/');
+              let id = url.substring(idx+1);
+              docs.push(id);
+            }
+          })
+        })
         p.docs = docs;
-
       }
       return p;
     },
@@ -658,12 +661,16 @@ export default {
       }
       if (record.listEvent) {
         let docs =[];
-        record.listEvent[0].event.forEach(e => {
-          let url = e.linkGrp[0].link[0].$.target;
-          let idx = url.lastIndexOf('/');
-          let id = url.substring(idx+1);
-          docs.push(id);
-        });
+        record.listEvent.forEach(le =>{
+          le.event.forEach(e => {
+           if (e.$.type  == 'mentioned') {
+            let url = e.linkGrp[0].link[0].$.target;
+            let idx = url.lastIndexOf('/');
+            let id = url.substring(idx+1);
+            docs.push(id);
+           }
+          })
+        })
         o.docs = docs;
 
       }
@@ -697,12 +704,16 @@ export default {
 
       if (record.listEvent) {
         let docs =[];
-        record.listEvent[0].event.forEach(e => {
-          let url = e.linkGrp[0].link[0].$.target;
-          let idx = url.lastIndexOf('/');
-          let id = url.substring(idx+1);
-          docs.push(id);
-        });
+        record.listEvent.forEach(le => {
+          le.event.forEach(e => {
+            if (e.$.type  == 'mentioned') {
+              let url = e.linkGrp[0].link[0].$.target;
+              let idx = url.lastIndexOf('/');
+              let id = url.substring(idx+1);
+              docs.push(id);
+            }
+          })
+        })
         i.docs = docs;
 
       }
@@ -741,12 +752,17 @@ export default {
       }
       if (record.listEvent) {
         let docs =[];
-        record.listEvent[0].event.forEach(e => {
-          let url = e.linkGrp[0].link[0].$.target;
-          let idx = url.lastIndexOf('/');
-          let id = url.substring(idx+1);
-          docs.push(id);
-        });
+        record.listEvent.forEach(le => {
+          le.event.forEach(e => {
+             if (e.$.type  == 'mentioned') {
+              let url = e.linkGrp[0].link[0].$.target;
+              let idx = url.lastIndexOf('/');
+              let id = url.substring(idx+1);
+              docs.push(id);
+             }
+
+          })
+        })
         w.docs = docs;
 
       }
