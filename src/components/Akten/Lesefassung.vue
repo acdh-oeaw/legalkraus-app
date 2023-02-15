@@ -684,7 +684,7 @@ export default {
       return (e.target.src = `${fallbackImage}`);
     },
     async highlightQueryOnMounted(q) {
-      await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
+      await document.querySelector(`.visible-page[data-pgnr='${this.selectedPage}']`);
       let men_id = [];
       //mark law
       if (q.includes('alex.onb')) {
@@ -700,7 +700,7 @@ export default {
       while (men_id.length === 0 && this.facsURLs.length > this.selectedPage) {
         //there is at least one more page
         this.next();
-        await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
+        await document.querySelector(`.visible-page[data-pgnr='${this.selectedPage}']`);
         if (q.includes('alex.onb')) {
           men_id = document.getElementsByClassName(q);
         } else if (q.includes("fackel.oeaw.ac.at")) {
@@ -738,7 +738,7 @@ export default {
       await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
       var instance = new Mark(document.querySelector(".body"));
       instance.mark(keyword, options);
-      this.marks = document.getElementsByClassName("d-block").item(0).querySelectorAll("mark");
+      this.marks = document.getElementsByClassName("visible-page").item(0).querySelectorAll("mark");
       this.marks[this.idxCurrMark].classList.add("current-mark");
       document.getElementsByClassName('body').item(0).scrollTop = this.marks[this.idxCurrMark].offsetTop;
     },
@@ -759,7 +759,7 @@ export default {
 
         }
       });
-      this.marks = document.getElementsByClassName("d-block").item(0).querySelectorAll("mark");
+      this.marks = document.getElementsByClassName("visible-page").item(0).querySelectorAll("mark");
       if (this.marks.length === 0) {
         //no match on current page
         this.highlightNext();
@@ -783,8 +783,8 @@ export default {
         while (this.facsURLs.length > this.selectedPage) {
           //there is at least one more page
           this.next();
-          await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
-          this.marks = document.getElementsByClassName("d-block").item(0).querySelectorAll("mark");
+          await document.querySelector(`.visible-page[data-pgnr='${this.selectedPage}']`);
+          this.marks = document.getElementsByClassName("visible-page").item(0).querySelectorAll("mark");
           if (this.marks.length > 0) {
             //found next mark; reset idxCurrMark
             this.idxCurrMark = 0;
@@ -795,8 +795,8 @@ export default {
         if (!foundNext) {
           //jump to firstPage and restart highlighting
           this.$store.dispatch('setSelectedPage', parseInt(1));
-          await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
-          this.marks = document.getElementsByClassName("d-block").item(0).querySelectorAll("mark");
+          await document.querySelector(`.visible-page[data-pgnr='${this.selectedPage}']`);
+          this.marks = document.getElementsByClassName("visible-page").item(0).querySelectorAll("mark");
 
         }
       }
@@ -814,8 +814,8 @@ export default {
         while (this.selectedPage > 1) {
           //there is at least one more page
           this.prev();
-          await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
-          this.marks = document.getElementsByClassName("d-block").item(0).querySelectorAll("mark");
+          await document.querySelector(`.visible-page[data-pgnr='${this.selectedPage}']`);
+          this.marks = document.getElementsByClassName("visible-page").item(0).querySelectorAll("mark");
           if (this.marks.length > 0) {
             //found next mark; reset idxCurrMark
             this.idxCurrMark = this.marks.length - 1;
@@ -826,8 +826,8 @@ export default {
         if (!foundNext) {
           //jump to last page
           this.$store.dispatch('setSelectedPage', parseInt(this.facsURLs.length));
-          await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
-          this.marks = document.getElementsByClassName("d-block").item(0).querySelectorAll("mark");
+          await document.querySelector(`.visible-page[data-pgnr='${this.selectedPage}']`);
+          this.marks = document.getElementsByClassName("visible-page").item(0).querySelectorAll("mark");
         }
       }
       this.marks[this.idxCurrMark].classList.add("current-mark");
@@ -840,7 +840,7 @@ export default {
       this.alignRdgs();
     },
     async alignRdgs() {
-      await document.querySelector(`.d-block[data-pgnr='${this.selectedPage}']`);
+      await document.querySelector(`.visible-page[data-pgnr='${this.selectedPage}']`);
       const rdgsLeft = document.querySelectorAll(".rdg.marginLeft");
       const rdgsRight = document.querySelectorAll(".rdg.mRight");
       rdgsLeft.forEach(async (rdg, idx) => {

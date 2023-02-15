@@ -64,7 +64,7 @@
                         <xsl:attribute name="class" select="'addPadding'"/>
                     </xsl:if>
                     <xsl:attribute name="v-bind:class">
-                        <xsl:value-of select="'{ ''d-block'': currentFacsUrl ==='''||$facsUrl||''', ''d-none'':currentFacsUrl!=='''||$facsUrl||'''}'"/>
+                        <xsl:value-of select="'{ ''d-block visible-page'': currentFacsUrl ==='''||$facsUrl||''', ''d-none'':currentFacsUrl!=='''||$facsUrl||'''}'"/>
                     </xsl:attribute>
                     <xsl:attribute name="data-pgnr">
                         <xsl:value-of select="position()"/>
