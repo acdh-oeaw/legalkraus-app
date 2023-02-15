@@ -12,13 +12,9 @@
       </b-button>
       <b-modal hide-footer :content-class="'rounded-0 opensans'" id="modal-betaversion" title="Beta Version">
         <!--<div v-html="modalcontent"/>-->
-        <p>Zukünftige Features und Ergänzungen</p>
-          <ul class="list-unstyled">
-            <li>Zeitstrahl</li>
-            <li>Böhm Edition</li>
-            <li>Editionsrichtlinien</li>
-            <li>Lizenzen und Technische Dokumentation</li>
-          </ul>
+        <p>Zukünftige Features und Ergänzungen: Technische Dokumentation</p>
+        <p>Im Register können technisch bedingte Probleme sowie Unvollständigkeiten auftreten. In diesem Fall wird gebeten, zur Suche von konkreten Orten und Personen die Volltextsuche zu benutzen. Wir bitten um Verständnis und im Zweifel um die Kontaktaufnahme zum ACDH-CH-Helpdesk.</p>
+        <p>Außerdem kann es beim Einstieg in die Dokumente per Klick über die Volltextsuchfunktion zu technischen Problemen kommen. Es wird in diesem Fall gebeten, die jeweiligen Suchfelder innerhalb der einzelnen Dokumente zu benutzen.</p>
       </b-modal>
     </div>
     <div class="navigation">
