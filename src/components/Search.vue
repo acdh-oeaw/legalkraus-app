@@ -5,9 +5,17 @@
       <b-col>
         <div class="metainfo">
           <b-form @submit="performFullTextSearch('',true)" @submit.prevent >
-            <b-form-input size="sm" placeholder="Volltextsuche" :type="'search'" v-model="searchTerm"></b-form-input>
+            <b-input-group>
+              <b-form-input size="sm" placeholder="Volltextsuche" :type="'search'" v-model="searchTerm"></b-form-input>
+              <b-input-group-append class="custom-input-append pl-1">
+                  <b-icon  @click="showSearchInfoModal" shift-v="-6"  icon="info-circle"  class="align-bottom searchinfo-icon cursor-pointer" aria-hidden="true"></b-icon>
+              </b-input-group-append>
+            </b-input-group>
           </b-form>
         </div>
+           <b-modal hide-footer hide-header :content-class="'rounded-0 opensans'" id="modal-searchinfo" title="Beta Version">
+            Beim Einstieg in die Dokumente per Klick über die Volltextsuchfunktion kann es zu technischen Problemen kommen. Es wird in diesem Fall gebeten, die jeweiligen Suchfelder innerhalb der einzelnen Dokumente zu benutzen.
+           </b-modal>
       </b-col>
     </b-row>
     <div v-if="loading && showMainLoader===true" class="loader"></div>
@@ -57,6 +65,9 @@ export default {
   },
   props: ['colId', 'rsId'],
   methods: {
+    showSearchInfoModal() {
+       this.$root.$emit('bv::show::modal', 'modal-searchinfo', '#btnShow')
+    },
     async processSearchResults(data) {
       this.totalResultCount = data.count
 
@@ -140,5 +151,13 @@ export default {
     transform: rotate(360deg);
   }
 }
+
+.custom-input-append {
+  background-color: var(--secondary-gray-meta);
+}
+
+.searchinfo-icon {
+  color: var(--primary-red)
+  }
 
 </style>
