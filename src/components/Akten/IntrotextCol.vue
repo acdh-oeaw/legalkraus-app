@@ -1,6 +1,6 @@
 <template>
   <div class="text-left maxwdth-75">
-    <p>{{collectionDescription}}</p>
+    <p v-html="collectionDescription"></p>
   </div>
 </template>
 <script>
