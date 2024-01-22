@@ -12,7 +12,7 @@
       >
     </p>
     <p>
-      Gerhard Kohl, <a
+      Gerald Kohl, <a
         target="_blank"
         rel="noopener noreferrer"
         :href="`${publicPath}gerhard_kohl_beitrag.pdf`"
